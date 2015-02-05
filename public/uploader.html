@@ -51,35 +51,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
 
     <script src="js/lib/papaparse.min.js"></script>
-
-    <script>
-      
-      // http://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
-      function parseFile(event) {
-        var file = event.target.files[0];
-     
-        Papa.parse(file, {
-          header: false,
-          dynamicTyping: true,
-
-          complete: function(results) {
-
-            results = _.filter(results, function(){
-              return results[0] == "";
-            })
-
-            console.log(results);
-          }
-        });
-      }
-     
-      // Watch File Input
-      $(document).ready(function(){
-        $("#csv-file").change(parseFile);
-      });
-
-    </script>
-
+    <script src="js/uploader.js"></script>
 
   </body>
 </html>
