@@ -13,12 +13,15 @@ function parseFile(event) {
       var errors = results.errors;
       var meta = results.meta;
 
-      // Remove empty lines
+      // Remove entries that only contain an empty string
       data = _.filter(data, function(dat){
         return dat.length > 1;
       })
 
       console.log(data);
+
+      // Backup uploaded data to Local Storage
+      localStorage.setItem("upload", data);
     }
   });
 }
