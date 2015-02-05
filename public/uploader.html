@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- <link rel="icon" href="../../favicon.ico"> -->
+
+    <title>Data Parser</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+  </head>
+  <body>
+
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Data Parser</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+
+    <div class="container">
+
+      <!-- Main component for a primary marketing message or call to action -->
+      <div class="jumbotron">
+        <h2>Select Data File</h2>
+        <p>Select a .csv file from your hardrive to parse. </p>
+
+        <input class="btn btn-lg btn-primary" type="file" id="csv-file" name="files"/>
+      </div>
+
+    </div> <!-- /container -->
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
+
+    <script src="js/lib/papaparse.min.js"></script>
+
+    <script>
+      
+      // http://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
+      function parseFile(event) {
+        var file = event.target.files[0];
+     
+        Papa.parse(file, {
+          header: false,
+          dynamicTyping: true,
+
+          complete: function(results) {
+
+            results = _.filter(results, function(){
+              return results[0] == "";
+            })
+
+            console.log(results);
+          }
+        });
+      }
+     
+      // Watch File Input
+      $(document).ready(function(){
+        $("#csv-file").change(parseFile);
+      });
+
+    </script>
+
+
+  </body>
+</html>
