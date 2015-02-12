@@ -1,8 +1,9 @@
-# node-js-getting-started
+# API for G-Player-Visualization
+> Getting Started with Node.js
 
-A barebones Node.js app using [Express 4](http://expressjs.com/).
+A basic Node.js app using [Express 4](http://expressjs.com/).
 
-This application support the [Getting Started with Node on Heroku](https://devcenter.heroku.com/articles/getting-started-with-nodejs) article - check it out.
+This application is forked from the [Getting Started with Node on Heroku](https://devcenter.heroku.com/articles/getting-started-with-nodejs) article - check it out.
 
 ## Running Locally
 
