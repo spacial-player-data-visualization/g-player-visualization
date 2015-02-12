@@ -6,7 +6,7 @@
 var API = {
 
   // Target API
-  url : "http://g-player.herokuapp.com/api/";
+  url : "http://g-player.herokuapp.com/api/",
 };
 
 /******************************

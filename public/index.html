@@ -12,11 +12,13 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+    <link href="css/style.css" rel="stylesheet" />
   </head>
   <body>
 
     <!-- Static navbar -->
-    <nav class="navbar navbar-default navbar-static-top">
+    <nav class="navbar navbar-default navbar-static-top" style="margin-bottom: 0px;">
       <div class="container">
         <div class="navbar-header">
           <a class="navbar-brand" href="index.html">Data Parser</a>
@@ -31,12 +33,34 @@
       </div>
     </nav>
 
+    <div id="wrapper">
 
-    <div class="container">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <br>
+                <li><a href="#">Menu Item</a></li>
+                <li><a href="#">Menu Item</a></li>
+                <li><a href="#">Menu Item</a></li>
+                <li><a href="#">Menu Item</a></li>
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
 
-      <p>Visualize Data</p>
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1>Data Visualization</h1>
+                        <p>Details and Stuff</p>
+                        <a href="#toggle-menu" class="btn btn-default" id="toggle-menu">Toggle Menu</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    </div>
+    </div><!-- /#wrapper -->
 
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -48,5 +72,14 @@
 
     <script src="js/app.js"></script>
     <script src="js/api.js"></script>
+
+    <!-- Toggle Side Nav -->
+    <script>
+    $("#toggle-menu").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+    </script>
+
   </body>
 </html>
