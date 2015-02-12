@@ -91,13 +91,14 @@ app.put('/api/entries/:id', function (req, res){
   })
 });
 
-app.delete('/api/products/:id', function (req, res){
+app.delete('/api/entries/:id', function (req, res){
   return EntryModel.findById(req.params.id, function (err, entry){
     return entry.remove(function (err){
       if (err) {
         console.log(err);
       } else {
-        console.log('deleted');
+        console.log('deleted')
+        res.send('Deleted');
       }
     });
   })
