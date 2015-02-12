@@ -1,4 +1,4 @@
-# G­Player: Visualization of spatial­temporal play data
+# G­Player: Visualization of spatial­-temporal play data
 
 > Visualization and Data Management for Player Activity in Games
 
@@ -8,11 +8,13 @@ A data visualization system for viewing and manipulating multiplayer game data. 
 
 ## Demo
 
-> Preview the project
+> Preview the project online
 
-Available Online: g-player.herokuapp.com
+Available at: [g-player.herokuapp.com](g-player.herokuapp.com)
 
 ## Getting Started
+
+...
 
 ## Authors
 
