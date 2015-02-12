@@ -18,7 +18,18 @@ function parseFile(event) {
         return dat.length > 1;
       })
 
-      console.log(data);
+      var table = $("<table/>").attr("id","preview");
+      // console.log(data);
+      for (var i in data) {
+          //console.log(data[i]);
+          var tr="<tr>";
+          for (var key in data[i]) {
+              //console.log(key);
+              tr+="<td>"+data[i][key]+"</td>";
+          }
+          tr+="</tr>";
+          $("table").append(tr);
+      }
 
       // Backup uploaded data to Local Storage
       localStorage.setItem("upload", data);
