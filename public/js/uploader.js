@@ -2,12 +2,16 @@
 function parseFile(event) {
   var file = event.target.files[0];
 
+  loading.start();
+
   Papa.parse(file, {
     header: false,
     dynamicTyping: true,
 
     // Parser Callback
     complete: function(results) {
+
+      loading.end();
       
       var data = results.data;
       var errors = results.errors;

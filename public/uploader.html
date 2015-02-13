@@ -12,6 +12,8 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="lib/mprogress.min.css" rel="stylesheet" />
   </head>
   <body>
 
@@ -33,8 +35,6 @@
 
 
     <div class="container">
-
-      <!-- Main component for a primary marketing message or call to action -->
       <div class="jumbotron">
         <h2>Select Data File</h2>
         <p>Select a .csv file from your hardrive to parse. </p>
@@ -56,9 +56,17 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
 
-    <script src="js/lib/papaparse.min.js"></script>
+    <script src="lib/mprogress.min.js"></script>
+    <script src="lib/papaparse.min.js"></script>
     <script src="js/uploader.js"></script>
     <script src="js/api.js"></script>
 
+    <script>
+      // Create a new loading indicator
+      var loading = new Mprogress({
+        template: 3,   // Indeterminate Progress Bar
+        parent: 'body' // Location to Insert
+      });
+    </script>
   </body>
 </html>
