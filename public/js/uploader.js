@@ -1,5 +1,7 @@
 // http://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
 function parseFile(event) {
+  
+  $("#loading").text("Loading...");
   var file = event.target.files[0];
 
   loading.start();
@@ -12,7 +14,6 @@ function parseFile(event) {
     complete: function(results) {
 
       loading.end();
-      
       var data = results.data;
       var errors = results.errors;
       var meta = results.meta;
@@ -34,7 +35,7 @@ function parseFile(event) {
           tr+="</tr>";
           $("table").append(tr);
       }
-
+      $("#loading").text("");
       // Backup uploaded data to Local Storage
       localStorage.setItem("upload", data);
     }
