@@ -13,7 +13,10 @@ function parseFile(event) {
     // Parser Callback
     complete: function(results) {
 
+      console.log(results.data);
+
       loading.end();
+
       var data = results.data;
       var errors = results.errors;
       var meta = results.meta;
