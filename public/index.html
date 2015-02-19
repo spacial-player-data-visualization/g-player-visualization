@@ -37,13 +37,13 @@
                     <div class="panel-heading" role="tab" id="headingOne">
                       <h4 class="panel-title">
                         <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                          Select Map
+                          <i class="fa fa-sitemap"></i> Select Map
                         </a>
                       </h4>
                     </div>
                     <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                       <div class="panel-body">
-                        <form class="form" style="margin: 10px;">
+                        <form class="form">
                             
                             <label>Select Game</label>
                             <select class="form-control">
@@ -68,13 +68,20 @@
                     <div class="panel-heading" role="tab" id="headingTwo">
                       <h4 class="panel-title">
                         <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                          Select Data
+                          <i class="fa fa-table"></i> Select Data
                         </a>
                       </h4>
                     </div>
                     <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
                       <div class="panel-body">
-                        content
+                        <label>Select Players</label>
+                        <select multiple class="form-control">
+                          <option>001</option>
+                          <option>002</option>
+                          <option>003</option>
+                          <option>004</option>
+                          <option>005</option>
+                        </select>
                       </div>
                     </div>
                   </div>
@@ -82,13 +89,27 @@
                     <div class="panel-heading" role="tab" id="headingThree">
                       <h4 class="panel-title">
                         <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                          Filter Data
+                          <i class="fa fa-filter"></i> Filter Data
                         </a>
                       </h4>
                     </div>
                     <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
                       <div class="panel-body">
-                        content
+                        <div class="checkbox">
+                        <div class="checkbox">
+                           <label>
+                             <input type="checkbox"> Show Player Heatmap
+                           </label>
+                        </div>
+                           <label>
+                             <input type="checkbox"> Show Player Deaths
+                           </label>
+                        </div>
+                        <div class="checkbox">
+                           <label>
+                             <input type="checkbox"> Show NPC Actions
+                           </label>
+                        </div>
                       </div>
                     </div>
                   </div>
