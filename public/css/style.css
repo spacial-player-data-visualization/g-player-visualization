@@ -137,6 +137,20 @@
     text-align: center;
 } 
 
+
+.sidebar-nav .panel-heading {
+    padding: 0px;
+}
+
+.sidebar-nav h4.panel-title a {
+    padding-left: 15px;
+    width: 100%;
+    display: inline-block;
+    height: 40px;
+    line-height: 42px;
+}
+
+
 @media(min-width:768px) {
     #wrapper {
         padding-left: 200px;
