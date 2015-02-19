@@ -54,9 +54,9 @@
             
         </div>
 
-        <div class="leaflet-bar leaflet-control" style="top: 100px; left: 10px;">
+        <!-- <div class="leaflet-bar leaflet-control" style="top: 100px; left: 10px;">
             <a class="" href="#" title="Zoom in"><i class="fa fa-bars"></i></a>
-        </div>
+        </div> -->
 
         <!-- <p><b>Pro Tip:</b> Hold <i>SHIFT</i> and drag your mouse to select an area</p> -->
         
@@ -149,22 +149,26 @@
             }).addTo(map);
         });
 
-        var MyControl = L.Control.extend({
+        var SideOptionsToggle = L.Control.extend({
             options: {
                 position: 'topleft'
             },
 
             onAdd: function (map) {
                 // create the control container with a particular class name
-                var container = L.DomUtil.create('div', 'my-custom-control leaflet-control leaflet-bar');
+                var button = L.DomUtil.create('div', 'toggle-side-options leaflet-control leaflet-bar');
+                var icon = L.DomUtil.create('i', 'fa fa-bars', button);
 
-                // ... initialize other DOM elements, add listeners, etc.
+                // Add Listener
+                L.DomEvent.addListener(button, 'click', function(){
+                    $("#wrapper").toggleClass("toggled");
+                });
 
-                return container;
+                return button;
             }
         });
 
-        map.addControl(new MyControl());
+        map.addControl(new SideOptionsToggle());
 
     });
     </script>

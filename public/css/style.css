@@ -10,6 +10,24 @@
 
 /* Toggle Styles */
 
+.toggle-side-options {
+    width: 25px;
+    height: 25px;
+    background-color: #fff;
+}
+
+.toggle-side-options:hover{
+    background-color: #eee;
+}
+
+.toggle-side-options i.fa-bars {
+    text-align: center;
+    margin-top: 7px;
+    width: 100%;
+}
+
+/* Page Styles */
+
 #wrapper {
     padding-left: 0;
     -webkit-transition: all 0.5s ease;
