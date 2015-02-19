@@ -29,5 +29,11 @@ Available at: [g-player.herokuapp.com](g-player.herokuapp.com)
 ## Special Thanks
 
 - [Google Maps API](https://developers.google.com/maps/)
-- Node.js
-- Papa
+- [Patrick Wied's Heatmap Library](http://www.patrick-wied.at/static/heatmapjs/)
+- [Node.js](http://nodejs.org/)
+- [PapaParse.js for Parsing .CSV files](http://papaparse.com)
+- [FontAwesome's Icon Library](http://fortawesome.github.io/Font-Awesome/)
+- [Bootstrap](http://getbootstrap.com/)
+- [Underscore.js](http://underscorejs.org/)
+
+
