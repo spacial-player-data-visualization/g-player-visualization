@@ -134,11 +134,9 @@
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.js"></script>
 
-    <!-- @TODO: Use proper CDN -->
-    <script src="http://www.patrick-wied.at/static/heatmapjs/assets/js/heatmap.min.js"></script>
-    <script src="http://www.patrick-wied.at/static/heatmapjs/assets/js/leaflet-heatmap.js"></script>
-    <script src="http://www.patrick-wied.at/static/heatmapjs/assets/third-party/prism/prism.js"></script>
     <!-- Libraries Hosted Locally --> 
+    <script src="lib/heatmap.min.js"></script>
+    <script src="lib/leaflet-heatmap.js"></script>
     <script src="lib/mprogress.min.js"></script>
 
     <!-- Custom Javascript -->
@@ -224,12 +222,12 @@
           data: sample_data
         };
 
-        // http://www.patrick-wied.at/static/heatmapjs/example-heatmap-leaflet.html
+        // http://www.patrick-wied.at/static/heatmapjs/
         var heatmapLayer = new HeatmapOverlay({
           "radius": 0.3,
           "maxOpacity": .8,
           "scaleRadius": true, 
-          "useLocalExtrema": true,
+          "useLocalExtrema": false,
           latField: 'x',
           lngField: 'y',
         });
