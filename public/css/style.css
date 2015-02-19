@@ -1,7 +1,11 @@
-#map {
+/*#map {
     position: absolute;
     top: 0px;
     left: 0px;
+}
+*/
+.leaflet-container {
+    background-color: rgba(255,0,0,0.0);
 }
 
 /* 

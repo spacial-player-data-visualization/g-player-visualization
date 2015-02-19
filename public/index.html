@@ -12,6 +12,9 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <script src="js/data.js"></script>
+
     <link href="css/style.css" rel="stylesheet" />
     <link href="lib/mprogress.min.css" rel="stylesheet" />
   </head>
@@ -21,7 +24,7 @@
     <nav class="navbar navbar-default navbar-static-top" style="margin-bottom: 0px;">
       <div class="container">
         <div class="navbar-header">
-          <a class="navbar-brand" href="index.html">Data Parser</a>
+          <a class="navbar-brand" href="index.html">Data Visualizer</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -46,33 +49,17 @@
                 <li><a href="#">Menu Item</a></li>
             </ul>
         </div>
-        <!-- /#sidebar-wrapper -->
-
-        <!-- Page Content -->
-        <div id="page-content-wrapper">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <h1>Data Visualization</h1>
-                        <p>Details and Stuff</p>
-                        <a href="#toggle-menu" class="btn btn-default" id="toggle-menu">Toggle Menu</a>
-                    </div>
-                </div>
-            </div>
-
-            <div id="map" style="width:396px;height:500px;"></div>
-
-        </div>
+        
+        <div id="map"></div>
 
     </div><!-- /#wrapper -->
 
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-
+    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.js"></script>
 
     <script src="lib/mprogress.min.js"></script>
 
@@ -85,81 +72,64 @@
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
     });
+
+    $(document).ready(function(){
+        
+        // Save window size.
+        var windowWidth  = $(document).width();
+        var windowHeight = $(document).height();
+
+        /*************************
+               Setup MAP
+         *************************/
+
+        // Initialize Map's Size
+        $("#map").css("width", windowWidth);
+        $("#map").css("height", windowHeight);
+
+        // Define Map Parameters
+        var map = L.map('map', {
+            minZoom: 7,
+            maxZoom: 10,
+        }).setView([2.5, 4], 1);
+            
+        // Replace Tile Layer with Image
+        var imageUrl = 'img/boston.jpg';
+
+        // Define image position on map
+        var imageSize = [8552, 5521]
+        var imageBounds = [[0, 0], [imageSize[1] / 1000, imageSize[0] / 1000]];
+
+        // Add image overlay to map
+        L.imageOverlay(imageUrl, imageBounds).addTo(map);
+
+        /*************************
+               Setup DATA
+         *************************/
+        
+        // Date subset of data (for testing)
+        // sample_data = sample_data.splice(0, 4000);
+
+        // Validate data. Ignore NPC interactions, etc
+        sample_data = _.filter(sample_data, function(p){
+            return p.length >= 10;
+        })
+
+        // Extract relevant Data
+        sample_data = _.map(sample_data, function(p){
+            return { x : p[3] / 10, y : p[4] / 10 }
+        })
+
+        _.each(sample_data, function(p){
+            var circle = L.circle([p.x / 200, p.y / 200], 10, {
+                color: 'black',
+                fillColor: '#000',
+                fillOpacity: 1,
+            }).addTo(map);
+        });
+
+    });
     </script>
-
- <script type="text/javascript" src="http://maps.google.com/maps/api/js?libraries=geometry&sensor=false"></script>
-
- <script type="text/javascript">
-
-    var windowWidth  = $(document).width();
-    var windowHeight = $(document).height();
-
-    $("#map").css("width", windowWidth);
-    $("#map").css("height", windowHeight);
-
-     // Google Maps API - Custom Image Demo
-     var Map = {};
-
-     // dataMap class
-     //////////////////////////////////
-     Map.dataMap = function (container) {
-         
-         // Create map
-         this._map = new google.maps.Map(container, {
-             zoom: 1,
-             center: new google.maps.LatLng(0, 0),
-             mapTypeControl: false,
-             streetViewControl: false
-         });
-
-         // Set custom tiles
-         this._map.mapTypes.set('croft', new Map.ImgMapType('croft', '#4E4E4E'));
-         this._map.setMapTypeId('croft');
-     };
-
-     // Define ImgMapType class
-     Map.ImgMapType = function (theme, backgroundColor) {
-         this.name = this._theme = theme;
-         this._backgroundColor = backgroundColor;
-     };
-
-     // Parameters
-     Map.ImagesBaseUrl = 'http://cdn.mikecouturier.com/blog.mikecouturier.com/images/maps-tiles/';
-
-     Map.ImgMapType.prototype.tileSize = new google.maps.Size(256, 256);
-     
-     Map.ImgMapType.prototype.minZoom = 0;
-     Map.ImgMapType.prototype.maxZoom = 3;
-
-     Map.ImgMapType.prototype.getTile = function (coord, zoom, ownerDocument) {
-         var tilesCount = Math.pow(2, zoom);
-
-         if (coord.x >= tilesCount || coord.x < 0 || coord.y >= tilesCount || coord.y < 0) {
-             var div = ownerDocument.createElement('div');
-             div.style.width = this.tileSize.width + 'px';
-             div.style.height = this.tileSize.height + 'px';
-             div.style.backgroundColor = this._backgroundColor;
-             return div;
-         }
-
-         var img = ownerDocument.createElement('IMG');
-         img.width = this.tileSize.width;
-         img.height = this.tileSize.height;
-         img.src = Map.GetImageUrl(this._theme + '/tile_' + zoom + '_' + coord.x + '-' + coord.y + '.png');
-
-         return img;
-     };
-
-     Map.GetImageUrl = function (image) {
-         return Map.ImagesBaseUrl + image;
-     };
-
-     // Initialize Map
-     google.maps.event.addDomListener(window, 'load', function () {
-         var dataMap = new Map.dataMap(document.getElementById('map'));
-     });
-
- </script>
 
   </body>
 </html>
