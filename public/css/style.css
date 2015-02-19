@@ -145,7 +145,7 @@
     }
 
     #wrapper.toggled #sidebar-wrapper {
-        width: 0;
+        width: 0 !important;
     }
 
     #page-content-wrapper {
