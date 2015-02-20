@@ -16,18 +16,26 @@ Available at: [g-player.herokuapp.com](g-player.herokuapp.com)
 
 ## Getting Started
 
-...
+> How to Run Locally
+
+Download the repository, and open index.html in your browser. The repo should contain all dependencies. No local development server needed (for now!).
 
 ## Authors
 
-- Pragathi Sanshi
-- Tommy Hu
-- Alex Gimmi
+- [Pragathi Sanshi](https://github.com/pragsanshi)
+- [Tommy Hu](https://github.com/tomxhu)
+- [Alex Gimmi](https://github.com/iBroadband)
 - [Alex Johnson](https://github.com/alexjohnson505)
-- Alex Jacks
+- [Alex Jacks](https://github.com/alexjacks92)
 
 ## Special Thanks
 
-- [Google Maps API](https://developers.google.com/maps/)
-- Node.js
-- Papa
+> Tutorials, Resources, and Dependencies. 
+
+- [Leaflet.js - Open Source Library for Interactive Maps](leafletjs.com)
+- [Patrick Wied's Heatmap Library](http://www.patrick-wied.at/static/heatmapjs/)
+- [Node.js](http://nodejs.org/)
+- [PapaParse.js for Parsing .CSV files](http://papaparse.com)
+- [FontAwesome's Icon Library](http://fortawesome.github.io/Font-Awesome/)
+- [Bootstrap](http://getbootstrap.com/)
+- [Underscore.js](http://underscorejs.org/)
