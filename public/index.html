@@ -133,8 +133,10 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.js"></script>
-    
+
     <!-- Libraries Hosted Locally --> 
+    <script src="lib/heatmap.min.js"></script>
+    <script src="lib/leaflet-heatmap.js"></script>
     <script src="lib/mprogress.min.js"></script>
 
     <!-- Custom Javascript -->
@@ -200,16 +202,42 @@
 
         // Extract relevant Data
         sample_data = _.map(sample_data, function(p){
-            return { x : p[3] / 10, y : p[4] / 10 }
+            return { x : p[3] / 2000, y : p[4] / 2000 }
         })
 
         _.each(sample_data, function(p){
-            var circle = L.circle([p.x / 200, p.y / 200], 10, {
+            var circle = L.circle([p.x, p.y], 10, {
                 color: 'black',
                 fillColor: '#000',
                 fillOpacity: 1,
             }).addTo(map);
         });
+
+        /*************************
+              Setup HEATMAP
+         *************************/
+
+        var heatmapData = { 
+          max: 1,  // No idea what this does
+          data: sample_data
+        };
+
+        // http://www.patrick-wied.at/static/heatmapjs/
+        var heatmapLayer = new HeatmapOverlay({
+          "radius": 0.3,
+          "maxOpacity": .8,
+          "scaleRadius": true, 
+          "useLocalExtrema": false,
+          latField: 'x',
+          lngField: 'y',
+        });
+        
+        map.addLayer(heatmapLayer)
+        heatmapLayer.setData(heatmapData);
+
+        /*************************
+              Setup UI
+         *************************/
 
         var SideOptionsToggle = L.Control.extend({
             options: {
@@ -235,7 +263,12 @@
         $('#loading').hide();
 
     });
+
+
+
     </script>
+
+
 
   </body>
 </html>
