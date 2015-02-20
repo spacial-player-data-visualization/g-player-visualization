@@ -1,6 +1,20 @@
+/************************
+        Styles
+ ************************/
 
 .leaflet-container {
     background-color: rgba(255,0,0,0.0);
+}
+
+/* Loading Indicator */
+#loading.fa-cog {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    text-align: center;
+    z-index:9999;
+    font-size: 100px;
+    position: absolute;
 }
 
 /* 
@@ -9,6 +23,29 @@
  */
 
 /* Toggle Styles */
+
+#sidebar-wrapper {
+    /*Bootstrap Override*/
+    width: 200px !important;
+}
+
+.toggle-side-options {
+    width: 25px;
+    height: 25px;
+    background-color: #fff;
+}
+
+.toggle-side-options:hover{
+    background-color: #eee;
+}
+
+.toggle-side-options i.fa-bars {
+    text-align: center;
+    margin-top: 7px;
+    width: 100%;
+}
+
+/* Page Styles */
 
 #wrapper {
     padding-left: 0;
@@ -19,16 +56,16 @@
 }
 
 #wrapper.toggled {
-    padding-left: 250px;
+    padding-left: 200px;
 }
 
 #sidebar-wrapper {
     z-index: 1000;
     position: fixed;
-    left: 250px;
+    left: 200px;
     width: 0;
     height: 100%;
-    margin-left: -250px;
+    margin-left: -200px;
     overflow-y: auto;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
@@ -39,7 +76,7 @@
 }
 
 #wrapper.toggled #sidebar-wrapper {
-    width: 250px;
+    width: 200px;
 }
 
 #page-content-wrapper {
@@ -50,21 +87,20 @@
 
 #wrapper.toggled #page-content-wrapper {
     position: absolute;
-    margin-right: -250px;
+    margin-right: -200px;
 }
 
 /* Sidebar Styles */
 .sidebar-nav {
     position: absolute;
     top: 0;
-    width: 250px;
+    width: 200px;
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
 .sidebar-nav li {
-    text-indent: 8px;
     line-height: 40px;
 }
 
@@ -94,10 +130,30 @@
     text-align: center;
 } 
 
+.sidebar-nav .panel-heading .fa {
+    font-size: 20px;
+    margin-right: 15px;
+    width: 20px;
+    text-align: center;
+} 
+
+
+.sidebar-nav .panel-heading {
+    padding: 0px;
+}
+
+.sidebar-nav h4.panel-title a {
+    padding-left: 15px;
+    width: 100%;
+    display: inline-block;
+    height: 40px;
+    line-height: 42px;
+}
+
 
 @media(min-width:768px) {
     #wrapper {
-        padding-left: 250px;
+        padding-left: 200px;
     }
 
     #wrapper.toggled {
@@ -105,11 +161,11 @@
     }
 
     #sidebar-wrapper {
-        width: 250px;
+        width: 200px;
     }
 
     #wrapper.toggled #sidebar-wrapper {
-        width: 0;
+        width: 0 !important;
     }
 
     #page-content-wrapper {
