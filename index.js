@@ -22,7 +22,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', function(request, response) {
-  response.send('Hello World!');
+  response.render('index');
 });
 
 app.get('/api/entries', api.get);
