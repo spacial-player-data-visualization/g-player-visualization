@@ -47,7 +47,7 @@ function parseFile(event) {
       }
       $("#loading").text("");
       // Backup uploaded data to Local Storage
-      localStorage.setItem("upload", data);
+      localStorage.setItem("upload", JSON.stringify(data));
     }
   });
 }
