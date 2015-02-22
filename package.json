@@ -1,7 +1,7 @@
 {
-  "name": "g-player-api",
+  "name": "g-player",
   "version": "0.0.1",
-  "description": "backend API for g-player",
+  "description": "game data visualization",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
