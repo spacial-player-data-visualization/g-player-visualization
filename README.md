@@ -1,4 +1,4 @@
-# G­Player: Visualization of spatial­-temporal play data
+# G­Player: Visualization of Spatial­-temporal Play Data
 
 > Visualization and Data Management for Player Activity in Games
 
@@ -18,7 +18,25 @@ Available at: [g-player.herokuapp.com](g-player.herokuapp.com)
 
 > How to Run Locally
 
-Download the repository, and open index.html in your browser. The repo should contain all dependencies. No local development server needed (for now!).
+Download the repository, and open index.html in your browser. The repo should contain all dependencies.
+
+> Initiating the Backend
+
+Make sure you have [Node.js](http://nodejs.org/) and the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed.
+
+```sh
+$ npm install
+$ npm start
+```
+Your app should now be running on [localhost:5000](http://localhost:5000/).
+
+## Deployment to Server (Heroku)
+
+```
+$ heroku create
+$ git push heroku master
+$ heroku open
+```
 
 ## Authors
 
@@ -39,3 +57,13 @@ Download the repository, and open index.html in your browser. The repo should co
 - [FontAwesome's Icon Library](http://fortawesome.github.io/Font-Awesome/)
 - [Bootstrap](http://getbootstrap.com/)
 - [Underscore.js](http://underscorejs.org/)
+
+> Backend Resources
+
+For more information about using Node.js on Heroku, see these Dev Center articles:
+
+- [Getting Started with Node.js on Heroku](https://devcenter.heroku.com/articles/getting-started-with-nodejs)
+- [Heroku Node.js Support](https://devcenter.heroku.com/articles/nodejs-support)
+- [Node.js on Heroku](https://devcenter.heroku.com/categories/nodejs)
+- [Best Practices for Node.js Development](https://devcenter.heroku.com/articles/node-best-practices)
+- [Using WebSockets on Heroku with Node.js](https://devcenter.heroku.com/articles/node-websockets)
