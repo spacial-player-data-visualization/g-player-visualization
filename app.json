@@ -1,7 +1,6 @@
 {
-  "name": "g-player-API",
-  "description": "backend API for g-player",
+  "name": "g-player",
+  "description": "game data visualization",
   "repository": "https://github.com/spacial-player-data-visualization/g-player-visualization",
-  "logo": "http://node-js-sample.herokuapp.com/node.svg",
   "keywords": ["node", "express", "static"]
 }
