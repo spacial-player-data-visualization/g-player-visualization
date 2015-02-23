@@ -30,12 +30,13 @@ function parseFile(event) {
       var tableSize = findTableSize(data);
 
       for (var i in data) {
+          var current = data[i];
           var tr="<tr>";
           var key = 0;
           while (tableSize > key) {
               //console.log(key);
-              if (typeof data[i][key] != 'undefined') {
-                tr+="<td>"+data[i][key]+"</td>";
+              if (typeof current[key] != 'undefined') {
+                tr+="<td>"+current[key]+"</td>";
               } else {
                 tr+="<td>"+ "-" +"</td>";
               }
