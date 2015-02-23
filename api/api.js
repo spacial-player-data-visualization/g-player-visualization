@@ -1,6 +1,5 @@
 
 var saveEntry = function(data, model) {
-	console.log(data);
     var entry = new model({
         area: data.area,
         playerID: data.playerID,
