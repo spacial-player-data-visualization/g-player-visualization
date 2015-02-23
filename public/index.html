@@ -98,7 +98,7 @@
                         <div class="checkbox">
                         <div class="checkbox">
                            <label>
-                             <input type="checkbox"> Show Player Heatmap
+                             <input type="checkbox" id="toggle_heatmap"> Show Player Heatmap
                            </label>
                         </div>
                            <label>
@@ -152,6 +152,10 @@
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
     });
+
+    var options = {
+      heatmap : true,
+    }
 
     $(document).ready(function(){
         
@@ -233,7 +237,7 @@
         });
         
         map.addLayer(heatmapLayer)
-        heatmapLayer.setData(heatmapData);
+        heatmapLayer.setData(heatmapData);     
 
         /*************************
               Setup UI
@@ -261,6 +265,25 @@
         map.addControl(new SideOptionsToggle());
 
         $('#loading').hide();
+
+        //set initial state.
+        // $('#textbox1').val($(this).is(':checked'));
+        
+        $('#toggle_heatmap').change(function() {
+          // alert(options.heatmap)
+          options.heatmap = !options.heatmap;
+
+          if (options.heatmap) map.removeLayer(heatmapLayer)
+          if (!options.heatmap) map.addLayer(heatmapLayer)
+
+
+        });
+
+        // $('#checkbox1').mousedown(function() {
+        //     if (!$(this).is(':checked')) {
+        //         $(this).trigger("change");
+        //     }
+        // });
 
     });
 
