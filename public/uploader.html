@@ -38,8 +38,13 @@
       <div class="jumbotron">
         <h2>Select Data File</h2>
         <p>Select a .csv file from your hardrive to parse. </p>
-
-        <input class="btn btn-lg btn-primary" type="file" id="csv-file" name="files"/>
+        <div class="col-md-4">
+          <input class="btn btn-lg btn-primary" type="file" id="csv-file" name="files"/>
+        </div>
+        <div class="col-md-3"></div>
+        <div class="col-md-4">
+          <input class="btn btn-lg btn-primary" type="button" id="post" name="post" value="Upload to DB" onclick="upload()"/>
+        </div>
       </div>
       <p id="loading"></p>
       <table id="preview" class="table table-striped">
@@ -58,7 +63,7 @@
     <script src="lib/papaparse.min.js"></script>
     <script src="js/uploader.js"></script>
     <script src="js/api.js"></script>
-
+    <script src="js/doUpload.js"></script>
     <script>
       // Create a new loading indicator
       var loading = new Mprogress({

@@ -27,23 +27,42 @@ function parseFile(event) {
       })
 
       var table = $("<table/>").attr("id","preview");
-      // console.log(data);
+      var tableSize = findTableSize(data);
+
       for (var i in data) {
-          //console.log(data[i]);
+          var current = data[i];
           var tr="<tr>";
-          for (var key in data[i]) {
+          var key = 0;
+          while (tableSize > key) {
               //console.log(key);
-              tr+="<td>"+data[i][key]+"</td>";
+              if (typeof current[key] != 'undefined') {
+                tr+="<td>"+current[key]+"</td>";
+              } else {
+                tr+="<td>"+ "-" +"</td>";
+              }
+
+              key++;
           }
           tr+="</tr>";
           $("table").append(tr);
       }
       $("#loading").text("");
       // Backup uploaded data to Local Storage
-      localStorage.setItem("upload", data);
+      localStorage.setItem("upload", JSON.stringify(data));
     }
   });
 }
+
+function findTableSize(data) {
+  max = data[0].length;
+  for (var i in data) {
+    if (data[i].length > max) {
+      max = data[i].length;
+    }
+  }
+  return max;
+}
+
 
 // Watch File Input
 $(document).ready(function(){
