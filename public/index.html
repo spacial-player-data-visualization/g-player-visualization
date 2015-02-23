@@ -206,7 +206,11 @@
 
         // Extract relevant Data
         sample_data = _.map(sample_data, function(p){
-            return { x : p[3] / 2000, y : p[4] / 2000 }
+
+            // Arbitrarily scale and map data to x/y points.
+            // Math for purpose of demonstration, and is 
+            // entirely not accurate
+            return { x : p[3] / 3000 + 3, y : p[4] / 3000 + 2}
         })
 
         _.each(sample_data, function(p){
