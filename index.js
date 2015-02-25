@@ -15,6 +15,34 @@ db.once('open', function callback () {
   console.log('db opened');
 });
 
+var Schema = mongoose.Schema;
+
+var Entry = new Schema({
+    area: {
+        type: String
+    },
+    playerID: {
+        type: Number
+    },
+    timestamp: {
+        type: Number
+    },
+    posX: {
+        type: Number
+    },
+    posY: {
+        type: Number
+    },
+    cameraX: {
+        type: Number
+    },
+    cameraY: {
+        type: Number
+    }
+});
+
+var EntryModel = mongoose.model('Entry', Entry);
+
 
 
 app.set('port', (process.env.PORT || 5000));
@@ -25,15 +53,30 @@ app.get('/', function(request, response) {
   response.render('index');
 });
 
-app.get('/api/entries', api.get);
+app.get('/api/entries', function (req, res){
+	api.get(req, res, EntryModel)
+});
 
-app.post('/api/entries', api.post);
+app.post('/api/entry', function (req, res){
+	api.post(req, res, EntryModel)
+});
 
-app.get('/api/entries/:id', api.getById);
+app.post('/api/entries', function (req, res){
+	api.multiPost(req, res, EntryModel)
+});
 
-app.put('/api/entries/:id', api.put);
 
-app.delete('/api/entries/:id', api.delete);
+app.get('/api/entries/:id', function (req, res){
+	 api.getById(req, res, EntryModel)
+});
+
+app.put('/api/entries/:id', function (req, res){
+	api.put(req, res, EntryModel)
+});
+
+app.delete('/api/entries/:id', function (req, res){
+	api.delete(req, res, EntryModel)
+});
 
 app.listen(app.get('port'), function() {
   console.log("Node app is running at localhost:" + app.get('port'));

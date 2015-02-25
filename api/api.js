@@ -1,57 +1,41 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
 
-var Entry = new Schema({
-    area: {
-        type: String
-    },
-    playerID: {
-        type: Number
-    },
-    timestamp: {
-        type: Number
-    },
-    posX: {
-        type: Number
-    },
-    posY: {
-        type: Number
-    },
-    cameraX: {
-        type: Number
-    },
-    cameraY: {
-        type: Number
-    }
-});
+var saveEntry = function(data, model) {
+    var entry = new model({
+        area: data.area,
+        playerID: data.playerID,
+        timestamp: data.timestamp,
+        posX: data.posX,
+        posY: data.posY,
+        cameraX: data.cameraX,
+        cameraY: data.cameraY
+    });
 
-var EntryModel = mongoose.model('Entry', Entry);
+    entry.save(function(err) {
+    	if (err) {
+        	console.log(err);
+    	} else {
+        	return console.log('saved');
+    	}
+	});
+}
 
 module.exports = {
-    post: function(req, res) {
-        var entry = new EntryModel({
-            area: req.body.area,
-            playerID: req.body.playerID,
-            timestamp: req.body.timestamp,
-            posX: req.body.posX,
-            posY: req.body.posY,
-            cameraX: req.body.cameraX,
-            cameraY: req.body.cameraY
-        });
+    post: function(req, res, model) {
+        saveEntry(req.body, model);
 
-        entry.save(function(err) {
-            if (err) {
-                console.log(err);
-            } else {
-                return console.log('saved');
-            }
-        });
-
-        return res.send(entry);
+        return res.send("added");
     },
 
-    get: function(req, res) {
-        return EntryModel.find(function(err, entries) {
+    multiPost: function(req, res, model) {
+    	var data = JSON.parse(req.body.entries);
+    	data.entries.forEach(function(entry){
+    		saveEntry(entry, model);
+    	});
+    	return res.send("added multi");
+    },
+
+    get: function(req, res, model) {
+        return model.find(function(err, entries) {
             if (err) {
                 console.log(err);
             } else {
@@ -60,8 +44,8 @@ module.exports = {
         });
     },
 
-    getById: function(req, res) {
-        return EntryModel.findById(req.params.id, function(err, entry) {
+    getById: function(req, res, model) {
+        return model.findById(req.params.id, function(err, entry) {
             if (err) {
                 console.log(err);
             } else {
@@ -70,8 +54,8 @@ module.exports = {
         });
     },
 
-    put: function(req, res) {
-        return EntryModel.findById(req.params.id, function(err, entry) {
+    put: function(req, res, model) {
+        return model.findById(req.params.id, function(err, entry) {
             entry.area = req.body.area;
             entry.playerID = req.body.playerID;
             entry.timestamp = req.body.timestamp;
@@ -90,8 +74,8 @@ module.exports = {
         })
     },
 
-    delete: function(req, res) {
-        return EntryModel.findById(req.params.id, function(err, entry) {
+    delete: function(req, res, model) {
+        return model.findById(req.params.id, function(err, entry) {
             return entry.remove(function(err) {
                 if (err) {
                     console.log(err);
