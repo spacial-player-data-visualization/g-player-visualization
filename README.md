@@ -22,17 +22,18 @@ Download the repository, and open index.html in your browser. The repo should co
 
 > Initiating Database
 
+Create a directory for the database
 
+```sh
+$ sudo mkdir /data/db
+```
 
-Install brew http://brew.sh/
+Use [brew](http://brew.sh/) to install Mongo Database. Start database
 
-brew install mongo
-
-
-sudo mkdir /data/db
-
-sudo mongod
-
+```sh
+$ brew install mongo
+$ sudo mongod
+```
 
 > Initiating the Backend
 
