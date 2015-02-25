@@ -82,37 +82,57 @@ function upload(event) {
   
   upData = JSON.parse(upData);
 
-  console.log(upData);
-
   var upData = _.filter(upData, function(current){
     return current[0].indexOf("Position_Introhouse") > -1;
   })
 
-  var entries = {
-    entries : _.map(upData, function(current){
-      return {
-        playerID : current[1],
-        timestamp : current[2],
-        posX : current[3],
-        posY : current[4],
-        cameraX : current[6],
-        cameraY : current[7],
-        area: current[0],
-      }
-    })
-  }
+  var entries = _.map(upData, function(current){
+    return {
+      playerID : current[1],
+      timestamp : current[2],
+      posX : current[3],
+      posY : current[4],
+      cameraX : current[6],
+      cameraY : current[7],
+      area: current[0],
+    }
+  });
 
   console.log(entries);
+
+  // When POSTing data to the API, we occasionally
+  // encounter a size/entry limit. Just to be safe,
+  // lets send the data in multiple POSTS.
   
-  $.post(API.url + "entries", entries, function(data, textStatus, jqXHR){ 
-    // put the check mark next to the row in the table
+  // Define a max entries size
+  var binsize = 50;
 
-    console.log(textStatus);
+  // Split data into multiple, smaller bins
+  var bins = split(entries, entries.length / 200);
 
-    // this will go into the callback as soon as posting error is fixed
-    
-    $("#loading").text(""); 
+  console.log("\n" + bins.length + " created. Creating POST requests....");
 
-  });
-  
+  for (var i in bins){
+    $.post(API.url + "entries", { entries : bins[i]}, function(data, textStatus, jqXHR){ 
+      console.log(textStatus);
+      
+      $("#loading").text(""); 
+    });    
+  }
+}
+
+// http://stackoverflow.com/questions/8188548/splitting-a-js-array-into-n-arrays
+// Split the array into an N different arrays
+function split(array, n) {
+  var length = array.length
+  var bins = [];
+  var i = 0;
+
+  while (i < length) {
+      var size = Math.ceil((length - i) / n--);
+      bins.push(array.slice(i, i + size));
+      i += size;
+  }
+
+  return bins;
 }
