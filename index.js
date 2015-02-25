@@ -6,10 +6,15 @@ var app = express();
 var api = require('./api/api');
 
 var mongoose = require('mongoose');
+
+// If Heroku, process env, otherwise assume localhost
 var mongoUrl = process.env.MONGOLAB_URI || 'mongodb://localhost/test';
+
+// Initialize database connection
 mongoose.connect(mongoUrl);
 
 var db = mongoose.connection;
+
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function callback () {
   console.log('db opened');

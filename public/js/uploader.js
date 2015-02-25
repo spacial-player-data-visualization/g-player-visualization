@@ -26,6 +26,8 @@ function parseFile(event) {
         return dat.length > 1;
       })
 
+      data = _.sample(data, 100);
+
       var table = $("<table/>").attr("id","preview");
       var tableSize = findTableSize(data);
 

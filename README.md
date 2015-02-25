@@ -20,6 +20,20 @@ Available at: [g-player.herokuapp.com](g-player.herokuapp.com)
 
 Download the repository, and open index.html in your browser. The repo should contain all dependencies.
 
+> Initiating Database
+
+
+
+Install brew http://brew.sh/
+
+brew install mongo
+
+
+sudo mkdir /data/db
+
+sudo mongod
+
+
 > Initiating the Backend
 
 Make sure you have [Node.js](http://nodejs.org/) and the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed.

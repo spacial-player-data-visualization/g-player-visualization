@@ -3,10 +3,12 @@
          api.js 
  ******************************/
 
+var environment = document.URL;
+
 var API = {
 
-  // Target API
-  url : "http://g-player.herokuapp.com/api/",
+  // Target API. Set depending on environment
+  url : _.contains(environment, "herokuapp.com") ? "http://g-player.herokuapp.com/api/" : "http://localhost.com/api/",
 };
 
 /******************************
