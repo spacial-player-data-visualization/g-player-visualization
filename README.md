@@ -39,6 +39,7 @@ Make sure you have [Node.js](http://nodejs.org/) and the [Heroku Toolbelt](https
 $ npm install
 $ npm start
 ```
+Pro Tip: Use nodemon on index.js to automatically restart the API on file change.
 
 > How to Run Locally
 
