@@ -33,3 +33,7 @@ node_modules
 # ignore DS_STORE on Macs
 /app/DS_STORE
 .DS_Store
+
+
+# Dotfiles
+.*
