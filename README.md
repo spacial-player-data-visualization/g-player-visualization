@@ -16,13 +16,9 @@ Available at: [g-player.herokuapp.com](g-player.herokuapp.com)
 
 ## Getting Started
 
-> How to Run Locally
-
-Download the repository, and open index.html in your browser. The repo should contain all dependencies.
-
 > Initiating Database
 
-Create a directory for the database
+After downloading the repository, create a directory for the database
 
 ```sh
 $ sudo mkdir /data/db
@@ -43,7 +39,12 @@ Make sure you have [Node.js](http://nodejs.org/) and the [Heroku Toolbelt](https
 $ npm install
 $ npm start
 ```
+
+> How to Run Locally
+
 Your app should now be running on [localhost:5000](http://localhost:5000/).
+
+The api is available at [localhost:5000/api](http://localhost:5000/api).
 
 ## Deployment to Server (Heroku)
 
