@@ -27,8 +27,13 @@ module.exports = {
     },
 
     multiPost: function(req, res, model) {
-    	var data = JSON.parse(req.body.entries);
-    	data.entries.forEach(function(entry){
+        console.log(req.body.entries);
+    	var data = req.body.entries;
+
+        console.log("\nMulti-Post Request");
+        console.log(req.body.entries);
+
+    	data.forEach(function(entry){
     		saveEntry(entry, model);
     	});
     	return res.send("added multi");

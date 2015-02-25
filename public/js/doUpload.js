@@ -16,10 +16,11 @@ function upload(event) {
 			return {
 				playerID : current[1],
 				timestamp : current[2],
-				xPos : current[3],
-				yPos : current[4],
-				camX : current[6],
-				camY : current[7],
+				posX : current[3],
+				posY : current[4],
+				cameraX : current[6],
+				cameraY : current[7],
+				area: current[0],
 			}
 		})
 	}
@@ -28,12 +29,12 @@ function upload(event) {
 	
 	$.post(API.url + "entries", entries, function(data, textStatus, jqXHR){ 
 		// put the check mark next to the row in the table
+
 		console.log(textStatus);
 
 		// this will go into the callback as soon as posting error is fixed
-		if (i == (upData.length - 1)) {
-			$("#loading").text("");	
-		}
+		
+		$("#loading").text("");	
 
 	});
 	

@@ -59,28 +59,30 @@ app.get('/', function(request, response) {
 });
 
 app.get('/api/entries', function (req, res){
-	api.get(req, res, EntryModel)
+    console.log("\nGET api/entries");
+	api.get(req, res, EntryModel);
 });
 
 app.post('/api/entry', function (req, res){
-	api.post(req, res, EntryModel)
+	api.post(req, res, EntryModel);
 });
 
 app.post('/api/entries', function (req, res){
-	api.multiPost(req, res, EntryModel)
+    console.log("\nPOST api/entries");
+	api.multiPost(req, res, EntryModel);
 });
 
 
 app.get('/api/entries/:id', function (req, res){
-	 api.getById(req, res, EntryModel)
+	 api.getById(req, res, EntryModel);
 });
 
 app.put('/api/entries/:id', function (req, res){
-	api.put(req, res, EntryModel)
+	api.put(req, res, EntryModel);
 });
 
 app.delete('/api/entries/:id', function (req, res){
-	api.delete(req, res, EntryModel)
+	api.delete(req, res, EntryModel);
 });
 
 app.listen(app.get('port'), function() {
