@@ -22,12 +22,10 @@ var saveEntry = function(data, model) {
 module.exports = {
     post: function(req, res, model) {
         saveEntry(req.body, model);
-
         return res.send("added");
     },
 
     multiPost: function(req, res, model) {
-        console.log(req.body.entries);
     	var data = req.body.entries;
 
         console.log("\nMulti-Post Request");
@@ -36,6 +34,7 @@ module.exports = {
     	data.forEach(function(entry){
     		saveEntry(entry, model);
     	});
+        
     	return res.send("added multi");
     },
 
@@ -61,6 +60,7 @@ module.exports = {
 
     put: function(req, res, model) {
         return model.findById(req.params.id, function(err, entry) {
+            
             entry.area = req.body.area;
             entry.playerID = req.body.playerID;
             entry.timestamp = req.body.timestamp;
@@ -68,6 +68,7 @@ module.exports = {
             entry.posY = req.body.posY;
             entry.cameraX = req.body.cameraX;
             entry.cameraY = req.body.cameraY;
+
             return entry.save(function(err) {
                 if (err) {
                     console.log(err);

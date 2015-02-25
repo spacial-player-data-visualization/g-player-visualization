@@ -1,10 +1,14 @@
+
+/******************************
+        uploader.js 
+ ******************************/
+
 // http://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
 function parseFile(event) {
   
-  $("#loading").text("Loading...");
-  var file = event.target.files[0];
-
   loading.start();
+
+  var file = event.target.files[0];
 
   Papa.parse(file, {
     header: false,
@@ -13,9 +17,8 @@ function parseFile(event) {
     // Parser Callback
     complete: function(results) {
 
+      console.log("\n.CSV file parsed:")
       console.log(results.data);
-
-      loading.end();
 
       var data = results.data;
       var errors = results.errors;
@@ -25,8 +28,6 @@ function parseFile(event) {
       data = _.filter(data, function(dat){
         return dat.length > 1;
       })
-
-      data = _.sample(data, 100);
 
       var table = $("<table/>").attr("id","preview");
       var tableSize = findTableSize(data);
@@ -48,7 +49,9 @@ function parseFile(event) {
           tr+="</tr>";
           $("table").append(tr);
       }
-      $("#loading").text("");
+
+      loading.end();
+
       // Backup uploaded data to Local Storage
       localStorage.setItem("upload", JSON.stringify(data));
     }

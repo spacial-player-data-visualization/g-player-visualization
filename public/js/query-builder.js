@@ -1,3 +1,8 @@
+
+/******************************
+       query-builder.js
+ ******************************/
+
 // Show the map selector by default
 $("#groupPlayerID, #groupTimestamp").hide();
 

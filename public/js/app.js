@@ -10,3 +10,14 @@ var API = {
   // Target API. Set depending on environment
   url : _.contains(environment, "herokuapp.com") ? "http://g-player.herokuapp.com/api/" : "http://localhost:5000/api/",
 };
+
+var loading = {};
+
+loading.start = function(){
+	$("#loading").text("Loading...");
+};
+
+loading.end = function(){
+	$("#loading").text("");
+};
+
