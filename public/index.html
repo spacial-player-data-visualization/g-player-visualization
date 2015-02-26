@@ -172,6 +172,8 @@
           scale : 100,
 
           map : {
+
+            // Save map configuration
             url: "/fallout/intro.png",
             name: "Position_introhouse",
             title: "",
@@ -180,16 +182,18 @@
 
             // Map player locations to their points
             // on the map. Manually offset for accuracy.
+            // Multiplied to base
             offset : {
-              x : 0,
-              y : 0,
+              x : 650,
+              y : 550,
             },
 
             // Map player locations to their points
             // on the map. Manually scale for accuracy.
+            // added to base
             scale : {
-              x : 1,
-              y : 1,
+              x : 0.45,
+              y : 0.45,
             }
           },
         };
@@ -207,7 +211,7 @@
 
         // Define Map Parameters
         var map = L.map('map', {
-            minZoom: 5,
+            minZoom: 6,
             maxZoom: 10,
         }).setView(mapCenter, 1);
 
@@ -239,8 +243,8 @@
                 // Maps the (x,y) position to a coordinate
                 // on the earth. Makes plotting MUCH easier
 
-                latitude  : ((p.posY + scale.y) * scale.y) / settings.scale,
-                longitude : ((p.posX + scale.x) * scale.x) / settings.scale, 
+                latitude  : ((p.posY + offset.y) * scale.y) / settings.scale,
+                longitude : ((p.posX + offset.x) * scale.x) / settings.scale, 
 
                 // Preserve Object
 
