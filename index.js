@@ -27,6 +27,10 @@ var db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
+db.on('error', function callback(){
+  console.log('\nEnsure that you are running a database. \nYou may need to start one with "$ sudo mongod" \nPlease see our README.md for more info. ')
+});
+
 db.once('open', function callback () {
   console.log('Initialized Connection with MongoDB.\n');
 });
