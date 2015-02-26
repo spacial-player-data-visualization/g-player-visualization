@@ -164,35 +164,55 @@
         $("#map").css("width", windowWidth);
         $("#map").css("height", windowHeight);
 
-        // Define Map Parameters
-        var map = L.map('map', {
-            minZoom: 7,
-            maxZoom: 10,
-        }).setView([2.5, 4], 1);
-
         var settings = {
+
+          // Global scale factor.
+          // Helps to max points (ranging from -10,000 to 10,000)
+          // to their coordinate points on a geo projection.
+          scale : 100,
+
           map : {
             url: "/fallout/intro.png",
             name: "Position_introhouse",
             title: "",
-            width : 100,
-            height : 100,
-            offset : 10,
+            width : 1600,
+            height : 1178,
+
+            // Map player locations to their points
+            // on the map. Manually offset for accuracy.
+            offset : {
+              x : 0,
+              y : 0,
+            },
+
+            // Map player locations to their points
+            // on the map. Manually scale for accuracy.
+            scale : {
+              x : 1,
+              y : 1,
+            }
           },
         };
 
-        // Replace Tile Layer with Image
-        var imageUrl = 'img/maps/' + settings.map.url;
+        // Given map size, and scale factor,
+        // determin the latitude/longitude bounds.
+        var latitudeDistance = settings.map.height / settings.scale;
+        var longitudeDistance = settings.map.width / settings.scale;
 
-        // Define image position on map
-        // @TODO: Procedurally figure out image 
-        // bounds and coordinate calculations.
-        // Replace with a proper solution.
-        var imageSize = [8552, 5521]
-        var imageBounds = [[0, 0], [imageSize[1] / 1000, imageSize[0] / 1000]];
+        // Note: Lat/Long is represented as [Latitude (y), Longitude (x)].
+        // Take care when converting from cartesian points, to lat/long.        
+        var imageBounds = [[0, 0], [latitudeDistance, longitudeDistance]];
+
+        var mapCenter = [latitudeDistance / 2, longitudeDistance / 2];
+
+        // Define Map Parameters
+        var map = L.map('map', {
+            minZoom: 5,
+            maxZoom: 10,
+        }).setView(mapCenter, 1);
 
         // Add image overlay to map
-        L.imageOverlay(imageUrl, imageBounds).addTo(map);
+        L.imageOverlay('img/maps/' + settings.map.url, imageBounds).addTo(map);
 
         /*************************
                Setup DATA
@@ -201,6 +221,9 @@
         // Hit API
         $.get(API.url + "entries", function(data){
           
+          var offset = settings.map.offset;
+          var scale = settings.map.scale;
+
           // Validate data. Ignore NPC interactions, etc
           // @TODO: Temp data fix. Replaced by proper
           // API and data validation.
@@ -208,15 +231,19 @@
             return p.posX && p.posY;
           })
 
-          // Extract relevant Data
+          // Convert data points into plottable data
           data = _.map(data, function(p){
-
-              // Arbitrarily scale and map data to x/y points.
-              // Math for purpose of demonstration, and is 
-              // entirely not accurate
               return { 
-                x : p.posX / 300, 
-                y : p.posY / 300,
+
+                // Create a latitude & longitude field.
+                // Maps the (x,y) position to a coordinate
+                // on the earth. Makes plotting MUCH easier
+
+                latitude  : ((p.posY + scale.y) * scale.y) / settings.scale,
+                longitude : ((p.posX + scale.x) * scale.x) / settings.scale, 
+
+                // Preserve Object
+
                 area : p.area,
                 playerID : p.playerID,
                 timestamp : p.timestamp,
@@ -231,11 +258,10 @@
         
         function plotData(data){
 
+          var radius = 10;
 
           _.each(data, function(p){
-          console.log(p.area)
-
-              var circle = L.circle([p.x, p.y], 10, {
+              var circle = L.circle([p.latitude, p.longitude], radius, {
                   color: 'black',
                   fillColor: '#000',
                   fillOpacity: 1,
@@ -249,12 +275,12 @@
 
         // http://www.patrick-wied.at/static/heatmapjs/
         var heatmapLayer = new HeatmapOverlay({
-          "radius": 0.3,
+          "radius": .5,
           "maxOpacity": .8,
           "scaleRadius": true, 
           "useLocalExtrema": false,
-          latField: 'x',
-          lngField: 'y',
+          latField: 'latitude',
+          lngField: 'longitude',
         });
 
         function plotHeatmap(data){
@@ -263,19 +289,21 @@
             max: 1,  // No idea what this does
             data: data
           };
-
-          // http://www.patrick-wied.at/static/heatmapjs/
-          var heatmapLayer = new HeatmapOverlay({
-            "radius": 0.3,
-            "maxOpacity": .8,
-            "scaleRadius": true, 
-            "useLocalExtrema": false,
-            latField: 'x',
-            lngField: 'y',
-          });
           
           map.addLayer(heatmapLayer)
           heatmapLayer.setData(heatmapData);     
+        }
+
+         /*************************
+              Test Coordinates
+         *************************/
+
+         addMarker(latitudeDistance,longitudeDistance, "Top Right + " + latitudeDistance + " , " + longitudeDistance);
+         addMarker(0,0, "Bottom Left Location [0,0]");
+
+        function addMarker(lat, long, title){
+          var title = (title) ? title : "";
+          L.marker([lat, long], {title : title}).addTo(map);
         }
 
         /*************************
