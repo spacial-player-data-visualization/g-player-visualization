@@ -16,25 +16,21 @@ Available at: [g-player.herokuapp.com](g-player.herokuapp.com)
 
 ## Getting Started
 
-> 1.) Download repository.
-
 Download from our [GitHub](https://github.com/spacial-player-data-visualization/g-player-visualization)
 
-> 2.) Initiating Database
+
+> Installing Database
 
 After downloading the repository, create a directory for the database
-
-```sh
-$ sudo mkdir /data/db
-```
-
 Use [Brew](http://brew.sh/) to install Mongo Database. 
 
 ```sh
+$ sudo mkdir /data/db
 $ brew install mongo
 ```
 
-> 3.) Initiating the Server
+
+> Installing the Node Server
 
 Make sure you have [Node.js](http://nodejs.org/) and the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed.
 
@@ -44,16 +40,15 @@ $ npm install
 
 ## Starting Local Server
 
-> Start Database
+> Start Database & Server
 
 ```sh
 $ sudo mongod
+$ npm start
+
 ```
 
-> Start Web Server
-```sh
-$ npm start
-```
+Note: Each command runs a process, and may require independent terminals.
 
 Pro Tip: Use nodemon on index.js to automatically restart the API on file change.
 

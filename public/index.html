@@ -115,12 +115,7 @@
                   </div>
                 </div>
             </ul>
-
-
-
         </div>
-
-        <!-- <p><b>Pro Tip:</b> Hold <i>SHIFT</i> and drag your mouse to select an area</p> -->
         
         <!-- Leaflet.js Map -->
         <div id="map"></div>
@@ -141,7 +136,6 @@
 
     <!-- Custom Javascript -->
     <script src="js/app.js"></script>  <!-- App Functionality -->
-    <script src="js/data.js"></script> <!-- Sample Dat for Testing -->
 
     <!-- Page-Specific Javascript -->
     <script>
@@ -192,42 +186,44 @@
         /*************************
                Setup DATA
          *************************/
+
+        // Hit API
+        $.get(API.url + "entries", function(data){
+          
+          // Validate data. Ignore NPC interactions, etc
+          // @TODO: Temp data fix. Replaced by proper
+          // API and data validation.
+          data = _.filter(data, function(p){
+            return p.posX && p.posY;
+          })
+
+          // Extract relevant Data
+          data = _.map(data, function(p){
+
+              // Arbitrarily scale and map data to x/y points.
+              // Math for purpose of demonstration, and is 
+              // entirely not accurate
+              return { x : p.posX / 300, y : p.posY / 300}
+          })
+
+          plotData(data);
+          plotHeatmap(data);
+        })
         
-        // Date subset of data (for testing)
-        // sample_data = sample_data.splice(0, 4000);
+        function plotData(data){
 
-        // Validate data. Ignore NPC interactions, etc
-        // @TODO: Temp data fix. Replaced by proper
-        // API and data validation.
-        sample_data = _.filter(sample_data, function(p){
-            return p.length >= 10;
-        })
-
-        // Extract relevant Data
-        sample_data = _.map(sample_data, function(p){
-
-            // Arbitrarily scale and map data to x/y points.
-            // Math for purpose of demonstration, and is 
-            // entirely not accurate
-            return { x : p[3] / 3000 + 3, y : p[4] / 3000 + 2}
-        })
-
-        _.each(sample_data, function(p){
-            var circle = L.circle([p.x, p.y], 10, {
-                color: 'black',
-                fillColor: '#000',
-                fillOpacity: 1,
-            }).addTo(map);
-        });
+          _.each(data, function(p){
+              var circle = L.circle([p.x, p.y], 10, {
+                  color: 'black',
+                  fillColor: '#000',
+                  fillOpacity: 1,
+              }).addTo(map);
+          });
+        }
 
         /*************************
               Setup HEATMAP
          *************************/
-
-        var heatmapData = { 
-          max: 1,  // No idea what this does
-          data: sample_data
-        };
 
         // http://www.patrick-wied.at/static/heatmapjs/
         var heatmapLayer = new HeatmapOverlay({
@@ -238,9 +234,27 @@
           latField: 'x',
           lngField: 'y',
         });
-        
-        map.addLayer(heatmapLayer)
-        heatmapLayer.setData(heatmapData);     
+
+        function plotHeatmap(data){
+
+          var heatmapData = { 
+            max: 1,  // No idea what this does
+            data: data
+          };
+
+          // http://www.patrick-wied.at/static/heatmapjs/
+          var heatmapLayer = new HeatmapOverlay({
+            "radius": 0.3,
+            "maxOpacity": .8,
+            "scaleRadius": true, 
+            "useLocalExtrema": false,
+            latField: 'x',
+            lngField: 'y',
+          });
+          
+          map.addLayer(heatmapLayer)
+          heatmapLayer.setData(heatmapData);     
+        }
 
         /*************************
               Setup UI
