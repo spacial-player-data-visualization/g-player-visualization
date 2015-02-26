@@ -3,6 +3,25 @@
         uploader.js 
  ******************************/
 
+// Watch File Input
+$(document).ready(function(){
+  $("#csv-file").change(parseFile);
+
+  console.log("\nFetching data from localStorage.")
+  var data = lastUpload();
+
+  console.log(data);
+
+  // Preview last upload
+  populateTable(data);
+})
+
+// Create a new loading indicator
+// var loading = new Mprogress({
+//   template: 3,   // Indeterminate Progress Bar
+//   parent: 'body' // Location to Insert
+// });
+
 // http://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
 function parseFile(event) {
   
@@ -17,8 +36,7 @@ function parseFile(event) {
     // Parser Callback
     complete: function(results) {
 
-      console.log("\n.CSV file parsed:")
-      console.log(results.data);
+      console.log("\n.CSV file parsed. " + results.data.length + " results loaded.");
 
       var data = results.data;
       var errors = results.errors;
@@ -29,76 +47,86 @@ function parseFile(event) {
         return dat.length > 1;
       })
 
-      var table = $("<table/>").attr("id","preview");
-      var tableSize = findTableSize(data);
-
-      for (var i in data) {
-          var current = data[i];
-          var tr="<tr>";
-          var key = 0;
-          while (tableSize > key) {
-              //console.log(key);
-              if (typeof current[key] != 'undefined') {
-                tr+="<td>"+current[key]+"</td>";
-              } else {
-                tr+="<td>"+ "-" +"</td>";
-              }
-
-              key++;
-          }
-          tr+="</tr>";
-          $("table").append(tr);
-      }
-
-      loading.end();
+      // Fill in preview table
+      populateTable(data);
 
       // Backup uploaded data to Local Storage
       localStorage.setItem("upload", JSON.stringify(data));
+
+      // Stop loading indicator
+      loading.end();
     }
   });
 }
 
-function findTableSize(data) {
-  max = data[0].length;
+// Render content into HTML table.
+// Allow user to preview the uploaded .csv file.
+function populateTable(data){
+  
+  // Sample data for previewing
+  data = _.sample(data, 500);
+
+  var table = $("<table/>").attr("id","preview");
+  var tableSize = maxEntrySize(data);
+
   for (var i in data) {
-    if (data[i].length > max) {
-      max = data[i].length;
-    }
+      var current = data[i];
+      var tr = "";
+      var key = 0;
+
+      while (tableSize > key) {
+          
+          if (typeof current[key] != 'undefined') {
+            tr+="<td>"+current[key]+"</td>";
+          } else {
+            tr+="<td>"+ "-" +"</td>";
+          }
+
+          key++;
+      }
+
+      var tr = $("<tr>").append(tr);
+
+      // Add row to table.
+      $("table").append(tr);
   }
-  return max;
 }
 
-
-// Watch File Input
-$(document).ready(function(){
-  $("#csv-file").change(parseFile);
-});
-
-
-function upload(event) {
-  $("#loading").text("Sending to database...");
+function formatData(data){
   
-  var upData = localStorage.getItem("upload");
-  
-  upData = JSON.parse(upData);
-
-  var upData = _.filter(upData, function(current){
+  // Limit Map
+  var upData = _.filter(data, function(current){
     return current[0].indexOf("Position_Introhouse") > -1;
   })
 
   var entries = _.map(upData, function(current){
+    
+    // Map keys based on 
     return {
-      playerID : current[1],
-      timestamp : current[2],
-      posX : current[3],
-      posY : current[4],
-      cameraX : current[6],
-      cameraY : current[7],
-      area: current[0],
+      playerID :  keyMapping.playerID,
+      timestamp : keyMapping.timestamp,
+      posX :      keyMapping.posX,
+      posY :      keyMapping.posY,
+      cameraX :   keyMapping.cameraX,
+      cameraY :   keyMapping.cameraY,
+      area:       keyMapping.area,
     }
   });
 
-  console.log(entries);
+  return entries;
+}
+
+// Send data to database
+function upload() {
+  $("#loading").text("Sending to database...");
+
+  // Get data from last upload
+  entries = lastUpload();
+
+  // Convert data into JSON object.
+  // All data should now be represented
+  // as a key/value pair
+  entries = formatData(entries);
 
   // When POSTing data to the API, we occasionally
   // encounter a size/entry limit. Just to be safe,
@@ -121,8 +149,21 @@ function upload(event) {
   }
 }
 
-// http://stackoverflow.com/questions/8188548/splitting-a-js-array-into-n-arrays
+// Find the entry with the most entries.
+// This will determine the amount of
+// rows to generate in the preview table.
+
+function maxEntrySize(data) {
+  var max = _.max(data, function(p){
+    return p.length;
+  });
+
+  return max.length;
+}
+
 // Split the array into an N different arrays
+// http://stackoverflow.com/questions/8188548/splitting-a-js-array-into-n-arrays
+
 function split(array, n) {
   var length = array.length
   var bins = [];
@@ -135,4 +176,11 @@ function split(array, n) {
   }
 
   return bins;
+}
+
+// Retrieve data from localStorage
+// Returns the last JSON that the user converted.
+
+function lastUpload(){
+  return JSON.parse(localStorage.getItem("upload"));
 }

@@ -3,6 +3,18 @@
          app.js 
  ******************************/
 
+// Available Keys, and their index in
+// the .csv array.
+var keyMapping = {
+	area      : 0,
+	playerID  : 1,
+	timestamp : 2,
+	posX      : 3,
+	posY      : 4,
+	cameraX   : 6,
+	cameraY   : 7,
+}
+
 var environment = document.URL;
 
 var API = {
@@ -20,4 +32,3 @@ loading.start = function(){
 loading.end = function(){
 	$("#loading").text("");
 };
-
