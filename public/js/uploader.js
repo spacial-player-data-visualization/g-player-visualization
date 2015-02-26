@@ -116,8 +116,8 @@ function formatData(data){
   return entries;
 }
 
-// Send data to database
-function upload() {
+// Multi-post uploading
+function bulkUpload(){
   $("#loading").text("Sending to database...");
 
   // Get data from last upload
@@ -131,23 +131,55 @@ function upload() {
   // When POSTing data to the API, we occasionally
   // encounter a size/entry limit. Just to be safe,
   // lets send the data in multiple POSTS.
-  
-  // Define a max entries size
-  var binsize = 50;
 
   // Split data into multiple, smaller bins
   var bins = split(entries, entries.length / 200);
 
-  console.log("\n" + bins.length + " created. Creating POST requests....");
+  console.log("\n" + bins.length + " bins created. Creating POST requests....");
 
-  for (var i in bins){
-    $.post(API.url + "entries", { entries : bins[i]}, function(data, textStatus, jqXHR){ 
-      console.log(textStatus);
-      
-      $("#loading").text(""); 
-    });    
-  }
+  // Upload bins
+  upload(bins, function(){
+    console.log("UPLOADS DONE!");
+  });
+
+  $("#loading").text(""); 
 }
+
+// Send data to database
+function upload(bins, callback) {
+    
+    // If no bins remain, let's hollaback.
+    if (bins.length <= 0){
+      callback();
+    }
+
+    current = bins[0];
+
+    console.log(bins.length + " Bins Remain.... ");
+
+    // POST to server
+    $.post(API.url + "entries", { entries : current }, function(data, textStatus, jqXHR){ 
+      
+      console.log(textStatus);
+
+      // Save locally
+      bins = data;
+
+      // Pop off first object in array.
+      // Recursively continue to upload
+      // the rest of the array
+      bins.shift();
+
+      // If we have more bins to upload,
+      // lets keep going through.
+      upload(bins, callback);
+
+    });
+}
+
+/******************************
+       Helper Functions
+ ******************************/
 
 // Find the entry with the most entries.
 // This will determine the amount of

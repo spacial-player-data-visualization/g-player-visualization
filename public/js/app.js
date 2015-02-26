@@ -5,7 +5,9 @@
 
 // Available Keys, and their index in
 // the .csv array.
-var keyMapping = {
+var keyMapping = 
+{
+
 	area      : 0,
 	playerID  : 1,
 	timestamp : 2,
