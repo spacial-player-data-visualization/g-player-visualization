@@ -169,9 +169,20 @@
             minZoom: 7,
             maxZoom: 10,
         }).setView([2.5, 4], 1);
-            
+
+        var settings = {
+          map : {
+            url: "/fallout/intro.png",
+            name: "Position_introhouse",
+            title: "",
+            width : 100,
+            height : 100,
+            offset : 10,
+          },
+        };
+
         // Replace Tile Layer with Image
-        var imageUrl = 'img/boston.jpg';
+        var imageUrl = 'img/maps/' + settings.map.url;
 
         // Define image position on map
         // @TODO: Procedurally figure out image 
@@ -203,7 +214,15 @@
               // Arbitrarily scale and map data to x/y points.
               // Math for purpose of demonstration, and is 
               // entirely not accurate
-              return { x : p.posX / 300, y : p.posY / 300}
+              return { 
+                x : p.posX / 300, 
+                y : p.posY / 300,
+                area : p.area,
+                playerID : p.playerID,
+                timestamp : p.timestamp,
+                cameraX : p.cameraX,
+                cameraY : p.cameraY
+              }
           })
 
           plotData(data);
@@ -212,7 +231,10 @@
         
         function plotData(data){
 
+
           _.each(data, function(p){
+          console.log(p.area)
+
               var circle = L.circle([p.x, p.y], 10, {
                   color: 'black',
                   fillColor: '#000',
