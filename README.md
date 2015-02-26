@@ -24,11 +24,10 @@ After downloading the repository, create a directory for the database
 $ sudo mkdir /data/db
 ```
 
-Use [brew](http://brew.sh/) to install Mongo Database. Start database
+Use [Brew](http://brew.sh/) to install Mongo Database. 
 
 ```sh
 $ brew install mongo
-$ sudo mongod
 ```
 
 > Initiating the Backend
@@ -37,11 +36,23 @@ Make sure you have [Node.js](http://nodejs.org/) and the [Heroku Toolbelt](https
 
 ```sh
 $ npm install
-$ npm start
 ```
+
+## Starting Local Server
+
+> Start Database
+
+```sh
+$ sudo mongod
+```
+
+> Start Web Server
+
 Pro Tip: Use nodemon on index.js to automatically restart the API on file change.
 
-> How to Run Locally
+```sh
+$ npm start
+```
 
 Your app should now be running on [localhost:5000](http://localhost:5000/).
 
