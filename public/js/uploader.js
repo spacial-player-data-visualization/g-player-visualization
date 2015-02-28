@@ -7,25 +7,21 @@
 $(document).ready(function(){
   $("#csv-file").change(parseFile);
 
-  console.log("\nFetching data from localStorage.")
-  var data = lastUpload();
+  // Status feedback.
+  DOM.log("\nFetching data from localStorage.")
 
-  console.log(data);
+  // Pull data from the previous upload
+  var data = lastUpload();
 
   // Preview last upload
   populateTable(data);
 })
 
-// Create a new loading indicator
-// var loading = new Mprogress({
-//   template: 3,   // Indeterminate Progress Bar
-//   parent: 'body' // Location to Insert
-// });
-
 // http://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
 function parseFile(event) {
   
   loading.start();
+  DOM.log("Parsing File ....")
 
   var file = event.target.files[0];
 
@@ -35,8 +31,8 @@ function parseFile(event) {
 
     // Parser Callback
     complete: function(results) {
-
-      console.log("\n.CSV file parsed. " + results.data.length + " results loaded.");
+      DOM.log("File Parsed.");
+      DOM.log(results.data.length + " results loaded. " + results.errors.length + " Errors.");
 
       var data = results.data;
       var errors = results.errors;
@@ -46,6 +42,8 @@ function parseFile(event) {
       data = _.filter(data, function(dat){
         return dat.length > 1;
       })
+
+      DOM.log(results.data.length - data.length + " blank entries (carriage returns) removed.")
 
       // Fill in preview table
       populateTable(data);
@@ -90,14 +88,19 @@ function populateTable(data){
       // Add row to table.
       $("table").append(tr);
   }
+
+  DOM.log("Data sample rendered to page.")
 }
 
 function formatData(data){
+  DOM.log("Filtering Valid Data.");
   
   // Limit Map
   var upData = _.filter(data, function(current){
     return current[0].indexOf("Position_Introhouse") > -1;
   })
+  
+  DOM.log(upData.length + " of " + data.length + " entries valid.")
 
   var entries = _.map(upData, function(current){
     
@@ -118,7 +121,9 @@ function formatData(data){
 
 // Multi-post uploading
 function bulkUpload(){
-  $("#loading").text("Sending to database...");
+  loading.start();
+
+  DOM.log("Sending to database....");
 
   // Get data from last upload
   entries = lastUpload();
@@ -135,35 +140,42 @@ function bulkUpload(){
   // Split data into multiple, smaller bins
   var bins = split(entries, entries.length / 200);
 
-  console.log("\n" + bins.length + " bins created. Creating POST requests....");
+  DOM.log(entries.length + "Entries to Upload.")
+  DOM.log("Splitting into groups for uploading")
+  DOM.log("\n" + bins.length + " groups created. Creating POST requests....");
 
   // Upload bins
   upload(bins, function(){
-    console.log("UPLOADS DONE!");
+    DOM.log("Uploads COMPLETE");
+    loading.end();
   });
-
-  $("#loading").text(""); 
 }
 
 // Send data to database
 function upload(bins, callback) {
     
-    // If no bins remain, let's hollaback.
-    if (bins.length <= 0){
+    // If no bins remain, end recursion
+    // and execute the callback.
+    if (bins.length < 1){
       callback();
+      return;
     }
 
     current = bins[0];
 
-    console.log(bins.length + " Bins Remain.... ");
+    DOM.log(bins.length + " Bins Remain.... ");
+
+    // Save data into JSON object.
+    // Format JSON into string
+    var data = {
+      entries : JSON.stringify(current),
+    };
 
     // POST to server
-    $.post(API.url + "entries", { entries : current }, function(data, textStatus, jqXHR){ 
+    $.post(API.url + "entries", data, function(data, textStatus, jqXHR){ 
       
-      console.log(textStatus);
-
-      // Save locally
-      bins = data;
+      // Log feedback
+      console.log(textStatus + " " + data);
 
       // Pop off first object in array.
       // Recursively continue to upload
@@ -216,3 +228,9 @@ function split(array, n) {
 function lastUpload(){
   return JSON.parse(localStorage.getItem("upload"));
 }
+
+// Create a new loading indicator
+// var loading = new Mprogress({
+//   template: 3,   // Indeterminate Progress Bar
+//   parent: 'body' // Location to Insert
+// });

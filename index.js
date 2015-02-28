@@ -16,6 +16,10 @@ var bodyParser = require('body-parser')
 // Create an express app
 var app = express();
 
+// Configure POST limit
+app.use(bodyParser.urlencoded({limit: '50mb'}));
+app.use(bodyParser.json({limit: '50mb'}));
+
 // Determine database URL from current environment.
 // MondoDB will direct at Heroku or Localhost depending
 var mongoUrl = process.env.MONGOLAB_URI || 'mongodb://localhost/test';
@@ -108,7 +112,7 @@ app.get('/api/entries', function (req, res){
 
 app.post('/api/entries', function (req, res){
     console.log("\nPOST api/entries");
-	entries.multiPost(req, res, EntryModel);
+    entries.multiPost(req, res, EntryModel);
 });
 
 app.get('/api/entries/:id', function (req, res){

@@ -26,7 +26,9 @@ module.exports = {
     },
 
     multiPost: function(req, res, model) {
-    	var data = req.body.entries;
+        console.log(req);
+
+    	var data = JSON.parse(req.body.entries);
 
         console.log("\nMulti-Post Request");
         console.log(req.body.entries);
