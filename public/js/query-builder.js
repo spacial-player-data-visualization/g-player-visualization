@@ -1,7 +1,14 @@
 
+$("#loading").hide();
+
 /******************************
        query-builder.js
 ******************************/
+
+// Watch query type changes
+$(document).ready(function(){
+	$("#selectQueryType").change(changeSelectVisible);
+});
 
 // Area is the default visible argument
 $("#groupPlayerID, #groupTimestamp").hide();
@@ -27,11 +34,6 @@ function changeSelectVisible() {
 	}
 }
 
-// Watch query type changes
-$(document).ready(function(){
-	$("#selectQueryType").change(changeSelectVisible);
-});
-
 // Adds a new argument to the query
 function addArg(event) {
 	var comparisonType = $("#selectComparisonType").val();
@@ -52,13 +54,16 @@ function addArg(event) {
 		value = $("#inputTimestamp").val();
 	}
 
+	var editBtn   = '<div class="btn btn-warning" onclick="edit(' + 1 + ')"><i class="fa fa-pencil"></i></div>';
 	var deleteBtn = '<div class="btn btn-danger" onclick="remove(' + 1 + ')"><i class="fa fa-close"></i></div>';
 
-	var data = [comparisonType, queryType, value, deleteBtn];
+	// Compile row data
+	var data = [comparisonType, queryType, value, editBtn + deleteBtn];
 	var table = $("<table/>").attr("id","arguments");
 
 	var tr = "";
 
+	// Create <td> data cells
 	for (var key in data) {
 		if (typeof data[key] != 'undefined') {
 			tr += "<td>" + data[key] + "</td>";
