@@ -1,7 +1,7 @@
 
 /******************************
        query-builder.js
-       ******************************/
+******************************/
 
 // Area is the default visible argument
 $("#groupPlayerID, #groupTimestamp").hide();
@@ -18,8 +18,10 @@ function changeSelectVisible() {
 
 	if (selection == "area") {
 		$("#groupMap").show();
+
 	} else if (selection == "playerID") {
 		$("#groupPlayerID").show();
+
 	} else if (selection == "timestamp") {
 		$("#groupTimestamp").show();
 	}
@@ -38,18 +40,25 @@ function addArg(event) {
 
 	// Get the value for the argument based on the query type
 	if (queryType == "area") {
+
 		value = $("#selectMap option:selected").text();
 	} else if (queryType == "playerID") {
+
 		//TODO: if there is more than one player ID, add them as a disjunction...
 		value = $("#inputPlayerID").val();
 	} else if (queryType == "timestamp") {
+
 		//TODO: make sure this is a number, else it will be the empty string
 		value = $("#inputTimestamp").val();
 	}
 
-	var data = [comparisonType, queryType, value, "BUTTON PLACEHOLDER"];
+	var deleteBtn = '<div class="btn btn-danger" onclick="remove(' + 1 + ')"><i class="fa fa-close"></i></div>';
+
+	var data = [comparisonType, queryType, value, deleteBtn];
 	var table = $("<table/>").attr("id","arguments");
-	var tr="<tr>";
+
+	var tr = "";
+
 	for (var key in data) {
 		if (typeof data[key] != 'undefined') {
 			tr += "<td>" + data[key] + "</td>";
@@ -57,7 +66,8 @@ function addArg(event) {
 			tr += "<td>" + "-" + "</td>";
 		}
 	}
-	tr += "</tr>";
+
+	tr = $("<tr>").append(tr);
 	$("table").append(tr);
   }
 
