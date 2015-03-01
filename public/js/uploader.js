@@ -3,10 +3,25 @@
         uploader.js 
  ******************************/
 
+// Watch File Input
+$(document).ready(function(){
+  $("#csv-file").change(parseFile);
+
+  // Status feedback.
+  DOM.log("\nFetching data from localStorage.")
+
+  // Pull data from the previous upload
+  var data = lastUpload();
+
+  // Preview last upload
+  populateTable(data);
+})
+
 // http://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
 function parseFile(event) {
   
   loading.start();
+  DOM.log("Parsing File ....")
 
   var file = event.target.files[0];
 
@@ -16,9 +31,8 @@ function parseFile(event) {
 
     // Parser Callback
     complete: function(results) {
-
-      console.log("\n.CSV file parsed:")
-      console.log(results.data);
+      DOM.log("File Parsed.");
+      DOM.log(results.data.length + " results loaded. " + results.errors.length + " Errors.");
 
       var data = results.data;
       var errors = results.errors;
@@ -29,100 +43,171 @@ function parseFile(event) {
         return dat.length > 1;
       })
 
-      var table = $("<table/>").attr("id","preview");
-      var tableSize = findTableSize(data);
+      DOM.log(results.data.length - data.length + " blank entries (carriage returns) removed.")
 
-      for (var i in data) {
-          var current = data[i];
-          var tr="<tr>";
-          var key = 0;
-          while (tableSize > key) {
-              //console.log(key);
-              if (typeof current[key] != 'undefined') {
-                tr+="<td>"+current[key]+"</td>";
-              } else {
-                tr+="<td>"+ "-" +"</td>";
-              }
-
-              key++;
-          }
-          tr+="</tr>";
-          $("table").append(tr);
-      }
-
-      loading.end();
+      // Fill in preview table
+      populateTable(data);
 
       // Backup uploaded data to Local Storage
       localStorage.setItem("upload", JSON.stringify(data));
+
+      // Stop loading indicator
+      loading.end();
     }
   });
 }
 
-function findTableSize(data) {
-  max = data[0].length;
+// Render content into HTML table.
+// Allow user to preview the uploaded .csv file.
+function populateTable(data){
+  
+  // Sample data for previewing
+  data = _.sample(data, 500);
+
+  var table = $("<table/>").attr("id","preview");
+  var tableSize = maxEntrySize(data);
+
   for (var i in data) {
-    if (data[i].length > max) {
-      max = data[i].length;
-    }
+      var current = data[i];
+      var tr = "";
+      var key = 0;
+
+      while (tableSize > key) {
+          
+          if (typeof current[key] != 'undefined') {
+            tr+="<td>"+current[key]+"</td>";
+          } else {
+            tr+="<td>"+ "-" +"</td>";
+          }
+
+          key++;
+      }
+
+      var tr = $("<tr>").append(tr);
+
+      // Add row to table.
+      $("table").append(tr);
   }
-  return max;
+
+  DOM.log("Data sample rendered to page.")
 }
 
-
-// Watch File Input
-$(document).ready(function(){
-  $("#csv-file").change(parseFile);
-});
-
-
-function upload(event) {
-  $("#loading").text("Sending to database...");
+function formatData(data){
+  DOM.log("Filtering Valid Data.");
   
-  var upData = localStorage.getItem("upload");
-  
-  upData = JSON.parse(upData);
-
-  var upData = _.filter(upData, function(current){
+  // Limit Map
+  var upData = _.filter(data, function(current){
     return current[0].indexOf("Position_Introhouse") > -1;
   })
+  
+  DOM.log(upData.length + " of " + data.length + " entries valid.")
 
   var entries = _.map(upData, function(current){
+    
+    // Map keys based on 
     return {
-      playerID : current[1],
-      timestamp : current[2],
-      posX : current[3],
-      posY : current[4],
-      cameraX : current[6],
-      cameraY : current[7],
-      area: current[0],
+      playerID :  keyMapping.playerID,
+      timestamp : keyMapping.timestamp,
+      posX :      keyMapping.posX,
+      posY :      keyMapping.posY,
+      cameraX :   keyMapping.cameraX,
+      cameraY :   keyMapping.cameraY,
+      area:       keyMapping.area,
     }
   });
 
-  console.log(entries);
+  return entries;
+}
+
+// Multi-post uploading
+function bulkUpload(){
+  loading.start();
+
+  DOM.log("Sending to database....");
+
+  // Get data from last upload
+  entries = lastUpload();
+
+  // Convert data into JSON object.
+  // All data should now be represented
+  // as a key/value pair
+  entries = formatData(entries);
 
   // When POSTing data to the API, we occasionally
   // encounter a size/entry limit. Just to be safe,
   // lets send the data in multiple POSTS.
-  
-  // Define a max entries size
-  var binsize = 50;
 
   // Split data into multiple, smaller bins
   var bins = split(entries, entries.length / 200);
 
-  console.log("\n" + bins.length + " created. Creating POST requests....");
+  DOM.log(entries.length + "Entries to Upload.")
+  DOM.log("Splitting into groups for uploading")
+  DOM.log("\n" + bins.length + " groups created. Creating POST requests....");
 
-  for (var i in bins){
-    $.post(API.url + "entries", { entries : bins[i]}, function(data, textStatus, jqXHR){ 
-      console.log(textStatus);
-      
-      $("#loading").text(""); 
-    });    
-  }
+  // Upload bins
+  upload(bins, function(){
+    DOM.log("Uploads COMPLETE");
+    loading.end();
+  });
 }
 
-// http://stackoverflow.com/questions/8188548/splitting-a-js-array-into-n-arrays
+// Send data to database
+function upload(bins, callback) {
+    
+    // If no bins remain, end recursion
+    // and execute the callback.
+    if (bins.length < 1){
+      callback();
+      return;
+    }
+
+    current = bins[0];
+
+    DOM.log(bins.length + " Bins Remain.... ");
+
+    // Save data into JSON object.
+    // Format JSON into string
+    var data = {
+      entries : JSON.stringify(current),
+    };
+
+    // POST to server
+    $.post(API.url + "entries", data, function(data, textStatus, jqXHR){ 
+      
+      // Log feedback
+      console.log(textStatus + " " + data);
+
+      // Pop off first object in array.
+      // Recursively continue to upload
+      // the rest of the array
+      bins.shift();
+
+      // If we have more bins to upload,
+      // lets keep going through.
+      upload(bins, callback);
+
+    });
+}
+
+/******************************
+       Helper Functions
+ ******************************/
+
+// Find the entry with the most entries.
+// This will determine the amount of
+// rows to generate in the preview table.
+
+function maxEntrySize(data) {
+  var max = _.max(data, function(p){
+    return p.length;
+  });
+
+  return max.length;
+}
+
 // Split the array into an N different arrays
+// http://stackoverflow.com/questions/8188548/splitting-a-js-array-into-n-arrays
+
 function split(array, n) {
   var length = array.length
   var bins = [];
@@ -136,3 +221,16 @@ function split(array, n) {
 
   return bins;
 }
+
+// Retrieve data from localStorage
+// Returns the last JSON that the user converted.
+
+function lastUpload(){
+  return JSON.parse(localStorage.getItem("upload"));
+}
+
+// Create a new loading indicator
+// var loading = new Mprogress({
+//   template: 3,   // Indeterminate Progress Bar
+//   parent: 'body' // Location to Insert
+// });

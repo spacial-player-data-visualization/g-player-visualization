@@ -267,7 +267,7 @@
           _.each(data, function(p){
               var circle = L.circle([p.latitude, p.longitude], radius, {
                   color: 'black',
-                  fillColor: '#000',
+                  fillColor: '#fff',
                   fillOpacity: 1,
               }).addTo(map);
           });
@@ -282,7 +282,7 @@
           "radius": .5,
           "maxOpacity": .8,
           "scaleRadius": true, 
-          "useLocalExtrema": false,
+          "useLocalExtrema": true,
           latField: 'latitude',
           lngField: 'longitude',
         });
