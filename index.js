@@ -16,7 +16,7 @@ var bodyParser = require('body-parser')
 // Create an express app
 var app = express();
 
-// Configure POST limit
+// Increase the size of accepted POST requests
 app.use(bodyParser.urlencoded({limit: '50mb'}));
 app.use(bodyParser.json({limit: '50mb'}));
 

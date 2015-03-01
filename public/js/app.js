@@ -11,13 +11,15 @@
 // the .csv array.
 var keyMapping = 
 {
-	area      : 0,
-	playerID  : 1,
-	timestamp : 2,
-	posX      : 3,
-	posY      : 4,
-	cameraX   : 6,
-	cameraY   : 7,
+	area      : 0, // (string) * 
+	playerID  : 1, // (int)    * 
+	timestamp : 2, // (double) * 
+	posX      : 3, // (double) *
+	posY      : 4, // (double) *
+	cameraX   : 6, // (double)
+	cameraY   : 7, // (double)
+
+	// * required
 }
 
 var environment = document.URL;
