@@ -48,3 +48,9 @@ DOM = {};
 DOM.log = function(msg){
 	$("#log").prepend("<p>" + msg + "</p>");
 }
+
+
+
+$(function() {
+	QueryBuilder.open();
+});

@@ -11,7 +11,7 @@
       <div class="row">
       
         <div class="col-sm-12 alert alert-warning" id="comparisonWarning">
-          <b>Warning</b> No existing query arguments to compare to...
+          <b>Warning</b> Feature in Development. Only 'AND' is supported for stacking parameters
         </div>
 
         <form class="form-horizontal" id="formQueryBuilder">
@@ -29,47 +29,33 @@
           <hr>
 
           <div class="form-group row" id="groupType">
-            <label for="selectQueryType" class="col-sm-4 control-label">Query Type</label>
+            <label for="inputProperty" class="col-sm-4 control-label">Property</label>
             <div class="col-sm-8">
-              <select class="form-control" id="selectQueryType">
-                <option value="area">Area</option>
-                <option value="playerID">Player ID</option>
+              <select class="form-control" id="inputProperty">
+                <option value="playerId">Player ID</option>
                 <option value="timestamp">Timestamp</option>
               </select>
             </div>
           </div>
 
           <div class="form-group row" id="groupType">
-            <label for="selectComparator" class="col-sm-4 control-label">Comparator</label>
+            <label for="inputComparator" class="col-sm-4 control-label">Comparator</label>
             <div class="col-sm-8">
-              <select class="form-control" id="selectComparator">
-                <option value="area">Area</option>
+              <select class="form-control" id="inputComparator">
+                <option value="equals">Equals</option>
+                <option value="gte">Greater Than</option>
+                <option value="lte">Less Than</option>
               </select>
-            </div>
-          </div>
-
-          <div class="form-group row" id="groupMap">
-            <label for="selectMap" class="col-sm-4 control-label">Select Map</label>
-            <div class="col-sm-8">
-              <select class="form-control" id="selectMap">
-                <option value="default">Default</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-group row" id="groupPlayerID">
-            <label for="inputPlayerID" class="col-sm-4 control-label">Player ID</label>
-            <div class="col-sm-8">
-              <input type="text" class="form-control" id="inputPlayerID" 
-              placeholder="Player ID (e.g. u001)">
             </div>
           </div>
 
           <div class="form-group row" id="groupTimestamp">
-            <label for="inputTimestamp" class="col-sm-4 control-label">Timestamp</label>
-            <div class="col-sm-8">
-              <input type="number" class="form-control" id="inputTimestamp" 
-              placeholder="Time in seconds (e.g. 1800)">
+            <label for="inputValue" class="col-sm-4 control-label">Value</label>
+            <div class="col-sm-8" id="inputValue">
+              
+              <!-- Change input based on selected property -->
+              <input type="number" class="form-control" placeholder="Value (e.g. 100)">
+
             </div>
           </div>
 

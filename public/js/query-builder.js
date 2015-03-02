@@ -13,7 +13,6 @@ https://github.com/tablelist/angular-admin-directives/
 
 */
 
-
 // ABOUT QUERY BUILDING:
 // An argument is a single line in a complex query.
 var sample_argument = {
@@ -24,7 +23,7 @@ var sample_argument = {
     // The key name. ex: "userId".
     property : "timestamp",
     
-    // How the value is compared. ex: "Greater then".
+    // How the value is compared. ex: "Greater than".
     comparator : "gte",
     
     // The value compared against the data. Example: "10.4".
@@ -89,37 +88,34 @@ QueryBuilder.mode = function(target){
 // Setup DOM watchers
 QueryBuilder.initialize = function(){
 
-    // Add sample data
-    QueryBuilder.query.push(sample_argument);
-
-	$("#selectQueryType").change(QueryBuilder.changeSelectVisible);
+	// Watch for change in property
+	$("#selectQueryType").change(QueryBuilder.propertyUpdated);
 
 	// Area is the default visible argument
-	$("#groupPlayerID, #groupTimestamp").hide();
+	// $("#inputValue input").hide();
 
 	// Disable the boolean operation argument before query has arguments
 	// TODO: Enbale this when there is at least 1 entry in the table
 	$("#selectComparisonType").prop("disabled", true);
-
-
-
 }
 
 // Only show relevant followup inputs for the selected input
-QueryBuilder.changeSelectVisible = function() {
+QueryBuilder.propertyUpdated = function() {
 
-	var selection = $(this).val();
-	$("#groupMap, #groupPlayerID, #groupTimestamp").hide();
+	// This property has changed
+	var property = $("#inputProperty").val()
 
-	if (selection == "area") {
-		$("#groupMap").show();
+	// Hide existing inputs
+	// $("#inputValue input").hide();
 
-	} else if (selection == "playerID") {
-		$("#groupPlayerID").show();
+	// Change value input type based on
+	// selected property
+	// if (property == "playerID") {
+	//		$("#groupPlayerID").show();
 
-	} else if (selection == "timestamp") {
-		$("#groupTimestamp").show();
-	}
+	// } else if (property == "timestamp") {
+	//	$("#groupTimestamp").show();
+	// }
 }
 
 // Adds a new argument to the query
@@ -211,11 +207,15 @@ QueryBuilder.preview = function(){
 }
 
 // Static Configuration
-// QueryBuilder.supportedKeys = [{
-//         key : "",
-//         name : "",
-//         dataType : "",
-//     }];
+QueryBuilder.supportedKeys = [{
+        key : "userId",
+        name : "User ID",
+        dataType : "int",
+    }, {
+        key : "timestamp",
+        name : "Time Stamp",
+        dataType : "",
+    }];
 
 // QueryBuilder.comparators = [{
 // 		// Int

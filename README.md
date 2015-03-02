@@ -59,6 +59,7 @@ The api is available at [localhost:5000/api](http://localhost:5000/api).
 ## Deployment to Server (Heroku)
 
 ```
+$ install [heroku toolbelt](https://toolbelt.heroku.com/)
 $ heroku create
 $ git push heroku master
 $ heroku open
