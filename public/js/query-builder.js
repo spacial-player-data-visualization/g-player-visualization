@@ -175,25 +175,35 @@ QueryBuilder.preview = function(){
     // Iterate through queries
     for (var id in QueryBuilder.query){
         
-        // An individual table row
-        var tr = "<tr>";
-
         // The current argument
         var argument = QueryBuilder.query[id];
 
-        // Customized delete button
-        argument.deleteBtn = '<div class="btn btn-danger"  onclick="QueryBuilder.removeArgument(' + id + ')"><i class="fa fa-close"></i></div>';
-        
-        // Create <td> data cells
-        for (var key in argument) {
-            if (typeof argument[key] != 'undefined') {
-                tr += "<td>" + argument[key] + "</td>";
-            } else {
-                tr += "<td>" + "-" + "</td>";
-            }
-        }
+        console.log(argument);
 
-        rows = rows + tr + "</tr>";
+        // Create <td> data cells
+		var a = argument.comparison;
+		var b = argument.parameter;
+		var c = argument.comparator;
+		var d = argument.value;
+
+        // Customized delete button
+        var e = '<div class="btn btn-danger"  onclick="QueryBuilder.removeArgument(' + id + ')"><i class="fa fa-close"></i></div>';
+
+		// _.reduce (or, foldr) boils an array of values
+		// into a single value. In this case: the HTML
+		// for a table row.
+
+        var tr = _.reduce([a,b,c,d,e], function(acc, current){
+        	
+        	// Check for undefined
+        	var value = (typeof current != 'undefined') ? current : "-"
+
+        	// Return data cell
+        	return acc + "<td>" + current + "</td>";
+
+        }, "");
+
+        rows = rows + "<tr>" + tr + "</tr>";
     }
     
     $("#arguments tbody").append(rows);
