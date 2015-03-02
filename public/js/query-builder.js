@@ -58,7 +58,7 @@ function addArg(event) {
 	var deleteBtn = '<div class="btn btn-danger" onclick="remove(' + 1 + ')"><i class="fa fa-close"></i></div>';
 
 	// Compile row data
-	var data = [comparisonType, queryType, value, editBtn + deleteBtn];
+	var data = [comparisonType, queryType, value, editBtn, deleteBtn];
 	var table = $("<table/>").attr("id","arguments");
 
 	var tr = "";

@@ -28,7 +28,7 @@
       <ul class="sidebar-nav">
         <li class="active"><a href="index.html"><i class="fa fa-map-marker"></i>Home</a></li>
         <li><a href="uploader.html"><i class="fa fa-database"></i>Upload Data</a></li>
-        <li onclick="openQueryBuilder();"><i class="fa fa-search"></i>Build Query</a></li>
+        <li onclick="QueryBuilder.open();"><i class="fa fa-search"></i>Build Query</a></li>
         <li onclick="getData();"><i class="fa fa-database"></i>Get Data</li>
 
         <br>
@@ -123,17 +123,20 @@
 
  </div><!-- /#wrapper -->
 
-<!-- Query Builder -->
-<div class="modal fade" id="queryBuilder" tabindex="-1" role="dialog" aria-labelledby="queryBuilderLabel" aria-hidden="true">
+<!-- Query Builder Modal -->
+<div class="modal fade" id="query-builder-modal" tabindex="-1" role="dialog" aria-labelledby="queryBuilderLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="queryBuilderLabel">Query Builder</h4>
+        <h4 class="modal-title" id="queryBuilderLabel">
+          <ul class="nav nav-tabs">
+            <li role="presentation" class="builder" onclick="QueryBuilder.toggle('preset')"><a href="#">Query Builder</a></li>
+            <li role="presentation" class="preset"  onclick="QueryBuilder.toggle('builder')"><a href="#">Preset Queries</a></li>
+          </ul>  
+        </ul>
       </div>
-      <div class="modal-body">
-        ...
-      </div>
+      <div class="modal-body col-sm-12"></div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-primary"><i class="fa fa-database"></i> QUERY</button>
@@ -374,28 +377,47 @@
 
   });
 
-  // Open Query Builder Modal
-  function openQueryBuilder(){
+  
+  var QueryBuilder = {
 
-    $("#queryBuilder .modal-body").load('templates/query-builder.html', function(result){
-      console.log("Query Builder Template Loaded");
-    });
+    // Define current state
+    mode : "custom", // or "preset"
+
+    toggle : function(target){
+      if (target != QueryBuilder.mode){
+        QueryBuilder.mode = target;
+        $("#query-builder, #query-preset").toggle();
+        $("#query-builder-modal .nav-tabs li").toggleClass("active");
+      }
+    },
 
     // Open Query Builder Modal
-    $("#queryBuilder").modal('show');
+    open : function(){
+      
+      // Load Template
+      $("#query-builder-modal .modal-body").load('templates/query-builder.html', function(result){
+        console.log("Query Builder Template Loaded");
+      });
 
-    // Focus Modal
-    $('#queryBuilder').on('shown.bs.modal', function () {
-      $('#myInput').focus()
-    })
-  }
+      // 
+      $("#query-builder-modal .nav-tabs li.builder").addClass("active");
 
-  // $('#checkbox1').mousedown(function() {
-  //     if (!$(this).is(':checked')) {
-  //         $(this).trigger("change");
-  //     }
-  // });
+      // Open Query Builder Modal
+      $("#query-builder-modal").modal('show');
 
+      // Focus Modal
+      $('#query-builder-modal').on('shown.bs.modal', function () {
+        $('#query-builder').focus()
+      })
+
+
+    }
+
+  };
+
+  $(document).ready(function(){
+    QueryBuilder.open();
+  })
 
 </script>
 </body>

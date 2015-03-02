@@ -151,6 +151,23 @@
 }
 
 
+.modal-header {
+    padding: 0;
+    border-bottom: none;
+}
+
+.modal-header .close {
+    padding: 15px;
+}
+
+.modal-dialog {
+    width: 900px;
+}
+
+.modal-footer {
+    border-top: none;
+}
+
 @media(min-width:768px) {
     #wrapper {
         padding-left: 200px;
