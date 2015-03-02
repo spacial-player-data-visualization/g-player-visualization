@@ -8,45 +8,70 @@ strings. By providing the user with a GUI,
 QueryBuilder hopes to empower end-users to 
 generate complex database searches
 
+Inspiration from:
+https://github.com/tablelist/angular-admin-directives/
 
 */
 
-  
+
+// ABOUT QUERY BUILDING:
+// An argument is a single line in a complex query.
+var sample_argument = {
+    
+    // How the argument is compared against the database
+    comparison : "AND",
+
+    // The key name. ex: "userId".
+    property : "timestamp",
+    
+    // How the value is compared. ex: "Greater then".
+    comparator : "gte",
+    
+    // The value compared against the data. Example: "10.4".
+    parameter : 10.2,
+};
+
+
 var QueryBuilder = {
 
   // Define current state
-  mode : "custom", // (one of "preset" or "custom")
+  state : "custom", // "preset" or "custom")
 
-  // Save the paramter list.
-  data : [],
+  // Save the parameter list.
+  query : [],
+
+  // Returns the Mongo query string
+  queryString : function(){ return "Feature Incomplete"; },
 
 };
-
 
 // Open Query Builder Modal
 QueryBuilder.open = function(){
 
 	// Load Template
 	$("#query-builder-modal .modal-body").load('templates/query-builder.tpl.html', function(result){
-	  console.log("Query Builder Template Loaded");
+    	  
+        // Callback
+        // Open Query Builder Modal
+        $("#query-builder-modal").modal('show');  
+
+        // Focus Modal
+        $('#query-builder-modal').on('shown.bs.modal', function () {
+          $('#query-builder').focus()
+        })  
+
+        // Setup DOM watchers
+        QueryBuilder.initialize();
+
 	});
-
-	// Open Query Builder Modal
-	$("#query-builder-modal").modal('show');
-
-	// Focus Modal
-	$('#query-builder-modal').on('shown.bs.modal', function () {
-	  $('#query-builder').focus()
-	})
-
 }
 
 // Change between custom queries, and preset queries
-QueryBuilder.toggle = function(target){
+QueryBuilder.mode = function(target){
 	
 	// If the target is the same thing as the
 	// active mode, we can skip this function
-	if (target == QueryBuilder.mode) return;
+	if (target == QueryBuilder.state) return;
 
 	// Toggle the active section of the template
 	$("#query-builder, #query-preset").toggle();
@@ -55,35 +80,33 @@ QueryBuilder.toggle = function(target){
 	$("#query-builder-modal .nav-tabs li").toggleClass("active");
 
 	// Save state to object.
-	QueryBuilder.mode = target;
+	QueryBuilder.state = target;
 
 	return target;
 }
 
+// Runs when Query Builder is opened.
+// Setup DOM watchers
+QueryBuilder.initialize = function(){
 
-$("#loading").hide();
+    // Add sample data
+    QueryBuilder.query.push(sample_argument);
 
-/******************************
-       query-builder.js
-******************************/
+	$("#selectQueryType").change(QueryBuilder.changeSelectVisible);
 
-// Watch query type changes
-$(document).ready(function(){
-	$("#selectQueryType").change(changeSelectVisible);
-});
+	// Area is the default visible argument
+	$("#groupPlayerID, #groupTimestamp").hide();
 
-// Area is the default visible argument
-$("#groupPlayerID, #groupTimestamp").hide();
+	// Disable the boolean operation argument before query has arguments
+	// TODO: Enbale this when there is at least 1 entry in the table
+	$("#selectComparisonType").prop("disabled", true);
 
-// Disable the boolean operation argument before query has arguments
-// TODO: Enbale this when there is at least 1 entry in the table
-$("#selectComparisonType").prop("disabled", true);
 
-// Store JSON data
-var Query = [];
+
+}
 
 // Only show relevant followup inputs for the selected input
-function changeSelectVisible() {
+QueryBuilder.changeSelectVisible = function() {
 
 	var selection = $(this).val();
 	$("#groupMap, #groupPlayerID, #groupTimestamp").hide();
@@ -100,7 +123,7 @@ function changeSelectVisible() {
 }
 
 // Adds a new argument to the query
-function addArg(event) {
+QueryBuilder.addArgument = function(event) {
 	var comparisonType = $("#selectComparisonType").val();
 	var queryType = $("#selectQueryType").val();
 	var value;
@@ -119,38 +142,119 @@ function addArg(event) {
 		value = $("#inputTimestamp").val();
 	}
 
-	var editBtn   = '<div class="btn btn-warning" onclick="edit(' + 1 + ')"><i class="fa fa-pencil"></i></div>';
-	var deleteBtn = '<div class="btn btn-danger" onclick="remove(' + 1 + ')"><i class="fa fa-close"></i></div>';
+    QueryBuilder.query.push({
+        comparison : comparisonType,
 
-	// Compile row data
-	var data = [comparisonType, queryType, value, editBtn, deleteBtn];
+        // The key name. ex: "userId".
+        property : queryType,
+    
+        // How the value is compared. ex: "Greater then".
+        comparator : "equal to",
+    
+        // The value compared against the data. Example: "10.4".
+        parameter : value,
+    })
 
-	console.log(data);
-
-	var table = $("<table/>").attr("id","arguments");
-
-	var tr = "";
-
-	// Create <td> data cells
-	for (var key in data) {
-		if (typeof data[key] != 'undefined') {
-			tr += "<td>" + data[key] + "</td>";
-		} else {
-			tr += "<td>" + "-" + "</td>";
-		}
-	}
-
-	tr = $("<tr>").append(tr);
-	$("table").append(tr);
-  }
+    QueryBuilder.preview();
+}
 
 // Removes an argument from the query
-function removeArgument(event) {
+QueryBuilder.removeArgument = function(id) {
+    console.log(QueryBuilder.query.length);
+    QueryBuilder.query.splice(id, 1);
+    console.log(QueryBuilder.query.length);
+    QueryBuilder.preview();
 	// TODO remove the argument based on which button was pressed
 }
 
-// Execute the query on the database
-function executeQuery(event) {
-	$("#loading").text("Querying database...");
-	//TODO build mongo query here out of the information on the page
+// Generates an HTML table of the current query
+QueryBuilder.preview = function(){
+    
+    $("arguments").html("");
+
+    var table = $("<table/>").attr("id","arguments");
+
+    // Iterate through queries
+    for (var id in QueryBuilder.query){
+        
+        var tr = "";
+
+        // This argument
+        var argument = QueryBuilder.query[id];
+
+        var editBtn   = '<div class="btn btn-warning" onclick="QueryBuilder.removeArgument(' + id + ')"><i class="fa fa-pencil"></i></div>';
+        var deleteBtn = '<div class="btn btn-danger"  onclick="QueryBuilder.removeArgument(' + id + ')"><i class="fa fa-close"></i></div>';
+
+        argument.edit = editBtn;
+        argument.delete = deleteBtn;
+
+        // Create <td> data cells
+        for (var key in argument) {
+            if (typeof argument[key] != 'undefined') {
+                tr += "<td>" + argument[key] + "</td>";
+            } else {
+                tr += "<td>" + "-" + "</td>";
+            }
+        }
+
+        tr = $("<tr>").append(tr);
+
+    }
+    
+    $("#arguments").append(tr);
+
+    return tr;
 }
+
+// Static Configuration
+// QueryBuilder.supportedKeys = [{
+//         key : "",
+//         name : "",
+//         dataType : "",
+//     }];
+
+// QueryBuilder.comparators = [{
+// 		// Int
+// 	    name : "equals",
+// 	    expression : null,
+// 	    dataType : "int"
+// 	},{
+// 	    name : "greater than or equal to",
+// 	    expression : "$gte",
+// 	    dataType : "int"
+// 	}, {
+// 	    name : "less than or equal to",
+// 	    expression : "$lte",
+// 	    dataType : "int"
+// 	}, {
+// 	    name : "greater than",
+// 	    expression : "$gt",
+// 	    dataType : "int"
+// 	}, {
+// 	    name : "less than",
+// 	    expression : "$lt",
+// 	    dataType : "int"
+// 	}, {
+// 		// String
+// 	    name : "contains",
+// 	    expression : "$lt",
+// 	    dataType : "string"
+// 	}, {
+// 		// Boolean
+// 	    name : "is",
+// 	    expression : true,
+// 	    dataType : "boolean"
+// 	}, {
+// 	    name : "is not",
+// 	    expression : { "$ne" : true },
+// 	    dataType : "boolean"
+// 	}, {
+// 		// Date
+// 	    name : "after",
+// 	    expression : "$gt",
+// 	    dataType : "date"
+// 	}, {
+// 	    name : "before",
+// 	    expression : "$lt",
+// 	    dataType : "date"
+// 	}];
