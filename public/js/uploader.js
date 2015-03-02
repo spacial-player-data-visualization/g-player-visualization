@@ -106,13 +106,13 @@ function formatData(data){
     
     // Map keys based on 
     return {
-      playerID :  keyMapping.playerID,
-      timestamp : keyMapping.timestamp,
-      posX :      keyMapping.posX,
-      posY :      keyMapping.posY,
-      cameraX :   keyMapping.cameraX,
-      cameraY :   keyMapping.cameraY,
-      area:       keyMapping.area,
+      playerID :  current[keyMapping.playerID],
+      timestamp : current[keyMapping.timestamp],
+      posX :      current[keyMapping.posX],
+      posY :      current[keyMapping.posY],
+      cameraX :   current[keyMapping.cameraX],
+      cameraY :   current[keyMapping.cameraY],
+      area:       current[keyMapping.area],
     }
   });
 
