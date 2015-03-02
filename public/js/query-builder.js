@@ -1,3 +1,65 @@
+/*
+
+Query Builder
+
+
+QueryBuilder is a tool for building MongoDB query
+strings. By providing the user with a GUI, 
+QueryBuilder hopes to empower end-users to 
+generate complex database searches
+
+
+*/
+
+  
+var QueryBuilder = {
+
+  // Define current state
+  mode : "custom", // (one of "preset" or "custom")
+
+  // Save the paramter list.
+  data : [],
+
+};
+
+
+// Open Query Builder Modal
+QueryBuilder.open = function(){
+
+	// Load Template
+	$("#query-builder-modal .modal-body").load('templates/query-builder.tpl.html', function(result){
+	  console.log("Query Builder Template Loaded");
+	});
+
+	// Open Query Builder Modal
+	$("#query-builder-modal").modal('show');
+
+	// Focus Modal
+	$('#query-builder-modal').on('shown.bs.modal', function () {
+	  $('#query-builder').focus()
+	})
+
+}
+
+// Change between custom queries, and preset queries
+QueryBuilder.toggle = function(target){
+	
+	// If the target is the same thing as the
+	// active mode, we can skip this function
+	if (target == QueryBuilder.mode) return;
+
+	// Toggle the active section of the template
+	$("#query-builder, #query-preset").toggle();
+
+	// Toggle active navigation item
+	$("#query-builder-modal .nav-tabs li").toggleClass("active");
+
+	// Save state to object.
+	QueryBuilder.mode = target;
+
+	return target;
+}
+
 
 $("#loading").hide();
 
@@ -16,6 +78,9 @@ $("#groupPlayerID, #groupTimestamp").hide();
 // Disable the boolean operation argument before query has arguments
 // TODO: Enbale this when there is at least 1 entry in the table
 $("#selectComparisonType").prop("disabled", true);
+
+// Store JSON data
+var Query = [];
 
 // Only show relevant followup inputs for the selected input
 function changeSelectVisible() {
@@ -59,6 +124,9 @@ function addArg(event) {
 
 	// Compile row data
 	var data = [comparisonType, queryType, value, editBtn, deleteBtn];
+
+	console.log(data);
+
 	var table = $("<table/>").attr("id","arguments");
 
 	var tr = "";

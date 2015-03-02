@@ -131,8 +131,8 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="queryBuilderLabel">
           <ul class="nav nav-tabs">
-            <li role="presentation" class="builder" onclick="QueryBuilder.toggle('preset')"><a href="#">Query Builder</a></li>
-            <li role="presentation" class="preset"  onclick="QueryBuilder.toggle('builder')"><a href="#">Preset Queries</a></li>
+            <li role="presentation" class="custom active" onclick="QueryBuilder.toggle('custom')"><a href="#">Query Builder</a></li>
+            <li role="presentation" class="preset"  onclick="QueryBuilder.toggle('preset')"><a href="#">Preset Queries</a></li>
           </ul>  
         </ul>
       </div>
@@ -159,6 +159,7 @@
 
  <!-- Custom Javascript -->
  <script src="js/app.js"></script>  <!-- App Functionality -->
+ <script src="js/query-builder.js"></script>  <!-- Query Builder Functionality -->
 
  <!-- Page-Specific Javascript -->
  <script>
@@ -376,44 +377,6 @@
     if (!options.heatmap) map.addLayer(heatmapLayer)
 
   });
-
-  
-  var QueryBuilder = {
-
-    // Define current state
-    mode : "custom", // or "preset"
-
-    toggle : function(target){
-      if (target != QueryBuilder.mode){
-        QueryBuilder.mode = target;
-        $("#query-builder, #query-preset").toggle();
-        $("#query-builder-modal .nav-tabs li").toggleClass("active");
-      }
-    },
-
-    // Open Query Builder Modal
-    open : function(){
-      
-      // Load Template
-      $("#query-builder-modal .modal-body").load('templates/query-builder.html', function(result){
-        console.log("Query Builder Template Loaded");
-      });
-
-      // 
-      $("#query-builder-modal .nav-tabs li.builder").addClass("active");
-
-      // Open Query Builder Modal
-      $("#query-builder-modal").modal('show');
-
-      // Focus Modal
-      $('#query-builder-modal').on('shown.bs.modal', function () {
-        $('#query-builder').focus()
-      })
-
-
-    }
-
-  };
 
   $(document).ready(function(){
     QueryBuilder.open();
