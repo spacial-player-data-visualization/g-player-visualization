@@ -10,6 +10,8 @@
 
     <title>Data Parser</title>
 
+    <!-- External Style Sheets -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
     <link href="css/style.css" rel="stylesheet" />
@@ -17,23 +19,15 @@
   </head>
   <body>
 
-    <!-- Static navbar -->
-    <nav class="navbar navbar-default navbar-static-top">
-      <div class="container">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="index.html">Data Visualizer</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav" style="padding-bottom: 10px;">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="query-builder.html">Build Query</a></li>
-            <li class="active"><a href="uploader.html">Parse Data</a></li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+    <!-- Left Options Sidebar -->
+    <div id="sidebar-wrapper">
+      <ul class="sidebar-nav">
+        <li class="active"><a href="index.html"><i class="fa fa-map-marker"></i>Home</a></li>
+        <li><a href="uploader.html"><i class="fa fa-database"></i>Upload Data</a></li>
+      </ul>
+    </div>
 
-    <div class="container">
+    <div class="container" style="margin-left: 200px; padding-top: 20px;">
       <div class="col-sm-2">
           <!-- Loading Indicator -->
           <p id="loading"></p>
@@ -69,7 +63,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
     <!-- Libraries Hosted Locally --> 
-    <script src="lib/mprogress.min.js"></script>
     <script src="lib/papaparse.min.js"></script>
     <script src="js/app.js"></script>
     <script src="js/uploader.js"></script>
