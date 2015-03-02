@@ -28,9 +28,6 @@
       <ul class="sidebar-nav">
         <li class="active"><a href="index.html"><i class="fa fa-map-marker"></i>Home</a></li>
         <li><a href="uploader.html"><i class="fa fa-database"></i>Upload Data</a></li>
-        <li onclick="QueryBuilder.open();"><i class="fa fa-search"></i>Build Query</a></li>
-        <li onclick="getData();"><i class="fa fa-database"></i>Get Data</li>
-
         <br>
 
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
@@ -75,14 +72,8 @@
             </div>
             <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
               <div class="panel-body">
-                <label>Select Players</label>
-                <select multiple class="form-control">
-                  <option>001</option>
-                  <option>002</option>
-                  <option>003</option>
-                  <option>004</option>
-                  <option>005</option>
-                </select>
+                <li onclick="QueryBuilder.open();"><i class="fa fa-search"></i>Query Database</a></li>
+        <li onclick="getData();"><i class="fa fa-database"></i>Get All Data</li>
               </div>
             </div>
           </div>
@@ -404,8 +395,8 @@
         Test Coordinates
    *************************/
 
-  addMarker(latitudeDistance,longitudeDistance, "Top Right + " + latitudeDistance + " , " + longitudeDistance);
-  addMarker(0,0, "Bottom Left Location [0,0]");
+  // addMarker(latitudeDistance,longitudeDistance, "Top Right + " + latitudeDistance + " , " + longitudeDistance);
+  // addMarker(0,0, "Bottom Left Location [0,0]");
 
   function addMarker(lat, long, title){
     var title = (title) ? title : "";
