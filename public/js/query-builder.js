@@ -170,24 +170,24 @@ QueryBuilder.removeArgument = function(id) {
 // Generates an HTML table of the current query
 QueryBuilder.preview = function(){
     
-    $("arguments").html("");
-
-    var table = $("<table/>").attr("id","arguments");
+    // Empty preview table
+    $("#arguments tbody").html("");
+    
+    // The HTML containing each table row
+    var rows;
 
     // Iterate through queries
     for (var id in QueryBuilder.query){
         
-        var tr = "";
+        // An individual table row
+        var tr = "<tr>";
 
-        // This argument
+        // The current argument
         var argument = QueryBuilder.query[id];
 
-        var editBtn   = '<div class="btn btn-warning" onclick="QueryBuilder.removeArgument(' + id + ')"><i class="fa fa-pencil"></i></div>';
-        var deleteBtn = '<div class="btn btn-danger"  onclick="QueryBuilder.removeArgument(' + id + ')"><i class="fa fa-close"></i></div>';
-
-        argument.edit = editBtn;
-        argument.delete = deleteBtn;
-
+        // Customized delete button
+        argument.deleteBtn = '<div class="btn btn-danger"  onclick="QueryBuilder.removeArgument(' + id + ')"><i class="fa fa-close"></i></div>';
+        
         // Create <td> data cells
         for (var key in argument) {
             if (typeof argument[key] != 'undefined') {
@@ -197,11 +197,15 @@ QueryBuilder.preview = function(){
             }
         }
 
-        tr = $("<tr>").append(tr);
-
+        rows = rows + tr + "</tr>";
     }
     
-    $("#arguments").append(tr);
+    $("#arguments tbody").append(rows);
+
+
+    $("#json_preview code").html(" ").append(JSON.stringify(QueryBuilder.query));
+
+
 
     return tr;
 }
