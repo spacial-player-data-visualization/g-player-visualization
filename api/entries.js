@@ -97,7 +97,7 @@ module.exports = {
     },
 
     query: function(req, res) {
-        return EntryModel.find({playerID: 2}, function(err, result){
+        return EntryModel.find({timestamp: req.params.time}, function(err, result){
             if (err) {
                     console.log(err);
                 } else {

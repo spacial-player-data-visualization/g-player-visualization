@@ -91,7 +91,7 @@ app.get('/api/entries/:id', function (req, res){
 	entries.getById(req, res);
 });
 
-app.get('/api/test', function (req, res){
+app.get('/api/timestamp/:time', function (req, res){
   entries.query(req, res);
 })
 
