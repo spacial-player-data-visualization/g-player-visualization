@@ -1,6 +1,7 @@
+var EntryModel = require('../models/entries');
 
-var saveEntry = function(data, model) {
-    var entry = new model({
+var saveEntry = function(data) {
+    var entry = new EntryModel({
         area: data.area,
         playerID: data.playerID,
         timestamp: data.timestamp,
@@ -20,12 +21,12 @@ var saveEntry = function(data, model) {
 }
 
 module.exports = {
-    post: function(req, res, model) {
-        saveEntry(req.body, model);
+    post: function(req, res) {
+        saveEntry(req.body);
         return res.send("added");
     },
 
-    multiPost: function(req, res, model) {
+    multiPost: function(req, res) {
 
         // Extract DATA from request body
     	var data = JSON.parse(req.body.entries);
@@ -34,14 +35,14 @@ module.exports = {
         console.log(req.body.entries);
 
     	data.forEach(function(entry){
-    		saveEntry(entry, model);
+    		saveEntry(entry);
     	});
         
     	return res.send("added multi");
     },
 
-    get: function(req, res, model) {
-        return model.find(function(err, entries) {
+    get: function(req, res) {
+        return EntryModel.find(function(err, entries) {
             if (err) {
                 console.log(err);
             } else {
@@ -50,8 +51,8 @@ module.exports = {
         });
     },
 
-    getById: function(req, res, model) {
-        return model.findById(req.params.id, function(err, entry) {
+    getById: function(req, res) {
+        return EntryModel.findById(req.params.id, function(err, entry) {
             if (err) {
                 console.log(err);
             } else {
@@ -60,8 +61,8 @@ module.exports = {
         });
     },
 
-    put: function(req, res, model) {
-        return model.findById(req.params.id, function(err, entry) {
+    put: function(req, res) {
+        return EntryModel.findById(req.params.id, function(err, entry) {
             
             entry.area = req.body.area;
             entry.playerID = req.body.playerID;
@@ -82,8 +83,8 @@ module.exports = {
         })
     },
 
-    delete: function(req, res, model) {
-        return model.findById(req.params.id, function(err, entry) {
+    delete: function(req, res) {
+        return EntryModel.findById(req.params.id, function(err, entry) {
             return entry.remove(function(err) {
                 if (err) {
                     console.log(err);
@@ -93,6 +94,17 @@ module.exports = {
                 }
             });
         })
+    },
+
+    query: function(req, res) {
+        return EntryModel.find({timestamp: req.params.time}, function(err, result){
+            if (err) {
+                    console.log(err);
+                } else {
+                    console.log('query')
+                    res.send(result);
+                }
+        });
     }
 
 }

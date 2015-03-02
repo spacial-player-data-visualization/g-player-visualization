@@ -39,6 +39,9 @@ db.once('open', function callback () {
   console.log('Initialized Connection with MongoDB.\n');
 });
 
+var EntryModel = require('./models/entries');
+
+
 // Initialize the port
 app.set('port', (process.env.PORT || 5000));
 
@@ -48,38 +51,6 @@ app.use(express.static(__dirname + '/public'));
 // Enable body parsing for incoming requests
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
-/****************************
-         SCHEMAS 
- ****************************/
-
-var Schema = mongoose.Schema;
-
-var Entry = new Schema({
-    area: {
-        type: String
-    },
-    playerID: {
-        type: Number
-    },
-    timestamp: {
-        type: Number
-    },
-    posX: {
-        type: Number
-    },
-    posY: {
-        type: Number
-    },
-    cameraX: {
-        type: Number
-    },
-    cameraY: {
-        type: Number
-    }
-});
-
-var EntryModel = mongoose.model('Entry', Entry);
 
 /****************************
        CONTROLLERS 
@@ -107,27 +78,31 @@ app.get('/', function(request, response) {
 // ENTRIES
 app.get('/api/entries', function (req, res){
     console.log("\nGET api/entries");
-	entries.get(req, res, EntryModel);
+	entries.get(req, res);
 });
 
 app.post('/api/entries', function (req, res){
     console.log("\nPOST api/entries");
-    entries.multiPost(req, res, EntryModel);
+    entries.multiPost(req, res);
 });
 
 app.get('/api/entries/:id', function (req, res){
     console.log("\nGET api/entries/id");
-	entries.getById(req, res, EntryModel);
+	entries.getById(req, res);
 });
+
+app.get('/api/timestamp/:time', function (req, res){
+  entries.query(req, res);
+})
 
 // app.put('/api/entries/:id', function (req, res){
 //     console.log("\nPUT api/entries");
-// 	entries.put(req, res, EntryModel);
+// 	entries.put(req, res);
 // });
 
 // app.delete('/api/entries/:id', function (req, res){
 //     console.log("\nDELETE api/entries");
-// 	entries.delete(req, res, EntryModel);
+// 	entries.delete(req, res);
 // });
 
 app.listen(app.get('port'), function() {
