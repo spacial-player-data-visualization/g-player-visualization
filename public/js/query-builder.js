@@ -15,22 +15,23 @@ https://github.com/tablelist/angular-admin-directives/
 
 // ABOUT QUERY BUILDING:
 // An argument is a single line in a complex query.
-var sample_argument = {
-    
-    // How the argument is compared against the database
-    comparison : "AND",
 
-    // The key name. ex: "userId".
-    property : "timestamp",
-    
-    // How the value is compared. ex: "Greater than".
-    comparator : "gte",
-    
-    // The value compared against the data. Example: "10.4".
-    parameter : 10.2,
+// VOCABULARY:
+
+// comparison : AND/OR
+// - property : the key (userId, timecode)
+// - comparator : the comparison agains the value (equals, greater than)
+// - value : the value to compare (true, 10.2...)
+
+var sample_argument = {
+    comparison : "AND", // How the argument is compared against the database
+	property : "timestamp", // The key name. ex: "userId".
+    comparator : "gte", // How the value is compared. ex: "Greater than".
+    value : 10.2, // The value compared against the data. Example: "10.4".
 };
 
 
+// MAIN QUERY BUILDER OBJECT
 var QueryBuilder = {
 
   // Define current state
@@ -38,9 +39,6 @@ var QueryBuilder = {
 
   // Save the parameter list.
   query : [],
-
-  // Returns the Mongo query string
-  queryString : function(){ return "Feature Incomplete"; },
 
 };
 
@@ -118,49 +116,69 @@ QueryBuilder.propertyUpdated = function() {
 	// }
 }
 
+// Get parameter from form
+QueryBuilder.getFormData = function(){
+
+	// Extract form data with jQuery
+	var comparison = $("#inputComparison").val();
+	var property   = $("#inputProperty").val();
+	var comparator = $("#inputComparator").val();
+	var value      = $("#inputValue").val();
+
+	return {
+		comparison : comparison,
+		property   : property,
+		comparator : comparator,
+		value  : value ,
+	}
+}
+
 // Adds a new argument to the query
 QueryBuilder.addArgument = function(event) {
-	var comparisonType = $("#selectComparisonType").val();
-	var queryType = $("#selectQueryType").val();
-	var value;
+
+	// Get values from form
+	var parameter = QueryBuilder.getFormData();
 
 	// Get the value for the argument based on the query type
-	if (queryType == "area") {
+	/*
+	if (parameter.property == "area") {
 
 		value = $("#selectMap option:selected").text();
-	} else if (queryType == "playerID") {
+	} else if (parameter.property == "playerID") {
 
 		//TODO: if there is more than one player ID, add them as a disjunction...
 		value = $("#inputPlayerID").val();
-	} else if (queryType == "timestamp") {
+	} else if (parameter.property == "timestamp") {
 
 		//TODO: make sure this is a number, else it will be the empty string
 		value = $("#inputTimestamp").val();
-	}
+	}*/
 
-    QueryBuilder.query.push({
-        comparison : comparisonType,
+	console.log("\nAdding Parameter");
+	console.log(parameter);
 
-        // The key name. ex: "userId".
-        property : queryType,
-    
-        // How the value is compared. ex: "Greater then".
-        comparator : "equal to",
-    
-        // The value compared against the data. Example: "10.4".
-        parameter : value,
-    })
+    // Add parameter to list
+    QueryBuilder.query.push(parameter)
 
+	// Update Preview Table
     QueryBuilder.preview();
+}
+
+// Returns the requested argument
+QueryBuilder.getArgument = function(id) {
+    var argument = QueryBuilder.query[id];
+    return argument;
 }
 
 // Removes an argument from the query
 QueryBuilder.removeArgument = function(id) {
-    console.log(QueryBuilder.query.length);
+    var argument = QueryBuilder.query[id];
+
+    // remove the argument based on which button was pressed
     QueryBuilder.query.splice(id, 1);
-    console.log(QueryBuilder.query.length);
     QueryBuilder.preview();
-	// TODO remove the argument based on which button was pressed
+
+    return argument;
 }
 
 // Generates an HTML table of the current query
@@ -177,43 +195,55 @@ QueryBuilder.preview = function(){
         
         // The current argument
         var argument = QueryBuilder.query[id];
-
         console.log(argument);
 
         // Create <td> data cells
-		var a = argument.comparison;
-		var b = argument.parameter;
-		var c = argument.comparator;
-		var d = argument.value;
+        var row_data = [
+        	argument.comparison,
+			argument.property,
+			argument.comparator,
+			argument.value,
+        ]
 
         // Customized delete button
-        var e = '<div class="btn btn-danger"  onclick="QueryBuilder.removeArgument(' + id + ')"><i class="fa fa-close"></i></div>';
+        row_data.push(QueryBuilder.generateButtons(id));
 
 		// _.reduce (or, foldr) boils an array of values
 		// into a single value. In this case: the HTML
 		// for a table row.
 
-        var tr = _.reduce([a,b,c,d,e], function(acc, current){
+        var tr = _.reduce(row_data, function(acc, current){
         	
         	// Check for undefined
-        	var value = (typeof current != 'undefined') ? current : "-"
+        	var value = (typeof current != 'undefined') ? current : "-";
 
         	// Return data cell
         	return acc + "<td>" + current + "</td>";
 
         }, "");
 
+        // Append new row to existing rows.
         rows = rows + "<tr>" + tr + "</tr>";
     }
     
+    // Add rows to table
     $("#arguments tbody").append(rows);
 
-
+    // Add JSON code to preview
     $("#json_preview code").html(" ").append(JSON.stringify(QueryBuilder.query));
 
+    return rows;
+}
 
+// Generate the HTML for the [add] and [edit] buttons.
+QueryBuilder.generateButtons = function(id){
+	return '<div class="btn btn-danger" onclick="QueryBuilder.removeArgument(' + id + ')"><i class="fa fa-close"></i></div>'
+}
 
-    return tr;
+// @TODO: Convert QueryBuilder.query -> a mongo db string
+// Returns the Mongo query string
+QueryBuilder.queryString = function(){ 
+	return "Feature Incomplete"; 
 }
 
 // Static Configuration

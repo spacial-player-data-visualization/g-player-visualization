@@ -14,11 +14,12 @@
           <b>Warning</b> Feature in Development. Only 'AND' is supported for stacking parameters
         </div>
 
+        <!-- #inputComparison -->
         <form class="form-horizontal" id="formQueryBuilder">
           <div class="form-group row">
-          <label for="selectComparisonType" class="col-sm-4 control-label">Comparison Type</label>
-            <div class="col-sm-8" id="groupComparison">
-              <select class="form-control" id="selectComparisonType">
+          <label for="inputComparison" class="col-sm-4 control-label">Comparison Type</label>
+            <div class="col-sm-8">
+              <select class="form-control" id="inputComparison">
                 <option value="and">AND</option>
                 <option value"or">OR</option>
                 <option value="not">NOT</option>
@@ -28,6 +29,7 @@
 
           <hr>
 
+          <!-- #inputProperty -->
           <div class="form-group row" id="groupType">
             <label for="inputProperty" class="col-sm-4 control-label">Property</label>
             <div class="col-sm-8">
@@ -38,6 +40,7 @@
             </div>
           </div>
 
+          <!-- #inputComparator -->
           <div class="form-group row" id="groupType">
             <label for="inputComparator" class="col-sm-4 control-label">Comparator</label>
             <div class="col-sm-8">
@@ -49,12 +52,13 @@
             </div>
           </div>
 
+          <!-- #inputValue -->
           <div class="form-group row" id="groupTimestamp">
             <label for="inputValue" class="col-sm-4 control-label">Value</label>
-            <div class="col-sm-8" id="inputValue">
+            <div class="col-sm-8">
               
               <!-- Change input based on selected property -->
-              <input type="number" class="form-control" placeholder="Value (e.g. 100)">
+              <input id="inputValue" type="number" class="form-control" placeholder="Value (e.g. 100)">
 
             </div>
           </div>
@@ -76,7 +80,7 @@
     <table class="table table-striped table-condensed" id="arguments">
       <thead>
         <th></th>
-        <th>Parameter</th>
+        <th>Property</th>
         <th>Comparitor</th>
         <th>Value</th>
         <th>Delete</th>
