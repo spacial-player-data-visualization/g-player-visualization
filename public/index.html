@@ -273,29 +273,8 @@
         }
 
         /*************************
-              Setup UI
+              Setup Data
          *************************/
-
-        var SideOptionsToggle = L.Control.extend({
-            
-			      // Leaflet UI tools
-            options: {
-                position: 'topleft'
-            },
-
-            onAdd: function (map) {
-                // create the control container with a particular class name
-                var button = L.DomUtil.create('div', 'toggle-side-options leaflet-control leaflet-bar');
-                var icon = L.DomUtil.create('i', 'fa fa-bars', button);
-
-                // Add Listener
-                L.DomEvent.addListener(button, 'click', function(){
-                    $("#wrapper").toggleClass("toggled");
-                });
-
-                return button;
-            }
-        });
 
         // Convert data points into plottable data
         data = _.map(data, function(p){
