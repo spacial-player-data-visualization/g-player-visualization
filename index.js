@@ -41,6 +41,9 @@ db.once('open', function callback () {
 
 var EntryModel = require('./models/entries');
 
+/****************************
+      SERVER SETTINGS
+ ****************************/
 
 // Initialize the port
 app.set('port', (process.env.PORT || 5000));
@@ -50,7 +53,6 @@ app.use(express.static(__dirname + '/public'));
 
 // Enable body parsing for incoming requests
 app.use(bodyParser.urlencoded({ extended: true }));
-
 
 /****************************
        CONTROLLERS 
@@ -69,13 +71,13 @@ app.get('/', function(request, response) {
   response.render('index');
 });
 
-// ENTRY
-// app.post('/api/entry', function (req, res){
-//     console.log("\nPOST api/entry");
-//     entries.post(req, res, EntryModel);
-// });
+// ENTRY (singular)
+app.post('/api/entry', function (req, res){
+    console.log("\nPOST api/entry");
+    entries.post(req, res, EntryModel);
+});
 
-// ENTRIES
+// ENTRIES (multiple)
 app.get('/api/entries', function (req, res){
     console.log("\nGET api/entries");
 	entries.get(req, res);
@@ -91,19 +93,14 @@ app.get('/api/entries/:id', function (req, res){
 	entries.getById(req, res);
 });
 
+// TIMESTAMP
 app.get('/api/timestamp/:time', function (req, res){
   entries.query(req, res);
 })
 
-// app.put('/api/entries/:id', function (req, res){
-//     console.log("\nPUT api/entries");
-// 	entries.put(req, res);
-// });
-
-// app.delete('/api/entries/:id', function (req, res){
-//     console.log("\nDELETE api/entries");
-// 	entries.delete(req, res);
-// });
+/****************************
+        START SERVER
+ ****************************/
 
 app.listen(app.get('port'), function() {
   console.log("\nAPI Running at localhost:" + app.get('port'));

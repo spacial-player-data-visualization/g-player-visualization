@@ -26,8 +26,12 @@
     <!-- Left Options Sidebar -->
     <div id="sidebar-wrapper">
       <ul class="sidebar-nav">
-        <li class="active"><a href="index.html"><i class="fa fa-map-marker"></i>Home</a></li>
-        <li><a href="uploader.html"><i class="fa fa-database"></i>Upload Data</a></li>
+        <li class="active">
+        	<a href="index.html"><i class="fa fa-map-marker"></i>Home</a>
+        </li>
+        <li>
+        	<a href="uploader.html"><i class="fa fa-database"></i>Upload Data</a>
+        </li>
         <br>
 
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
@@ -45,18 +49,15 @@
 
                   <label>Select Game</label>
                   <select class="form-control">
-                    <option>Fallout: Mod</option>
-                    <option>Quake</option>
+                    <option>Fallout</option>
+                    <option>...etc</option>
                   </select>
 
                   <br>
 
                   <label>Select Map</label>
                   <select class="form-control">
-                    <option>Outside Area</option>
-                    <option>Inside Area</option>
-                    <option>Warehouse</option>
-                    <option>Desert</option>
+                    <option>Intro House</option>
                   </select>
                 </form>
               </div>
@@ -73,7 +74,7 @@
             <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
               <div class="panel-body">
                 <li onclick="QueryBuilder.open();"><i class="fa fa-search"></i>Query Database</a></li>
-        <li onclick="getData();"><i class="fa fa-database"></i>Get All Data</li>
+                <li onclick="MAP.getData();"><i class="fa fa-database"></i>Get All Data</li>
               </div>
             </div>
           </div>
@@ -148,22 +149,14 @@
  <script src="lib/leaflet-heatmap.js"></script>
  <script src="lib/mprogress.min.js"></script>
 
- <!-- Custom Javascript -->
- <script src="js/app.js"></script>  <!-- App Functionality -->
- <script src="js/query-builder.js"></script>  <!-- Query Builder Functionality -->
+ <!-- App Functionality -->
+ <script src="js/app.js"></script>
+ 
+ <!-- Query Builder Functionality -->
+ <script src="js/query-builder.js"></script>
 
  <!-- Page-Specific Javascript -->
  <script>
-
-  // Toggle Side Options Meny
-  $("#toggle-menu").click(function(e) {
-    e.preventDefault();
-    $("#wrapper").toggleClass("toggled");
-  });
-
-  var options = {
-    heatmap : true,
-  }
 
   // Save window size.
   var windowWidth  = $(document).width();
@@ -178,6 +171,12 @@
   $("#map").css("height", windowHeight);
 
   var settings = {
+
+  	// Save data
+  	data : null,
+
+  	// enable heatmap
+  	heatmap : true,
 
     // Global scale factor.
     // Helps to max points (ranging from -10,000 to 10,000)
@@ -220,6 +219,7 @@
   // Take care when converting from cartesian points, to lat/long.        
   var imageBounds = [[0, 0], [latitudeDistance, longitudeDistance]];
 
+  // Define center of map
   var mapCenter = [latitudeDistance / 2, longitudeDistance / 2];
 
   // Define Map Parameters
@@ -231,188 +231,16 @@
   // Add image overlay to map
   L.imageOverlay('img/maps/' + settings.map.url, imageBounds).addTo(map);
 
-  /*************************
-         Setup DATA
-   *************************/
-
-  function getData(){
-
-    $("#loading").show();
-
-      // Hit API
-      $.get(API.url + "entries", function(data){
-
-        var offset = settings.map.offset;
-        var scale = settings.map.scale;
-
-        // Validate data. Ignore NPC interactions, etc
-        // @TODO: Temp data fix. Replaced by proper
-        // API and data validation.
-        data = _.filter(data, function(p){
-          return p.posX && p.posY;
-        })
-
-        function plotData(data){
-
-          var radius = 10;
-
-          _.each(data, function(p){
-              var circle = L.circle([p.latitude, p.longitude], radius, {
-                  color: 'black',
-                  fillColor: '#fff',
-                  fillOpacity: 1,
-              }).addTo(map);
-          });
-        }
-
-        /*************************
-              Setup HEATMAP
-         *************************/
-
-        // http://www.patrick-wied.at/static/heatmapjs/
-        var heatmapLayer = new HeatmapOverlay({
-          "radius": .5,
-          "maxOpacity": .8,
-          "scaleRadius": true, 
-          "useLocalExtrema": true,
-          latField: 'latitude',
-          lngField: 'longitude',
-        });
-
-        function plotHeatmap(data){
-
-          var heatmapData = { 
-            max: 1,  // No idea what this does
-            data: data
-          };
-          
-          map.addLayer(heatmapLayer)
-          heatmapLayer.setData(heatmapData);     
-        }
-
-         /*************************
-              Test Coordinates
-         *************************/
-
-         addMarker(latitudeDistance,longitudeDistance, "Top Right + " + latitudeDistance + " , " + longitudeDistance);
-         addMarker(0,0, "Bottom Left Location [0,0]");
-
-        function addMarker(lat, long, title){
-          var title = (title) ? title : "";
-          L.marker([lat, long], {title : title}).addTo(map);
-        }
-
-        /*************************
-              Setup UI
-         *************************/
-
-        var SideOptionsToggle = L.Control.extend({
-            options: {
-                position: 'topleft'
-            },
-
-            onAdd: function (map) {
-                // create the control container with a particular class name
-                var button = L.DomUtil.create('div', 'toggle-side-options leaflet-control leaflet-bar');
-                var icon = L.DomUtil.create('i', 'fa fa-bars', button);
-
-                // Add Listener
-                L.DomEvent.addListener(button, 'click', function(){
-                    $("#wrapper").toggleClass("toggled");
-                });
-
-                return button;
-            }
-        });
-
-        // Convert data points into plottable data
-        data = _.map(data, function(p){
-          return { 
-
-              // Create a latitude & longitude field.
-              // Maps the (x,y) position to a coordinate
-              // on the earth. Makes plotting MUCH easier
-
-              latitude  : ((p.posY + offset.y) * scale.y) / settings.scale,
-              longitude : ((p.posX + offset.x) * scale.x) / settings.scale, 
-
-              // Preserve Object
-
-              area : p.area,
-              playerID : p.playerID,
-              timestamp : p.timestamp,
-              cameraX : p.cameraX,
-              cameraY : p.cameraY
-            }
-          })
-
-        plotData(data);
-        plotHeatmap(data);
-
-        $("#loading").hide();
-      })
-  };
-
-  function plotData(data){
-
-   var radius = 10;
-
-   _.each(data, function(p){
-     var circle = L.circle([p.latitude, p.longitude], radius, {
-       color: 'black',
-       fillColor: '#000',
-       fillOpacity: 1,
-     }).addTo(map);
-   });
-  }
-
-  /*************************
-        Setup HEATMAP
-   *************************/
-
-  // http://www.patrick-wied.at/static/heatmapjs/
-  var heatmapLayer = new HeatmapOverlay({
-    "radius": .5,
-    "maxOpacity": .8,
-    "scaleRadius": true, 
-    "useLocalExtrema": false,
-    latField: 'latitude',
-    lngField: 'longitude',
-  });
-
-  function plotHeatmap(data){
-
-    var heatmapData = { 
-      max: 1,  // No idea what this does
-      data: data
-    };
-    
-    map.addLayer(heatmapLayer)
-    heatmapLayer.setData(heatmapData);     
-  }
-
-  /*************************
-        Test Coordinates
-   *************************/
-
-  // addMarker(latitudeDistance,longitudeDistance, "Top Right + " + latitudeDistance + " , " + longitudeDistance);
-  // addMarker(0,0, "Bottom Left Location [0,0]");
-
-  function addMarker(lat, long, title){
-    var title = (title) ? title : "";
-    L.marker([lat, long], {title : title}).addTo(map);
-  }
-
   /************************
         Setup UI
   *************************/
 
   var SideOptionsToggle = L.Control.extend({
-    options: {
-      position: 'topleft'
-    },
+    options: { position: 'topleft' },
 
+    // Create a button for toggling left nav
     onAdd: function (map) {
+      
       // create the control container with a particular class name
       var button = L.DomUtil.create('div', 'toggle-side-options leaflet-control leaflet-bar');
       var icon = L.DomUtil.create('i', 'fa fa-bars', button);
@@ -428,17 +256,26 @@
 
   map.addControl(new SideOptionsToggle());
 
-  $('#loading').hide();
-
-  $('#toggle_heatmap').change(function() {
-    // alert(options.heatmap)
-    options.heatmap = !options.heatmap;
-
-    if (options.heatmap) map.removeLayer(heatmapLayer)
-    if (!options.heatmap) map.addLayer(heatmapLayer)
-
+  // Toggle Side Options Meny
+  $("#toggle-menu").click(function(e) {
+    e.preventDefault();
+    $("#wrapper").toggleClass("toggled");
   });
 
+  // Show/Hide Heatmap
+  $('#toggle_heatmap').change(function(e) {
+    
+  	// Enable
+    if ($('#toggle_heatmap').is(':checked')) {
+    	MAP.addHeatmap(settings.data);
+    
+	  //	Disable
+    } else {
+    	map.removeLayer(MAP.heatmapLayer)
+    }
+  });
+
+  $('#loading').hide();
 
 </script>
 </body>
