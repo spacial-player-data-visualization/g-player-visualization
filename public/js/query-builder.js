@@ -181,6 +181,13 @@ QueryBuilder.removeArgument = function(id) {
     return argument;
 }
 
+// Clear current query. Start fresh
+QueryBuilder.reset = function(){
+	if (!confirm("Are you sure you want to reset the Query Builder? This will clear the current form, as well as parameters on the right. It will not effect your saved or most common queries.")) return;
+	QueryBuilder.query = [];
+	QueryBuilder.preview();
+}
+
 // Generates an HTML table of the current query
 QueryBuilder.preview = function(){
     
@@ -244,6 +251,11 @@ QueryBuilder.generateButtons = function(id){
 // Returns the Mongo query string
 QueryBuilder.queryString = function(){ 
 	return "Feature Incomplete"; 
+}
+
+// GET data from database according to defined mongo query
+QueryBuilder.queryDatabase = function(){
+
 }
 
 // Static Configuration
