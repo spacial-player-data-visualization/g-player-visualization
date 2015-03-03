@@ -26,8 +26,12 @@
     <!-- Left Options Sidebar -->
     <div id="sidebar-wrapper">
       <ul class="sidebar-nav">
-        <li class="active"><a href="index.html"><i class="fa fa-map-marker"></i>Home</a></li>
-        <li><a href="uploader.html"><i class="fa fa-database"></i>Upload Data</a></li>
+        <li class="active">
+        	<a href="index.html"><i class="fa fa-map-marker"></i>Home</a>
+        </li>
+        <li>
+        	<a href="uploader.html"><i class="fa fa-database"></i>Upload Data</a>
+        </li>
         <br>
 
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
@@ -45,18 +49,15 @@
 
                   <label>Select Game</label>
                   <select class="form-control">
-                    <option>Fallout: Mod</option>
-                    <option>Quake</option>
+                    <option>Fallout</option>
+                    <option>...etc</option>
                   </select>
 
                   <br>
 
                   <label>Select Map</label>
                   <select class="form-control">
-                    <option>Outside Area</option>
-                    <option>Inside Area</option>
-                    <option>Warehouse</option>
-                    <option>Desert</option>
+                    <option>Intro House</option>
                   </select>
                 </form>
               </div>
@@ -148,9 +149,11 @@
  <script src="lib/leaflet-heatmap.js"></script>
  <script src="lib/mprogress.min.js"></script>
 
- <!-- Custom Javascript -->
- <script src="js/app.js"></script>  <!-- App Functionality -->
- <script src="js/query-builder.js"></script>  <!-- Query Builder Functionality -->
+ <!-- App Functionality -->
+ <script src="js/app.js"></script>
+ 
+ <!-- Query Builder Functionality -->
+ <script src="js/query-builder.js"></script>
 
  <!-- Page-Specific Javascript -->
  <script>
@@ -160,10 +163,6 @@
     e.preventDefault();
     $("#wrapper").toggleClass("toggled");
   });
-
-  var options = {
-    heatmap : true,
-  }
 
   // Save window size.
   var windowWidth  = $(document).width();
@@ -178,6 +177,12 @@
   $("#map").css("height", windowHeight);
 
   var settings = {
+
+  	// Save data
+  	data : null,
+
+  	// enable heatmap
+  	heatmap : true,
 
     // Global scale factor.
     // Helps to max points (ranging from -10,000 to 10,000)
@@ -220,6 +225,7 @@
   // Take care when converting from cartesian points, to lat/long.        
   var imageBounds = [[0, 0], [latitudeDistance, longitudeDistance]];
 
+  // Define center of map
   var mapCenter = [latitudeDistance / 2, longitudeDistance / 2];
 
   // Define Map Parameters
@@ -265,37 +271,12 @@
           });
         }
 
-        /*************************
-              Setup HEATMAP
-         *************************/
-
-        // http://www.patrick-wied.at/static/heatmapjs/
-        var heatmapLayer = new HeatmapOverlay({
-          "radius": .5,
-          "maxOpacity": .8,
-          "scaleRadius": true, 
-          "useLocalExtrema": true,
-          latField: 'latitude',
-          lngField: 'longitude',
-        });
-
-        function plotHeatmap(data){
-
-          var heatmapData = { 
-            max: 1,  // No idea what this does
-            data: data
-          };
-          
-          map.addLayer(heatmapLayer)
-          heatmapLayer.setData(heatmapData);     
-        }
-
          /*************************
               Test Coordinates
          *************************/
 
-         addMarker(latitudeDistance,longitudeDistance, "Top Right + " + latitudeDistance + " , " + longitudeDistance);
-         addMarker(0,0, "Bottom Left Location [0,0]");
+        // addMarker(latitudeDistance,longitudeDistance, "Top Right + " + latitudeDistance + " , " + longitudeDistance);
+        // addMarker(0,0, "Bottom Left Location [0,0]");
 
         function addMarker(lat, long, title){
           var title = (title) ? title : "";
@@ -307,6 +288,8 @@
          *************************/
 
         var SideOptionsToggle = L.Control.extend({
+            
+			// Leaflet UI tools
             options: {
                 position: 'topleft'
             },
@@ -337,7 +320,6 @@
               longitude : ((p.posX + offset.x) * scale.x) / settings.scale, 
 
               // Preserve Object
-
               area : p.area,
               playerID : p.playerID,
               timestamp : p.timestamp,
@@ -346,8 +328,11 @@
             }
           })
 
+		// Save data for future reference
+        settings.data = data;
+
+        // Add points to map
         plotData(data);
-        plotHeatmap(data);
 
         $("#loading").hide();
       })
@@ -380,15 +365,15 @@
     lngField: 'longitude',
   });
 
-  function plotHeatmap(data){
+  function addHeatmap(data){
 
-    var heatmapData = { 
-      max: 1,  // No idea what this does
-      data: data
-    };
-    
-    map.addLayer(heatmapLayer)
-    heatmapLayer.setData(heatmapData);     
+      var heatmapData = { 
+	         max: 1,  // No idea what this does
+	         data: data,
+      };
+		
+	 map.addLayer(heatmapLayer)
+     heatmapLayer.setData(heatmapData);
   }
 
   /*************************
@@ -408,11 +393,11 @@
   *************************/
 
   var SideOptionsToggle = L.Control.extend({
-    options: {
-      position: 'topleft'
-    },
+    options: { position: 'topleft' },
 
+    // Create a button for toggling left nav
     onAdd: function (map) {
+      
       // create the control container with a particular class name
       var button = L.DomUtil.create('div', 'toggle-side-options leaflet-control leaflet-bar');
       var icon = L.DomUtil.create('i', 'fa fa-bars', button);
@@ -428,17 +413,20 @@
 
   map.addControl(new SideOptionsToggle());
 
-  $('#loading').hide();
-
-  $('#toggle_heatmap').change(function() {
-    // alert(options.heatmap)
-    options.heatmap = !options.heatmap;
-
-    if (options.heatmap) map.removeLayer(heatmapLayer)
-    if (!options.heatmap) map.addLayer(heatmapLayer)
-
+  // Show/Hide Heatmap
+  $('#toggle_heatmap').change(function(e) {
+    
+  	// Enable
+    if ($('#toggle_heatmap').is(':checked')) {
+    	addHeatmap(settings.data);
+    
+	//	Disable
+    } else {
+    	map.removeLayer(heatmapLayer)
+    }
   });
 
+  $('#loading').hide();
 
 </script>
 </body>
