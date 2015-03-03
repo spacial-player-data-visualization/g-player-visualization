@@ -241,6 +241,9 @@ QueryBuilder.preview = function(){
     // Add JSON code to preview
     $("#json_preview code").html(" ").append(JSON.stringify(QueryBuilder.query));
 
+    // Add Mongo Query String to preview
+    $("#mongo_preview textarea").val(" ").val(QueryBuilder.queryString());
+
     return rows;
 }
 
@@ -252,11 +255,21 @@ QueryBuilder.generateButtons = function(id){
 // @TODO: Convert QueryBuilder.query -> a mongo db string
 // Returns the Mongo query string
 QueryBuilder.queryString = function(){ 
-	return "Feature Incomplete"; 
+	return "Feature In Development"; 
 }
 
 // GET data from database according to defined mongo query
 QueryBuilder.queryDatabase = function(){
+	
+	// Check for empty query
+	if (QueryBuilder.query.length < 1){
+		alert("No Query Defined. Unable to Query Database");
+		return;
+	} else {
+		
+
+
+	}
 
 }
 
