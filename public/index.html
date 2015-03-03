@@ -74,7 +74,7 @@
             <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
               <div class="panel-body">
                 <li onclick="QueryBuilder.open();"><i class="fa fa-search"></i>Query Database</a></li>
-        <li onclick="getData();"><i class="fa fa-database"></i>Get All Data</li>
+                <li onclick="getData();"><i class="fa fa-database"></i>Get All Data</li>
               </div>
             </div>
           </div>
@@ -258,26 +258,15 @@
           return p.posX && p.posY;
         })
 
-        function plotData(data){
-
-          var radius = 10;
-
-          _.each(data, function(p){
-              var circle = L.circle([p.latitude, p.longitude], radius, {
-                  color: 'black',
-                  fillColor: '#fff',
-                  fillOpacity: 1,
-              }).addTo(map);
-          });
-        }
-
-         /*************************
+        /*************************
               Test Coordinates
-         *************************/
+        *************************/
 
+        // Debug: Show image borders
         // addMarker(latitudeDistance,longitudeDistance, "Top Right + " + latitudeDistance + " , " + longitudeDistance);
         // addMarker(0,0, "Bottom Left Location [0,0]");
 
+        // Adds a marker at the provided location
         function addMarker(lat, long, title){
           var title = (title) ? title : "";
           L.marker([lat, long], {title : title}).addTo(map);
@@ -289,7 +278,7 @@
 
         var SideOptionsToggle = L.Control.extend({
             
-			// Leaflet UI tools
+			      // Leaflet UI tools
             options: {
                 position: 'topleft'
             },
@@ -328,7 +317,7 @@
             }
           })
 
-		// Save data for future reference
+		    // Save data for future reference
         settings.data = data;
 
         // Add points to map
@@ -345,7 +334,7 @@
    _.each(data, function(p){
      var circle = L.circle([p.latitude, p.longitude], radius, {
        color: 'black',
-       fillColor: '#000',
+       fillColor: '#fff',
        fillOpacity: 1,
      }).addTo(map);
    });
@@ -374,18 +363,6 @@
 		
 	 map.addLayer(heatmapLayer)
      heatmapLayer.setData(heatmapData);
-  }
-
-  /*************************
-        Test Coordinates
-   *************************/
-
-  // addMarker(latitudeDistance,longitudeDistance, "Top Right + " + latitudeDistance + " , " + longitudeDistance);
-  // addMarker(0,0, "Bottom Left Location [0,0]");
-
-  function addMarker(lat, long, title){
-    var title = (title) ? title : "";
-    L.marker([lat, long], {title : title}).addTo(map);
   }
 
   /************************

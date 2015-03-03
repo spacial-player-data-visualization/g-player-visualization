@@ -41,6 +41,9 @@ db.once('open', function callback () {
 
 var EntryModel = require('./models/entries');
 
+/****************************
+      SERVER SETTINGS
+ ****************************/
 
 // Initialize the port
 app.set('port', (process.env.PORT || 5000));
@@ -50,7 +53,6 @@ app.use(express.static(__dirname + '/public'));
 
 // Enable body parsing for incoming requests
 app.use(bodyParser.urlencoded({ extended: true }));
-
 
 /****************************
        CONTROLLERS 

@@ -1,7 +1,7 @@
 {
   "name": "g-player",
   "version": "0.0.1",
-  "description": "game data visualization",
+  "description": "Visualization and Data Management for Player Activity in Games",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"

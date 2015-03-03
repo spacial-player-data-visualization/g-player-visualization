@@ -1,4 +1,4 @@
-# G­Player: Visualization of Spatial­-temporal Play Data
+# G­-Player: Visualization of Spatial­-Temporal Play Data
 
 > Visualization and Data Management for Player Activity in Games
 
