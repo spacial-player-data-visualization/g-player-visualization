@@ -265,12 +265,7 @@ QueryBuilder.queryDatabase = function(){
 	if (QueryBuilder.query.length < 1){
 		alert("No Query Defined. Unable to Query Database");
 		return;
-	} else {
-		
-
-
 	}
-
 }
 
 // Static Configuration
