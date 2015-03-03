@@ -50,7 +50,7 @@ DOM.log = function(msg){
 }
 
 
-
+/*
 $(function() {
 	QueryBuilder.open();
-});
+}); */
