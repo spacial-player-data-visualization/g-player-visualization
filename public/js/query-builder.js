@@ -174,6 +174,8 @@ QueryBuilder.getArgument = function(id) {
 QueryBuilder.removeArgument = function(id) {
     var argument = QueryBuilder.query[id];
 
+    if (!confirm("Are you sure you want to delete this parameter from the Query you are building?")) return;
+
     // remove the argument based on which button was pressed
     QueryBuilder.query.splice(id, 1);
     QueryBuilder.preview();
@@ -244,7 +246,7 @@ QueryBuilder.preview = function(){
 
 // Generate the HTML for the [add] and [edit] buttons.
 QueryBuilder.generateButtons = function(id){
-	return '<div class="btn btn-danger" onclick="QueryBuilder.removeArgument(' + id + ')"><i class="fa fa-close"></i></div>'
+	return '<div onclick="QueryBuilder.removeArgument(' + id + ')"><i class="fa fa-minus-square" style="color: rgb(186, 10, 10);"></i></div>'
 }
 
 // @TODO: Convert QueryBuilder.query -> a mongo db string
