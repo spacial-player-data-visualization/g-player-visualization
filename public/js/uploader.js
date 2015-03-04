@@ -8,7 +8,7 @@ $(document).ready(function(){
   $("#csv-file").change(parseFile);
 
   // Status feedback.
-  DOM.log("\nFetching data from localStorage.")
+  DOM.log("\nLoading Last Preview.")
 
   // Pull data from the previous upload
   var data = lastUpload();
@@ -31,8 +31,8 @@ function parseFile(event) {
 
     // Parser Callback
     complete: function(results) {
-      DOM.log("File Parsed.");
-      DOM.log(results.data.length + " results loaded. " + results.errors.length + " Errors.");
+      DOM.log(results.data.length + " results loaded. ");
+      DOM.log(results.errors.length + " Errors.");
 
       var data = results.data;
       var errors = results.errors;
@@ -43,7 +43,7 @@ function parseFile(event) {
         return dat.length > 1;
       })
 
-      DOM.log(results.data.length - data.length + " blank entries (carriage returns) removed.")
+      DOM.log(results.data.length - data.length + " Empty Lines Removed.")
 
       // Fill in preview table
       populateTable(data);
@@ -89,7 +89,7 @@ function populateTable(data){
       $("table").append(tr);
   }
 
-  DOM.log("Data sample rendered to page.")
+  DOM.log("Data Sample Rendered.")
 }
 
 function formatData(data){
@@ -100,7 +100,7 @@ function formatData(data){
     return current[0].indexOf("Position_Introhouse") > -1;
   })
   
-  DOM.log(upData.length + " of " + data.length + " entries valid.")
+  DOM.log(upData.length + " of " + data.length + " Entries Valid.")
 
   var entries = _.map(upData, function(current){
     
@@ -118,6 +118,8 @@ function formatData(data){
 
   return entries;
 }
+
+var bin_count = 0;
 
 // Multi-post uploading
 function bulkUpload(){
@@ -140,9 +142,9 @@ function bulkUpload(){
   // Split data into multiple, smaller bins
   var bins = split(entries, entries.length / 200);
 
-  DOM.log(entries.length + "Entries to Upload.")
-  DOM.log("Splitting into groups for uploading")
-  DOM.log("\n" + bins.length + " groups created. Creating POST requests....");
+  DOM.log(entries.length + " Entries to Upload.")
+
+  bin_count = bins.length;
 
   // Upload bins
   upload(bins, function(){
@@ -162,8 +164,8 @@ function upload(bins, callback) {
     }
 
     current = bins[0];
-
-    DOM.log(bins.length + " Bins Remain.... ");
+    DOM.log("Uploading " + (bin_count - bins.length) + " of " + bin_count);
+    // DOM.log(bins.length + " Bins Remain.... ");
 
     // Save data into JSON object.
     // Format JSON into string

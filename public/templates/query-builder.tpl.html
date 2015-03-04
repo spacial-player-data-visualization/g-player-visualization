@@ -5,7 +5,7 @@
       <div class="row">
         <div class="col-md-12">
           <h2>Create a Query</h2>
-          <p>Pull records from the database according to provided rules.</p>
+          <p>Query the Database for Data.</p>
         </div>
       </div>
       <div class="row">
@@ -106,13 +106,48 @@
 <!-- Preset Queries -->
 <div id="query-preset" style="display: none;">
   <div class="row">
-    <div class="col-sm-6">
-      <h4>Common Queries</h4>
-      <table class="table table-striped"></table>
-    </div>
-    <div class="col-sm-6">
+    <div class="col-sm-12">
+
+      <div class="col-sm-12 alert alert-warning" id="comparisonWarning">
+        <b>Please Note</b> - Query Builder is in active development. This feature is not yet implemented. User Interface below exists for the purpose of verifying the UI design.
+      </div>
+
       <h4>Previously Used Queries</h4>
-      <table class="table table-striped"></table>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th></th>
+            <th style="width: 50px;"></th>
+            <th style="width: 50px;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>All Players</td>
+            <td><i class="fa fa-star favorite"></i></td>
+            <td><div class="btn btn-primary"><i class="fa fa-search"></i> Select</div></td>
+          </tr>
+          <tr>
+            <td colspan="3"><code>[{"comparison":"and","property":"playerId","comparator":"gte","value":"0"},{"comparison":"and","property":"timestamp","comparator":"gte","value":"0"}]</code></td>
+          </tr>
+          <tr>
+            <td>All Players after 1 minute</td>
+            <td><i class="fa fa-star"></i></td>
+            <td><div class="btn btn-primary"><i class="fa fa-search"></i> Select</div></td>
+          </tr>
+          <tr>
+            <td colspan="3"><code>[{"comparison":"and","property":"playerId","comparator":"gte","value":"0"},{"comparison":"and","property":"timestamp","comparator":"gte","value":"100.50"}]</code></td>
+          </tr>
+          <tr>
+            <td>First 20 Players</td>
+            <td><i class="fa fa-star"></i></td>
+            <td><div class="btn btn-primary"><i class="fa fa-search"></i> Select</div></td>
+          </tr>
+          <tr>
+            <td colspan="3"><code>[{"comparison":"and","property":"playerId","comparator":"lte","value":"20"},{"comparison":"and","property":"timestamp","comparator":"gte","value":"0"}]</code></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>

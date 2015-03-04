@@ -265,6 +265,8 @@ QueryBuilder.queryDatabase = function(){
 	if (QueryBuilder.query.length < 1){
 		alert("No Query Defined. Unable to Query Database");
 		return;
+	} else {
+		alert("Feature in development. Please us 'Get All Data'.")
 	}
 }
 

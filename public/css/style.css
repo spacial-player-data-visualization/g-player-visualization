@@ -107,7 +107,7 @@
 .sidebar-nav li a {
     display: block;
     text-decoration: none;
-    color: #999999;
+    color: #000;
     border-bottom: 1px solid #ddd;
     border-top: 1px solid #fff;
 }
@@ -150,6 +150,20 @@
     line-height: 42px;
 }
 
+#query-preset .fa-star {
+    font-size: 25px;
+    line-height: 34px;
+    color: #D3CFCF;
+}
+
+#query-preset .fa-star.favorite {
+    color: rgb(255, 160, 12);
+}
+
+#query-preset code {
+    max-width: 200px;
+    overflow: scroll;
+}
 
 .modal-header {
     padding: 0;

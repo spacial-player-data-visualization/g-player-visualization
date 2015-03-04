@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- <link rel="icon" href="../../favicon.ico"> -->
 
-  <title>Data Visualizer</title>
+  <title>G-Player Data Visualization | Visualize Data</title>
 
   <!-- External Style Sheets -->
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
@@ -72,9 +72,9 @@
               </h4>
             </div>
             <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-              <div class="panel-body">
-                <li onclick="QueryBuilder.open();"><i class="fa fa-search"></i>Query Database</a></li>
-                <li onclick="MAP.getData();"><i class="fa fa-database"></i>Get All Data</li>
+              <div class="panel-body" style="padding: 0px;">
+                <li onclick="QueryBuilder.open();"><a><i class="fa fa-search"></i>Query Database</a></li>
+                <li onclick="MAP.getData();"><a><i class="fa fa-database"></i>Get All Data</a></li>
               </div>
             </div>
           </div>
@@ -91,16 +91,16 @@
                 <div class="checkbox">
                   <div class="checkbox">
                    <label>
-                     <input type="checkbox" id="toggle_heatmap"> Show Player Heatmap
+                     <input type="checkbox" id="toggle_heatmap">Player Heatmap
                    </label>
                  </div>
-                 <label>
-                   <input type="checkbox"> Show Player Deaths
+                 <label style="text-decoration: line-through;">
+                   <input type="checkbox" disabled="disabled">Player Deaths
                  </label>
                </div>
                <div class="checkbox">
-                 <label>
-                   <input type="checkbox"> Show NPC Actions
+                 <label style="text-decoration: line-through;">
+                   <input type="checkbox" disabled="disabled">NPC Actions
                  </label>
                </div>
              </div>
@@ -131,7 +131,7 @@
       <div class="modal-body col-sm-12"></div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary"><i class="fa fa-database"></i> QUERY</button>
+        <button type="button" class="btn btn-primary" onclick="QueryBuilder.queryDatabase();"><i class="fa fa-database"></i> QUERY</button>
       </div>
     </div>
   </div>
@@ -151,6 +151,7 @@
 
  <!-- App Functionality -->
  <script src="js/app.js"></script>
+ <script src="js/map.js"></script>
  
  <!-- Query Builder Functionality -->
  <script src="js/query-builder.js"></script>
