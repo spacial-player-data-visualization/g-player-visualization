@@ -2,6 +2,9 @@
         Styles
  ************************/
 
+body {
+    font-family: Raleway, sans-serif;
+}
 .leaflet-container {
     background-color: rgba(255,0,0,0.0);
 }
@@ -40,6 +43,10 @@
     padding: 2px 20px; 
 }
 
+/* Hubspot Messenger */
+ul.messenger-theme-air .messenger-message {
+    background-color: #fff;
+}
 
 /* 
  * Toggle-able Left Navigation. Inspiration thanks to:;

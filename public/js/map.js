@@ -137,6 +137,71 @@ MAP.exportCSV = function(){
 	}
 };
 
+// Use Hubspot's Messenger plugin to
+// provide text/popup feedback to the user.
+var UI = {
+
+	// Store reference to loading indicator
+	loader : {},
+};
+
+// Alert via Hubspot Messenger
+//   (string) msg - 
+//   (string) id  - if you want to update existing
+UI.alert = function(msg, id){
+	return Messenger().post({
+		message : msg,
+		id : (id) ? id : Math.random(1,100),
+	});
+}
+
+// Show error message
+UI.error = function(msg){
+	return Messenger().post({
+  		message: msg,
+  		type: 'error',
+  		showCloseButton: true
+	});
+};
+
+UI.success = function(msg){
+	return Messenger().post({
+		message : msg,
+		type: "success",
+	});
+}
+
+UI.loading = function(boolean){
+
+	if (boolean){
+		UI.loader = Messenger().post({
+			type: "type-loading",
+			message : "Loading...",
+			id : "loading",
+			hideAfter: null,
+		});
+
+		return UI.loader;
+
+	} else {
+
+		UI.loader.hide();
+		
+		return Messenger().post({
+			type: "success",
+			message : "Loading Complete",
+			id : "loading",
+			hideAfter: 3,
+		});
+	}
+
+	// if (boolean){
+	// 	UI.alert("Loading.....", "loader");	
+	// } else {
+	// 	UI.alert("Loading Complete.", "loader");
+	// }	
+};
+
 
 /************************************
        Heatmap Logic

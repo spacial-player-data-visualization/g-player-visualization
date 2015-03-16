@@ -12,6 +12,11 @@
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/css/messenger.css" />
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/css/messenger-theme-air.css" />
+
+  
+  
 
   <!-- Local Style Sheets -->
   <link href="lib/mprogress.min.css" rel="stylesheet" />
@@ -113,7 +118,7 @@
              <div class="panel-body" style="padding: 0px;">
                <li><a href="uploader.html"><i class="fa fa-database"></i>Upload Data</a></li>
                <li><a><i class="fa fa-gamepad"></i>Add a Game</a></li>
-               <li><a><i class="fa fa-leanp"></i>Add a Map</a></li>
+               <li><a><i class="fa fa-leanpub"></i>Add a Map</a></li>
                <li onclick="MAP.exportCSV();"><a><i class="fa fa-cloud-download"></i>Export .CSV</a></li>
              </div>
            </div>
@@ -167,6 +172,8 @@
  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
  <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/js/messenger.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/js/messenger-theme-future.js"></script>
 
  <!-- Libraries Hosted Locally --> 
  <script src="lib/heatmap.min.js"></script>
@@ -301,6 +308,12 @@
   });
 
   $('#loading').hide();
+  
+  // http://github.hubspot.com/messenger/docs/welcome/
+  Messenger.options = {
+    extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right',
+    theme: 'air'
+  }
 
 
 </script>
