@@ -139,6 +139,13 @@ MAP.exportCSV = function(){
 
 // Use Hubspot's Messenger plugin to
 // provide text/popup feedback to the user.
+// http://github.hubspot.com/messenger/docs/welcome/
+Messenger.options = {
+  extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right',
+  theme: 'air'
+}
+
+// Provide user feedback with the interface
 var UI = {
 
 	// Store reference to loading indicator
