@@ -145,9 +145,8 @@ var UI = {
 	loader : {},
 };
 
-// Alert via Hubspot Messenger
-//   (string) msg - 
-//   (string) id  - if you want to update existing
+// Alert the user with a message.
+// (optional) provide ID for singleton box
 UI.alert = function(msg, id){
 	return Messenger().post({
 		message : msg,
@@ -164,6 +163,7 @@ UI.error = function(msg){
 	});
 };
 
+// Show success message
 UI.success = function(msg){
 	return Messenger().post({
 		message : msg,
@@ -171,8 +171,10 @@ UI.success = function(msg){
 	});
 }
 
+// Show/hide a loading indicator.
 UI.loading = function(boolean){
-
+	
+	// Show loading box
 	if (boolean){
 		UI.loader = Messenger().post({
 			type: "type-loading",
@@ -185,8 +187,10 @@ UI.loading = function(boolean){
 
 	} else {
 
+		// Hide loading box. 
 		UI.loader.hide();
 		
+		// Add success message.
 		return Messenger().post({
 			type: "success",
 			message : "Loading Complete",
@@ -194,12 +198,6 @@ UI.loading = function(boolean){
 			hideAfter: 3,
 		});
 	}
-
-	// if (boolean){
-	// 	UI.alert("Loading.....", "loader");	
-	// } else {
-	// 	UI.alert("Loading Complete.", "loader");
-	// }	
 };
 
 
