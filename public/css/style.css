@@ -17,6 +17,30 @@
     position: absolute;
 }
 
+/* Map key*/
+#key {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 150px;
+    background-color: #fff;
+    border: 1px solid #eee;
+    padding: 10px;
+}
+
+/*Bottom status text*/
+#status {
+    position: absolute;
+    width: 100%;
+    height: 25px;
+    line-height: 20px;
+    background-color: #eee;
+    bottom: 0px;
+    border-top: 1px solid #ddd;
+    padding: 2px 20px; 
+}
+
+
 /* 
  * Toggle-able Left Navigation. Inspiration thanks to:;
  * Start Bootstrap (http://startbootstrap.com)
@@ -130,6 +154,11 @@
     text-align: center;
 } 
 
+.sidebar-nav .panel-body .fa {
+    font-size: 12px;
+    margin-right: 4px;
+}
+
 .sidebar-nav .panel-heading .fa {
     font-size: 20px;
     margin-right: 15px;
@@ -148,6 +177,12 @@
     display: inline-block;
     height: 40px;
     line-height: 42px;
+}
+
+.sidebar-nav .tools {
+    bottom: 0px;
+    position: fixed;
+    width: 100%;
 }
 
 #query-preset .fa-star {

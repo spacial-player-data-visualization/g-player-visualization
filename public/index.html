@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -26,13 +26,7 @@
     <!-- Left Options Sidebar -->
     <div id="sidebar-wrapper">
       <ul class="sidebar-nav">
-        <li class="active">
-        	<a href="index.html"><i class="fa fa-home"></i></a>
-        </li>
-        <li>
-        	<a href="uploader.html"><i class="fa fa-database"></i>Upload Data</a>
-        </li>
-        <br>
+
 
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
           <div class="panel panel-default">
@@ -51,9 +45,7 @@
                   <select class="form-control">
                     <option>Fallout</option>
                     <option>...etc</option>
-                  </select>
-
-                  <br>
+                  </select><br>
 
                   <label>Select Map</label>
                   <select class="form-control">
@@ -106,26 +98,39 @@
              </div>
            </div>
          </div>
-          <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingFour">
-              <h4 class="panel-title">
-                <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                  <i class="fa fa-download"></i> Export Data
-                </a>
-              </h4>
-            </div>
-            <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
-              <div class="panel-body" style="padding: 0px;">
-                <li onclick="MAP.exportCSV();"><a><i class="fa fa-cloud-download"></i>Export .CSV</a></li>
-              </div>
-            </div>
-          </div>
+       </div>
+
+       <div class="panel-group tools" id="accordion2" role="tablist" aria-multiselectable="true">
+         <div class="panel panel-default">
+           <div class="panel-heading" role="tab" id="tools">
+             <h4 class="panel-title">
+               <a data-toggle="collapse" data-parent="#accordion2" href="#toolsCollapse" aria-expanded="true" aria-controls="toolsCollapse">
+                 <i class="fa fa-wrench"></i> Tools
+               </a>
+             </h4>
+           </div>
+           <div id="toolsCollapse" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="tools">
+             <div class="panel-body" style="padding: 0px;">
+               <li><a href="uploader.html"><i class="fa fa-database"></i>Upload Data</a></li>
+               <li onclick="MAP.exportCSV();"><a><i class="fa fa-cloud-download"></i>Export .CSV</a></li>
+             </div>
+           </div>
+         </div>
        </div>
      </ul>
    </div>
 
    <!-- Leaflet.js Map -->
    <div id="map"></div>
+
+   <!-- Map Key -->
+   <div id="key">
+     <p><b>Map Key</b></p>
+     <div class="content"></div>
+   </div>
+
+   <!-- Status Bar -->
+   <div id="status">status</div>
 
  </div><!-- /#wrapper -->
 
@@ -291,6 +296,7 @@
   });
 
   $('#loading').hide();
+
 
 </script>
 </body>
