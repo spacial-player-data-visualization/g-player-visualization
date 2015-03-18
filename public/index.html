@@ -343,16 +343,10 @@ Authors:
   var drawControl = new L.Control.Draw({
       
       // Disable certain shapes
-      draw : {
-        circle: false,
-        polyline: false,
-        marker: false,
-      },
+      draw : {circle: false, polyline: false, marker: false,},
 
       // Define layer
-      edit: {
-          featureGroup: drawnItems
-      }
+      edit: { featureGroup: drawnItems }
   });
 
   // Add Drawing Tools
