@@ -20,7 +20,7 @@
   <link href="css/style.css" rel="stylesheet" />
 </head>
 <body>
-  <i id="loading" class="fa fa-cog fa-spin" style="display: absolute;"></i>
+  <i id="loading" class="fa fa-cog fa-spin" style="display: none;"></i>
 
   <!-- Page Content -->
   <div id="wrapper">
@@ -164,13 +164,13 @@
 </div>
 
  <!-- External Javascript Dependencies -->
- <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
- <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.js"></script>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/js/messenger.min.js"></script>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/js/messenger-theme-future.js"></script>
+ <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
+ <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
+ <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+ <script src="//cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+ <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.js"></script>
+ <script src="//cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/js/messenger.min.js"></script>
+ <script src="//cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/js/messenger-theme-future.js"></script>
 
  <!-- Libraries Hosted Locally --> 
  <script src="lib/heatmap.min.js"></script>
@@ -260,9 +260,9 @@
   // Add image overlay to map
   L.imageOverlay('img/maps/' + settings.map.url, imageBounds).addTo(map);
 
-  /************************
-        Setup UI
-  *************************/
+  /***************************
+     Setup UI / Side Options
+  ****************************/
 
   var SideOptionsToggle = L.Control.extend({
     options: { position: 'topleft' },
@@ -303,8 +303,6 @@
     	map.removeLayer(MAP.heatmapLayer)
     }
   });
-
-  $('#loading').hide();
   
 </script>
 </body>

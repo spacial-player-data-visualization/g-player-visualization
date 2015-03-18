@@ -30,7 +30,7 @@ MAP.addMarker = function(lat, long, title){
 
 MAP.getData = function(){
 
-	$("#loading").show();
+	UI.loading(true, "Loading Data....");
 
 	// Hit API
 	$.get(API.url + "entries", function(data){
@@ -72,7 +72,7 @@ MAP.getData = function(){
 	        // Add points to map
 	    MAP.plotData(data);
 
-	    $("#loading").hide();
+	    UI.loading(false, "Success. " + data.length + " points loaded.");
     })
 };
 
@@ -136,77 +136,6 @@ MAP.exportCSV = function(){
 	    return str;   
 	}
 };
-
-// Use Hubspot's Messenger plugin to
-// provide text/popup feedback to the user.
-// http://github.hubspot.com/messenger/docs/welcome/
-Messenger.options = {
-  extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right',
-  theme: 'air'
-}
-
-// Provide user feedback with the interface
-var UI = {
-
-	// Store reference to loading indicator
-	loader : {},
-};
-
-// Alert the user with a message.
-// (optional) provide ID for singleton box
-UI.alert = function(msg, id){
-	return Messenger().post({
-		message : msg,
-		id : (id) ? id : Math.random(1,100),
-	});
-}
-
-// Show error message
-UI.error = function(msg){
-	return Messenger().post({
-  		message: msg,
-  		type: 'error',
-  		showCloseButton: true
-	});
-};
-
-// Show success message
-UI.success = function(msg){
-	return Messenger().post({
-		message : msg,
-		type: "success",
-	});
-}
-
-// Show/hide a loading indicator.
-UI.loading = function(boolean){
-	
-	// Show loading box
-	if (boolean){
-		UI.loader = Messenger().post({
-			type: "type-loading",
-			message : "Loading...",
-			id : "loading",
-			hideAfter: null,
-		});
-
-		return UI.loader;
-
-	} else {
-
-		// Hide loading box. 
-		UI.loader.hide();
-		
-		// Add success message.
-		return Messenger().post({
-			type: "success",
-			message : "Loading Complete",
-			id : "loading",
-			hideAfter: 3,
-		});
-	}
-};
-
 
 /************************************
        Heatmap Logic

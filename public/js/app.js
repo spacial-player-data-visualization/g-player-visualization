@@ -30,18 +30,6 @@ var API = {
        Utility Functions
 ************************************/
 
-var loading = {};
-
-// UI Feedback Indicator
-loading.start = function(){
-	$("#loading").text("Loading...");
-};
-
-// UI Feedback Indicator
-loading.end = function(){
-	$("#loading").text("");
-};
-
 DOM = {};
 
 // Provide User Feedback in the Document
@@ -49,7 +37,76 @@ DOM.log = function(msg){
 	$("#log").prepend("<p>" + msg + "</p>");
 }
 
-/*
-$(function() {
-	QueryBuilder.open();
-}); */
+/************************************
+       UI Functions
+************************************/
+
+// Use Hubspot's Messenger plugin to
+// provide text/popup feedback to the user.
+// http://github.hubspot.com/messenger/docs/welcome/
+Messenger.options = {
+  extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right',
+  theme: 'air'
+}
+
+// Provide user feedback with the interface
+var UI = {
+
+	// Store reference to loading indicator
+	loader : {},
+};
+
+// Alert the user with a message.
+// (optional) provide ID for singleton box
+UI.alert = function(msg, id){
+	return Messenger().post({
+		message : msg,
+		id : (id) ? id : Math.random(1,100),
+	});
+}
+
+// Show error message
+UI.error = function(msg){
+	return Messenger().post({
+  		message: msg,
+  		type: 'error',
+  		showCloseButton: true
+	});
+};
+
+// Show success message
+UI.success = function(msg){
+	return Messenger().post({
+		message : msg,
+		type: "success",
+	});
+}
+
+// Show/hide a loading indicator.
+UI.loading = function(boolean, msg){
+	
+	// Show loading box
+	if (boolean){
+		UI.loader = Messenger().post({
+			type: "type-loading",
+			message : (msg) ? msg : "Loading...",
+			id : "loading",
+			hideAfter: null,
+		});
+
+		return UI.loader;
+
+	} else {
+
+		// Hide loading box. 
+		UI.loader.hide();
+		
+		// Add success message.
+		return Messenger().post({
+			type: "success",
+			message : (msg) ? msg : "Loading Complete",
+			id : "loading",
+			hideAfter: 3,
+		});
+	}
+};
