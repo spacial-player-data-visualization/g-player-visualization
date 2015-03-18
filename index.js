@@ -71,23 +71,25 @@ app.get('/', function(request, response) {
   response.render('index');
 });
 
-// ENTRY (singular)
+// Create an Entry
 app.post('/api/entry', function (req, res){
     console.log("\nPOST api/entry");
     entries.post(req, res, EntryModel);
 });
 
-// ENTRIES (multiple)
+// Get Multiple Entries
 app.get('/api/entries', function (req, res){
     console.log("\nGET api/entries");
 	entries.get(req, res);
 });
 
+// Create Multiple Entries
 app.post('/api/entries', function (req, res){
     console.log("\nPOST api/entries");
     entries.multiPost(req, res);
 });
 
+// Get a Specific Entry
 app.get('/api/entries/:id', function (req, res){
     console.log("\nGET api/entries/id");
 	entries.getById(req, res);
@@ -97,6 +99,16 @@ app.get('/api/entries/:id', function (req, res){
 app.get('/api/timestamp/:time', function (req, res){
   entries.query(req, res);
 })
+
+// Get list of unique users
+app.get('/users/', function (req, res){
+  entries.getUsers(req, res);
+});
+
+// Get list of unique actions
+app.get('/actions/', function (req, res){
+  entries.getActions(req, res);
+});
 
 /****************************
         START SERVER

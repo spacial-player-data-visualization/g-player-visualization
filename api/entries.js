@@ -105,6 +105,29 @@ module.exports = {
                     res.send(result);
                 }
         });
-    }
+    },
+
+    getUsers : function(req, res) {
+        var users = [];
+
+        var game = req.params.game;
+
+        users.push(001);
+        users.push(002);
+        users.push(003);
+        return res.send(users);
+    },
+
+    getActions : function(req, res){
+        var actions = [];
+
+        var game = req.params.game;
+
+        actions.push("NPC");
+        actions.push("Rat");
+        actions.push("Pickup");
+
+        return res.send(actions);
+    },
 
 }
