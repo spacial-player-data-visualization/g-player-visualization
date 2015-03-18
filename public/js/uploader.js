@@ -7,9 +7,6 @@
 $(document).ready(function(){
   $("#csv-file").change(parseFile);
 
-  // Status feedback.
-  DOM.log("\nLoading Last Preview.")
-
   // Pull data from the previous upload
   var data = lastUpload();
 
@@ -19,9 +16,7 @@ $(document).ready(function(){
 
 // http://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
 function parseFile(event) {
-  
-  loading.start();
-  DOM.log("Parsing File ....")
+  UI.loading(true, "Parsing File....")
 
   var file = event.target.files[0];
 
@@ -31,8 +26,11 @@ function parseFile(event) {
 
     // Parser Callback
     complete: function(results) {
-      DOM.log(results.data.length + " results loaded. ");
-      DOM.log(results.errors.length + " Errors.");
+      UI.alert(results.data.length + " results loaded. ");
+      
+      if (results.errors.length > 0){
+          UI.error(results.errors.length + " Errors.");  
+      }
 
       var data = results.data;
       var errors = results.errors;
@@ -43,16 +41,13 @@ function parseFile(event) {
         return dat.length > 1;
       })
 
-      DOM.log(results.data.length - data.length + " Empty Lines Removed.")
+      // UI.alert(results.data.length - data.length + " Empty Lines Removed.")
 
       // Fill in preview table
       populateTable(data);
 
       // Backup uploaded data to Local Storage
       localStorage.setItem("upload", JSON.stringify(data));
-
-      // Stop loading indicator
-      loading.end();
     }
   });
 }
@@ -89,18 +84,19 @@ function populateTable(data){
       $("table").append(tr);
   }
 
-  DOM.log("Data Sample Rendered.")
+  UI.alert("Data Previewed Loaded.", "preview")
+
 }
 
 function formatData(data){
-  DOM.log("Filtering Valid Data.");
+  UI.alert("Filtering Valid Data.");
   
   // Limit Map
   var upData = _.filter(data, function(current){
     return current[0].indexOf("Position_Introhouse") > -1;
   })
   
-  DOM.log(upData.length + " of " + data.length + " Entries Valid.")
+  UI.alert(upData.length + " of " + data.length + " Entries Valid.")
 
   var entries = _.map(upData, function(current){
     
@@ -123,9 +119,9 @@ var bin_count = 0;
 
 // Multi-post uploading
 function bulkUpload(){
-  loading.start();
+  UI.loading(true, "Uploading Data.....");
 
-  DOM.log("Sending to database....");
+  UI.alert("Sending to database....");
 
   // Get data from last upload
   entries = lastUpload();
@@ -142,14 +138,13 @@ function bulkUpload(){
   // Split data into multiple, smaller bins
   var bins = split(entries, entries.length / 200);
 
-  DOM.log(entries.length + " Entries to Upload.")
+  UI.loading(true, "Uploaded " + entries.length + " entries");
 
   bin_count = bins.length;
 
   // Upload bins
   upload(bins, function(){
-    DOM.log("Uploads COMPLETE");
-    loading.end();
+    UI.loading(false, "Upload COMPLETE");
   });
 }
 
@@ -164,8 +159,8 @@ function upload(bins, callback) {
     }
 
     current = bins[0];
-    DOM.log("Uploading " + (bin_count - bins.length) + " of " + bin_count);
-    // DOM.log(bins.length + " Bins Remain.... ");
+
+    UI.alert("Uploading " + (bin_count - bins.length) + " of " + bin_count, "count");
 
     // Save data into JSON object.
     // Format JSON into string
