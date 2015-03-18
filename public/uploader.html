@@ -17,9 +17,8 @@
 
     <!-- Internal CSS -->
     <link href="css/style.css" rel="stylesheet" />
-    <link href="lib/mprogress.min.css" rel="stylesheet" />
   </head>
-  <body>
+  <body class="uploader">
 
     <!-- Left Options Sidebar -->
     <div id="sidebar-wrapper">
@@ -27,8 +26,10 @@
         <li><a href="index.html"><i class="fa fa-home"></i></a></li>
         <li><a href="uploader.html"><i class="fa fa-database"></i>Upload Data</a></li>
       </ul>
-      <p style="position: absolute; top: 90px; margin: 10px; color: #999;"><b>Activity Log</b></p>
-      <p id="log" style="position: absolute; top: 120px; margin: 10px; color: #999;"></p>
+      <div class="activity-log">
+        <p><b>Activity Log</b></p>
+        <p id="log"></p>
+      </div>
     </div>
 
     <div class="container" style="margin-left: 200px; padding-top: 20px;">

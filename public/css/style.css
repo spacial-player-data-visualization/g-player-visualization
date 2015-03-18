@@ -217,6 +217,13 @@
     border-top: none;
 }
 
+.uploader .activity-log {
+    position: absolute; 
+    top: 120px; 
+    margin: 10px; 
+    color: #999;
+}
+
 @media(min-width:768px) {
     #wrapper {
         padding-left: 200px;
