@@ -190,6 +190,7 @@ ul.messenger-theme-air .messenger-message {
     bottom: 0px;
     position: fixed;
     width: 100%;
+    max-width: 300px;
 }
 
 #query-preset .fa-star {
@@ -222,13 +223,6 @@ ul.messenger-theme-air .messenger-message {
 
 .modal-footer {
     border-top: none;
-}
-
-.uploader .activity-log {
-    position: absolute; 
-    top: 120px; 
-    margin: 10px; 
-    color: #999;
 }
 
 @media(min-width:768px) {
