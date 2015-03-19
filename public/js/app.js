@@ -27,17 +27,6 @@ var API = {
 };
 
 /************************************
-       Utility Functions
-************************************/
-
-DOM = {};
-
-// Provide User Feedback in the Document
-DOM.log = function(msg){
-	$("#log").prepend("<p>" + msg + "</p>");
-}
-
-/************************************
        UI Functions
 ************************************/
 
