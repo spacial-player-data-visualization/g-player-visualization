@@ -18,6 +18,54 @@ MAP.plotData = function(data){
 	});
 }
 
+// Create lines between player locations
+MAP.polylineData = function(data){
+
+	// Group data by PlayerID
+	var players = _.groupBy(data, 'playerID');
+	
+	// Keep track of current index
+	var count = 0;
+
+	// Create a polyline for each unique playerID
+	_.each(players, function(player){
+
+		// Create list of latLng ojects
+		var latLngs = _.map(player, function(point){
+			return MAP.toLatLng(point);
+		});
+
+		var options = {
+			color: MAP.getColor(count++),
+			opacity: 1,
+			weight: 2,
+		}
+
+		// Create polyline
+		var polyline = L.polyline(latLngs, options)
+
+		// Add polyline to map
+		polyline.addTo(map);
+
+		// Limit
+		map.fitBounds(polyline.getBounds());
+	});
+}
+
+// Convert the JSON Object to a leaflet LatLong object
+MAP.toLatLng = function(point){
+
+	// Extract keys. May be 'latitude' or 'lat'.
+	var lat  = (point.latitude)  ? point.latitude  : point.lat;
+
+	// Extract keys. May be 'longitude' or 'long'.
+	var long = (point.longitude) ? point.longitude : point.long;
+
+	if (lat && long) {
+		return L.latLng(lat, long);
+	}
+};
+
 // Adds a marker at the provided location
 MAP.addMarker = function(lat, long, title){
 	var title = (title) ? title : "";
@@ -69,8 +117,11 @@ MAP.getData = function(){
 		// Save data for future reference
 		settings.data = data;
 
-	        // Add points to map
-	    MAP.plotData(data);
+	    // Add points to map
+	    // MAP.plotData(data);
+
+	    // Add Lines to map
+	    MAP.polylineData(data);
 
 	    UI.loading(false, "Success. " + data.length + " points loaded.");
     })
@@ -137,6 +188,28 @@ MAP.exportCSV = function(){
 	}
 };
 
+MAP.getColor = function(i){
+	
+	var colors = [
+		"#d73027",
+		"#f46d43",
+		"#fdae61",
+		"#fee090",
+		"#ffffbf",
+		"#e0f3f8",
+		"#abd9e9",
+		"#74add1",
+		"#4575b4"
+	];
+
+	if (i < colors.length - 1) {
+		console.log(colors[i])
+		return colors[i];
+	} else {
+		console.log("#0")
+		return "#000000"
+	}
+}
 /************************************
        Heatmap Logic
 ************************************/
