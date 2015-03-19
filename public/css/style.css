@@ -190,6 +190,7 @@ ul.messenger-theme-air .messenger-message {
     bottom: 0px;
     position: fixed;
     width: 100%;
+    max-width: 300px;
 }
 
 #query-preset .fa-star {
