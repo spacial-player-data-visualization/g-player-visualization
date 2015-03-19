@@ -1,4 +1,20 @@
- <!DOCTYPE html>
+<!--
+
+Index.js
+G-Player Data Visualization
+
+- Creates the DOM
+- Loads dependencies
+- Initializes the mapping tool (Leaflet.js)
+- Configures the Map settings
+- Configures the User Interface settings
+
+Authors:
+@alexjohnson505
+
+-->
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -9,11 +25,12 @@
   <title>G-Player Data Visualization | Visualize Data</title>
 
   <!-- External Style Sheets -->
-  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
-  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/css/messenger.css" />
-  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/css/messenger-theme-air.css" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/css/messenger.css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/css/messenger-theme-air.css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.2.3/leaflet.draw.css" />
 
   <!-- Local Style Sheets -->
   <link href="lib/mprogress.min.css" rel="stylesheet" />
@@ -171,6 +188,7 @@
  <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.js"></script>
  <script src="//cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/js/messenger.min.js"></script>
  <script src="//cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/js/messenger-theme-future.js"></script>
+ <script src="//cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.2.3/leaflet.draw.js"></script>
 
  <!-- Libraries Hosted Locally --> 
  <script src="lib/heatmap.min.js"></script>
@@ -253,8 +271,13 @@
 
   // Define Map Parameters
   var map = L.map('map', {
+    
+    // Initialize Zoom Limits
     minZoom: 6,
     maxZoom: 10,
+
+    // Support Leaflet.draw
+    drawControl: false,
   }).setView(mapCenter, 1);
 
   // Add image overlay to map
@@ -303,6 +326,49 @@
     	map.removeLayer(MAP.heatmapLayer)
     }
   });
+
+  /***************************
+     Initialize Leaflet.draw
+     Enables shape creation/selection
+     https://github.com/Leaflet/Leaflet.draw#using
+  ****************************/
+
+  // Initialise the FeatureGroup to store editable layers
+  var drawnItems = new L.FeatureGroup();
+
+  // Initialize empty player
+  map.addLayer(drawnItems);
+
+  // Initialise the draw control and pass it the FeatureGroup of editable layers
+  var drawControl = new L.Control.Draw({
+      
+      // Disable certain shapes
+      draw : {circle: false, polyline: false, marker: false,},
+
+      // Define layer
+      edit: { featureGroup: drawnItems }
+  });
+
+  // Add Drawing Tools
+  map.addControl(drawControl);
+
+  // Listen for draw actions
+  map.on('draw:created', function(e) {
+
+      var type = e.layerType,
+          layer = e.layer;
+
+      drawnItems.addLayer(e.layer);
+
+      if (type === 'polygon') {
+        console.log(e)
+      }
+
+      if (type === 'rectangle') {
+        console.log(e)
+      }
+  });
+
   
 </script>
 </body>
