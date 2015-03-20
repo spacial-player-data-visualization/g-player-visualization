@@ -40,7 +40,17 @@ function parseFile(event) {
       data = _.filter(data, function(dat){
         return dat.length > 1;
       })
-
+      console.log("sorting");
+      console.log(data[0][0]);
+      data.sort(function(a,b) { 
+        //console.log(a);
+        //console.log(b);
+        var toReturn = a[0].localeCompare(b[0]);
+        return toReturn;
+        //return a[0].localeCompare(b[0]);
+      })
+      console.log("data is:");
+      console.log(data);
       // UI.alert(results.data.length - data.length + " Empty Lines Removed.")
 
       // Fill in preview table
@@ -55,13 +65,23 @@ function parseFile(event) {
 // Render content into HTML table.
 // Allow user to preview the uploaded .csv file.
 function populateTable(data){
-  
+  console.log("populating table");  
   // Sample data for previewing
   data = _.sample(data, 500);
-
-  var table = $("<table/>").attr("id","preview");
+  
+  console.log($(".dataPreview"));
+  
+    if (document.getElementById('preview')) { 
+      var table = document.getElementById('preview');
+      while (table.rows.length > 0) {
+        table.deleteRow(0);
+      }
+    }
+  
+  
   var tableSize = maxEntrySize(data);
-
+  var table = $("<table/>").attr("id","preview");
+  
   for (var i in data) {
       var current = data[i];
       var tr = "";
@@ -83,7 +103,7 @@ function populateTable(data){
       // Add row to table.
       $("table").append(tr);
   }
-
+  console.log("done populating");
   UI.alert("Data Previewed Loaded.", "preview")
 
 }
@@ -111,7 +131,6 @@ function formatData(data){
       area:       current[keyMapping.area],
     }
   });
-
   return entries;
 }
 
