@@ -1,7 +1,7 @@
 
 /******************************
         uploader.js 
- ******************************/
+        ******************************/
 
 // Watch File Input
 $(document).ready(function(){
@@ -11,7 +11,7 @@ $(document).ready(function(){
   var data = lastUpload();
 
   // Preview last upload
-  populateTable(data);
+  populateTable(data, 0);
 })
 
 // http://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
@@ -29,7 +29,7 @@ function parseFile(event) {
       UI.alert(results.data.length + " results loaded. ");
       
       if (results.errors.length > 0){
-          UI.error(results.errors.length + " Errors.");  
+        UI.error(results.errors.length + " Errors.");  
       }
 
       var data = results.data;
@@ -39,17 +39,24 @@ function parseFile(event) {
       // Remove entries that only contain an empty string
       data = _.filter(data, function(dat){
         return dat.length > 1;
-      })
-      console.log("sorting");
-      console.log(data[0][0]);
+      });
+      
       data.sort(function(a,b) { 
         var toReturn = a[0].localeCompare(b[0]);
         return toReturn;
-      })
+      });
+
+      data = sanitize(data);
+
+      var uniques = getUniques(data);
       // UI.alert(results.data.length - data.length + " Empty Lines Removed.")
       // Fill in preview table
-      populateTable(data);
-
+      for (var entry in uniques) {
+        var dataset = _.filter(data, function(object) {
+          return object[0].localeCompare(uniques[entry]) === 0;
+        });
+        populateTable(dataset, entry);
+      }
       // Backup uploaded data to Local Storage
       localStorage.setItem("upload", JSON.stringify(data));
     }
@@ -58,49 +65,58 @@ function parseFile(event) {
 
 // Render content into HTML table.
 // Allow user to preview the uploaded .csv file.
-function populateTable(data){
+function populateTable(dataSet, tableNumber){
   // Sample data for previewing
-  data = data.slice(0, 501);
-  console.log(data);
-    if (document.getElementById('preview')) { 
-      var table = document.getElementById('preview');
-      while (table.rows.length > 0) {
-        table.deleteRow(0);
-      }
+  //data = data.slice(0, 501);
+  //console.log("pupulate call data is " + data);
+  
+  var id = "preview" + tableNumber;
+  if (document.getElementById(id)) { 
+    var table = document.getElementById(id);
+    while (table.rows.length > 0) {
+      table.deleteRow(0);
     }
+  }
   
+  var tableSize = maxEntrySize(dataSet);
+  var tableTotal = '';
+  console.log("tableTotal 83 is " + tableTotal);
+  var tableStart = '';//'<button type="button" class="btn btn-default button' + tableNumber +'" onclick="toggleHide(this)">Collapse This Table</button><br>';
+  tableStart += "<table id=" + id + ' class="table table-striped">';
+  var tableEnd = $("<table/>").attr("id",id);
+  tableEnd += "<br>"
   
-  var tableSize = maxEntrySize(data);
-  var table = $("<table/>").attr("id","preview");
-  
-  for (var i in data) {
-      var current = data[i];
-      var tr = "";
-      var key = 0;
+  for (var i in dataSet) {
+    var current = dataSet[i];
+    var tr = "";
+    var key = 0;
 
-      while (tableSize > key) {
-          
-          if (typeof current[key] != 'undefined') {
-            tr+="<td>"+current[key]+"</td>";
-          } else {
-            tr+="<td>"+ "-" +"</td>";
-          }
+    while (tableSize > key) {
 
-          key++;
+      if (typeof current[key] != 'undefined') {
+        tr+="<td>"+current[key]+"</td>";
+      } else {
+        tr+="<td>"+ "-" +"</td>";
       }
 
-      var tr = $("<tr>").append(tr);
+      key++;
+    }
 
+    var tr = "<tr>" + tr + "</tr>";
+    //console.log("103 tr is " + tr);
       // Add row to table.
-      $("table").append(tr);
+      tableStart = tableStart + tr;
+      
+    }
+    tableTotal = tableStart + tableEnd;
+    $(".tableContainer").append(tableTotal);
+    UI.alert("Data Previewed Loaded.", "preview")
+
   }
-  UI.alert("Data Previewed Loaded.", "preview")
 
-}
+  function formatData(data){
+    UI.alert("Filtering Valid Data.");
 
-function formatData(data){
-  UI.alert("Filtering Valid Data.");
-  
   // Limit Map
   var upData = _.filter(data, function(current){
     return current[0].indexOf("Position_Introhouse") > -1;
@@ -109,7 +125,7 @@ function formatData(data){
   UI.alert(upData.length + " of " + data.length + " Entries Valid.")
 
   var entries = _.map(upData, function(current){
-    
+
     // Map keys based on 
     return {
       playerID :  current[keyMapping.playerID],
@@ -159,7 +175,7 @@ function bulkUpload(){
 
 // Send data to database
 function upload(bins, callback) {
-    
+
     // If no bins remain, end recursion
     // and execute the callback.
     if (bins.length < 1){
@@ -179,7 +195,7 @@ function upload(bins, callback) {
 
     // POST to server
     $.post(API.url + "entries", data, function(data, textStatus, jqXHR){ 
-      
+
       // Log feedback
       console.log(textStatus + " " + data);
 
@@ -193,11 +209,11 @@ function upload(bins, callback) {
       upload(bins, callback);
 
     });
-}
+  }
 
 /******************************
        Helper Functions
- ******************************/
+       ******************************/
 
 // Find the entry with the most entries.
 // This will determine the amount of
@@ -220,9 +236,9 @@ function split(array, n) {
   var i = 0;
 
   while (i < length) {
-      var size = Math.ceil((length - i) / n--);
-      bins.push(array.slice(i, i + size));
-      i += size;
+    var size = Math.ceil((length - i) / n--);
+    bins.push(array.slice(i, i + size));
+    i += size;
   }
 
   return bins;
@@ -240,3 +256,30 @@ function lastUpload(){
 //   template: 3,   // Indeterminate Progress Bar
 //   parent: 'body' // Location to Insert
 // });
+
+// get the unique entries from the first field of the json objects
+function getUniques(data) {
+  var toReturn = [];
+  for (var i in data) {
+    toReturn.push(data[i][0]);
+  }
+  toReturn = _.uniq(toReturn, true);
+  return toReturn;
+}
+
+// remove linebreaks from the data
+function sanitize(data) {
+  for (var index in data) {
+    data[index][0] = data[index][0].replace(/(?:\r\n|\r|\n)/g, '');
+  }
+  return data;
+}
+
+// toggle hidden or visible for the parent div
+function toggleHide(element) {
+  console.log("in toggle hide");
+  var table = element.parentNode.childNodes[5];
+  console.log(table);
+  //table.style.display = (table.style.display == "table") ? "none" : "table";
+  //element.parentNode.find("table").slideToggle();
+}
