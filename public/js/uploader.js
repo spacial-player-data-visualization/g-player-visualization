@@ -70,21 +70,29 @@ function populateTable(dataSet, tableNumber){
   //data = data.slice(0, 501);
   //console.log("pupulate call data is " + data);
   
-  var id = "preview" + tableNumber;
+  var id = "button" + tableNumber;
+  var elem = document.getElementById(id);
+  if (elem) { 
+    console.log(elem);
+    console.log(elem.parentNode);
+    elem.parentNode.removeChild(elem);
+  }
+
+
+  id = "preview" + tableNumber;
   if (document.getElementById(id)) { 
     var table = document.getElementById(id);
     while (table.rows.length > 0) {
       table.deleteRow(0);
     }
   }
+
   
   var tableSize = maxEntrySize(dataSet);
-  var tableTotal = '';
-  console.log("tableTotal 83 is " + tableTotal);
-  var tableStart = '';//'<button type="button" class="btn btn-default button' + tableNumber +'" onclick="toggleHide(this)">Collapse This Table</button><br>';
+  var tableTotal;
+  var tableStart= '<button type="button" id="button' + tableNumber + '" class="btn btn-default button' + tableNumber +'" onclick="toggleHide(this)">Collapse This Table</button><br>';
   tableStart += "<table id=" + id + ' class="table table-striped">';
-  var tableEnd = $("<table/>").attr("id",id);
-  tableEnd += "<br>"
+  var tableEnd = "<table/>";
   
   for (var i in dataSet) {
     var current = dataSet[i];
@@ -106,7 +114,6 @@ function populateTable(dataSet, tableNumber){
     //console.log("103 tr is " + tr);
       // Add row to table.
       tableStart = tableStart + tr;
-      
     }
     tableTotal = tableStart + tableEnd;
     $(".tableContainer").append(tableTotal);
