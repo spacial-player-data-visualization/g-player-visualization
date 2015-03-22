@@ -5,22 +5,27 @@
 
 // Watch File Input
 $(document).ready(function(){
-  $("#csv-file").change(parseFile);
+  $("#csv-file").change(Uploader.parseFile);
 
   // Pull data from the previous upload
-  var data = lastUpload();
+  var buckets = lastUpload();
+
+  console.log(buckets);
 
   // Preview last upload
-  populateTable(data);
+  Uploader.populateTables(buckets);
 })
 
+var Uploader = {};
+
 // http://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
-function parseFile(event) {
+Uploader.parseFile = function(event) {
   UI.loading(true, "Parsing File....")
 
   var file = event.target.files[0];
 
   Papa.parse(file, {
+
     header: false,
     dynamicTyping: true,
 
@@ -29,60 +34,151 @@ function parseFile(event) {
       UI.alert(results.data.length + " results loaded. ");
       
       if (results.errors.length > 0){
-          UI.error(results.errors.length + " Errors.");  
+        UI.error(results.errors.length + " Errors.");  
       }
 
       var data = results.data;
-      var errors = results.errors;
-      var meta = results.meta;
+      // var errors = results.errors;
+      // var meta = results.meta;
 
-      // Remove entries that only contain an empty string
-      data = _.filter(data, function(dat){
-        return dat.length > 1;
-      })
+      // Delete new lines
+      data = Uploader.removeEmptyLines(data);
 
-      // UI.alert(results.data.length - data.length + " Empty Lines Removed.")
+      // Remove invalid keys from first column
+      data = sanitizeColumn(data, 0);
 
-      // Fill in preview table
-      populateTable(data);
+      // Order data by the first column
+      data = Uploader.sortByColumn(data, 0);
+      
+      // Bucket data by type of entry
+      var buckets = Uploader.sortByEntryType(data);
 
       // Backup uploaded data to Local Storage
-      localStorage.setItem("upload", JSON.stringify(data));
+      localStorage.setItem("upload", JSON.stringify(buckets));
+
+      // Preview data to DOM
+      Uploader.populateTables(buckets);
+
+      UI.loading(false);
     }
   });
 }
 
+// Takes a list of entries. Sorts into JSON arrays
+// containing the same entry type. For example:,
+// all "PlayerJumped" actions should be bulked together.
+Uploader.sortByEntryType = function(data){
+
+  var buckets = [];
+
+  var uniques = getUniqueKeys(data, 0);
+
+  // Fill in preview table
+  for (var i in uniques) {
+    
+    var dataset = _.filter(data, function(object) {
+      return object[0].localeCompare(uniques[i]) === 0;
+    });
+
+    buckets.push(dataset);
+  }
+
+  return buckets;
+}
+
+Uploader.sortByColumn = function(data, column){
+
+  var dataset = data.sort(function(a,b) { 
+    var toReturn = a[column].localeCompare(b[column]);
+    return toReturn;
+  });
+
+  return dataset;
+}
+
+// Remove entries that only contain an empty string
+Uploader.removeEmptyLines = function(data){
+    return _.filter(data, function(dat){
+        return dat.length > 1;
+    });
+}
+
+// Populate multiple tables
+Uploader.populateTables = function(buckets){
+
+  $(".tableContainer").html("");
+
+  _.each(buckets, function(bucket){
+    var key = bucket[0][0];
+    Uploader.populateTable(bucket, key);
+  })
+}
+
 // Render content into HTML table.
 // Allow user to preview the uploaded .csv file.
-function populateTable(data){
+Uploader.populateTable = function(bucket, type){
   
   // Sample data for previewing
-  data = _.sample(data, 500);
+  dataset = bucket.slice(0, 10);
 
-  var table = $("<table/>").attr("id","preview");
-  var tableSize = maxEntrySize(data);
+  // @
+  // Selects, and clears specific tables
+  //console.log("pupulate call data is " + data);
+  
+  // var id = "button" + type;
+  // var elem = document.getElementById(id);
+  
+  // if (elem) { 
+  //   // console.log(elem);
+  //   // console.log(elem.parentNode);
+  //   elem.parentNode.removeChild(elem);
+  // }
 
-  for (var i in data) {
-      var current = data[i];
-      var tr = "";
-      var key = 0;
+  // id = "preview" + type;
+  // var elem2 = document.getElementById(id);
 
-      while (tableSize > key) {
-          
-          if (typeof current[key] != 'undefined') {
-            tr+="<td>"+current[key]+"</td>";
-          } else {
-            tr+="<td>"+ "-" +"</td>";
-          }
+  // if (elem2) { 
+  //   var table = elem2;
+  //   while (table.rows.length > 0) {
+  //     table.deleteRow(0);
+  //   }
+  // }
 
-          key++;
+  var tableID = "preview" + type.replace(/\s/g, '');
+  
+  var tableSize = maxEntrySize(dataset);
+
+  var tableTotal;
+
+  var tableStart = '<div class="panel-heading"><button type="button" class="btn btn-default button"' +
+                   'onclick="toggleHide(\'' + tableID + '\')">Toggle \"' + type + '\" Table</button></div>';
+
+  tableStart += "<table id=" + tableID + ' class="table table-striped">';
+  var tableEnd = "<table/>";
+  
+  for (var i in dataset) {
+    var current = dataset[i];
+    var tr = "";
+    var key = 0;
+
+    while (tableSize > key) {
+
+      if (typeof current[key] != 'undefined') {
+        tr+="<td>"+current[key]+"</td>";
+      } else {
+        tr+="<td>"+ "-" +"</td>";
       }
 
-      var tr = $("<tr>").append(tr);
+      key++;
+    }
 
-      // Add row to table.
-      $("table").append(tr);
+    var tr = "<tr>" + tr + "</tr>";
+    tableStart = tableStart + tr;
   }
+
+  tableTotal = tableStart + tableEnd;
+
+  $(".tableContainer").append('<div class="panel panel-default">' + tableTotal + '</div>');
 
   UI.alert("Data Previewed Loaded.", "preview")
 
@@ -90,7 +186,7 @@ function populateTable(data){
 
 function formatData(data){
   UI.alert("Filtering Valid Data.");
-  
+
   // Limit Map
   var upData = _.filter(data, function(current){
     return current[0].indexOf("Position_Introhouse") > -1;
@@ -99,7 +195,7 @@ function formatData(data){
   UI.alert(upData.length + " of " + data.length + " Entries Valid.")
 
   var entries = _.map(upData, function(current){
-    
+
     // Map keys based on 
     return {
       playerID :  current[keyMapping.playerID],
@@ -111,14 +207,13 @@ function formatData(data){
       area:       current[keyMapping.area],
     }
   });
-
   return entries;
 }
 
 var bin_count = 0;
 
 // Multi-post uploading
-function bulkUpload(){
+Uploader.bulkUpload = function(){
   UI.loading(true, "Uploading Data.....");
 
   UI.alert("Sending to database....");
@@ -149,8 +244,8 @@ function bulkUpload(){
 }
 
 // Send data to database
-function upload(bins, callback) {
-    
+Uploader.upload = function(bins, callback) {
+
     // If no bins remain, end recursion
     // and execute the callback.
     if (bins.length < 1){
@@ -170,7 +265,7 @@ function upload(bins, callback) {
 
     // POST to server
     $.post(API.url + "entries", data, function(data, textStatus, jqXHR){ 
-      
+
       // Log feedback
       console.log(textStatus + " " + data);
 
@@ -184,7 +279,7 @@ function upload(bins, callback) {
       upload(bins, callback);
 
     });
-}
+  }
 
 /******************************
        Helper Functions
@@ -211,9 +306,9 @@ function split(array, n) {
   var i = 0;
 
   while (i < length) {
-      var size = Math.ceil((length - i) / n--);
-      bins.push(array.slice(i, i + size));
-      i += size;
+    var size = Math.ceil((length - i) / n--);
+    bins.push(array.slice(i, i + size));
+    i += size;
   }
 
   return bins;
@@ -221,13 +316,39 @@ function split(array, n) {
 
 // Retrieve data from localStorage
 // Returns the last JSON that the user converted.
-
 function lastUpload(){
   return JSON.parse(localStorage.getItem("upload"));
 }
 
-// Create a new loading indicator
-// var loading = new Mprogress({
-//   template: 3,   // Indeterminate Progress Bar
-//   parent: 'body' // Location to Insert
-// });
+// get the unique entries from the first field of the json objects
+// Provide a column id to look at.
+function getUniqueKeys(data, column) {
+  var toReturn = [];
+  
+  for (var i in data) {
+    toReturn.push(data[i][column]);
+  }
+
+  toReturn = _.uniq(toReturn, true);
+
+  return toReturn;
+}
+
+// remove linebreaks and new lines from the data
+// Provide a multidimensional array, and a column
+function sanitizeColumn(data, column) {
+  
+  for (var index in data) {
+    data[index][column] = data[index][column].replace(/(?:\r\n|\r|\n)/g, '');
+  }
+
+  return data;
+}
+
+// toggle hidden or visible for the parent div
+function toggleHide(id) {
+  $("#" + id).toggle();
+
+  //table.style.display = (table.style.display == "table") ? "none" : "table";
+  //id.parentNode.find("table").slideToggle();
+}
