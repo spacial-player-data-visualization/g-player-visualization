@@ -25,6 +25,7 @@ Uploader.parseFile = function(event) {
   var file = event.target.files[0];
 
   Papa.parse(file, {
+
     header: false,
     dynamicTyping: true,
 
@@ -104,6 +105,9 @@ Uploader.removeEmptyLines = function(data){
 
 // Populate multiple tables
 Uploader.populateTables = function(buckets){
+
+  $(".tableContainer").html("");
+
   _.each(buckets, function(bucket){
     var key = bucket[0][0];
     Uploader.populateTable(bucket, key);
@@ -112,39 +116,44 @@ Uploader.populateTables = function(buckets){
 
 // Render content into HTML table.
 // Allow user to preview the uploaded .csv file.
-Uploader.populateTable = function(bucket, tableNumber){
+Uploader.populateTable = function(bucket, type){
   
   // Sample data for previewing
   dataset = bucket.slice(0, 10);
 
+  // @
+  // Selects, and clears specific tables
   //console.log("pupulate call data is " + data);
   
-  var id = "button" + tableNumber;
-  var elem = document.getElementById(id);
+  // var id = "button" + type;
+  // var elem = document.getElementById(id);
   
-  if (elem) { 
-    // console.log(elem);
-    // console.log(elem.parentNode);
-    elem.parentNode.removeChild(elem);
-  }
+  // if (elem) { 
+  //   // console.log(elem);
+  //   // console.log(elem.parentNode);
+  //   elem.parentNode.removeChild(elem);
+  // }
 
-  id = "preview" + tableNumber;
-  var elem2 = document.getElementById(id);
+  // id = "preview" + type;
+  // var elem2 = document.getElementById(id);
 
-  if (elem2) { 
-    var table = elem2;
-    while (table.rows.length > 0) {
-      table.deleteRow(0);
-    }
-  }
+  // if (elem2) { 
+  //   var table = elem2;
+  //   while (table.rows.length > 0) {
+  //     table.deleteRow(0);
+  //   }
+  // }
+
+  var tableID = "preview" + type.replace(/\s/g, '');
   
   var tableSize = maxEntrySize(dataset);
-  var tableTotal;
-  var tableStart= '<button type="button" id="button' + tableNumber + 
-                  '" class="btn btn-default button' + tableNumber + 
-                  '" onclick="toggleHide(this)">Collapse This Table</button><br>';
 
-  tableStart += "<table id=" + id + ' class="table table-striped">';
+  var tableTotal;
+
+  var tableStart= '<button type="button" class="btn btn-default button"' +
+                  'onclick="toggleHide(\'' + tableID + '\')">Toggle \"' + type + '\" Table</button><br>';
+
+  tableStart += "<table id=" + tableID + ' class="table table-striped">';
   var tableEnd = "<table/>";
   
   for (var i in dataset) {
@@ -335,15 +344,9 @@ function sanitizeColumn(data, column) {
 }
 
 // toggle hidden or visible for the parent div
-function toggleHide(element) {
-
-  console.log(element);
-  
-  console.log("in toggle hide");
-  
-  var table = element.parentNode.childNodes[5];
-  console.log(table);
+function toggleHide(id) {
+  $("#" + id).toggle();
 
   //table.style.display = (table.style.display == "table") ? "none" : "table";
-  //element.parentNode.find("table").slideToggle();
+  //id.parentNode.find("table").slideToggle();
 }
