@@ -150,8 +150,8 @@ Uploader.populateTable = function(bucket, type){
 
   var tableTotal;
 
-  var tableStart= '<button type="button" class="btn btn-default button"' +
-                  'onclick="toggleHide(\'' + tableID + '\')">Toggle \"' + type + '\" Table</button><br>';
+  var tableStart = '<div class="panel-heading"><button type="button" class="btn btn-default button"' +
+                   'onclick="toggleHide(\'' + tableID + '\')">Toggle \"' + type + '\" Table</button></div>';
 
   tableStart += "<table id=" + tableID + ' class="table table-striped">';
   var tableEnd = "<table/>";
@@ -177,7 +177,9 @@ Uploader.populateTable = function(bucket, type){
   }
 
   tableTotal = tableStart + tableEnd;
-  $(".tableContainer").append(tableTotal);
+
+  $(".tableContainer").append('<div class="panel panel-default">' + tableTotal + '</div>');
+
   UI.alert("Data Previewed Loaded.", "preview")
 
 }
