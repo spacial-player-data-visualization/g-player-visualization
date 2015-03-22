@@ -1,21 +1,25 @@
 
 /******************************
         uploader.js 
-        ******************************/
+ ******************************/
 
 // Watch File Input
 $(document).ready(function(){
-  $("#csv-file").change(parseFile);
+  $("#csv-file").change(Uploader.parseFile);
 
   // Pull data from the previous upload
-  var data = lastUpload();
+  var buckets = lastUpload();
+
+  console.log(buckets);
 
   // Preview last upload
-  populateTable(data, 0);
+  Uploader.populateTables(buckets);
 })
 
+var Uploader = {};
+
 // http://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
-function parseFile(event) {
+Uploader.parseFile = function(event) {
   UI.loading(true, "Parsing File....")
 
   var file = event.target.files[0];
@@ -33,69 +37,118 @@ function parseFile(event) {
       }
 
       var data = results.data;
-      var errors = results.errors;
-      var meta = results.meta;
+      // var errors = results.errors;
+      // var meta = results.meta;
 
-      // Remove entries that only contain an empty string
-      data = _.filter(data, function(dat){
-        return dat.length > 1;
-      });
+      // Delete new lines
+      data = Uploader.removeEmptyLines(data);
+
+      // Remove invalid keys from first column
+      data = sanitizeColumn(data, 0);
+
+      // Order data by the first column
+      data = Uploader.sortByColumn(data, 0);
       
-      data.sort(function(a,b) { 
-        var toReturn = a[0].localeCompare(b[0]);
-        return toReturn;
-      });
+      // Bucket data by type of entry
+      var buckets = Uploader.sortByEntryType(data);
 
-      data = sanitize(data);
-
-      var uniques = getUniques(data);
-      // UI.alert(results.data.length - data.length + " Empty Lines Removed.")
-      // Fill in preview table
-      for (var entry in uniques) {
-        var dataset = _.filter(data, function(object) {
-          return object[0].localeCompare(uniques[entry]) === 0;
-        });
-        populateTable(dataset, entry);
-      }
       // Backup uploaded data to Local Storage
-      localStorage.setItem("upload", JSON.stringify(data));
+      localStorage.setItem("upload", JSON.stringify(buckets));
+
+      // Preview data to DOM
+      Uploader.populateTables(buckets);
+
+      UI.loading(false);
     }
   });
 }
 
+// Takes a list of entries. Sorts into JSON arrays
+// containing the same entry type. For example:,
+// all "PlayerJumped" actions should be bulked together.
+Uploader.sortByEntryType = function(data){
+
+  var buckets = [];
+
+  var uniques = getUniqueKeys(data, 0);
+
+  // Fill in preview table
+  for (var i in uniques) {
+    
+    var dataset = _.filter(data, function(object) {
+      return object[0].localeCompare(uniques[i]) === 0;
+    });
+
+    buckets.push(dataset);
+  }
+
+  return buckets;
+}
+
+Uploader.sortByColumn = function(data, column){
+
+  var dataset = data.sort(function(a,b) { 
+    var toReturn = a[column].localeCompare(b[column]);
+    return toReturn;
+  });
+
+  return dataset;
+}
+
+// Remove entries that only contain an empty string
+Uploader.removeEmptyLines = function(data){
+    return _.filter(data, function(dat){
+        return dat.length > 1;
+    });
+}
+
+// Populate multiple tables
+Uploader.populateTables = function(buckets){
+  _.each(buckets, function(bucket){
+    var key = bucket[0][0];
+    Uploader.populateTable(bucket, key);
+  })
+}
+
 // Render content into HTML table.
 // Allow user to preview the uploaded .csv file.
-function populateTable(dataSet, tableNumber){
+Uploader.populateTable = function(bucket, tableNumber){
+  
   // Sample data for previewing
-  //data = data.slice(0, 501);
+  dataset = bucket.slice(0, 10);
+
   //console.log("pupulate call data is " + data);
   
   var id = "button" + tableNumber;
   var elem = document.getElementById(id);
+  
   if (elem) { 
-    console.log(elem);
-    console.log(elem.parentNode);
+    // console.log(elem);
+    // console.log(elem.parentNode);
     elem.parentNode.removeChild(elem);
   }
 
-
   id = "preview" + tableNumber;
-  if (document.getElementById(id)) { 
-    var table = document.getElementById(id);
+  var elem2 = document.getElementById(id);
+
+  if (elem2) { 
+    var table = elem2;
     while (table.rows.length > 0) {
       table.deleteRow(0);
     }
   }
-
   
-  var tableSize = maxEntrySize(dataSet);
+  var tableSize = maxEntrySize(dataset);
   var tableTotal;
-  var tableStart= '<button type="button" id="button' + tableNumber + '" class="btn btn-default button' + tableNumber +'" onclick="toggleHide(this)">Collapse This Table</button><br>';
+  var tableStart= '<button type="button" id="button' + tableNumber + 
+                  '" class="btn btn-default button' + tableNumber + 
+                  '" onclick="toggleHide(this)">Collapse This Table</button><br>';
+
   tableStart += "<table id=" + id + ' class="table table-striped">';
   var tableEnd = "<table/>";
   
-  for (var i in dataSet) {
-    var current = dataSet[i];
+  for (var i in dataset) {
+    var current = dataset[i];
     var tr = "";
     var key = 0;
 
@@ -111,18 +164,17 @@ function populateTable(dataSet, tableNumber){
     }
 
     var tr = "<tr>" + tr + "</tr>";
-    //console.log("103 tr is " + tr);
-      // Add row to table.
-      tableStart = tableStart + tr;
-    }
-    tableTotal = tableStart + tableEnd;
-    $(".tableContainer").append(tableTotal);
-    UI.alert("Data Previewed Loaded.", "preview")
-
+    tableStart = tableStart + tr;
   }
 
-  function formatData(data){
-    UI.alert("Filtering Valid Data.");
+  tableTotal = tableStart + tableEnd;
+  $(".tableContainer").append(tableTotal);
+  UI.alert("Data Previewed Loaded.", "preview")
+
+}
+
+function formatData(data){
+  UI.alert("Filtering Valid Data.");
 
   // Limit Map
   var upData = _.filter(data, function(current){
@@ -150,7 +202,7 @@ function populateTable(dataSet, tableNumber){
 var bin_count = 0;
 
 // Multi-post uploading
-function bulkUpload(){
+Uploader.bulkUpload = function(){
   UI.loading(true, "Uploading Data.....");
 
   UI.alert("Sending to database....");
@@ -181,7 +233,7 @@ function bulkUpload(){
 }
 
 // Send data to database
-function upload(bins, callback) {
+Uploader.upload = function(bins, callback) {
 
     // If no bins remain, end recursion
     // and execute the callback.
@@ -220,7 +272,7 @@ function upload(bins, callback) {
 
 /******************************
        Helper Functions
-       ******************************/
+ ******************************/
 
 // Find the entry with the most entries.
 // This will determine the amount of
@@ -253,40 +305,45 @@ function split(array, n) {
 
 // Retrieve data from localStorage
 // Returns the last JSON that the user converted.
-
 function lastUpload(){
   return JSON.parse(localStorage.getItem("upload"));
 }
 
-// Create a new loading indicator
-// var loading = new Mprogress({
-//   template: 3,   // Indeterminate Progress Bar
-//   parent: 'body' // Location to Insert
-// });
-
 // get the unique entries from the first field of the json objects
-function getUniques(data) {
+// Provide a column id to look at.
+function getUniqueKeys(data, column) {
   var toReturn = [];
+  
   for (var i in data) {
-    toReturn.push(data[i][0]);
+    toReturn.push(data[i][column]);
   }
+
   toReturn = _.uniq(toReturn, true);
+
   return toReturn;
 }
 
-// remove linebreaks from the data
-function sanitize(data) {
+// remove linebreaks and new lines from the data
+// Provide a multidimensional array, and a column
+function sanitizeColumn(data, column) {
+  
   for (var index in data) {
-    data[index][0] = data[index][0].replace(/(?:\r\n|\r|\n)/g, '');
+    data[index][column] = data[index][column].replace(/(?:\r\n|\r|\n)/g, '');
   }
+
   return data;
 }
 
 // toggle hidden or visible for the parent div
 function toggleHide(element) {
+
+  console.log(element);
+  
   console.log("in toggle hide");
+  
   var table = element.parentNode.childNodes[5];
   console.log(table);
+
   //table.style.display = (table.style.display == "table") ? "none" : "table";
   //element.parentNode.find("table").slideToggle();
 }
