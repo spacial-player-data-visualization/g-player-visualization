@@ -1,23 +1,34 @@
 var EntryModel = require('../models/entries');
 
 var saveEntry = function(data) {
-    var entry = new EntryModel({
-        area: data.area,
-        playerID: data.playerID,
-        timestamp: data.timestamp,
-        posX: data.posX,
-        posY: data.posY,
-        cameraX: data.cameraX,
-        cameraY: data.cameraY
-    });
+    EntryModel.find({playerID: data.playerID, timestamp: data.timestamp}, function(err, result){
+        if (err) {
+            console.log(err);
+        } else {
+            if (!result.length){
+                var entry = new EntryModel({
+                    area: data.area,
+                    playerID: data.playerID,
+                    timestamp: data.timestamp,
+                    posX: data.posX,
+                    posY: data.posY,
+                    cameraX: data.cameraX,
+                    cameraY: data.cameraY
+                });
 
-    entry.save(function(err) {
-    	if (err) {
-        	console.log(err);
-    	} else {
-        	return console.log('saved');
-    	}
-	});
+                entry.save(function(err) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        return console.log('saved');
+                    }
+                });
+            } else {
+                console.log('already added');
+            }
+        }
+    });
+    
 }
 
 module.exports = {
