@@ -155,3 +155,42 @@ var getKeyMapping = function(game, eventName){
 	return mapping;
 }
 
+// assignKeys() returns a JSON object, where
+// the values of the 'values' array are assigned
+// to the keys provided in the 'mapping' array.
+
+// For example:
+// values : ["apple", "orange", "pear"]
+// mapping : { fruit : 0, color : 1, shape : 0 }
+
+// Results in:
+// { fruit : "Apple", color : "orange", shape : "pear" }
+
+var assignKeys = function(values, mapping){
+	var acc = {};
+
+	_.each(mapping, function(key, value){
+		acc[key] = values[value];
+	})
+
+	return acc;
+}
+
+// Given a list of arrays, convert the data into JSON objects.
+//   game : String of game name
+//   eventName : the event name for this table
+//   data : multudimensional array container player data
+var assignKeysForEntireTable = function(game, eventName, data) {
+	var acc = [];
+
+	// Key the key mapping
+	var mapping = getKeyMapping(game, eventName).keys;
+
+	// Apply key mapping to each object in the data array
+	_.each(data, function(d){
+		var json = assigKeys(d, mapping);
+		if (json) acc.push(json);
+	})
+
+	return acc;
+}
