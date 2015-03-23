@@ -36,28 +36,18 @@ Uploader.parseFile = function(event) {
       if (results.errors.length > 0){
         UI.error(results.errors.length + " Errors.");  
       }
-
-      var data = results.data;
+      
+      // @TODO: Test Errors, provide user feedback
       // var errors = results.errors;
-      // var meta = results.meta;
-
-      // Delete new lines
-      data = Uploader.removeEmptyLines(data);
 
       // Remove invalid keys from first column
-      data = sanitizeColumn(data, 0);
-
-      // Order data by the first column
-      data = Uploader.sortByColumn(data, 0);
-      
-      // Bucket data by type of entry
-      var buckets = Uploader.sortByEntryType(data);
+      var data = sanitizeEntries(results.data, 0);
 
       // Backup uploaded data to Local Storage
-      localStorage.setItem("upload", JSON.stringify(buckets));
+      localStorage.setItem("upload", JSON.stringify(data));
 
       // Preview data to DOM
-      Uploader.populateTables(buckets);
+      Uploader.populateTables(data);
 
       UI.loading(false);
     }
@@ -68,6 +58,9 @@ Uploader.parseFile = function(event) {
 // containing the same entry type. For example:,
 // all "PlayerJumped" actions should be bulked together.
 Uploader.sortByEntryType = function(data){
+
+  // Order data by the first column
+  data = Uploader.sortByColumn(data, 0);
 
   var buckets = [];
 
@@ -104,13 +97,24 @@ Uploader.removeEmptyLines = function(data){
 }
 
 // Populate multiple tables
-Uploader.populateTables = function(buckets){
+Uploader.populateTables = function(data){
 
+  // Bucket data by type of entry
+  var buckets = Uploader.sortByEntryType(data);
+
+  // Clear tables
   $(".tableContainer").html("");
 
+  // Print each table to DOM
   _.each(buckets, function(bucket){
+    
+    // The first data point is the
+    // type of data.
     var key = bucket[0][0];
+
+    // Build HTML for one table at a time.
     Uploader.populateTable(bucket, key);
+
   })
 }
 
@@ -184,32 +188,6 @@ Uploader.populateTable = function(bucket, type){
 
 }
 
-function formatData(data){
-  UI.alert("Filtering Valid Data.");
-
-  // Limit Map
-  var upData = _.filter(data, function(current){
-    return current[0].indexOf("Position_Introhouse") > -1;
-  })
-  
-  UI.alert(upData.length + " of " + data.length + " Entries Valid.")
-
-  var entries = _.map(upData, function(current){
-
-    // Map keys based on 
-    return {
-      playerID :  current[keyMapping.playerID],
-      timestamp : current[keyMapping.timestamp],
-      posX :      current[keyMapping.posX],
-      posY :      current[keyMapping.posY],
-      cameraX :   current[keyMapping.cameraX],
-      cameraY :   current[keyMapping.cameraY],
-      area:       current[keyMapping.area],
-    }
-  });
-  return entries;
-}
-
 var bin_count = 0;
 
 // Multi-post uploading
@@ -246,40 +224,74 @@ Uploader.bulkUpload = function(){
 // Send data to database
 Uploader.upload = function(bins, callback) {
 
-    // If no bins remain, end recursion
-    // and execute the callback.
-    if (bins.length < 1){
-      callback();
-      return;
-    }
-
-    current = bins[0];
-
-    UI.alert("Uploading " + (bin_count - bins.length) + " of " + bin_count, "count");
-
-    // Save data into JSON object.
-    // Format JSON into string
-    var data = {
-      entries : JSON.stringify(current),
-    };
-
-    // POST to server
-    $.post(API.url + "entries", data, function(data, textStatus, jqXHR){ 
-
-      // Log feedback
-      console.log(textStatus + " " + data);
-
-      // Pop off first object in array.
-      // Recursively continue to upload
-      // the rest of the array
-      bins.shift();
-
-      // If we have more bins to upload,
-      // lets keep going through.
-      upload(bins, callback);
-
-    });
+  // If no bins remain, end recursion
+  // and execute the callback.
+  if (bins.length < 1){
+    callback();
+    return;
   }
+
+  current = bins[0];
+
+  UI.alert("Uploading " + (bin_count - bins.length) + " of " + bin_count, "count");
+
+  // Save data into JSON object.
+  // Format JSON into string
+  var data = {
+    entries : JSON.stringify(current),
+  };
+
+  // POST to server
+  $.post(API.url + "entries", data, function(data, textStatus, jqXHR){ 
+
+    // Log feedback
+    console.log(textStatus + " " + data);
+
+    // Pop off first object in array.
+    // Recursively continue to upload
+    // the rest of the array
+    bins.shift();
+
+    // If we have more bins to upload,
+    // lets keep going through.
+    upload(bins, callback);
+
+  });
+}
+
+function formatData(data){
+  UI.alert("Filtering Valid Data.");
+
+  console.log(data);
+
+  // Collapse bins into single array
+  var data = _.flatten(data);
+
+  console.log(data);
+
+  // Limit Map
+  var upData = _.filter(data, function(current){
+    return current[0].indexOf("Position_Introhouse") > -1;
+  })
+  
+  UI.alert(upData.length + " of " + data.length + " Entries Valid.")
+
+  var entries = _.map(upData, function(current){
+
+    // Map keys based on 
+    return {
+      playerID :  current[keyMapping.playerID],
+      timestamp : current[keyMapping.timestamp],
+      posX :      current[keyMapping.posX],
+      posY :      current[keyMapping.posY],
+      cameraX :   current[keyMapping.cameraX],
+      cameraY :   current[keyMapping.cameraY],
+      area:       current[keyMapping.area],
+    }
+  });
+
+  return entries;
+}
 
 /******************************
        Helper Functions
@@ -336,7 +348,10 @@ function getUniqueKeys(data, column) {
 
 // remove linebreaks and new lines from the data
 // Provide a multidimensional array, and a column
-function sanitizeColumn(data, column) {
+function sanitizeEntries(data, column) {
+  
+  // Delete new lines
+  data = Uploader.removeEmptyLines(data);
   
   for (var index in data) {
     data[index][column] = data[index][column].replace(/(?:\r\n|\r|\n)/g, '');
