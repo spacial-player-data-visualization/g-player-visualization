@@ -10,6 +10,7 @@ $(document).ready(function(){
   // Pull data from the previous upload
   var buckets = lastUpload();
 
+  console.log("\nData in LocalStorage:")
   console.log(buckets);
 
   // Preview last upload
@@ -216,7 +217,7 @@ Uploader.bulkUpload = function(){
   bin_count = bins.length;
 
   // Upload bins
-  upload(bins, function(){
+  Uploader.upload(bins, function(){
     UI.loading(false, "Upload COMPLETE");
   });
 }
@@ -254,24 +255,20 @@ Uploader.upload = function(bins, callback) {
 
     // If we have more bins to upload,
     // lets keep going through.
-    upload(bins, callback);
+    Uploader.upload(bins, callback);
 
   });
 }
 
+// Apply a key mapping.
+// Converts arrays from .csv file input
+// into the corresponding JSON objects
 function formatData(data){
   UI.alert("Filtering Valid Data.");
 
-  console.log(data);
-
-  // Collapse bins into single array
-  var data = _.flatten(data);
-
-  console.log(data);
-
   // Limit Map
   var upData = _.filter(data, function(current){
-    return current[0].indexOf("Position_Introhouse") > -1;
+    return current.length > 7;
   })
   
   UI.alert(upData.length + " of " + data.length + " Entries Valid.")
