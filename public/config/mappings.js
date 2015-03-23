@@ -29,51 +29,6 @@
  
  */
 
-// Store a list of available key mappings
-var mappings = [];
-
-// Represent a player position in a map
-mappings.push({
-	game  : "Fallout New Vegas",
-	type  : "position",
-	keys : {
-		area      : 0, // (string) * 
-		playerID  : 1, // (int)    * 
-		timestamp : 2, // (double) * 
-		posX      : 3, // (double) *
-		posY      : 4, // (double) *
-		cameraX   : 6, // (double)
-		cameraY   : 7, // (double)
-	},
-});
-
-// Represent a user action
-mappings.push({
-	game  : "Fallout New Vegas",
-	type  : "action",
-
-	keys : {
-		area      : 0, // (string) * 
-		playerID  : 1, // (int)    * 
-		timestamp : 2, // (double) * 
-		posX      : 3, // (double) *
-		posY      : 4, // (double) *
-	},
-});
-
-// Represent a user interaction
-mappings.push({
-	game  : "Fallout New Vegas",
-	type  : "interaction",
-
-	keys : {
-		area      : 0, // (string) * 
-		playerID  : 1, // (int)    * 
-		timestamp : 2, // (double) * 
-		posX      : 3, // (double) *
-		posY      : 4, // (double) *
-	},
-});
 
 /* 
 
@@ -133,20 +88,69 @@ var lookup_table = {
 	"Sta" : null,
 }
 
+// Store a list of available key mappings
+var mappings = [];
+
+// Represent a player position in a map
+mappings.push({
+	game  : "Fallout New Vegas",
+	type  : "position",
+	keys : {
+		area      : 0, // (string) * 
+		playerID  : 1, // (int)    * 
+		timestamp : 2, // (double) * 
+		posX      : 3, // (double) *
+		posY      : 4, // (double) *
+		cameraX   : 6, // (double)
+		cameraY   : 7, // (double)
+	},
+});
+
+// Represent a user action
+mappings.push({
+	game  : "Fallout New Vegas",
+	type  : "action",
+
+	keys : {
+		area      : 0, // (string) * 
+		playerID  : 1, // (int)    * 
+		timestamp : 2, // (double) * 
+		posX      : 3, // (double) *
+		posY      : 4, // (double) *
+	},
+});
+
+// Represent a user interaction
+mappings.push({
+	game  : "Fallout New Vegas",
+	type  : "interaction",
+
+	keys : {
+		area      : 0, // (string) * 
+		playerID  : 1, // (int)    * 
+		timestamp : 2, // (double) * 
+		posX      : 3, // (double) *
+		posY      : 4, // (double) *
+	},
+});
+
 // Return the key mapping given the 
 // game name, and the event name
+
+// ex: getKeyMapping("Fallout New Vegas", "Attacked")
+
 var getKeyMapping = function(game, eventName){
 
 	// Get the type of event from the lookup table
 	var type = lookup_table[eventName]
 
-	if (!type) {
+	// Find mapping
+	var mapping = _.findWhere(mappings, {game : game, type : type});
+
+	if (!mapping || !type) {
 		console.log("Unable to find key mapping for: " + eventName);
 		return;
 	}
-
-	// Find mapping
-	var mapping = _.findWhere({game : game, type : type});
 
 	return mapping;
 }
