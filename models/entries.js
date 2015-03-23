@@ -7,10 +7,12 @@ var EntrySchema = new Schema({
         type: String
     },
     playerID: {
-        type: Number
+        type: Number,
+        required: true
     },
     timestamp: {
-        type: Number
+        type: Number,
+        required: true
     },
     posX: {
         type: Number
