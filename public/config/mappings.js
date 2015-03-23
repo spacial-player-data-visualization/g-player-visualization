@@ -112,11 +112,11 @@ mappings.push({
 	type  : "action",
 
 	keys : {
-		area      : 0, // (string) * 
-		playerID  : 1, // (int)    * 
-		timestamp : 2, // (double) * 
-		posX      : 3, // (double) *
-		posY      : 4, // (double) *
+		area      : 0, 
+		playerID  : 1, 
+		timestamp : 2, 
+		posX      : 3, 
+		posY      : 4, 
 	},
 });
 
@@ -126,11 +126,11 @@ mappings.push({
 	type  : "interaction",
 
 	keys : {
-		area      : 0, // (string) * 
-		playerID  : 1, // (int)    * 
-		timestamp : 2, // (double) * 
-		posX      : 3, // (double) *
-		posY      : 4, // (double) *
+		area      : 0,
+		playerID  : 1,
+		timestamp : 2,
+		posX      : 3,
+		posY      : 4,
 	},
 });
 
