@@ -67,6 +67,9 @@ Uploader.sortByEntryType = function(data){
 
   var uniques = getUniqueKeys(data, 0);
 
+  console.log("\nList of Unique Keys (Column 0)");
+  console.log(uniques);
+
   // Fill in preview table
   for (var i in uniques) {
     

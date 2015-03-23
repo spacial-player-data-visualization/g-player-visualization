@@ -5,19 +5,6 @@
 
 // Global Variables & Utility Functions
 
-// Available Keys, and their index in
-// the .csv array.
-
-var keyMapping = {
-	area      : 0, // (string) * 
-	playerID  : 1, // (int)    * 
-	timestamp : 2, // (double) * 
-	posX      : 3, // (double) *
-	posY      : 4, // (double) *
-	cameraX   : 6, // (double)
-	cameraY   : 7, // (double)
-} // * required
-
 var environment = document.URL;
 
 var API = {
@@ -33,6 +20,7 @@ var API = {
 // Use Hubspot's Messenger plugin to
 // provide text/popup feedback to the user.
 // http://github.hubspot.com/messenger/docs/welcome/
+
 Messenger.options = {
   extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right',
   theme: 'air'
