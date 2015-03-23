@@ -134,6 +134,19 @@ mappings.push({
 	},
 });
 
+// Represent a sample mapping
+mappings.push({
+	game  : "Example",
+	type  : "foobar",
+
+	keys : {
+		fruit : 0,
+		color : 1,
+		shape : 2,
+	},
+});
+
+
 // Return the key mapping given the 
 // game name, and the event name
 
@@ -166,6 +179,7 @@ var getKeyMapping = function(game, eventName){
 // Results in:
 // { fruit : "Apple", color : "orange", shape : "pear" }
 
+
 var assignKeys = function(values, mapping){
 	var acc = {};
 
@@ -174,6 +188,7 @@ var assignKeys = function(values, mapping){
 	})
 
 	return acc;
+	// ex: assignKeys(["apple", "orange", "pear"], { fruit : 0, color : 1, shape : 0 })
 }
 
 // Given a list of arrays, convert the data into JSON objects.
