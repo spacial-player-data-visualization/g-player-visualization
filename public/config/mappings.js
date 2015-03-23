@@ -169,7 +169,7 @@ var getKeyMapping = function(game, eventName){
 var assignKeys = function(values, mapping){
 	var acc = {};
 
-	_.each(mapping, function(key, value){
+	_.each(mapping, function(value, key){
 		acc[key] = values[value];
 	})
 
