@@ -48,104 +48,92 @@ var lookup_table = {
 	"Attacked" : "action",
 	"CraftingTable" : null,
 	"Creature Giant Rat attacked first" : null,
-	"Dialogue" : null,
+	"Dialogue" : "dialogue",
+
 	"InteractionContainer" : "interaction",
 	"InteractionDoor" : "interaction",
 	"InteractionInterior" : "interaction",
 	"InteractionNPC" : "interaction",
 	"InteractionObject" : "interaction",
-	"NPC Bean attacked first" : null,
-	"NPC Bobby D attacked first" : null,
-	"NPC Collin attacked first" : null,
-	"NPC Dough attacked first" : null,
-	"NPC JD attacked first" : null,
-	"NPC Mel attacked first" : null,
-	"NPC Munz attacked first" : null,
-	"NPC Ray attacked first" : null,
-	"NPC Sara attacked first" : null,
-	"NPC Sheriff attacked first" : null,
-	"NPC Slater attacked first" : null,
+	
+	"NPC Bean attacked first" : "attacked",
+	"NPC Bobby D attacked first" : "attacked",
+	"NPC Collin attacked first" : "attacked",
+	"NPC Dough attacked first" : "attacked",
+	"NPC JD attacked first" : "attacked",
+	"NPC Mel attacked first" : "attacked",
+	"NPC Munz attacked first" : "attacked",
+	"NPC Ray attacked first" : "attacked",
+	"NPC Sara attacked first" : "attacked",
+	"NPC Sheriff attacked first" : "attacked",
+	"NPC Slater attacked first" : "attacked",
+
 	"ObjectOnActivate" : null,
 	"player attacked first" : null,
 	"Player killed" : null,
 	"Player looted dead" : null,
 	"Player looted Dead" : null,
 	"Player shooting a dead" : null,
-	"PlayerDropItem" : null,
-	"PlayerDroppedItem" : null,
-	"PlayerEquipped" : null,
-	"PlayerJumped" : null,
-	"PlayerLootedItem" : null,
-	"PlayerShot" : null,
-	"PlayerUnequipped" : null,
+
+	"PlayerDropItem" : "item",
+	"PlayerDroppedItem" : "item",
+	"PlayerEquipped" : "item",
+	"PlayerJumped" : "item",
+	"PlayerLootedItem" : "item",
+	"PlayerShot" : "item",
+	"PlayerUnequipped" : "item",
+
+	"PlayerSneaking" : "sneaking",
+
 	"Position_AbandonedHouse" : "position",
 	"Position_Bar" : "position",
 	"Position_Hotel" : "position",
 	"Position_Introhouse" : "position",
 	"Position_Outside" : "position",
 	"Position_SheriffOffice" : "position",
+
 	"Quest" : null,
 	"Sta" : null,
 }
 
 // Store a list of available key mappings
-var mappings = [];
-
-// Represent a player position in a map
-mappings.push({
+var mappings = [{
+	
+	// Represent a player position in a map
 	game  : "Fallout New Vegas",
 	type  : "position",
-	keys : {
-		area      : 0, // (string) * 
-		playerID  : 1, // (int)    * 
-		timestamp : 2, // (double) * 
-		posX      : 3, // (double) *
-		posY      : 4, // (double) *
-		cameraX   : 6, // (double)
-		cameraY   : 7, // (double)
-	},
-});
-
-// Represent a user action
-mappings.push({
+	columns : ["area", "playerID", "timestamp", "posX", "posY", "cameraX", "cameraY", "???", "??", "?"]
+}, {
+	
+	// Represent a user action
 	game  : "Fallout New Vegas",
 	type  : "action",
-
-	keys : {
-		area      : 0, 
-		playerID  : 1, 
-		timestamp : 2, 
-		posX      : 3, 
-		posY      : 4, 
-	},
-});
-
-// Represent a user interaction
-mappings.push({
+	columns : ["action", "playerID", "value", "target", "status"],
+}, {
+	
+	// Represent a user interaction
 	game  : "Fallout New Vegas",
-	type  : "interaction",
-
-	keys : {
-		area      : 0,
-		playerID  : 1,
-		timestamp : 2,
-		posX      : 3,
-		posY      : 4,
-	},
-});
-
-// Represent a sample mapping
-mappings.push({
-	game  : "Example",
-	type  : "foobar",
-
-	keys : {
-		fruit : 0,
-		color : 1,
-		shape : 2,
-	},
-});
-
+	type  : "dialogue",
+	columns : ["action", "playerId", "timestamp", "??", "NPC", "text"],
+}, {
+	
+	// Represent item interactions
+	game  : "Fallout New Vegas",
+	type  : "item",
+	columns : ["action", "item", "value"],
+}, {
+	
+	// Represent attacks against the player
+	game  : "Fallout New Vegas",
+	type  : "attacked",
+	columns : ["action", "playerID", "value"],
+}, {
+	
+	// Represents player sneaking
+	game  : "Fallout New Vegas",
+	type  : "sneaking",
+	columns : ["action", "area", "playerID", "value", "???"],
+}];
 
 // Return the key mapping given the 
 // game name, and the event name
@@ -170,36 +158,49 @@ var getKeyMapping = function(game, eventName){
 
 // assignKeys() returns a JSON object, where
 // the values of the 'values' array are assigned
-// to the keys provided in the 'mapping' array.
+// to the column names provided in the 'mapping' array.
 
 // For example:
 // values : ["apple", "orange", "pear"]
-// mapping : { fruit : 0, color : 1, shape : 0 }
+// columns : ["fruit", "color", "shape"]
 
 // Results in:
 // { fruit : "Apple", color : "orange", shape : "pear" }
 
-
-var assignKeys = function(values, mapping){
+var assignKeys = function(values, columns){
 	var acc = {};
 
-	_.each(mapping, function(value, key){
-		acc[key] = values[value];
+	// Check data. Make sure we have enough keys for our data.
+	if (columns.length != values.length){
+		console.error("Warning: Mismatch in key mapping. Amount of keys and values differ." + columns.length + " Columns, " + values.length + " Values");
+		console.log(columns);
+		console.log(values);
+		console.log("\n");
+		return;
+	}
+
+	_.each(columns, function(value, key){
+		// Ensure data exists
+		if (!values[key]) return; 
+
+		// Create key/value pair
+		acc[value] = values[key];
 	})
 
 	return acc;
-	// ex: assignKeys(["apple", "orange", "pear"], { fruit : 0, color : 1, shape : 0 })
+	// ex: assignKeys(["apple", "orange", "pear"], ["fruit", "color", "shape"])
 }
 
 // Given a list of arrays, convert the data into JSON objects.
 //   game : String of game name
 //   eventName : the event name for this table
 //   data : multudimensional array container player data
+
 var assignKeysForEntireTable = function(game, eventName, data) {
 	var acc = [];
 
 	// Key the key mapping
-	var mapping = getKeyMapping(game, eventName).keys;
+	var mapping = getKeyMapping(game, eventName).columns;
 
 	// Apply key mapping to each object in the data array
 	_.each(data, function(d){

@@ -8,19 +8,21 @@ $(document).ready(function(){
   $("#csv-file").change(Uploader.parseFile);
 
   // Pull data from the previous upload
-  var buckets = lastUpload();
+  var data = lastUpload();
 
   console.log("\nData in LocalStorage:")
-  console.log(buckets);
+  console.log(data);
 
   // Preview last upload
-  Uploader.populateTables(buckets);
+  Uploader.populateTables(data);
 })
 
 var Uploader = {};
 
+// Extract data from the uploaded .csv file
 // http://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
 Uploader.parseFile = function(event) {
+
   UI.loading(true, "Parsing File....")
 
   var file = event.target.files[0];
@@ -32,6 +34,7 @@ Uploader.parseFile = function(event) {
 
     // Parser Callback
     complete: function(results) {
+
       UI.alert(results.data.length + " results loaded. ");
       
       if (results.errors.length > 0){
@@ -67,8 +70,8 @@ Uploader.sortByEntryType = function(data){
 
   var uniques = getUniqueKeys(data, 0);
 
-  console.log("\nList of Unique Keys (Column 0)");
-  console.log(uniques);
+  // console.log("\nList of Unique Keys (Column 0)");
+  // console.log(uniques);
 
   // Fill in preview table
   for (var i in uniques) {
@@ -83,31 +86,29 @@ Uploader.sortByEntryType = function(data){
   return buckets;
 }
 
+// Sort data by values in the provided column id
 Uploader.sortByColumn = function(data, column){
-
-  var dataset = data.sort(function(a,b) { 
+  return data.sort(function(a,b) { 
     var toReturn = a[column].localeCompare(b[column]);
     return toReturn;
   });
-
-  return dataset;
-}
+};
 
 // Remove entries that only contain an empty string
 Uploader.removeEmptyLines = function(data){
     return _.filter(data, function(dat){
         return dat.length > 1;
     });
-}
+};
 
 // Populate multiple tables
 Uploader.populateTables = function(data){
 
-  // Bucket data by type of entry
-  var buckets = Uploader.sortByEntryType(data);
-
   // Clear tables
   $(".tableContainer").html("");
+
+  // Bucket data by type of entry
+  var buckets = Uploader.sortByEntryType(data);
 
   // Print each table to DOM
   _.each(buckets, function(bucket){
@@ -120,7 +121,7 @@ Uploader.populateTables = function(data){
     Uploader.populateTable(bucket, key);
 
   })
-}
+};
 
 // Render content into HTML table.
 // Allow user to preview the uploaded .csv file.
@@ -128,29 +129,6 @@ Uploader.populateTable = function(bucket, type){
   
   // Sample data for previewing
   dataset = bucket.slice(0, 10);
-
-  // @
-  // Selects, and clears specific tables
-  //console.log("pupulate call data is " + data);
-  
-  // var id = "button" + type;
-  // var elem = document.getElementById(id);
-  
-  // if (elem) { 
-  //   // console.log(elem);
-  //   // console.log(elem.parentNode);
-  //   elem.parentNode.removeChild(elem);
-  // }
-
-  // id = "preview" + type;
-  // var elem2 = document.getElementById(id);
-
-  // if (elem2) { 
-  //   var table = elem2;
-  //   while (table.rows.length > 0) {
-  //     table.deleteRow(0);
-  //   }
-  // }
 
   var tableID = "preview" + type.replace(/\s/g, '');
   
@@ -190,12 +168,13 @@ Uploader.populateTable = function(bucket, type){
 
   UI.alert("Data Previewed Loaded.", "preview")
 
-}
+};
 
 var bin_count = 0;
 
 // Multi-post uploading
 Uploader.bulkUpload = function(){
+
   UI.loading(true, "Uploading Data.....");
 
   UI.alert("Sending to database....");
@@ -206,7 +185,7 @@ Uploader.bulkUpload = function(){
   // Convert data into JSON object.
   // All data should now be represented
   // as a key/value pair
-  entries = formatData(entries);
+  entries = Uploader.formatData(entries);
 
   // When POSTing data to the API, we occasionally
   // encounter a size/entry limit. Just to be safe,
@@ -266,29 +245,26 @@ Uploader.upload = function(bins, callback) {
 // Apply a key mapping.
 // Converts arrays from .csv file input
 // into the corresponding JSON objects
-function formatData(data){
+Uploader.formatData = function(data){
+
   UI.alert("Filtering Valid Data.");
 
-  // Limit Map
-  var upData = _.filter(data, function(current){
-    return current.length > 7;
-  })
-  
-  UI.alert(upData.length + " of " + data.length + " Entries Valid.")
+  var formatted = _.map(data, function(current){
 
-  var entries = _.map(upData, function(current){
+    // Get key mapping for the current entry
+    var keyMapping = getKeyMapping(settings.game, current[0]);
 
-    // Map keys based on 
-    return {
-      playerID :  current[keyMapping.playerID],
-      timestamp : current[keyMapping.timestamp],
-      posX :      current[keyMapping.posX],
-      posY :      current[keyMapping.posY],
-      cameraX :   current[keyMapping.cameraX],
-      cameraY :   current[keyMapping.cameraY],
-      area:       current[keyMapping.area],
-    }
+    // If we have a key mapping, assign keys to the current data
+    if (keyMapping){ current = assignKeys(current, keyMapping.columns) };
+
+    // Return data that was converted.
+    if (current) { return current; }
+
   });
+
+  UI.alert(formatted.length + " of " + data.length + " Entries Valid.")
+
+  console.log(formatted);
 
   return entries;
 }
