@@ -78,10 +78,10 @@ var lookup_table = {
 	"PlayerDropItem" : "item",
 	"PlayerDroppedItem" : "item",
 	"PlayerEquipped" : "item",
-	"PlayerJumped" : "item",
 	"PlayerLootedItem" : "item",
 	"PlayerShot" : "item",
 	"PlayerUnequipped" : "item",
+	"PlayerJumped" : "jump",
 
 	"PlayerSneaking" : "sneaking",
 
@@ -114,7 +114,7 @@ var mappings = [{
 	// Represent a user interaction
 	game  : "Fallout New Vegas",
 	type  : "dialogue",
-	columns : ["action", "playerId", "timestamp", "??", "NPC", "text"],
+	columns : ["action", "playerId", "timestamp", "??", "NPC", "text", "response"],
 }, {
 	
 	// Represent item interactions
@@ -133,6 +133,12 @@ var mappings = [{
 	game  : "Fallout New Vegas",
 	type  : "sneaking",
 	columns : ["action", "area", "playerID", "value", "???"],
+}, {
+	
+	// Represents player sneaking
+	game  : "Fallout New Vegas",
+	type  : "jump",
+	columns : ["action", "value"],
 }];
 
 // Return the key mapping given the 
@@ -149,7 +155,7 @@ var getKeyMapping = function(game, eventName){
 	var mapping = _.findWhere(mappings, {game : game, type : type});
 
 	if (!mapping || !type) {
-		console.log("Unable to find key mapping for: " + eventName);
+		console.error("Unable to find key mapping for: " + eventName);
 		return;
 	}
 

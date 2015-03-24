@@ -187,6 +187,8 @@ Uploader.bulkUpload = function(){
   // as a key/value pair
   entries = Uploader.formatData(entries);
 
+  if (!confirm("Upload " + entries.length + " entries to the database?")) return;
+
   // When POSTing data to the API, we occasionally
   // encounter a size/entry limit. Just to be safe,
   // lets send the data in multiple POSTS.
@@ -249,24 +251,26 @@ Uploader.formatData = function(data){
 
   UI.alert("Filtering Valid Data.");
 
-  var formatted = _.map(data, function(current){
+  var acc = [];
+
+  _.each(data, function(current){
 
     // Get key mapping for the current entry
     var keyMapping = getKeyMapping(settings.game, current[0]);
 
     // If we have a key mapping, assign keys to the current data
-    if (keyMapping){ current = assignKeys(current, keyMapping.columns) };
+    if (keyMapping){ 
+      var entry = assignKeys(current, keyMapping.columns) 
+    };
 
     // Return data that was converted.
-    if (current) { return current; }
+    if (entry) { acc.push(entry); }
 
   });
 
-  UI.alert(formatted.length + " of " + data.length + " Entries Valid.")
+  UI.alert(acc.length + " of " + data.length + " Entries Valid.")
 
-  console.log(formatted);
-
-  return entries;
+  return acc;
 }
 
 /******************************
