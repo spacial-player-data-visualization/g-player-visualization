@@ -26,31 +26,6 @@ var settings = {
     // Current Map
     map : null,
 
-    // {
-
-    //   // Save map configuration
-    //   url: "/fallout/intro.png",
-    //   name: "Position_introhouse",
-    //   title: "",
-    //   width : 1600,
-    //   height : 1178,
-
-    //   // Map player locations to their points
-    //   // on the map. Manually offset for accuracy.
-    //   // Multiplied to base
-    //   offset : {
-    //     x : 650,
-    //     y : 550,
-    //   },
-
-    //   // Map player locations to their points
-    //   // on the map. Manually scale for accuracy.
-    //   // added to base
-    //   scale : {
-    //     x : 0.45,
-    //     y : 0.45,
-    //   }
-    // },
   };
 
 
@@ -129,13 +104,21 @@ UI.loading = function(boolean, msg){
 	}
 };
 
-
+// Initialize the User Interface
 UI.initialize = function(){
+    
+    /***************************
+       Populate UI Options
+    ****************************/
 
     // Populate Games Pulldown
     _.each(games, function(game) {
         $("#select-game").append($("<option />").val(game).text(game));
     });
+
+    /***************************
+       Default Settings
+    ****************************/
 
     settings.game = "Fallout New Vegas";
 
@@ -146,10 +129,26 @@ UI.initialize = function(){
     var latitudeDistance = settings.map.height / settings.scale;
     var longitudeDistance = settings.map.width / settings.scale;
 
-    // Define center of map
-    var mapCenter = [latitudeDistance / 2, longitudeDistance / 2];
+    // Set Map Center
+    map.setView([latitudeDistance / 2, longitudeDistance / 2], 1);
+    
+    /***************************
+       Initialize UI Options
+    ****************************/
 
-    map.setView(mapCenter, 1);
+    UI.addImageOverlay();
+    UI.addImageOverlay();
+    UI.addHeatmapToggle();
+    UI.addToggleAbleSideNavigation();
+    UI.addLeafletDraw();
+}
+
+UI.addImageOverlay = function(){
+
+    // Given map size, and scale factor,
+    // determin the latitude/longitude bounds.
+    var latitudeDistance = settings.map.height / settings.scale;
+    var longitudeDistance = settings.map.width / settings.scale;
 
     // Note: Lat/Long is represented as [Latitude (y), Longitude (x)].
     // Take care when converting from cartesian points, to lat/long.        
@@ -157,6 +156,27 @@ UI.initialize = function(){
 
     // Add image overlay to map
     L.imageOverlay('img/maps/' + settings.map.url, imageBounds).addTo(map);
+
+}
+
+UI.addHeatmapToggle = function(){
+
+    // Show/Hide Heatmap
+    $('#toggle_heatmap').change(function(e) {
+      
+      // Enable
+      if ($('#toggle_heatmap').is(':checked')) {
+        MAP.addHeatmap(settings.data);
+      
+      //  Disable
+      } else {
+        map.removeLayer(MAP.heatmapLayer)
+      }
+    });
+}
+
+// Initialize toggle-able side nav
+UI.addToggleAbleSideNavigation = function(){
 
     /***************************
        Setup UI / Side Options
@@ -189,25 +209,18 @@ UI.initialize = function(){
       e.preventDefault();
       $("#wrapper").toggleClass("toggled");
     });
+}
 
-    // Show/Hide Heatmap
-    $('#toggle_heatmap').change(function(e) {
-      
-      // Enable
-      if ($('#toggle_heatmap').is(':checked')) {
-        MAP.addHeatmap(settings.data);
-      
-      //  Disable
-      } else {
-        map.removeLayer(MAP.heatmapLayer)
-      }
-    });
+// Implement Leaflet Draw for creating
+// shapes on the map
+UI.addLeafletDraw = function(){
 
     /***************************
        Initialize Leaflet.draw
        Enables shape creation/selection
        https://github.com/Leaflet/Leaflet.draw#using
     ****************************/
+
 
     // Initialise the FeatureGroup to store editable layers
     var drawnItems = new L.FeatureGroup();
@@ -244,5 +257,6 @@ UI.initialize = function(){
           console.log(e)
         }
     });
+
 
 }
