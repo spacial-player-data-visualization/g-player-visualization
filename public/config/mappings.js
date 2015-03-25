@@ -1,5 +1,47 @@
 
 /******************************
+        config.js
+ ******************************/
+
+var games = [
+	"Fallout New Vegas", 
+	"League of Legends", 
+	"Quake 3",
+	"Game Gaze",
+];
+
+var maps = [{
+
+    // Save map configuration
+    name: "Position_introhouse",
+    game: "Fallout New Vegas",
+    url: "/fallout/intro.png",
+	
+	// Background image size
+    width : 1600,
+    height : 1178,
+
+    // Map player locations to their points
+    // on the map. Manually offset for accuracy.
+    // Multiplied to base
+    offset : {
+      x : 650,
+      y : 550,
+    },
+
+    // Map player locations to their points
+    // on the map. Manually scale for accuracy.
+    // added to base
+    scale : {
+      x : 0.45,
+      y : 0.45,
+    }
+}, {
+
+}];
+
+
+/******************************
         key-mappings.js 
  ******************************/
 

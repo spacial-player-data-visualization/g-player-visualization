@@ -81,7 +81,7 @@ MAP.getData = function(){
 	UI.loading(true, "Loading Data....");
 
 	// Hit API
-	$.get(API.url + "entries", function(data){
+	$.get(settings.API_url + "entries", function(data){
 
 		var offset = settings.map.offset;
 		var scale = settings.map.scale;
