@@ -3,20 +3,55 @@
               app.js   
 ************************************/
 
-// Global Variables & Utility Functions
+// Settings
 
-// Available Keys, and their index in
-// the .csv array.
+var settings = {
 
-var keyMapping = {
-	area      : 0, // (string) * 
-	playerID  : 1, // (int)    * 
-	timestamp : 2, // (double) * 
-	posX      : 3, // (double) *
-	posY      : 4, // (double) *
-	cameraX   : 6, // (double)
-	cameraY   : 7, // (double)
-} // * required
+  	// Save data
+  	data : null,
+
+  	// enable heatmap
+  	heatmap : true,
+
+    // Global scale factor.
+    // Helps to max points (ranging from -10,000 to 10,000)
+    // to their coordinate points on a geo projection.
+    scale : 100,
+
+    // Current Game
+    game : "Fallout New Vegas",
+
+    // Current Map
+    map : {
+
+      // Save map configuration
+      url: "/fallout/intro.png",
+      name: "Position_introhouse",
+      title: "",
+      width : 1600,
+      height : 1178,
+
+      // Map player locations to their points
+      // on the map. Manually offset for accuracy.
+      // Multiplied to base
+      offset : {
+        x : 650,
+        y : 550,
+      },
+
+      // Map player locations to their points
+      // on the map. Manually scale for accuracy.
+      // added to base
+      scale : {
+        x : 0.45,
+        y : 0.45,
+      }
+    },
+  };
+
+/************************************
+ Global Variables & Utility Functions
+************************************/
 
 var environment = document.URL;
 
@@ -33,6 +68,7 @@ var API = {
 // Use Hubspot's Messenger plugin to
 // provide text/popup feedback to the user.
 // http://github.hubspot.com/messenger/docs/welcome/
+
 Messenger.options = {
   extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right',
   theme: 'air'
