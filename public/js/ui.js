@@ -117,8 +117,6 @@ UI.initialize = function(){
        Initialize UI Options
     ****************************/
 
-    UI.addImageOverlay();
-    UI.addImageOverlay();
     UI.addHeatmapToggle();
     UI.addPlayerPathToggle();
     UI.addToggleAbleSideNavigation();
@@ -128,22 +126,6 @@ UI.initialize = function(){
 /************************************
       Setup: Help Functions
 ************************************/
-
-UI.addImageOverlay = function(){
-
-    // Given map size, and scale factor,
-    // determin the latitude/longitude bounds.
-    var latitudeDistance = settings.map.height / settings.scale;
-    var longitudeDistance = settings.map.width / settings.scale;
-
-    // Note: Lat/Long is represented as [Latitude (y), Longitude (x)].
-    // Take care when converting from cartesian points, to lat/long.        
-    var imageBounds = [[0, 0], [latitudeDistance, longitudeDistance]];
-
-    // Add image overlay to map
-    L.imageOverlay('img/maps/' + settings.map.url, imageBounds).addTo(map);
-
-}
 
 UI.addHeatmapToggle = function(){
 
@@ -166,17 +148,11 @@ UI.addPlayerPathToggle = function(){
     // Show/Hide Heatmap
     $('#toggle_paths').change(function(e) {
       
-      // Enable
-      if ($('#toggle_paths').is(':checked')) {
-        settings.paths = true;
+      // Get current status
+      var checked = $('#toggle_paths').is(':checked');
+      settings.paths = checked;
       
-      //  Disable
-      } else {
-        settings.paths = false;
-      }
-
-      alert(settings.paths)
-
+      // Update map
       Visualizer.updateMap();
 
     });
@@ -276,9 +252,6 @@ UI.setGame = function(gamename){
     // Save game name
     settings.game = gamename;
 
-    // Reset map
-    settings.map = null;
-
     // Clear List
     $("#select-game").children().remove();
 
@@ -294,8 +267,11 @@ UI.setGame = function(gamename){
 
     });
 
-    // Populate Map Pulldown
+    // Available maps
     var game_maps = _.where(maps, { game : settings.game });
+
+    // Reset map
+    UI.setMap(game_maps[0].name);
 
     // Clear List
     $("#select-map").children().remove();
@@ -316,10 +292,25 @@ UI.setGame = function(gamename){
 
 // When user selects a new map
 UI.setMap = function(mapname){
+
+  if (settings.overlay){
+    map.removeLayer(settings.overlay);  
+  }
   
   // Find map data
   settings.map = _.findWhere(maps, { name : mapname });
 
+  // Given map size, and scale factor,
+  // determin the latitude/longitude bounds.
+  var latitudeDistance = settings.map.height / settings.scale;
+  var longitudeDistance = settings.map.width / settings.scale;
+
+  // Note: Lat/Long is represented as [Latitude (y), Longitude (x)].
+  // Take care when converting from cartesian points, to lat/long.        
+  var imageBounds = [[0, 0], [latitudeDistance, longitudeDistance]];
+
+  // Add image overlay to map
+  settings.overlay = L.imageOverlay('img/maps/' + settings.map.url, imageBounds).addTo(map);
 
 }
 
