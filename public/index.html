@@ -31,9 +31,11 @@ Authors:
   <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/css/messenger.css" />
   <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/css/messenger-theme-air.css" />
   <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.2.3/leaflet.draw.css" />
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/css/select2.min.css" />
 
   <!-- Local Style Sheets -->
   <link href="css/style.css" rel="stylesheet" />
+
 </head>
 <body>
   <i id="loading" class="fa fa-cog fa-spin" style="display: none;"></i>
@@ -47,65 +49,61 @@ Authors:
    <!-- Leaflet.js Map -->
    <div id="map"></div>
 
-   <!-- Map Key -->
-   <div id="key">
-     <p><b>Game : Map Name</b></p>
-     <p>User IDs</p>
-     <p>14k Locations</p>
-     <p>20k Events</p>
-     <div class="content"></div>
-   </div>
-
-   <!-- Status Bar -->
-   <div id="status">status</div>
-
+   <!-- Map Information -->
+   <div id="legend"></div>
+   
  </div><!-- /#wrapper -->
-
-<!-- Query Builder Modal -->
-<div class="modal fade" id="query-builder-modal" tabindex="-1" role="dialog" aria-labelledby="queryBuilderLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="queryBuilderLabel">
-          <ul class="nav nav-tabs">
-            <li role="presentation" class="custom active" onclick="QueryBuilder.mode('custom')"><a href="#">Query Builder</a></li>
-            <li role="presentation" class="preset"  onclick="QueryBuilder.mode('preset')"><a href="#">Preset Queries</a></li>
-          </ul>  
-        </ul>
-      </div>
-      <div class="modal-body col-sm-12"></div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" onclick="QueryBuilder.queryDatabase();"><i class="fa fa-database"></i> QUERY</button>
-      </div>
-    </div>
-  </div>
-</div>
 
  <!-- External Javascript Dependencies -->
  <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
  <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
  <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
- <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.js"></script>
  <script src="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/js/messenger.min.js"></script>
  <script src="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/js/messenger-theme-future.js"></script>
  <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.2.3/leaflet.draw.js"></script>
+ <script src="http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/js/select2.min.js"></script>
 
  <!-- Libraries Hosted Locally --> 
  <script src="lib/heatmap.min.js"></script>
  <script src="lib/leaflet-heatmap.js"></script>
 
- <!-- App Functionality -->
+ <!-- Load Settings -->
  <script src="config/settings.js"></script>
- <script src="js/app.js"></script>
- 
- <!-- Query Builder Functionality -->
+
+ <!-- App Functionality -->
+ <script src="js/visualizer.js"></script>
+ <script src="js/ui.js"></script>
+ <script src="js/heatmap.js"></script>
  <script src="js/query-builder.js"></script>
 
  <!-- Page-Specific Javascript -->
  <script>
+
+  /*************************
+       Load Tempalates
+   *************************/
+
+  $("#sidebar-wrapper").load('templates/left-options-menu.tpl.html', function(result){
+      UI.initialize();
+  });
+
+  $("#legend").load('templates/legend.tpl.html', function(result){
+    $(".action-select").select2();
+    
+    $('#toggle_all_data').change(function(e) {
+      
+      // Get current status
+      var checked = $('#toggle_all_data').is(':checked');
+
+      if (checked) {
+        $('.filter-by-action').hide();
+      } else {
+        $('.filter-by-action').show();
+      }
+
+    });
+  });
 
   /*************************
          Setup MAP
@@ -123,17 +121,12 @@ Authors:
   var map = L.map('map', {
     
     // Initialize Zoom Limits
-    minZoom: 6,
+    minZoom: 4,
     maxZoom: 10,
 
     // Support Leaflet.draw
     drawControl: false,
   })
-
-  $("#sidebar-wrapper").load('templates/left-options-menu.tpl.html', function(result){
-      UI.initialize();
-  });
-
   
 </script>
 </body>

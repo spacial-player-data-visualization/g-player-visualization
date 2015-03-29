@@ -4,7 +4,8 @@ var Schema = mongoose.Schema;
 
 var EntrySchema = new Schema({
     area: {
-        type: String
+        type: String,
+        required: true
     },
     playerID: {
         type: Number,
@@ -15,17 +16,13 @@ var EntrySchema = new Schema({
         required: true
     },
     posX: {
-        type: Number
+        type: Number,
+        required: true
     },
     posY: {
-        type: Number
-    },
-    cameraX: {
-        type: Number
-    },
-    cameraY: {
-        type: Number
+        type: Number,
+        required: true
     }
-});
+}, { strict: false });
 
 module.exports = mongoose.model('Entry', EntrySchema);
