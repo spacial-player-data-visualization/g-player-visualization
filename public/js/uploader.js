@@ -186,6 +186,7 @@ Uploader.bulkUpload = function(){
   // All data should now be represented
   // as a key/value pair
   entries = Uploader.formatData(entries);
+  entries = Uploader.filler(entries);
 
   if (!confirm("Upload " + entries.length + " entries to the database?")) return;
 
@@ -257,31 +258,14 @@ Uploader.formatData = function(data){
 
     var action = current[0];
 
-    alert(action);
-
     // Get key mapping for the current entry
     var keyMapping = getKeyMapping(settings.game, action);
-
-    //console.log("got key mapping " + keyMapping);
-    
-    // Ensure data has time, x, and y data
-    // If not, get it from the last user entry that does
-    // Note - this is only to fix a data error with the client's current data
-    // set. It is not meant to be a full fledged feature.
-    if ( keyMapping &&
-      !( _.contains(keyMapping.columns, "posX") && 
-        _.contains(keyMapping.columns, "posY") &&
-        _.contains(keyMapping.columns, "timestamp") &&
-        _.contains(keyMapping.columns, "area"))) {
-      //  console.log("about to fill " + current);
-    current = fillEntry(data, data.indexOf(current));
-  }
 
     // If we have a key mapping, assign keys to the current data
     if (keyMapping){ 
       var entry = assignKeys(current, keyMapping.columns) 
-    };
-
+    };  
+  
    // Return data that was converted.
    if (entry) { acc.push(entry); }
 
@@ -290,6 +274,29 @@ Uploader.formatData = function(data){
 UI.alert(acc.length + " of " + data.length + " Entries Valid.")
 
 return acc;
+}
+
+Uploader.filler = function(data) {
+  var entries = [];
+
+  _.each(data, function(current) {
+     var action = current[0];
+  
+    // Ensure data has time, x, and y data
+    // If not, get it from the last user entry that does
+    // Note - this is only to fix a data error with the client's current data
+    // set. It is not meant to be a full fledged feature.
+    if ( !(current.posX && 
+        current.posY &&
+        current.timestamp &&
+        current.area)) {
+      //  console.log("about to fill " + current);
+    entries.push(fillEntry(data, data.indexOf(current)));
+  } else {
+    entries.push(current);
+  }
+  });
+  return entries;
 }
 
 /******************************
@@ -382,17 +389,18 @@ function fillEntry(data, index) {
 
     // Find key mapping
     var keyMapping = getKeyMapping(settings.game, eventname);
-
+    //console.log(keyMapping);
     if (keyMapping &&
       _.contains(keyMapping.columns, "area") &&
       _.contains(keyMapping.columns, "posX") &&
       _.contains(keyMapping.columns, "posY") && 
       _.contains(keyMapping.columns, "timestamp")) {
+        var filler = data[i];
         console.log("found a suitable keymap");
-        current["area"] = data[i]["area"];
-        current["posX"] = data[i]["posX"];
-        current["posY"] = data[i]["posY"];
-        current["timestamp"] = data[i]["timestamp"];
+        current["area"] = filler["area"];
+        current["posX"] = filler["posX"];
+        current["posY"] = filler["posY"];
+        current["timestamp"] = filler["timestamp"];
         console.log(current);
         return current;
     }
