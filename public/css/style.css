@@ -233,6 +233,26 @@ ul.messenger-theme-air .messenger-message {
     border-top: none;
 }
 
+.panel.key-map-missing {
+    border: 1px solid red;
+}
+
+.panel span.status {
+    float: right;
+    padding: 6px;
+}
+
+.panel span.status.key-mapping {
+    
+}
+
+.panel span.status.no-key-mapping {
+    color: red;
+    font-weight: 600;
+}
+
+
+
 .crossout {
     text-decoration: line-through;
 }
