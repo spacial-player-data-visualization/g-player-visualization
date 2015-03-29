@@ -150,9 +150,9 @@ Uploader.populateTable = function(bucket, type){
     while (tableSize > key) {
 
       if (typeof current[key] != 'undefined') {
-        tr+="<td>"+current[key]+"</td>";
+        tr += "<td>" + current[key] + "</td>";
       } else {
-        tr+="<td>"+ "-" +"</td>";
+        tr += "<td>" + "-" + "</td>";
       }
 
       key++;

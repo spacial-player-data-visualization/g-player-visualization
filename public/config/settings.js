@@ -194,7 +194,7 @@ var getKeyMapping = function(game, eventName){
 	var type = lookup_table[eventName]
 
 	// Find mapping
-	var mapping = _.findWhere(mappings, {game : game, type : type});
+	var mapping = _.findWhere(mappings, {game : settings.game, type : type});
 
 	if (!mapping || !type) {
 		console.error("Unable to find key mapping for: " + eventName);

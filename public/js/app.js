@@ -21,7 +21,7 @@ var settings = {
     API_url : (window.location.href.indexOf("herokuapp.com") > -1) ? "http://g-player.herokuapp.com/api/" : "http://localhost:5000/api/",
 
     // Current Game
-    game : null,
+    game : "Fallout New Vegas",
 
     // Current Map
     map : null,
