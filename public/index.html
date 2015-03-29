@@ -90,6 +90,19 @@ Authors:
 
   $("#legend").load('templates/legend.tpl.html', function(result){
     $(".action-select").select2();
+    
+    $('#toggle_all_data').change(function(e) {
+      
+      // Get current status
+      var checked = $('#toggle_all_data').is(':checked');
+
+      if (checked) {
+        $('.filter-by-action').hide();
+      } else {
+        $('.filter-by-action').show();
+      }
+
+    });
   });
 
   /*************************
