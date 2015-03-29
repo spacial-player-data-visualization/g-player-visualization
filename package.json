@@ -10,7 +10,7 @@
     "body-parser": "^1.11.0",
     "connect": "^3.3.4",
     "express": "~4.9.x",
-    "mongoose": "^3.8.23"
+    "mongoose": "^4.x"
   },
   "engines": {
     "node": "0.10.x"
