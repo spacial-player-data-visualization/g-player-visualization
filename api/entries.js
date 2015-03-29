@@ -1,4 +1,5 @@
 var EntryModel = require('../models/entries');
+var _ = require('underscore');
 
 var saveEntry = function(data) {
     EntryModel.find({playerID: data.playerID, timestamp: data.timestamp}, function(err, result){
@@ -53,11 +54,22 @@ module.exports = {
     },
 
     get: function(req, res) {
-        return EntryModel.find(function(err, entries) {
+        return EntryModel.find({game: req.game, map: req.map}, function(err, entries) {
             if (err) {
                 console.log(err);
             } else {
-                return res.send(entries);
+                var index = 0;
+                return _.filter(entries, function(entry){
+                    if (entry.area) {
+                        if (index % req.fidelity == 0){
+                            return true;
+                        }
+                        index += 1;
+                    } else {
+                        // if not a position value, return everything
+                        return true
+                    }
+                });
             }
         });
     },
