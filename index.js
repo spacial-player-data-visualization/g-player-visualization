@@ -1,12 +1,14 @@
-/****************************************************
- G­Player: Visualization of Spatial­-temporal Play Data
- 
- Created in association with Truong-Huy D. Nguyen, 
-    
- MIT License. Code available at:
- github.com/spacial-player-data-visualization/g-player-visualization
- ****************************************************/
 
+/****************************************************
+
+  G­Player: Visualization of Spatial­-temporal Play Data
+ 
+  Created in association with Truong-Huy D. Nguyen, 
+    
+  MIT License. Code available at:
+  github.com/spacial-player-data-visualization/g-player-visualization
+
+ ****************************************************/
 
 // Load dependencies
 var express = require('express');

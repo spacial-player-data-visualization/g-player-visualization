@@ -1,4 +1,36 @@
 
+/*************************
+     Default Settings
+ *************************/
+
+// Settings
+var settings = {
+
+  // Save data
+  data : null,
+
+  // enable heatmap
+  heatmap : true,
+
+  // enable player paths
+  paths : false,
+
+  // Global scale factor.
+  // Helps to max points (ranging from -10,000 to 10,000)
+  // to their coordinate points on a geo projection.
+  scale : 100,
+
+  // Target API URL
+  API_url : (window.location.href.indexOf("herokuapp.com") > -1) ? "http://g-player.herokuapp.com/api/" : "http://localhost:5000/api/",
+
+  // Current Game
+  game : "Fallout New Vegas",
+
+  // Current Map
+  map : null,
+
+};
+
 /******************************
         config.js
  ******************************/
@@ -38,6 +70,30 @@ var maps = [{
     }
 }, {
 
+    // Save map configuration
+    name: "Position_outside",
+    game: "Fallout New Vegas",
+    url: "/fallout/outside.png",
+	
+	// Background image size
+    width : 1600,
+    height : 1178,
+
+    // Map player locations to their points
+    // on the map. Manually offset for accuracy.
+    // Multiplied to base
+    offset : {
+      x : 650,
+      y : 550,
+    },
+
+    // Map player locations to their points
+    // on the map. Manually scale for accuracy.
+    // added to base
+    scale : {
+      x : 0.45,
+      y : 0.45,
+    }
 }];
 
 
