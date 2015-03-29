@@ -5,16 +5,16 @@
 
 // Watch File Input
 $(document).ready(function(){
+
+  // Watch the file upload. Parse when file selected.
   $("#csv-file").change(Uploader.parseFile);
 
   // Pull data from the previous upload
   var data = lastUpload();
 
-  // console.log("\nData in LocalStorage:")
-  // console.log(data);
-
   // Preview last upload
   Uploader.populateTables(data);
+
 })
 
 var Uploader = {};
@@ -69,9 +69,6 @@ Uploader.sortByEntryType = function(data){
   var buckets = [];
 
   var uniques = getUniqueKeys(data, 0);
-
-  // console.log("\nList of Unique Keys (Column 0)");
-  // console.log(uniques);
 
   // Fill in preview table
   for (var i in uniques) {
@@ -129,6 +126,12 @@ Uploader.populateTable = function(bucket, type){
 
   // Sample data for previewing
   dataset = bucket.slice(0, 10);
+  
+  var keyMappingExists = getKeyMapping(settings.game, type) ? true : false;
+
+  var status = (keyMappingExists) ? 
+    '<span class="status key-mapping">Key Mapping Found</span>' :
+    '<span class="status no-key-mapping">No Key Mapping Found</span>' ;
 
   var tableID = "preview" + type.replace(/\s/g, '');
   
@@ -136,8 +139,10 @@ Uploader.populateTable = function(bucket, type){
 
   var tableTotal;
 
-  var tableStart = '<div class="panel-heading"><button type="button" class="btn btn-default button"' +
-  'onclick="toggleHide(\'' + tableID + '\')">Toggle \"' + type + '\" Table</button></div>';
+  var tableStart = '<div class="panel-heading">' +
+                   '<button type="button" class="btn btn-default button"' +
+                   'onclick="toggleHide(\'' + tableID + '\')">Toggle \"' + type + '\" Table</button>' + 
+                   status + '</div>';
 
   tableStart += "<table id=" + tableID + ' class="table table-striped">';
   var tableEnd = "<table/>";
@@ -164,7 +169,11 @@ Uploader.populateTable = function(bucket, type){
 
   tableTotal = tableStart + tableEnd;
 
-  $(".tableContainer").append('<div class="panel panel-default">' + tableTotal + '</div>');
+  // Do we have a key mapping for this table? Apply
+  // classes to the panel so that we can notify the user.
+  var classes = (keyMappingExists) ? 'key-map-found' : 'key-map-missing';
+
+  $(".tableContainer").append('<div class="panel panel-default ' + classes + '">' + tableTotal + '</div>');
 
   UI.alert("Data Previewed Loaded.", "preview")
 
