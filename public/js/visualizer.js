@@ -9,11 +9,15 @@ var Visualizer = {};
 // Add to the map.
 Visualizer.updateMap = function(){
 
-    // Add points to map
-    Visualizer.plotPoints(settings.data);
+    if (settings.paths) {
 
-    // Add Lines to map
-    // Visualizer.polylineData(settings.data);
+      // Add player paths to map
+      Visualizer.polylineData(settings.data);
+
+    } else {
+      // Add points to map
+      Visualizer.plotPoints(settings.data);      
+    }
 
     UI.loading(false, "Success. " + settings.data.length + " points loaded.");
 }

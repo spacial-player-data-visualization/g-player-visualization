@@ -120,6 +120,7 @@ UI.initialize = function(){
     UI.addImageOverlay();
     UI.addImageOverlay();
     UI.addHeatmapToggle();
+    UI.addPlayerPathToggle();
     UI.addToggleAbleSideNavigation();
     UI.addLeafletDraw();
 }
@@ -157,6 +158,27 @@ UI.addHeatmapToggle = function(){
       } else {
         map.removeLayer(Heatmap.heatmapLayer)
       }
+    });
+}
+
+UI.addPlayerPathToggle = function(){
+
+    // Show/Hide Heatmap
+    $('#toggle_paths').change(function(e) {
+      
+      // Enable
+      if ($('#toggle_paths').is(':checked')) {
+        settings.paths = true;
+      
+      //  Disable
+      } else {
+        settings.paths = false;
+      }
+
+      alert(settings.paths)
+
+      Visualizer.updateMap();
+
     });
 }
 
@@ -280,7 +302,17 @@ UI.setGame = function(gamename){
 
     // Update game options in pulldown
     _.each(game_maps, function(map) { 
-        $("#select-map").append($("<option />").val(map.name).text(map.name));
+        
+        // Check data
+        if (!map) return; 
+
+        var option = $("<option />").val(map.name).text(map.name);
+
+        if (settings.map.name == map.name){
+          option.attr('selected', 'selected')
+        };
+
+        $("#select-map").append(option);
     });
 
 }
