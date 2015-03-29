@@ -1,34 +1,5 @@
 
 /************************************
-              app.js   
-************************************/
-
-// Settings
-var settings = {
-
-  	// Save data
-  	data : null,
-
-  	// enable heatmap
-  	heatmap : true,
-
-    // Global scale factor.
-    // Helps to max points (ranging from -10,000 to 10,000)
-    // to their coordinate points on a geo projection.
-    scale : 100,
-
-    // Target API URL
-    API_url : (window.location.href.indexOf("herokuapp.com") > -1) ? "http://g-player.herokuapp.com/api/" : "http://localhost:5000/api/",
-
-    // Current Game
-    game : "Fallout New Vegas",
-
-    // Current Map
-    map : null,
-
-  };
-
-/************************************
          Mapping Logic
  ************************************/
 
@@ -79,6 +50,7 @@ Visualizer.polylineData = function(data){
 
     // Limit
     map.fitBounds(polyline.getBounds());
+
   });
 }
 
@@ -91,9 +63,8 @@ Visualizer.toLatLng = function(point){
   // Extract keys. May be 'longitude' or 'long'.
   var long = (point.longitude) ? point.longitude : point.long;
 
-  if (lat && long) {
-    return L.latLng(lat, long);
-  }
+  // Return lat/long if they exist.
+  if (lat && long) { return L.latLng(lat, long); }
 };
 
 // Adds a marker at the provided location
@@ -101,10 +72,6 @@ Visualizer.addMarker = function(lat, long, title){
   var title = (title) ? title : "";
   L.marker([lat, long], {title : title}).addTo(map);
 }
-
-// Debug: Show image borders
-// Visualizer.addMarker(latitudeDistance,longitudeDistance, "Top Right + " + latitudeDistance + " , " + longitudeDistance);
-// Visualizer.addMarker(0,0, "Bottom Left Location [0,0]");
 
 Visualizer.getData = function(){
 
@@ -116,55 +83,59 @@ Visualizer.getData = function(){
     var offset = settings.map.offset;
     var scale = settings.map.scale;
 
-      // Validate data. Ignore NPC interactions, etc
-      // @TODO: Temp data fix. Replaced by proper
-      // API and data validation.
-      data = _.filter(data, function(p){
-        return p.posX && p.posY;
-      })
+    // Validate data. Ignore NPC interactions, etc
+    // @TODO: Temp data fix. Replaced by proper
+    // API and data validation.
+    data = _.filter(data, function(p){
+      return p.posX && p.posY;
+    })
 
-      // SETUP DATA
-      // Convert data points into plottable data
-      data = _.map(data, function(p){
-        return { 
+    // SETUP DATA
+    // Convert data points into plottable data
+    data = _.map(data, function(p){
+      return { 
   
-            // Create a latitude & longitude field.
-            // Maps the (x,y) position to a coordinate
-            // on the earth. Makes plotting MUCH easier
+          // Create a latitude & longitude field.
+          // Maps the (x,y) position to a coordinate
+          // on the earth. Makes plotting MUCH easier
   
-            latitude  : ((p.posY + offset.y) * scale.y) / settings.scale,
-            longitude : ((p.posX + offset.x) * scale.x) / settings.scale, 
+          latitude  : ((p.posY + offset.y) * scale.y) / settings.scale,
+          longitude : ((p.posX + offset.x) * scale.x) / settings.scale, 
   
-            // Preserve Object
-            area : p.area,
-            playerID : p.playerID,
-            timestamp : p.timestamp,
-            cameraX : p.cameraX,
-            cameraY : p.cameraY
-        }
+          // Preserve Object
+          area : p.area,
+          playerID : p.playerID,
+          timestamp : p.timestamp,
+          cameraX : p.cameraX,
+          cameraY : p.cameraY
+      }
     })
 
     // Save data for future reference
     settings.data = data;
 
-      // Add points to map
-      // Visualizer.plotData(data);
-
-      // Add Lines to map
-      Visualizer.polylineData(data);
-
-      UI.loading(false, "Success. " + data.length + " points loaded.");
-    })
+    Visualizer.plotData();
+  })
 };
 
+// Take data from settings.data.
+// Add to the map.
+Visualizer.plotData = function(){
 
-// Export currently active data set
-// as a .csv file.
+    // Add points to map
+    // Visualizer.plotData(data);
 
-// http://jsfiddle.net/sturtevant/vUnF9/
-// http://stackoverflow.com/a/4130939/317
+    // Add Lines to map
+    Visualizer.polylineData(data);
 
+    UI.loading(false, "Success. " + data.length + " points loaded.");
+}
+
+// Export currently active data set as .csv
 Visualizer.exportCSV = function(){
+  // http://jsfiddle.net/sturtevant/vUnF9/
+  // http://stackoverflow.com/a/4130939/317
+
   var json = settings.data;
 
   // var json = $.parseJSON(json);
