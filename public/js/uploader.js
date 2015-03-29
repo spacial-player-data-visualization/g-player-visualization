@@ -1,7 +1,7 @@
 
 /******************************
         uploader.js 
-        ******************************/
+ ******************************/
 
 // Watch File Input
 $(document).ready(function(){
@@ -10,8 +10,8 @@ $(document).ready(function(){
   // Pull data from the previous upload
   var data = lastUpload();
 
-  console.log("\nData in LocalStorage:")
-  console.log(data);
+  // console.log("\nData in LocalStorage:")
+  // console.log(data);
 
   // Preview last upload
   Uploader.populateTables(data);
@@ -255,9 +255,12 @@ Uploader.formatData = function(data){
 
   _.each(data, function(current){
 
+    var action = current[0];
+
+    alert(action);
 
     // Get key mapping for the current entry
-    var keyMapping = getKeyMapping(settings.game, current[0]);
+    var keyMapping = getKeyMapping(settings.game, action);
 
     //console.log("got key mapping " + keyMapping);
     
@@ -369,9 +372,17 @@ function toggleHide(id) {
   // data: the data to look through
   // index: the index to start looking at
 function fillEntry(data, index) {
+  
   current = data[index];
+
   for (var i = index; i > 0; i--) {
-    var keyMapping = getKeyMapping(settings.game, data[i]);
+
+    // Extract event name
+    var eventname = data[i][0];
+
+    // Find key mapping
+    var keyMapping = getKeyMapping(settings.game, eventname);
+
     if (keyMapping &&
       _.contains(keyMapping.columns, "area") &&
       _.contains(keyMapping.columns, "posX") &&

@@ -355,7 +355,7 @@ var mappings = [{
 var getKeyMapping = function(game, eventName){
 
 	// Get the type of event from the lookup table
-	var type = lookup_table[eventName]
+	var type = lookup_table[eventName];
 
 	// Find mapping
 	var mapping = _.findWhere(mappings, {game : settings.game, type : type});
