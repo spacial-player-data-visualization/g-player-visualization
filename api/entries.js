@@ -1,23 +1,34 @@
 var EntryModel = require('../models/entries');
 
 var saveEntry = function(data) {
-    var entry = new EntryModel({
-        area: data.area,
-        playerID: data.playerID,
-        timestamp: data.timestamp,
-        posX: data.posX,
-        posY: data.posY,
-        cameraX: data.cameraX,
-        cameraY: data.cameraY
-    });
+    EntryModel.find({playerID: data.playerID, timestamp: data.timestamp}, function(err, result){
+        if (err) {
+            console.log(err);
+        } else {
+            if (!result.length){
+                var entry = new EntryModel({
+                    area: data.area,
+                    playerID: data.playerID,
+                    timestamp: data.timestamp,
+                    posX: data.posX,
+                    posY: data.posY,
+                    cameraX: data.cameraX,
+                    cameraY: data.cameraY
+                });
 
-    entry.save(function(err) {
-    	if (err) {
-        	console.log(err);
-    	} else {
-        	return console.log('saved');
-    	}
-	});
+                entry.save(function(err) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        return console.log('saved');
+                    }
+                });
+            } else {
+                console.log('already added');
+            }
+        }
+    });
+    
 }
 
 module.exports = {
@@ -108,14 +119,14 @@ module.exports = {
     },
 
     getUsers : function(req, res) {
-        var users = [];
-
-        var game = req.params.game;
-
-        users.push(001);
-        users.push(002);
-        users.push(003);
-        return res.send(users);
+        return EntryModel.find().distinct('playerID', function(err, result){
+            if (err) {
+                console.log(err);
+            } else {
+                console.log('getUsers');
+                res.send(result);
+            }
+        });
     },
 
     getActions : function(req, res){
