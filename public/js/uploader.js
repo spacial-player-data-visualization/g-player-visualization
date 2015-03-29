@@ -144,7 +144,9 @@ Uploader.populateTable = function(bucket, type){
                    'onclick="toggleHide(\'' + tableID + '\')">Toggle \"' + type + '\" Table</button>' + 
                    status + '</div>';
 
-  tableStart += "<table id=" + tableID + ' class="table table-striped">';
+  var display = (keyMappingExists) ? 'none' : 'table';
+
+  tableStart += "<table id=" + tableID + ' class="table table-striped" style="display: ' + display + ';">';
   var tableEnd = "<table/>";
   
   for (var i in dataset) {
