@@ -186,13 +186,13 @@ var mappings = [{
 	// Represents player interactions
 	game : "Fallout New Vegas",
 	type : "interaction",
-	columns : ["action", "area", "playerID", "target", "timestamp", "posyX", "posY", "?"],
+	columns : ["action", "area", "playerID", "target", "timestamp", "posX", "posY", "?"],
 }, {
 
 	// Represents player interactions without explicit targets
 	game : "Fallout New Vegas",
 	type : "interactionNoTarget",
-	columns : ["action", "area", "playerID", "timestamp", "posyX", "posY", "?"],
+	columns : ["action", "area", "playerID", "timestamp", "posX", "posY", "?"],
 
 }];
 
@@ -247,8 +247,9 @@ var assignKeys = function(values, columns){
 
 		// Create key/value pair
 		acc[value] = values[key];
-	})
+	});
 
+	acc["game"] = settings.game;
 	return acc;
 	// ex: assignKeys(["apple", "orange", "pear"], ["fruit", "color", "shape"])
 }

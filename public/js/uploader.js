@@ -1,7 +1,7 @@
 
 /******************************
         uploader.js 
- ******************************/
+        ******************************/
 
 // Watch File Input
 $(document).ready(function(){
@@ -75,7 +75,7 @@ Uploader.sortByEntryType = function(data){
 
   // Fill in preview table
   for (var i in uniques) {
-    
+
     var dataset = _.filter(data, function(object) {
       return object[0].localeCompare(uniques[i]) === 0;
     });
@@ -96,9 +96,9 @@ Uploader.sortByColumn = function(data, column){
 
 // Remove entries that only contain an empty string
 Uploader.removeEmptyLines = function(data){
-    return _.filter(data, function(dat){
-        return dat.length > 1;
-    });
+  return _.filter(data, function(dat){
+    return dat.length > 1;
+  });
 };
 
 // Populate multiple tables
@@ -112,7 +112,7 @@ Uploader.populateTables = function(data){
 
   // Print each table to DOM
   _.each(buckets, function(bucket){
-    
+
     // The first data point is the
     // type of data.
     var key = bucket[0][0];
@@ -126,7 +126,7 @@ Uploader.populateTables = function(data){
 // Render content into HTML table.
 // Allow user to preview the uploaded .csv file.
 Uploader.populateTable = function(bucket, type){
-  
+
   // Sample data for previewing
   dataset = bucket.slice(0, 10);
 
@@ -137,7 +137,7 @@ Uploader.populateTable = function(bucket, type){
   var tableTotal;
 
   var tableStart = '<div class="panel-heading"><button type="button" class="btn btn-default button"' +
-                   'onclick="toggleHide(\'' + tableID + '\')">Toggle \"' + type + '\" Table</button></div>';
+  'onclick="toggleHide(\'' + tableID + '\')">Toggle \"' + type + '\" Table</button></div>';
 
   tableStart += "<table id=" + tableID + ' class="table table-striped">';
   var tableEnd = "<table/>";
@@ -255,38 +255,43 @@ Uploader.formatData = function(data){
 
   _.each(data, function(current){
 
+
     // Get key mapping for the current entry
     var keyMapping = getKeyMapping(settings.game, current[0]);
+
+    //console.log("got key mapping " + keyMapping);
+    
+    // Ensure data has time, x, and y data
+    // If not, get it from the last user entry that does
+    // Note - this is only to fix a data error with the client's current data
+    // set. It is not meant to be a full fledged feature.
+    if ( keyMapping &&
+      !( _.contains(keyMapping.columns, "posX") && 
+        _.contains(keyMapping.columns, "posY") &&
+        _.contains(keyMapping.columns, "timestamp") &&
+        _.contains(keyMapping.columns, "area"))) {
+      //  console.log("about to fill " + current);
+    current = fillEntry(data, data.indexOf(current));
+  }
 
     // If we have a key mapping, assign keys to the current data
     if (keyMapping){ 
       var entry = assignKeys(current, keyMapping.columns) 
     };
 
-    // Ensure data has time, x, and y data
-    // If not, get it from the last user entry that does
-    // Note - this is only to fix a data error with the client's current data
-    // set. It is not meant to be a full fledged feature.
-    if (!( _.contains(keyMapping, "posX") && 
-      _.contains(keyMapping, "posY") &&
-      _.contains(keyMapping, "timestamp"))) {
-        current = findLastEntry(data, data.indexOf(current));
-    }
-
-
    // Return data that was converted.
-    if (entry) { acc.push(entry); }
+   if (entry) { acc.push(entry); }
 
-  });
+ });
 
-  UI.alert(acc.length + " of " + data.length + " Entries Valid.")
+UI.alert(acc.length + " of " + data.length + " Entries Valid.")
 
-  return acc;
+return acc;
 }
 
 /******************************
        Helper Functions
- ******************************/
+       ******************************/
 
 // Find the entry with the most entries.
 // This will determine the amount of
@@ -340,7 +345,7 @@ function getUniqueKeys(data, column) {
 // remove linebreaks and new lines from the data
 // Provide a multidimensional array, and a column
 function sanitizeEntries(data, column) {
-  
+
   // Delete new lines
   data = Uploader.removeEmptyLines(data);
   
@@ -359,23 +364,27 @@ function toggleHide(id) {
   //id.parentNode.find("table").slideToggle();
 }
 
-// get the most recent entry with x y and time
+// fill in X, Y, area, and timestamp data;
 // args:
   // data: the data to look through
   // index: the index to start looking at
-function findLastEntry(data, index) {
-  for (var i = index; i > data.length; i--) {
-    var keyMapping = getKeyMapping(settings.game, data[index]).columns;
-    var toReturn = data[index];
-    console.log("toReturn starts as " + toReturn);
-    if (( _.contains(keyMapping, "posX") && 
-      _.contains(keyMapping, "posY") &&
-      _.contains(keyMapping, "timestamp"))) {
-        toReturn["posX"] = data[i]["posX"];
-        toReturn["posY"] = data[i]["posY"];
-        toReturn["timestamp"] = data[i]["timestamp"];
-        console.log(toReturn);
-        return toReturn;
+function fillEntry(data, index) {
+  current = data[index];
+  for (var i = index; i > 0; i--) {
+    var keyMapping = getKeyMapping(settings.game, data[i]);
+    if (keyMapping &&
+      _.contains(keyMapping.columns, "area") &&
+      _.contains(keyMapping.columns, "posX") &&
+      _.contains(keyMapping.columns, "posY") && 
+      _.contains(keyMapping.columns, "timestamp")) {
+        console.log("found a suitable keymap");
+        current["area"] = data[i]["area"];
+        current["posX"] = data[i]["posX"];
+        current["posY"] = data[i]["posY"];
+        current["timestamp"] = data[i]["timestamp"];
+        console.log(current);
+        return current;
     }
-  }
+  } 
+return current;
 }
