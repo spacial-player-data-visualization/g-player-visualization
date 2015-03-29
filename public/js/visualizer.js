@@ -5,8 +5,21 @@
 
 var Visualizer = {};
 
+// Take data from settings.data.
+// Add to the map.
+Visualizer.updateMap = function(){
+
+    // Add points to map
+    Visualizer.plotPoints(settings.data);
+
+    // Add Lines to map
+    // Visualizer.polylineData(settings.data);
+
+    UI.loading(false, "Success. " + settings.data.length + " points loaded.");
+}
+
 // Add the provided data to the map.
-Visualizer.plotData = function(data){
+Visualizer.plotPoints = function(data){
 
   var radius = 10;
 
@@ -73,6 +86,7 @@ Visualizer.addMarker = function(lat, long, title){
   L.marker([lat, long], {title : title}).addTo(map);
 }
 
+// Get Data from API
 Visualizer.getData = function(){
 
   UI.loading(true, "Loading Data....");
@@ -114,22 +128,10 @@ Visualizer.getData = function(){
     // Save data for future reference
     settings.data = data;
 
-    Visualizer.plotData();
+    Visualizer.updateMap();
   })
 };
 
-// Take data from settings.data.
-// Add to the map.
-Visualizer.plotData = function(){
-
-    // Add points to map
-    // Visualizer.plotData(data);
-
-    // Add Lines to map
-    Visualizer.polylineData(data);
-
-    UI.loading(false, "Success. " + data.length + " points loaded.");
-}
 
 // Export currently active data set as .csv
 Visualizer.exportCSV = function(){
