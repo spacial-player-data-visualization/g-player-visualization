@@ -67,6 +67,30 @@ var maps = [{
     }
 }, {
 
+    // Save map configuration
+    name: "Position_outside",
+    game: "Fallout New Vegas",
+    url: "/fallout/outside.png",
+	
+	// Background image size
+    width : 1600,
+    height : 1178,
+
+    // Map player locations to their points
+    // on the map. Manually offset for accuracy.
+    // Multiplied to base
+    offset : {
+      x : 650,
+      y : 550,
+    },
+
+    // Map player locations to their points
+    // on the map. Manually scale for accuracy.
+    // added to base
+    scale : {
+      x : 0.45,
+      y : 0.45,
+    }
 }];
 
 

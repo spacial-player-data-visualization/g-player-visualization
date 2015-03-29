@@ -1,5 +1,5 @@
 /************************************
-       UI Functions
+         UI Functions
 ************************************/
 
 // Use Hubspot's Messenger plugin to
@@ -73,6 +73,10 @@ UI.loading = function(boolean, msg){
 	}
 };
 
+/************************************
+          Setup Page
+************************************/
+
 // Initialize the User Interface
 UI.initialize = function(){
     
@@ -80,24 +84,21 @@ UI.initialize = function(){
          Default Settings
     ****************************/
 
-    settings.game = "Fallout New Vegas";
-
-    settings.map = maps[0];
+    UI.setGame("Fallout New Vegas");
+    UI.setMap(settings.map = maps[0].name);
 
     /***************************
-         Populate UI Options
+         Watch form Values
     ****************************/
 
-    // Populate Games Pulldown
-    _.each(games, function(game) {
-        $("#select-game").append($("<option />").val(game).text(game));
+    $('#select-game').on('change', function(){
+      var selected = $(this).find("option:selected").val();
+      UI.setGame(selected);
     });
 
-    // Populate Map Pulldown
-    var game_maps = _.where(maps, { game : settings.game });
-
-    _.each(game_maps, function(map) {
-        $("#select-map").append($("<option />").val(map.name).text(map.name));
+    $('#select-map').on('change', function(){
+      var selected = $(this).find("option:selected").val();
+      UI.setMap(selected);
     });
 
     /***************************
@@ -122,6 +123,10 @@ UI.initialize = function(){
     UI.addToggleAbleSideNavigation();
     UI.addLeafletDraw();
 }
+
+/************************************
+      Setup: Help Functions
+************************************/
 
 UI.addImageOverlay = function(){
 
@@ -237,4 +242,50 @@ UI.addLeafletDraw = function(){
           console.log(e)
         }
     });
+}
+
+/************************************
+         Update Functions
+************************************/
+
+// When user selects a new game
+UI.setGame = function(gamename){
+
+    // Save game name
+    settings.game = gamename;
+
+    // Clear List
+    $("#select-game").children().remove();
+
+    // Populate Games Pulldown
+    _.each(games, function(game) {
+        var option  = $("<option />").val(game).text(game);
+        
+        if (settings.game == game){
+          option.attr('selected', 'selected')
+        };
+
+        $("#select-game").append(option);
+
+    });
+
+    // Populate Map Pulldown
+    var game_maps = _.where(maps, { game : settings.game });
+
+    // Clear List
+    $("#select-map").children().remove();
+
+    // Update game options in pulldown
+    _.each(game_maps, function(map) {
+        $("#select-map").append($("<option />").val(map.name).text(map.name));
+    });
+}
+
+// When user selects a new map
+UI.setMap = function(mapname){
+  
+  // Find map data
+  settings.map = _.findWhere(maps, { name : mapname });
+
+
 }

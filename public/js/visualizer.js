@@ -26,7 +26,7 @@ Visualizer.plotPoints = function(data){
   _.each(data, function(p){
     var circle = L.circle([p.latitude, p.longitude], radius, {
       color: 'black',
-      fillColor: '#fff',
+      fillColor: '#000',
       fillOpacity: 1,
     }).addTo(map);
   });
