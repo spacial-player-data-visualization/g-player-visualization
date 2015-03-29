@@ -47,41 +47,10 @@ Authors:
    <!-- Leaflet.js Map -->
    <div id="map"></div>
 
-   <!-- Map Key -->
-   <div id="key">
-     <p><b>Game : Map Name</b></p>
-     <p>User IDs</p>
-     <p>14k Locations</p>
-     <p>20k Events</p>
-     <div class="content"></div>
-   </div>
-
-   <!-- Status Bar -->
-   <div id="status">status</div>
-
+   <!-- Map Information -->
+   <div id="legend"></div>
+   
  </div><!-- /#wrapper -->
-
-<!-- Query Builder Modal -->
-<!-- <div class="modal fade" id="query-builder-modal" tabindex="-1" role="dialog" aria-labelledby="queryBuilderLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="queryBuilderLabel">
-          <ul class="nav nav-tabs">
-            <li role="presentation" class="custom active" onclick="QueryBuilder.mode('custom')"><a href="#">Query Builder</a></li>
-            <li role="presentation" class="preset"  onclick="QueryBuilder.mode('preset')"><a href="#">Preset Queries</a></li>
-          </ul>  
-        </ul>
-      </div>
-      <div class="modal-body col-sm-12"></div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" onclick="QueryBuilder.queryDatabase();"><i class="fa fa-database"></i> QUERY</button>
-      </div>
-    </div>
-  </div>
-</div> -->
 
  <!-- External Javascript Dependencies -->
  <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
@@ -134,6 +103,8 @@ Authors:
   $("#sidebar-wrapper").load('templates/left-options-menu.tpl.html', function(result){
       UI.initialize();
   });
+
+  $("#legend").load('templates/legend.tpl.html', function(result){});
   
 </script>
 </body>
