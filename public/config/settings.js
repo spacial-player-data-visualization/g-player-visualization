@@ -237,12 +237,13 @@ var assignKeys = function(values, columns){
 		console.log(columns);
 		console.log(values);
 		console.log("\n");
-		return;
 	}
 
 	_.each(columns, function(value, key){
-		// Ensure data exists
-		if (!values[key]) return; 
+		// Ensure data exists. If not, make it null for DB.
+		if (!values[key]) {
+			values[key] = null;
+		}; 
 
 		// Create key/value pair
 		acc[value] = values[key];
