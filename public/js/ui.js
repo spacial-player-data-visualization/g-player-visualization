@@ -254,6 +254,9 @@ UI.setGame = function(gamename){
     // Save game name
     settings.game = gamename;
 
+    // Reset map
+    settings.map = null;
+
     // Clear List
     $("#select-game").children().remove();
 
@@ -276,9 +279,10 @@ UI.setGame = function(gamename){
     $("#select-map").children().remove();
 
     // Update game options in pulldown
-    _.each(game_maps, function(map) {
+    _.each(game_maps, function(map) { 
         $("#select-map").append($("<option />").val(map.name).text(map.name));
     });
+
 }
 
 // When user selects a new map
@@ -287,5 +291,10 @@ UI.setMap = function(mapname){
   // Find map data
   settings.map = _.findWhere(maps, { name : mapname });
 
+
+}
+
+UI.debug = function(){
+  console.log("Game : " + settings.game + " | Map : " + settings.map.name);
 
 }
