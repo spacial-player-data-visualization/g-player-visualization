@@ -23,7 +23,7 @@ var Uploader = {};
 // http://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
 Uploader.parseFile = function(event) {
 
-  UI.loading(true, "Parsing File....")
+  UI.loading(true, "Parsing File....");
 
   var file = event.target.files[0];
 
@@ -129,12 +129,14 @@ Uploader.populateTable = function(bucket, type){
   
   var keyMappingExists = getKeyMapping(settings.game, type) ? true : false;
 
+  // Create status <span>.
   var status = (keyMappingExists) ? 
     '<span class="status key-mapping">Key Mapping Found</span>' :
     '<span class="status no-key-mapping">No Key Mapping Found</span>' ;
 
   var tableID = "preview" + type.replace(/\s/g, '');
   
+  // Calculate number of columns
   var tableSize = maxEntrySize(dataset);
 
   var tableTotal;
@@ -144,8 +146,10 @@ Uploader.populateTable = function(bucket, type){
                    'onclick="toggleHide(\'' + tableID + '\')">Toggle \"' + type + '\" Table</button>' + 
                    status + '</div>';
 
+  // Hide table if we have a key mapping
   var display = (keyMappingExists) ? 'none' : 'table';
 
+  // Build the HTML table
   tableStart += "<table id=" + tableID + ' class="table table-striped" style="display: ' + display + ';">';
   var tableEnd = "<table/>";
   
@@ -284,8 +288,8 @@ Uploader.formatData = function(data){
         _.contains(keyMapping.columns, "posY") &&
         _.contains(keyMapping.columns, "timestamp") &&
         _.contains(keyMapping.columns, "area"))) {
-      //  console.log("about to fill " + current);
-    current = fillEntry(data, data.indexOf(current));
+
+      current = fillEntry(data, data.indexOf(current));
   }
 
     // If we have a key mapping, assign keys to the current data
@@ -373,15 +377,12 @@ function sanitizeEntries(data, column) {
 // toggle hidden or visible for the parent div
 function toggleHide(id) {
   $("#" + id).toggle();
-
-  //table.style.display = (table.style.display == "table") ? "none" : "table";
-  //id.parentNode.find("table").slideToggle();
 }
 
 // fill in X, Y, area, and timestamp data;
 // args:
-  // data: the data to look through
-  // index: the index to start looking at
+//  - data: the data to look through
+//  - index: the index to start looking at
 function fillEntry(data, index) {
   
   current = data[index];
