@@ -88,7 +88,9 @@ Authors:
       UI.initialize();
   });
 
-  $("#legend").load('templates/legend.tpl.html', function(result){});
+  $("#legend").load('templates/legend.tpl.html', function(result){
+    $(".action-select").select2();
+  });
 
   /*************************
          Setup MAP

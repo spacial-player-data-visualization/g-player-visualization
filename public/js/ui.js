@@ -302,13 +302,10 @@ UI.setGame = function(gamename){
 
     // Update game options in pulldown
     _.each(game_maps, function(map) { 
-        
-        // Check data
-        if (!map) return; 
 
         var option = $("<option />").val(map.name).text(map.name);
 
-        if (settings.map.name == map.name){
+        if (settings.map && settings.map.name == map.name){
           option.attr('selected', 'selected')
         };
 

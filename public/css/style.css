@@ -193,6 +193,14 @@ ul.messenger-theme-air .messenger-message {
     max-width: 300px;
 }
 
+.sidebar-nav .select2-container {
+  padding: 10px;
+}
+
+.sidebar-nav .select2-container  li {
+    line-height: 25px;
+}
+
 #query-preset .fa-star {
     font-size: 25px;
     line-height: 34px;
@@ -223,6 +231,10 @@ ul.messenger-theme-air .messenger-message {
 
 .modal-footer {
     border-top: none;
+}
+
+.crossout {
+    text-decoration: line-through;
 }
 
 @media(min-width:768px) {
