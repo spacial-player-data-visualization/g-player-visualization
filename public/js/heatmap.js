@@ -3,9 +3,10 @@
        Heatmap Logic
 ************************************/
 
+var Heatmap = {};
 
 // http://www.patrick-wied.at/static/heatmapjs/
-MAP.heatmapLayer = new HeatmapOverlay({
+Heatmap.heatmapLayer = new HeatmapOverlay({
   "radius": .5,
   "maxOpacity": .8,
   "scaleRadius": true, 
@@ -15,7 +16,7 @@ MAP.heatmapLayer = new HeatmapOverlay({
 });
 
 
-MAP.addHeatmap = function(data){
+Heatmap.addHeatmap = function(data){
 
   var heatmapData = { 
       max: 1,  // No idea what this does
