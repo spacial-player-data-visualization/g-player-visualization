@@ -263,7 +263,18 @@ Uploader.formatData = function(data){
       var entry = assignKeys(current, keyMapping.columns) 
     };
 
-    // Return data that was converted.
+    // Ensure data has time, x, and y data
+    // If not, get it from the last user entry that does
+    // Note - this is only to fix a data error with the client's current data
+    // set. It is not meant to be a full fledged feature.
+    if (!( _.contains(keyMapping, "posX") && 
+      _.contains(keyMapping, "posY") &&
+      _.contains(keyMapping, "timestamp"))) {
+        current = findLastEntry(data, data.indexOf(current));
+    }
+
+
+   // Return data that was converted.
     if (entry) { acc.push(entry); }
 
   });
@@ -346,4 +357,25 @@ function toggleHide(id) {
 
   //table.style.display = (table.style.display == "table") ? "none" : "table";
   //id.parentNode.find("table").slideToggle();
+}
+
+// get the most recent entry with x y and time
+// args:
+  // data: the data to look through
+  // index: the index to start looking at
+function findLastEntry(data, index) {
+  for (var i = index; i > data.length; i--) {
+    var keyMapping = getKeyMapping(settings.game, data[index]).columns;
+    var toReturn = data[index];
+    console.log("toReturn starts as " + toReturn);
+    if (( _.contains(keyMapping, "posX") && 
+      _.contains(keyMapping, "posY") &&
+      _.contains(keyMapping, "timestamp"))) {
+        toReturn["posX"] = data[i]["posX"];
+        toReturn["posY"] = data[i]["posY"];
+        toReturn["timestamp"] = data[i]["timestamp"];
+        console.log(toReturn);
+        return toReturn;
+    }
+  }
 }

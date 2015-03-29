@@ -93,7 +93,7 @@ var lookup_table = {
 	"Dialogue" : "dialogue",
 
 	"InteractionContainer" : "interaction",
-	"InteractionDoor" : "interaction",
+	"InteractionDoor" : "interactionNoTarget",
 	"InteractionInterior" : "interaction",
 	"InteractionNPC" : "interaction",
 	"InteractionObject" : "interaction",
@@ -135,7 +135,7 @@ var lookup_table = {
 	"Position_SheriffOffice" : "position",
 
 	"Quest" : null,
-	"Sta" : null,
+	"Stat" : null,
 }
 
 // Store a list of available key mappings
@@ -181,6 +181,19 @@ var mappings = [{
 	game  : "Fallout New Vegas",
 	type  : "jump",
 	columns : ["action", "value"],
+}, {
+
+	// Represents player interactions
+	game : "Fallout New Vegas",
+	type : "interaction",
+	columns : ["action", "area", "playerID", "target", "timestamp", "posyX", "posY", "?"],
+}, {
+
+	// Represents player interactions without explicit targets
+	game : "Fallout New Vegas",
+	type : "interactionNoTarget",
+	columns : ["action", "area", "playerID", "timestamp", "posyX", "posY", "?"],
+
 }];
 
 // Return the key mapping given the 
