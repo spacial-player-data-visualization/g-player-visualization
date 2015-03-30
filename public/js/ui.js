@@ -320,7 +320,6 @@ UI.setPlayerActions = function(callback){
     // Get actions from API
     $.get(settings.API_url + "actions", function(data){
         settings.actions = data;
-        // callback(data);
 
         // Clear old list of actions
         $(".action-select").children().remove();
