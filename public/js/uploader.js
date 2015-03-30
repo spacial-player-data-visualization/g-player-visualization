@@ -201,8 +201,13 @@ Uploader.bulkUpload = function(){
   // All data should now be represented
   // as a key/value pair
   entries = Uploader.formatData(entries);
-  entries = Uploader.filler(entries);
 
+  // Populate missing fields. In the case of bad data,
+  // we'll use previous entries to make the data
+  // 'at least' plottable
+  entries = Uploader.fillMissingData(entries);
+
+  // Get user approval before storing in database
   if (!confirm("Upload " + entries.length + " entries to the database?")) return;
 
   // When POSTing data to the API, we occasionally
@@ -291,32 +296,39 @@ UI.alert(acc.length + " of " + data.length + " Entries Valid.")
 return acc;
 }
 
-Uploader.filler = function(data) {
+Uploader.fillMissingData = function(data) {
   var entries = [];
 
-  _.each(data, function(current) {
-     var action = current[0];
-  
+  // Iterate through entries
+  for (var i = data.length - 1; i >= 0; i--) {
+    
+    // Current entry
+    var current = data[i];
+
     // Ensure data has time, x, and y data
     // If not, get it from the last user entry that does
     // Note - this is only to fix a data error with the client's current data
     // set. It is not meant to be a full fledged feature.
-    if ( !(current.posX && 
-        current.posY &&
-        current.timestamp &&
-        current.area)) {
-      //  console.log("about to fill " + current);
-    entries.push(fillEntry(data, data.indexOf(current)));
-  } else {
-    entries.push(current);
-  }
-  });
-  return entries;
+    if (current.posX &&  current.posY && current.timestamp && current.area) {
+
+      // 
+      data[i] = current;
+    
+    // Else, if data is missing:
+    // Populate the missing data
+    } else {
+
+
+      data[i] = fillEntry(data, current);
+    }
+  };
+
+  return data;
 }
 
 /******************************
        Helper Functions
-       ******************************/
+ ******************************/
 
 // Find the entry with the most entries.
 // This will determine the amount of
@@ -389,33 +401,40 @@ function toggleHide(id) {
 // fill in X, Y, area, and timestamp data;
 // args:
 //  - data: the data to look through
-//  - index: the index to start looking at
-function fillEntry(data, index) {
+//  - current: the index to start looking at
+function fillEntry(data, current) {
   
-  current = data[index];
+  // Find current data's location in array  
+  var currentIndex = data.indexOf(current)
 
-  for (var i = index; i > 0; i--) {
+  var indexToCheck = currentIndex;
+  var entryToCheck = data[indexToCheck];
 
-    // Extract event name
-    var eventname = data[i][0];
+  // Iterate through object to find the LAST
+  // valid entry with the required data.
+  while (!containsRequiredKeys(entryToCheck) && indexToCheck > -1) {
+    indexToCheck--;
+    entryToCheck = data[indexToCheck];
+  }
+  
+  current["area"]      = entryToCheck["area"];
+  current["posX"]      = entryToCheck["posX"];
+  current["posY"]      = entryToCheck["posY"];
+  current["timestamp"] = entryToCheck["timestamp"];
 
-    // Find key mapping
-    var keyMapping = getKeyMapping(settings.game, eventname);
-    //console.log(keyMapping);
-    if (keyMapping &&
-      _.contains(keyMapping.columns, "area") &&
-      _.contains(keyMapping.columns, "posX") &&
-      _.contains(keyMapping.columns, "posY") && 
-      _.contains(keyMapping.columns, "timestamp")) {
-        var filler = data[i];
-        console.log("found a suitable keymap");
-        current["area"] = filler["area"];
-        current["posX"] = filler["posX"];
-        current["posY"] = filler["posY"];
-        current["timestamp"] = filler["timestamp"];
-        console.log(current);
-        return current;
-    }
-  } 
-return current;
+  return current;
+}
+
+
+// Does the provided object contain the required keys?
+function containsRequiredKeys(obj){
+  var keys = ["area", "posX", "posY", "timestamp"];
+
+  var acc = true;
+
+  _.each(keys, function(key){
+    acc = acc && obj[key];
+  })
+
+  return acc;
 }
