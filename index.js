@@ -103,12 +103,12 @@ app.get('/api/timestamp/:time', function (req, res){
 })
 
 // Get list of unique users
-app.get('/users/', function (req, res){
+app.get('/api/users/', function (req, res){
   entries.getUsers(req, res);
 });
 
 // Get list of unique actions
-app.get('/actions/', function (req, res){
+app.get('/api/actions/', function (req, res){
   entries.getActions(req, res);
 });
 
