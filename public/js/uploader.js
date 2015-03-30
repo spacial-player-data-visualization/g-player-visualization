@@ -413,6 +413,7 @@ function fillEntry(data, current) {
   // Iterate through object to find the LAST
   // valid entry with the required data.
   while (!containsRequiredKeys(entryToCheck) && indexToCheck > -1) {
+
     indexToCheck--;
     entryToCheck = data[indexToCheck];
   }
@@ -421,6 +422,8 @@ function fillEntry(data, current) {
   current["posX"]      = entryToCheck["posX"];
   current["posY"]      = entryToCheck["posY"];
   current["timestamp"] = entryToCheck["timestamp"];
+
+  // @TODO: Handle case when no suitable data is found
 
   return current;
 }
