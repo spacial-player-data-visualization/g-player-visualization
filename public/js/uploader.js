@@ -5,16 +5,16 @@
 
 // Watch File Input
 $(document).ready(function(){
+
+  // Watch the file upload. Parse when file selected.
   $("#csv-file").change(Uploader.parseFile);
 
   // Pull data from the previous upload
   var data = lastUpload();
 
-  console.log("\nData in LocalStorage:")
-  console.log(data);
-
   // Preview last upload
   Uploader.populateTables(data);
+
 })
 
 var Uploader = {};
@@ -23,7 +23,7 @@ var Uploader = {};
 // http://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
 Uploader.parseFile = function(event) {
 
-  UI.loading(true, "Parsing File....")
+  UI.loading(true, "Parsing File....");
 
   var file = event.target.files[0];
 
@@ -70,12 +70,9 @@ Uploader.sortByEntryType = function(data){
 
   var uniques = getUniqueKeys(data, 0);
 
-  // console.log("\nList of Unique Keys (Column 0)");
-  // console.log(uniques);
-
   // Fill in preview table
   for (var i in uniques) {
-    
+
     var dataset = _.filter(data, function(object) {
       return object[0].localeCompare(uniques[i]) === 0;
     });
@@ -96,9 +93,9 @@ Uploader.sortByColumn = function(data, column){
 
 // Remove entries that only contain an empty string
 Uploader.removeEmptyLines = function(data){
-    return _.filter(data, function(dat){
-        return dat.length > 1;
-    });
+  return _.filter(data, function(dat){
+    return dat.length > 1;
+  });
 };
 
 // Populate multiple tables
@@ -112,7 +109,7 @@ Uploader.populateTables = function(data){
 
   // Print each table to DOM
   _.each(buckets, function(bucket){
-    
+
     // The first data point is the
     // type of data.
     var key = bucket[0][0];
@@ -126,20 +123,36 @@ Uploader.populateTables = function(data){
 // Render content into HTML table.
 // Allow user to preview the uploaded .csv file.
 Uploader.populateTable = function(bucket, type){
-  
+
+  var entryCount = bucket.length;
+
   // Sample data for previewing
   dataset = bucket.slice(0, 10);
+  
+  var keyMappingExists = getKeyMapping(settings.game, type) ? true : false;
+
+  // Create status <span>.
+  var status = (keyMappingExists) ? 
+    '<span class="status key-mapping">Key Mapping Found</span>' :
+    '<span class="status no-key-mapping">No Key Mapping Found</span>' ;
 
   var tableID = "preview" + type.replace(/\s/g, '');
   
+  // Calculate number of columns
   var tableSize = maxEntrySize(dataset);
 
   var tableTotal;
 
-  var tableStart = '<div class="panel-heading"><button type="button" class="btn btn-default button"' +
-                   'onclick="toggleHide(\'' + tableID + '\')">Toggle \"' + type + '\" Table</button></div>';
+  var tableStart = '<div class="panel-heading">' +
+                   '<button type="button" class="btn btn-default button"' +
+                   'onclick="toggleHide(\'' + tableID + '\')">Toggle \"' + type + '\" Table</button>' + entryCount + " Entries"  + 
+                   status + '</div>';
 
-  tableStart += "<table id=" + tableID + ' class="table table-striped">';
+  // Hide table if we have a key mapping
+  var display = (keyMappingExists) ? 'none' : 'table';
+
+  // Build the HTML table
+  tableStart += "<table id=" + tableID + ' class="table table-striped" style="display: ' + display + ';">';
   var tableEnd = "<table/>";
   
   for (var i in dataset) {
@@ -164,7 +177,11 @@ Uploader.populateTable = function(bucket, type){
 
   tableTotal = tableStart + tableEnd;
 
-  $(".tableContainer").append('<div class="panel panel-default">' + tableTotal + '</div>');
+  // Do we have a key mapping for this table? Apply
+  // classes to the panel so that we can notify the user.
+  var classes = (keyMappingExists) ? 'key-map-found' : 'key-map-missing';
+
+  $(".tableContainer").append('<div class="panel panel-default preview ' + classes + '">' + tableTotal + '</div>');
 
   UI.alert("Data Previewed Loaded.", "preview")
 
@@ -187,6 +204,15 @@ Uploader.bulkUpload = function(){
   // as a key/value pair
   entries = Uploader.formatData(entries);
 
+  // Populate missing fields. In the case of bad data,
+  // we'll use previous entries to make the data
+  // 'at least' plottable
+  entries = Uploader.fillMissingData(entries);
+
+  // Remove invalid entries
+  entries = Uploader.removeInvalidEntries(entries);
+
+  // Get user approval before storing in database
   if (!confirm("Upload " + entries.length + " entries to the database?")) return;
 
   // When POSTing data to the API, we occasionally
@@ -255,22 +281,59 @@ Uploader.formatData = function(data){
 
   _.each(data, function(current){
 
+    var action = current[0];
+
     // Get key mapping for the current entry
-    var keyMapping = getKeyMapping(settings.game, current[0]);
+    var keyMapping = getKeyMapping(settings.game, action);
 
     // If we have a key mapping, assign keys to the current data
     if (keyMapping){ 
       var entry = assignKeys(current, keyMapping.columns) 
-    };
+    };  
+  
+   // Return data that was converted.
+   if (entry) { acc.push(entry); }
 
-    // Return data that was converted.
-    if (entry) { acc.push(entry); }
+ });
 
-  });
+UI.alert(acc.length + " of " + data.length + " Entries Valid.")
 
-  UI.alert(acc.length + " of " + data.length + " Entries Valid.")
+return acc;
+}
 
-  return acc;
+Uploader.fillMissingData = function(data) {
+  var entries = [];
+
+  // Iterate through entries
+  for (var i = data.length - 1; i >= 0; i--) {
+    
+    // Current entry
+    var current = data[i];
+
+    // Ensure data has time, x, and y data
+    // If not, get it from the last user entry that does
+    // Note - this is only to fix a data error with the client's current data
+    // set. It is not meant to be a full fledged feature.
+    if (current.posX &&  current.posY && current.timestamp && current.area) {
+
+      // 
+      data[i] = current;
+    
+    // Else, if data is missing:
+    // Populate the missing data
+    } else {
+
+      data[i] = fillEntry(data, current);
+    }
+  };
+
+  return data;
+}
+
+Uploader.removeInvalidEntries = function(data){
+  return _.filter(data, function(d){
+    return containsRequiredKeys(d);
+  })
 }
 
 /******************************
@@ -329,7 +392,7 @@ function getUniqueKeys(data, column) {
 // remove linebreaks and new lines from the data
 // Provide a multidimensional array, and a column
 function sanitizeEntries(data, column) {
-  
+
   // Delete new lines
   data = Uploader.removeEmptyLines(data);
   
@@ -343,7 +406,61 @@ function sanitizeEntries(data, column) {
 // toggle hidden or visible for the parent div
 function toggleHide(id) {
   $("#" + id).toggle();
+}
 
-  //table.style.display = (table.style.display == "table") ? "none" : "table";
-  //id.parentNode.find("table").slideToggle();
+// fill in X, Y, area, and timestamp data;
+// args:
+//  - data: the data to look through
+//  - current: the index to start looking at
+function fillEntry(data, current) {
+  
+  // Find current data's location in array  
+  var currentIndex = data.indexOf(current);
+
+  // Find data to check against.
+  var indexToCheck = currentIndex;
+  var entryToCheck = data[indexToCheck];
+
+  // Find the LAST valid object that contains the required keys. 
+  while (entryToCheck && !containsRequiredKeys(entryToCheck) && indexToCheck > -1) {
+
+    indexToCheck--;
+    entryToCheck = data[indexToCheck];
+  }
+  
+  if (entryToCheck && containsRequiredKeys(entryToCheck)) {
+    
+    current["playerID"]  = entryToCheck["playerID"];
+    current["area"]      = entryToCheck["area"];
+    current["posX"]      = entryToCheck["posX"];
+    current["posY"]      = entryToCheck["posY"];
+    current["timestamp"] = entryToCheck["timestamp"];
+
+    // Data is fixed. 
+    // Return fixed data
+    return current;
+
+  } else {
+
+    // If data is not fixed, 
+    // don't return broken data;
+    return null;
+
+  }
+}
+
+// Does the provided object contain the required keys?
+function containsRequiredKeys(obj){
+  
+  // Required keys
+  var keys = ["playerID", "area", "posX", "posY", "timestamp"];
+
+  var acc = true;
+
+  _.each(keys, function(key){
+    var containsKey = (obj && obj[key]) ? true : false;
+    acc = acc && containsKey;
+  })
+
+  return acc;
 }

@@ -207,7 +207,7 @@ var lookup_table = {
 	"Dialogue" : "dialogue",
 
 	"InteractionContainer" : "interaction",
-	"InteractionDoor" : "interaction",
+	"InteractionDoor" : "interactionNoTarget",
 	"InteractionInterior" : "interaction",
 	"InteractionNPC" : "interaction",
 	"InteractionObject" : "interaction",
@@ -303,6 +303,17 @@ var mappings = [{
 	columns : ["action", "value"],
 }, {
 
+	// Represents player interactions
+	game : "Fallout New Vegas",
+	type : "interaction",
+	columns : ["action", "area", "playerID", "target", "timestamp", "posX", "posY", "?"],
+}, {
+
+	// Represents player interactions without explicit targets
+	game : "Fallout New Vegas",
+	type : "interactionNoTarget",
+	columns : ["action", "area", "playerID", "timestamp", "posX", "posY", "?"],
+
 	// Represents player crafting
 	game  : "Fallout New Vegas",
 	type  : "craft",
@@ -347,7 +358,7 @@ var mappings = [{
 var getKeyMapping = function(game, eventName){
 
 	// Get the type of event from the lookup table
-	var type = lookup_table[eventName]
+	var type = lookup_table[eventName];
 
 	// Find mapping
 	var mapping = _.findWhere(mappings, {game : settings.game, type : type});
@@ -380,17 +391,19 @@ var assignKeys = function(values, columns){
 		console.log(columns);
 		console.log(values);
 		console.log("\n");
-		return;
 	}
 
 	_.each(columns, function(value, key){
-		// Ensure data exists
-		if (!values[key]) return; 
+		// Ensure data exists. If not, make it null for DB.
+		if (!values[key]) {
+			values[key] = null;
+		}; 
 
 		// Create key/value pair
 		acc[value] = values[key];
-	})
+	});
 
+	acc["game"] = settings.game;
 	return acc;
 	// ex: assignKeys(["apple", "orange", "pear"], ["fruit", "color", "shape"])
 }
