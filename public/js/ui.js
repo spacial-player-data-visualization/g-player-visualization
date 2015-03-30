@@ -85,7 +85,6 @@ UI.initialize = function(){
     ****************************/
 
     UI.setGame("Fallout New Vegas");
-    UI.setMap(settings.map = maps[0].name);
 
     /***************************
          Watch form Values
@@ -120,7 +119,7 @@ UI.initialize = function(){
     UI.addHeatmapToggle();
     UI.addPlayerPathToggle();
     UI.addToggleAbleSideNavigation();
-    UI.addLeafletDraw();
+    // UI.addLeafletDraw();
 }
 
 /************************************
@@ -287,7 +286,6 @@ UI.setGame = function(gamename){
 
         $("#select-map").append(option);
     });
-
 }
 
 // When user selects a new map
@@ -311,6 +309,27 @@ UI.setMap = function(mapname){
 
   // Add image overlay to map
   settings.overlay = L.imageOverlay('img/maps/' + settings.map.url, imageBounds).addTo(map);
+  
+  // Change available actions
+  UI.setPlayerActions();
+
+}
+
+UI.setPlayerActions = function(callback){
+
+    // Get actions from API
+    $.get(settings.API_url + "actions", function(data){
+        settings.actions = data;
+
+        // Clear old list of actions
+        $(".action-select").children().remove();
+
+        // Add new list of actions
+        _.each(settings.actions, function(action){
+            var option  = $("<option />").val(action).text(action);
+            $(".action-select").append(option);
+        })
+    })
 
 }
 

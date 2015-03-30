@@ -186,12 +186,12 @@ ul.messenger-theme-air .messenger-message {
     padding: 17px;
 }
 
-.sidebar-nav .tools {
+/*.sidebar-nav .tools {
     bottom: 0px;
     position: fixed;
     width: 100%;
     max-width: 300px;
-}
+}*/
 
 .sidebar-nav .select2-container {
   padding: 10px;
@@ -260,6 +260,14 @@ ul.messenger-theme-air .messenger-message {
 .crossout {
     text-decoration: line-through;
 }
+
+.tools a {
+    color: black;
+}
+
+.tools i.fa{
+    margin-right: 12px;
+} 
 
 @media(min-width:768px) {
     #wrapper {

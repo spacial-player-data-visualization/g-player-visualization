@@ -32,6 +32,9 @@ var settings = {
   // Current overlay
   overlay : null,
 
+  // Available actions
+  actions : null,
+
 };
 
 /******************************
