@@ -124,6 +124,8 @@ Uploader.populateTables = function(data){
 // Allow user to preview the uploaded .csv file.
 Uploader.populateTable = function(bucket, type){
 
+  var entryCount = bucket.length;
+
   // Sample data for previewing
   dataset = bucket.slice(0, 10);
   
@@ -143,7 +145,7 @@ Uploader.populateTable = function(bucket, type){
 
   var tableStart = '<div class="panel-heading">' +
                    '<button type="button" class="btn btn-default button"' +
-                   'onclick="toggleHide(\'' + tableID + '\')">Toggle \"' + type + '\" Table</button>' + 
+                   'onclick="toggleHide(\'' + tableID + '\')">Toggle \"' + type + '\" Table</button>' + entryCount + " Entries"  + 
                    status + '</div>';
 
   // Hide table if we have a key mapping
@@ -179,7 +181,7 @@ Uploader.populateTable = function(bucket, type){
   // classes to the panel so that we can notify the user.
   var classes = (keyMappingExists) ? 'key-map-found' : 'key-map-missing';
 
-  $(".tableContainer").append('<div class="panel panel-default ' + classes + '">' + tableTotal + '</div>');
+  $(".tableContainer").append('<div class="panel panel-default preview ' + classes + '">' + tableTotal + '</div>');
 
   UI.alert("Data Previewed Loaded.", "preview")
 

@@ -251,6 +251,10 @@ ul.messenger-theme-air .messenger-message {
     font-weight: 600;
 }
 
+.panel.preview .btn {
+    margin-right: 10px;
+}
+
 
 
 .crossout {
