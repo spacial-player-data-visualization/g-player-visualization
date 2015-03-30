@@ -120,7 +120,7 @@ UI.initialize = function(){
     UI.addHeatmapToggle();
     UI.addPlayerPathToggle();
     UI.addToggleAbleSideNavigation();
-    UI.addLeafletDraw();
+    // UI.addLeafletDraw();
 }
 
 /************************************
