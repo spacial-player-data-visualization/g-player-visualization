@@ -207,6 +207,9 @@ Uploader.bulkUpload = function(){
   // 'at least' plottable
   entries = Uploader.fillMissingData(entries);
 
+  // Remove invalid entries
+  entries = Uploader.removeInvalidEntries(entries);
+
   // Get user approval before storing in database
   if (!confirm("Upload " + entries.length + " entries to the database?")) return;
 
@@ -318,12 +321,17 @@ Uploader.fillMissingData = function(data) {
     // Populate the missing data
     } else {
 
-
       data[i] = fillEntry(data, current);
     }
   };
 
   return data;
+}
+
+Uploader.removeInvalidEntries = function(data){
+  return _.filter(data, function(d){
+    return containsRequiredKeys(d);
+  })
 }
 
 /******************************
@@ -405,38 +413,51 @@ function toggleHide(id) {
 function fillEntry(data, current) {
   
   // Find current data's location in array  
-  var currentIndex = data.indexOf(current)
+  var currentIndex = data.indexOf(current);
 
+  // Find data to check against.
   var indexToCheck = currentIndex;
   var entryToCheck = data[indexToCheck];
 
-  // Iterate through object to find the LAST
-  // valid entry with the required data.
-  while (!containsRequiredKeys(entryToCheck) && indexToCheck > -1) {
+  // Find the LAST valid object that contains the required keys. 
+  while (entryToCheck && !containsRequiredKeys(entryToCheck) && indexToCheck > -1) {
 
     indexToCheck--;
     entryToCheck = data[indexToCheck];
   }
   
-  current["area"]      = entryToCheck["area"];
-  current["posX"]      = entryToCheck["posX"];
-  current["posY"]      = entryToCheck["posY"];
-  current["timestamp"] = entryToCheck["timestamp"];
+  if (entryToCheck && containsRequiredKeys(entryToCheck)) {
+    
+    current["playerID"]  = entryToCheck["playerID"];
+    current["area"]      = entryToCheck["area"];
+    current["posX"]      = entryToCheck["posX"];
+    current["posY"]      = entryToCheck["posY"];
+    current["timestamp"] = entryToCheck["timestamp"];
 
-  // @TODO: Handle case when no suitable data is found
+    // Data is fixed. 
+    // Return fixed data
+    return current;
 
-  return current;
+  } else {
+
+    // If data is not fixed, 
+    // don't return broken data;
+    return null;
+
+  }
 }
-
 
 // Does the provided object contain the required keys?
 function containsRequiredKeys(obj){
-  var keys = ["area", "posX", "posY", "timestamp"];
+  
+  // Required keys
+  var keys = ["playerID", "area", "posX", "posY", "timestamp"];
 
   var acc = true;
 
   _.each(keys, function(key){
-    acc = acc && obj[key];
+    var containsKey = (obj && obj[key]) ? true : false;
+    acc = acc && containsKey;
   })
 
   return acc;
