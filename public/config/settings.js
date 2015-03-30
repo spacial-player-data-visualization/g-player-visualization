@@ -41,14 +41,19 @@ var settings = {
         config.js
  ******************************/
 
-var games = [
+// Available options
+var options = {};
+
+options.actions = [];
+
+options.games = [
 	"Fallout New Vegas", 
 	"League of Legends", 
 	"Quake 3",
 	"Game Gaze",
 ];
 
-var maps = [{
+options.maps = [{
 
     // Save map configuration
     name: "Position_Introhouse",
@@ -199,7 +204,7 @@ key mapping.
 // Lookup Table for Mapping action 
 // name to action type.
 
-var lookup_table = {
+options.lookup_table = {
 
 	"Attacked" : "action",
 	"CraftingTable" : "craft",
@@ -253,7 +258,7 @@ var lookup_table = {
 }
 
 // Store a list of available key mappings
-var mappings = [{
+options.mappings = [{
 	
 	// Represent a player position in a map
 	game  : "Fallout New Vegas",

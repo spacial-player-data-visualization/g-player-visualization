@@ -255,7 +255,7 @@ UI.setGame = function(gamename){
     $("#select-game").children().remove();
 
     // Populate Games Pulldown
-    _.each(games, function(game) {
+    _.each(options.games, function(game) {
         var option  = $("<option />").val(game).text(game);
         
         if (settings.game == game){
@@ -267,7 +267,7 @@ UI.setGame = function(gamename){
     });
 
     // Available maps
-    var game_maps = _.where(maps, { game : settings.game });
+    var game_maps = _.where(options.maps, { game : settings.game });
 
     // Reset map
     UI.setMap(game_maps[0].name);
@@ -296,7 +296,7 @@ UI.setMap = function(mapname){
   }
   
   // Find map data
-  settings.map = _.findWhere(maps, { name : mapname });
+  settings.map = _.findWhere(options.maps, { name : mapname });
 
   // Given map size, and scale factor,
   // determin the latitude/longitude bounds.
@@ -319,13 +319,13 @@ UI.setPlayerActions = function(callback){
 
     // Get actions from API
     $.get(settings.API_url + "actions", function(data){
-        settings.actions = data;
+        options.actions = data;
 
         // Clear old list of actions
         $(".action-select").children().remove();
 
         // Add new list of actions
-        _.each(settings.actions, function(action){
+        _.each(options.actions, function(action){
             var option  = $("<option />").val(action).text(action);
             $(".action-select").append(option);
         })
