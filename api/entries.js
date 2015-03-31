@@ -143,15 +143,14 @@ module.exports = {
     },
 
     getActions : function(req, res){
-        var actions = [];
-
-        var game = req.params.game;
-
-        actions.push("NPC");
-        actions.push("Rat");
-        actions.push("Pickup");
-
-        return res.send(actions);
+        return EntryModel.find().distinct('action', function(err, result){
+            if (err) {
+                console.log(err);
+            } else {
+                console.log('getAction');
+                res.send(result);
+            }
+        });
     },
 
 }

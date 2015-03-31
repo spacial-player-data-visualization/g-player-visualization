@@ -363,10 +363,10 @@ options.mappings = [{
 var getKeyMapping = function(game, eventName){
 
 	// Get the type of event from the lookup table
-	var type = lookup_table[eventName];
+	var type = options.lookup_table[eventName];
 
 	// Find mapping
-	var mapping = _.findWhere(mappings, {game : settings.game, type : type});
+	var mapping = _.findWhere(options.mappings, {game : settings.game, type : type});
 
 	if (!mapping || !type) {
 		console.error("Unable to find key mapping for: " + eventName);
