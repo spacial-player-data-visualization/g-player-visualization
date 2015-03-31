@@ -91,12 +91,18 @@ Visualizer.addMarker = function(lat, long, title){
 }
 
 // Get Data from API
-Visualizer.getData = function(){
+Visualizer.loadData = function(){
 
   UI.loading(true, "Loading Data....");
 
+  var options = {
+    game : settings.game,
+    map : settings.map.name,
+    fidelity : 1,
+  }
+
   // Hit API
-  $.get(settings.API_url + "entries", function(data){
+  $.get(settings.API_url + "entries", options, function(data){
 
     var offset = settings.map.offset;
     var scale = settings.map.scale;
