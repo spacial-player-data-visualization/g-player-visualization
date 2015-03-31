@@ -93,28 +93,9 @@ module.exports = {
                     console.log("Index: " + index + "\n")
                 }
 
-                // console.log(entries[0].area);
-                // console.log(entries[0].game);
-                // console.log(entries[0].area);
-                // console.log(entries[0].playerID);
-                // console.log(entries[0].timestamp);
-                // console.log(entries[0].posX);
-                // console.log(entries[0].posY);
-                // console.log(entries[0].text);
-
-
                 return _.filter(entries, function(entry){
                     
                     index += 1;
-
-                    // console.log(entry);
-                    // console.log(entry.game);
-                    // console.log(entry.area);
-                    // console.log(entry.playerID);
-                    // console.log(entry.timestamp);
-                    // console.log(entry.posX);
-                    // console.log(entry.posY);
-                    // console.log(entry.text);
 
 
                     if (!entry.action) {
@@ -143,14 +124,16 @@ module.exports = {
 
     put: function(req, res) {
         return EntryModel.findById(req.params.id, function(err, entry) {
-            
-            entry.area = req.body.area;
-            entry.playerID = req.body.playerID;
-            entry.timestamp = req.body.timestamp;
-            entry.posX = req.body.posX;
-            entry.posY = req.body.posY;
-            entry.cameraX = req.body.cameraX;
-            entry.cameraY = req.body.cameraY;
+
+            var entry = {
+                area : req.body.area,
+                playerID : req.body.playerID,
+                timestamp : req.body.timestamp,
+                posX : req.body.posX,
+                posY : req.body.posY,
+                cameraX : req.body.cameraX,
+                cameraY : req.body.cameraY,
+            }
 
             return entry.save(function(err) {
                 if (err) {
@@ -170,7 +153,7 @@ module.exports = {
                     console.log(err);
                 } else {
                     console.log('deleted')
-                    res.send('Deleted');
+                    res.send('Deleted Entry ' + req.params.id);
                 }
             });
         })
@@ -210,3 +193,6 @@ module.exports = {
     },
 
 }
+
+
+functio
