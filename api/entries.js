@@ -10,6 +10,7 @@ var saveEntry = function(data) {
             if (!result.length){
 
                 var tempObj = {
+                    game: data.game,
                     area: data.area,
                     playerID: data.playerID,
                     timestamp: data.timestamp,
@@ -19,7 +20,7 @@ var saveEntry = function(data) {
                 
                 // gets the rest of the key
                 var restKeys = _.chain(data)
-                                .omit(['area', 'playerID', 'timestamp', 'posX', 'posY'])
+                                .omit(['game', 'area', 'playerID', 'timestamp', 'posX', 'posY'])
                                 .keys()
                                 .value();
 
@@ -66,17 +67,36 @@ module.exports = {
     },
 
     get: function(req, res) {
-        return EntryModel.find({game: req.game, map: req.map}, function(err, entries) {
+        return EntryModel.find({game: req.headers.game, area: req.headers.map, timestamp: 586}, function(err, entries) {
             if (err) {
                 console.log(err);
             } else {
                 var index = 0;
+                console.log(entries[0].area);
+                console.log(entries[0].game);
+                console.log(entries[0].area);
+                console.log(entries[0].playerID);
+                console.log(entries[0].timestamp);
+                console.log(entries[0].posX);
+                console.log(entries[0].posY);
+                console.log(entries[0].text);
                 return _.filter(entries, function(entry){
-                    if (entry.area) {
-                        if (index % req.fidelity == 0){
+                    index += 1;
+                    console.log(entry);
+                    console.log(entry.game);
+                    console.log(entry.area);
+                    console.log(entry.playerID);
+                    console.log(entry.timestamp);
+                    console.log(entry.posX);
+                    console.log(entry.posY);
+                    console.log(entry.text);
+
+
+                    if (!entry.action) {
+                        if (index % req.headers.fidelity == 0){
                             return true;
+
                         }
-                        index += 1;
                     } else {
                         // if not a position value, return everything
                         return true
