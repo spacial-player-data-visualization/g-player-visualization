@@ -1,0 +1,64 @@
+<div class="panel panel-default">
+  <div class="panel-heading" role="tab">
+    <h4 class="panel-title">
+      <a>
+        <i class="fa fa-sliders"></i> Legend
+      </a>
+    </h4>
+  </div>
+  <div>
+    <div class="panel-body" id="key">
+       <p><b>Game : Map Name</b></p>
+       <p>User IDs</p>
+       <p>14k Locations</p>
+       <p>20k Events</p>
+       <div class="content"></div>
+   </div>
+ </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading" role="tab">
+    <h4 class="panel-title">
+      <i class="fa fa-toggle-on"></i> Filter Data
+    </h4>
+  </div>
+  <div>
+    <div class="panel-body">
+      <div class="checkbox">
+        <div class="checkbox">
+         <label>
+           <input type="checkbox" id="toggle_heatmap">Player Heatmap
+         </label>
+       </div>
+        <div class="checkbox">
+         <label>
+           <input type="checkbox" id="toggle_paths">Player Paths
+         </label>
+       </div>
+       <label class="crossout">
+         <input type="checkbox" disabled="disabled">Player Deaths
+       </label>
+     </div>
+     <div class="checkbox">
+       <label class="crossout">
+         <input type="checkbox" disabled="disabled">NPC Actions
+       </label>
+     </div>
+   </div>
+ </div>
+</div>
+
+<div class="panel panel-default tools">
+  <div class="panel-heading" role="tab">
+    <h4 class="panel-title">
+      <i class="fa fa-wrench"></i> Tools
+    </h4>
+  </div>
+  <div>
+    <div class="panel-body">
+       <a href="uploader.html"><i class="fa fa-database"></i>Upload Data</a><br>
+       <a onclick="Visualizer.exportCSV();"><i class="fa fa-cloud-download"></i>Export .CSV</a>
+   </div>
+ </div>
+</div>

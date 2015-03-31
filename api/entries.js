@@ -1,21 +1,33 @@
 var EntryModel = require('../models/entries');
 var _ = require('underscore');
 
+// save entry helper
 var saveEntry = function(data) {
     EntryModel.find({playerID: data.playerID, timestamp: data.timestamp}, function(err, result){
         if (err) {
             console.log(err);
         } else {
             if (!result.length){
-                var entry = new EntryModel({
+
+                var tempObj = {
                     area: data.area,
                     playerID: data.playerID,
                     timestamp: data.timestamp,
                     posX: data.posX,
                     posY: data.posY,
-                    cameraX: data.cameraX,
-                    cameraY: data.cameraY
+                }
+                
+                // gets the rest of the key
+                var restKeys = _.chain(data)
+                                .omit(['area', 'playerID', 'timestamp', 'posX', 'posY'])
+                                .keys()
+                                .value();
+
+                restKeys.forEach(function(key) {
+                    tempObj[key] = data[key]
                 });
+                console.log(tempObj);
+                var entry = new EntryModel(tempObj);
 
                 entry.save(function(err) {
                     if (err) {
@@ -142,15 +154,14 @@ module.exports = {
     },
 
     getActions : function(req, res){
-        var actions = [];
-
-        var game = req.params.game;
-
-        actions.push("NPC");
-        actions.push("Rat");
-        actions.push("Pickup");
-
-        return res.send(actions);
+        return EntryModel.find().distinct('action', function(err, result){
+            if (err) {
+                console.log(err);
+            } else {
+                console.log('getAction');
+                res.send(result);
+            }
+        });
     },
 
 }

@@ -1,19 +1,62 @@
 
+/*************************
+     Default Settings
+ *************************/
+
+// Settings
+var settings = {
+
+  // Save data
+  data : null,
+
+  // enable heatmap
+  heatmap : true,
+
+  // enable player paths
+  paths : false,
+
+  // Global scale factor.
+  // Helps to max points (ranging from -10,000 to 10,000)
+  // to their coordinate points on a geo projection.
+  scale : 100,
+
+  // Target API URL
+  API_url : (window.location.href.indexOf("herokuapp.com") > -1) ? "http://g-player.herokuapp.com/api/" : "http://localhost:5000/api/",
+
+  // Current Game
+  game : "Fallout New Vegas",
+
+  // Current Map
+  map : null,
+
+  // Current overlay
+  overlay : null,
+
+  // Available actions
+  actions : null,
+
+};
+
 /******************************
         config.js
  ******************************/
 
-var games = [
+// Available options
+var options = {};
+
+options.actions = [];
+
+options.games = [
 	"Fallout New Vegas", 
 	"League of Legends", 
 	"Quake 3",
 	"Game Gaze",
 ];
 
-var maps = [{
+options.maps = [{
 
     // Save map configuration
-    name: "Position_introhouse",
+    name: "Position_Introhouse",
     game: "Fallout New Vegas",
     url: "/fallout/intro.png",
 	
@@ -38,6 +81,82 @@ var maps = [{
     }
 }, {
 
+    // Save map configuration
+    name: "Position_Outside",
+    game: "Fallout New Vegas",
+    url: "/fallout/outside.png",
+	
+	// Background image size
+    width : 789,
+    height : 814,
+
+    // Map player locations to their points
+    // on the map. Manually offset for accuracy.
+    // Multiplied to base
+    offset : {
+      x : 650,
+      y : 550,
+    },
+
+    // Map player locations to their points
+    // on the map. Manually scale for accuracy.
+    // added to base
+    scale : {
+      x : 0.45,
+      y : 0.45,
+    }
+}, {
+
+    // Save map configuration
+    name: "Position_Bar",
+    game: "Fallout New Vegas",
+    url: "/fallout/bar.png",
+	
+	// Background image size
+    width : 1600,
+    height : 1178,
+
+    // Map player locations to their points
+    // on the map. Manually offset for accuracy.
+    // Multiplied to base
+    offset : {
+      x : 650,
+      y : 550,
+    },
+
+    // Map player locations to their points
+    // on the map. Manually scale for accuracy.
+    // added to base
+    scale : {
+      x : 0.45,
+      y : 0.45,
+    }
+}, {
+
+    // Save map configuration
+    name: "Map",
+    game: "League of Legends",
+    url: "/leagueoflegends/map.jpg",
+	
+	// Background image size
+    width : 2000,
+    height : 1833,
+
+    // Map player locations to their points
+    // on the map. Manually offset for accuracy.
+    // Multiplied to base
+    offset : {
+      x : 650,
+      y : 550,
+    },
+
+    // Map player locations to their points
+    // on the map. Manually scale for accuracy.
+    // added to base
+    scale : {
+      x : 0.45,
+      y : 0.45,
+    }
 }];
 
 
@@ -85,15 +204,15 @@ key mapping.
 // Lookup Table for Mapping action 
 // name to action type.
 
-var lookup_table = {
+options.lookup_table = {
 
 	"Attacked" : "action",
-	"CraftingTable" : null,
-	"Creature Giant Rat attacked first" : null,
+	"CraftingTable" : "craft",
+	"Creature Giant Rat attacked first" : "ratattack",
 	"Dialogue" : "dialogue",
 
 	"InteractionContainer" : "interaction",
-	"InteractionDoor" : "interaction",
+	"InteractionDoor" : "interactionNoTarget",
 	"InteractionInterior" : "interaction",
 	"InteractionNPC" : "interaction",
 	"InteractionObject" : "interaction",
@@ -110,12 +229,12 @@ var lookup_table = {
 	"NPC Sheriff attacked first" : "attacked",
 	"NPC Slater attacked first" : "attacked",
 
-	"ObjectOnActivate" : null,
-	"player attacked first" : null,
-	"Player killed" : null,
-	"Player looted dead" : null,
-	"Player looted Dead" : null,
-	"Player shooting a dead" : null,
+	"ObjectOnActivate" : "object",
+	"player attacked first" : "playeraction",
+	"Player killed" : "playeraction",
+	"Player looted dead" : "playeraction",
+	"Player looted Dead" : "playeraction",
+	"Player shooting a dead" : "playeraction",
 
 	"PlayerDropItem" : "item",
 	"PlayerDroppedItem" : "item",
@@ -134,12 +253,12 @@ var lookup_table = {
 	"Position_Outside" : "position",
 	"Position_SheriffOffice" : "position",
 
-	"Quest" : null,
-	"Sta" : null,
+	"Quest" : "quest",
+	"Stat" : "stat",
 }
 
 // Store a list of available key mappings
-var mappings = [{
+options.mappings = [{
 	
 	// Represent a player position in a map
 	game  : "Fallout New Vegas",
@@ -153,12 +272,18 @@ var mappings = [{
 	columns : ["action", "playerID", "value", "target", "status"],
 }, {
 	
-	// Represent a user interaction
+	// Represent a user dialogue
 	game  : "Fallout New Vegas",
 	type  : "dialogue",
 	columns : ["action", "playerId", "timestamp", "??", "NPC", "text", "response"],
 }, {
 	
+	// Represent a user interaction
+	game  : "Fallout New Vegas",
+	type  : "interaction",
+	columns : ["action", "location", "playerID", "object", "posX", "posY", "cameraX", "cameraY"],
+}, {
+
 	// Represent item interactions
 	game  : "Fallout New Vegas",
 	type  : "item",
@@ -177,10 +302,57 @@ var mappings = [{
 	columns : ["action", "area", "playerID", "value", "???"],
 }, {
 	
-	// Represents player sneaking
+	// Represents player jumping
 	game  : "Fallout New Vegas",
 	type  : "jump",
 	columns : ["action", "value"],
+}, {
+
+	// Represents player interactions
+	game : "Fallout New Vegas",
+	type : "interaction",
+	columns : ["action", "area", "playerID", "target", "timestamp", "posX", "posY", "?"],
+}, {
+
+	// Represents player interactions without explicit targets
+	game : "Fallout New Vegas",
+	type : "interactionNoTarget",
+	columns : ["action", "area", "playerID", "timestamp", "posX", "posY", "?"],
+
+	// Represents player crafting
+	game  : "Fallout New Vegas",
+	type  : "craft",
+	columns : ["action", "name", "playerID", "value"],
+}, {
+
+	// Represents player getting attacked by giant rat
+	game  : "Fallout New Vegas",
+	type  : "ratattack",
+	columns : ["action", "playerID", "value"],
+}, {
+
+	// Represents player getting some object
+	game  : "Fallout New Vegas",
+	type  : "object",
+	columns : ["action", "????", "value"],
+}, {
+
+	// Represents player doing some action
+	game  : "Fallout New Vegas",
+	type  : "playeraction",
+	columns : ["action", "playerID", "value", "object"],
+}, {
+
+	// Represents player on quest
+	game  : "Fallout New Vegas",
+	type  : "quest",
+	columns : ["action", "playerID", "value", "name", "status"],
+}, {
+
+	// Represents player stat
+	game  : "Fallout New Vegas",
+	type  : "stat",
+	columns : ["action", "playerID", "action", "key", "value", "status"],
 }];
 
 // Return the key mapping given the 
@@ -191,10 +363,10 @@ var mappings = [{
 var getKeyMapping = function(game, eventName){
 
 	// Get the type of event from the lookup table
-	var type = lookup_table[eventName]
+	var type = options.lookup_table[eventName];
 
 	// Find mapping
-	var mapping = _.findWhere(mappings, {game : settings.game, type : type});
+	var mapping = _.findWhere(options.mappings, {game : settings.game, type : type});
 
 	if (!mapping || !type) {
 		console.error("Unable to find key mapping for: " + eventName);
@@ -224,17 +396,19 @@ var assignKeys = function(values, columns){
 		console.log(columns);
 		console.log(values);
 		console.log("\n");
-		return;
 	}
 
 	_.each(columns, function(value, key){
-		// Ensure data exists
-		if (!values[key]) return; 
+		// Ensure data exists. If not, make it null for DB.
+		if (!values[key]) {
+			values[key] = null;
+		}; 
 
 		// Create key/value pair
 		acc[value] = values[key];
-	})
+	});
 
+	acc["game"] = settings.game;
 	return acc;
 	// ex: assignKeys(["apple", "orange", "pear"], ["fruit", "color", "shape"])
 }

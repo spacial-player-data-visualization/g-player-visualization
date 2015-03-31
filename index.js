@@ -1,12 +1,14 @@
-/****************************************************
- G­Player: Visualization of Spatial­-temporal Play Data
- 
- Created in association with Truong-Huy D. Nguyen, 
-    
- MIT License. Code available at:
- github.com/spacial-player-data-visualization/g-player-visualization
- ****************************************************/
 
+/****************************************************
+
+  G­Player: Visualization of Spatial­-temporal Play Data
+ 
+  Created in association with Truong-Huy D. Nguyen, 
+    
+  MIT License. Code available at:
+  github.com/spacial-player-data-visualization/g-player-visualization
+
+ ****************************************************/
 
 // Load dependencies
 var express = require('express');
@@ -101,12 +103,12 @@ app.get('/api/timestamp/:time', function (req, res){
 })
 
 // Get list of unique users
-app.get('/users/', function (req, res){
+app.get('/api/users/', function (req, res){
   entries.getUsers(req, res);
 });
 
 // Get list of unique actions
-app.get('/actions/', function (req, res){
+app.get('/api/actions/', function (req, res){
   entries.getActions(req, res);
 });
 

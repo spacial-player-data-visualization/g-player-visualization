@@ -1,88 +1,57 @@
 <ul class="sidebar-nav">
-  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-    <div class="panel panel-default">
-      <div class="panel-heading" role="tab" id="headingOne">
-        <h4 class="panel-title">
-          <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-            <i class="fa fa-leanpub"></i> Select Map
-          </a>
-        </h4>
-      </div>
-      <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-        <div class="panel-body">
-          <form class="form">
-
-            <label>Select Game</label>
-            <select class="form-control" id="select-game">
-            </select><br>
-
-            <label>Select Map</label>
-            <select class="form-control" id="select-map">
-            </select>
-          </form>
-        </div>
-      </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title"><i class="fa fa-leanpub"></i> Select Map</h3>
     </div>
-    <div class="panel panel-default">
-      <div class="panel-heading" role="tab" id="headingTwo">
-        <h4 class="panel-title">
-          <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-            <i class="fa fa-table"></i> Select Data
-          </a>
-        </h4>
-      </div>
-      <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-        <div class="panel-body" style="padding: 0px;">
-          <!-- <li onclick="QueryBuilder.open();"><a><i class="fa fa-search"></i>Query Database</a></li> -->
-          <li onclick="MAP.getData();"><a><i class="fa fa-database"></i>Get All Data</a></li>
-        </div>
-      </div>
-    </div>
-    <div class="panel panel-default">
-      <div class="panel-heading" role="tab" id="headingThree">
-        <h4 class="panel-title">
-          <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-            <i class="fa fa-filter"></i> Filter Data
-          </a>
-        </h4>
-      </div>
-      <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-        <div class="panel-body">
-          <div class="checkbox">
-            <div class="checkbox">
-             <label>
-               <input type="checkbox" id="toggle_heatmap">Player Heatmap
-             </label>
-           </div>
-           <label style="text-decoration: line-through;">
-             <input type="checkbox" disabled="disabled">Player Deaths
-           </label>
-         </div>
-         <div class="checkbox">
-           <label style="text-decoration: line-through;">
-             <input type="checkbox" disabled="disabled">NPC Actions
-           </label>
-         </div>
-       </div>
-     </div>
-   </div>
- </div>
+    <div class="panel-body">
+      <form class="form">
 
- <div class="panel-group tools" id="accordion2" role="tablist" aria-multiselectable="true">
-   <div class="panel panel-default">
-     <div class="panel-heading" role="tab" id="tools">
-       <h4 class="panel-title">
-         <a data-toggle="collapse" data-parent="#accordion2" href="#toolsCollapse" aria-expanded="true" aria-controls="toolsCollapse">
-           <i class="fa fa-wrench"></i> Tools
-         </a>
-       </h4>
-     </div>
-     <div id="toolsCollapse" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="tools">
-       <div class="panel-body" style="padding: 0px;">
-         <li><a href="uploader.html"><i class="fa fa-database"></i>Upload Data</a></li>
-         <li onclick="MAP.exportCSV();"><a><i class="fa fa-cloud-download"></i>Export .CSV</a></li>
-       </div>
-     </div>
-   </div>
- </div>
+        <label>Select Game</label>
+        <select class="form-control" id="select-game">
+        </select><br>
+
+        <label>Select Map</label>
+        <select class="form-control" id="select-map">
+        </select>
+      </form>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title"><i class="fa fa-table"></i> Select Data
+    </div>
+    <div class="panel-body">
+      <label style="margin: 8px;">
+        <input type="checkbox" id="toggle_all_data"> Load All Users?
+      </label>
+
+      <div class="filter-by-action">
+    
+        <p style="margin: 5px 10px;">Load users who did:</p>
+
+        <!-- Select Actions -->
+        <select class="action-select" multiple="multiple" style="width: 100%; display: none;">
+        </select>
+
+        <p style="margin: 5px 10px;">But <b>Didn't</b> do:</p>
+
+        <!-- Select Actions -->
+        <select class="action-select" multiple="multiple" style="width: 100%; display: none;">
+        </select>
+
+      </div>
+
+      <div class="col-sm-6">
+        <div class="btn btn-default">Clear</div>
+      </div>
+      <div class="col-sm-6">
+        <div class="btn btn-success" style="margin-left: -15px;">Load Data</div>
+      </div>
+
+
+      
+      <!-- <li onclick="Visualizer.getData();"><a><i class="fa fa-database"></i>Get All Data</a></li> -->
+    </div>
+  </div>
 </ul>
+
