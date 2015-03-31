@@ -67,29 +67,54 @@ module.exports = {
     },
 
     get: function(req, res) {
-        return EntryModel.find({game: req.headers.game, area: req.headers.map, timestamp: 586}, function(err, entries) {
+
+        var game = req.query.game;
+        var area = req.query.area;
+
+        console.log("Getting entries for " + area + " of " + game);
+
+        return EntryModel.find({game: game, area: area}, function(err, entries) {
+
+            console.log("Returning " + entries.length + " entries.")
+
+            return res.json(entries);
+            
             if (err) {
                 console.log(err);
+
             } else {
+
                 var index = 0;
-                console.log(entries[0].area);
-                console.log(entries[0].game);
-                console.log(entries[0].area);
-                console.log(entries[0].playerID);
-                console.log(entries[0].timestamp);
-                console.log(entries[0].posX);
-                console.log(entries[0].posY);
-                console.log(entries[0].text);
+
+                if (!entries[index]){
+
+                    // Debug
+                    console.log(entries[index])
+                    console.log("Index: " + index + "\n")
+                }
+
+                // console.log(entries[0].area);
+                // console.log(entries[0].game);
+                // console.log(entries[0].area);
+                // console.log(entries[0].playerID);
+                // console.log(entries[0].timestamp);
+                // console.log(entries[0].posX);
+                // console.log(entries[0].posY);
+                // console.log(entries[0].text);
+
+
                 return _.filter(entries, function(entry){
+                    
                     index += 1;
-                    console.log(entry);
-                    console.log(entry.game);
-                    console.log(entry.area);
-                    console.log(entry.playerID);
-                    console.log(entry.timestamp);
-                    console.log(entry.posX);
-                    console.log(entry.posY);
-                    console.log(entry.text);
+
+                    // console.log(entry);
+                    // console.log(entry.game);
+                    // console.log(entry.area);
+                    // console.log(entry.playerID);
+                    // console.log(entry.timestamp);
+                    // console.log(entry.posX);
+                    // console.log(entry.posY);
+                    // console.log(entry.text);
 
 
                     if (!entry.action) {
