@@ -9,6 +9,9 @@ var settings = {
   // Save data
   data : null,
 
+  // Feature Group representation of data
+  layers : [],
+
   // enable heatmap
   heatmap : true,
 
@@ -94,16 +97,16 @@ options.maps = [{
     // on the map. Manually offset for accuracy.
     // Multiplied to base
     offset : {
-      x : 650,
-      y : 550,
+      x : 850,
+      y : 950,
     },
 
     // Map player locations to their points
     // on the map. Manually scale for accuracy.
     // added to base
     scale : {
-      x : 0.45,
-      y : 0.45,
+      x : .030,
+      y : .030,
     }
 }, {
 

@@ -9,12 +9,17 @@ var Visualizer = {};
 // Add to the map.
 Visualizer.updateMap = function(){
 
+    Visualizer.clearMap();
+
+    // If we're plotting paths
     if (settings.paths) {
 
       // Add player paths to map
       Visualizer.polylineData(settings.data);
 
+    // Else, we're plotting points
     } else {
+
       // Add points to map
       Visualizer.plotPoints(settings.data);      
     }
@@ -22,18 +27,41 @@ Visualizer.updateMap = function(){
     UI.loading(false, "Success. " + settings.data.length + " points loaded.");
 }
 
+Visualizer.clearMap = function(){
+    
+    // Clear active data sets
+    _.each(settings.layers, function(layer){
+      map.removeLayer(layer);
+    })
+}
+
 // Add the provided data to the map.
+// Returns a feature group.
 Visualizer.plotPoints = function(data){
 
   var radius = 10;
 
+  var markers = new L.FeatureGroup();
+
   _.each(data, function(p){
+
     var circle = L.circle([p.latitude, p.longitude], radius, {
       color: 'black',
       fillColor: '#000',
       fillOpacity: 1,
-    }).addTo(map);
+    }) //.addTo(map);
+
+    markers.addLayer(circle);
+
   });
+
+  // Save layer to settings.
+  settings.layers.push(markers);
+  
+  // Save layer for reference
+  map.addLayer(markers)
+
+  return markers;
 }
 
 // Create lines between player locations
@@ -61,6 +89,8 @@ Visualizer.polylineData = function(data){
 
     // Create polyline
     var polyline = L.polyline(latLngs, options)
+
+    settings.activeLayer = polyline;
 
     // Add polyline to map
     polyline.addTo(map);
@@ -104,8 +134,8 @@ Visualizer.loadData = function(){
   // Hit API
   $.get(settings.API_url + "entries", options, function(data){
 
-    var offset = settings.map.offset;
-    var scale = settings.map.scale;
+    offset = settings.map.offset;
+    scale = settings.map.scale;
 
     // Validate data. Ignore NPC interactions, etc
     // @TODO: Temp data fix. Replaced by proper
@@ -117,22 +147,7 @@ Visualizer.loadData = function(){
     // SETUP DATA
     // Convert data points into plottable data
     data = _.map(data, function(p){
-      return { 
-  
-          // Create a latitude & longitude field.
-          // Maps the (x,y) position to a coordinate
-          // on the earth. Makes plotting MUCH easier
-  
-          latitude  : ((p.posY + offset.y) * scale.y) / settings.scale,
-          longitude : ((p.posX + offset.x) * scale.x) / settings.scale, 
-  
-          // Preserve Object
-          area : p.area,
-          playerID : p.playerID,
-          timestamp : p.timestamp,
-          cameraX : p.cameraX,
-          cameraY : p.cameraY
-      }
+      return Visualizer.formatData(p);
     })
 
     // Save data for future reference
@@ -142,6 +157,18 @@ Visualizer.loadData = function(){
   })
 };
 
+Visualizer.formatData = function(data){
+  
+  // Create a latitude & longitude field.
+  // Maps the (x,y) position to a coordinate
+  // on the earth. Makes plotting MUCH easier
+
+  data['latitude']  = ((data.posY + offset.y) * scale.y) / settings.scale;
+  data['longitude'] = ((data.posX + offset.x) * scale.x) / settings.scale;
+  
+  return data;
+
+}
 
 // Export currently active data set as .csv
 Visualizer.exportCSV = function(){
@@ -151,10 +178,10 @@ Visualizer.exportCSV = function(){
   var json = settings.data;
 
   // var json = $.parseJSON(json);
-    var csv = JSON2CSV(json);
+  var csv = JSON2CSV(json);
 
-    // Trick browser to force download.
-    window.open("data:text/csv;charset=utf-8," + escape(csv))
+  // Trick browser to force download.
+  window.open("data:text/csv;charset=utf-8," + escape(csv))
 
 
   function JSON2CSV(objArray) {

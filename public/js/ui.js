@@ -313,6 +313,9 @@ UI.setMap = function(mapname){
   // Change available actions
   UI.setPlayerActions();
 
+  // Load available data
+  Visualizer.loadData();
+
 }
 
 UI.setPlayerActions = function(callback){
