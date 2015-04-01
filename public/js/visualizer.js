@@ -97,7 +97,7 @@ Visualizer.loadData = function(){
 
   var options = {
     game : settings.game,
-    map : settings.map.name,
+    area : settings.map.name,
     fidelity : 1,
   }
 

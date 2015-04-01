@@ -10,6 +10,7 @@ var saveEntry = function(data) {
             if (!result.length){
 
                 var tempObj = {
+                    game: data.game,
                     area: data.area,
                     playerID: data.playerID,
                     timestamp: data.timestamp,
@@ -19,7 +20,7 @@ var saveEntry = function(data) {
                 
                 // gets the rest of the key
                 var restKeys = _.chain(data)
-                                .omit(['area', 'playerID', 'timestamp', 'posX', 'posY'])
+                                .omit(['game', 'area', 'playerID', 'timestamp', 'posX', 'posY'])
                                 .keys()
                                 .value();
 
@@ -66,11 +67,45 @@ module.exports = {
     },
 
     get: function(req, res) {
-        return EntryModel.find(function(err, entries) {
+
+        var game = req.query.game;
+        var area = req.query.area;
+        var fidelity = req.query.fidelity;
+        console.log("Getting entries for " + area + " of " + game);
+
+        return EntryModel.find({game: game, area: area}, function(err, entries) {
+
+            console.log("Returning " + entries.length + " entries.")
+            
             if (err) {
+
                 console.log(err);
+
             } else {
-                return res.send(entries);
+
+                if (!fidelity || fidelity < 2){
+                    return res.send(entries);
+                
+                // If user specified a data fidelity
+                } else {
+
+                var index = 0;
+                var filteredResults = _.filter(entries, function(entry){
+                    if (!entry.action) {
+                        if ((index % fidelity) == 0){
+                            index += 1;
+                            return true;
+                        }
+                        index += 1;
+
+                    } else {
+                        // if not a position value, return everything
+                        return false;
+                    }
+                });
+                return res.send(filteredResults);
+
+                }
             }
         });
     },
@@ -87,14 +122,16 @@ module.exports = {
 
     put: function(req, res) {
         return EntryModel.findById(req.params.id, function(err, entry) {
-            
-            entry.area = req.body.area;
-            entry.playerID = req.body.playerID;
-            entry.timestamp = req.body.timestamp;
-            entry.posX = req.body.posX;
-            entry.posY = req.body.posY;
-            entry.cameraX = req.body.cameraX;
-            entry.cameraY = req.body.cameraY;
+
+            var entry = {
+                area : req.body.area,
+                playerID : req.body.playerID,
+                timestamp : req.body.timestamp,
+                posX : req.body.posX,
+                posY : req.body.posY,
+                cameraX : req.body.cameraX,
+                cameraY : req.body.cameraY,
+            }
 
             return entry.save(function(err) {
                 if (err) {
@@ -114,7 +151,7 @@ module.exports = {
                     console.log(err);
                 } else {
                     console.log('deleted')
-                    res.send('Deleted');
+                    res.send('Deleted Entry ' + req.params.id);
                 }
             });
         })
