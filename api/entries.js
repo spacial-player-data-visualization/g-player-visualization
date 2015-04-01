@@ -70,46 +70,19 @@ module.exports = {
 
         var game = req.query.game;
         var area = req.query.area;
-        var fidelity = req.query.fidelity;
+        
         console.log("Getting entries for " + area + " of " + game);
 
         return EntryModel.find({game: game, area: area}, function(err, entries) {
 
             console.log("Returning " + entries.length + " entries.")
-
-            // return res.json(entries);
             
             if (err) {
                 console.log(err);
 
             } else {
                 res.send(entries);
-                // console.log(entries[0]);
-                // console.log(entries[0].game);
-                // console.log(entries[0].area);
 
-                // var index = 0;
-
-                // if (!entries[index]){
-
-                //     // Debug
-                //     console.log(entries[index])
-                //     console.log("Index: " + index + "\n")
-                // }
-
-                // return _.filter(entries, function(entry){
-                //     // console.log(entry.action);
-
-                //     if (!entry.action) {
-                //         if (index % fidelity == 0){
-                //             return true;
-
-                //         }
-                //     } else {
-                //         // if not a position value, return everything
-                //         return true
-                //     }
-                // });
             }
         });
     },
