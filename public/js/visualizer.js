@@ -29,6 +29,9 @@ Visualizer.updateMap = function(){
 
 Visualizer.clearMap = function(){
     
+    // Clear data from memory
+    settings.data = null;
+
     // Clear active data sets
     _.each(settings.layers, function(layer){
       map.removeLayer(layer);
@@ -103,7 +106,9 @@ Visualizer.polylineData = function(data){
 
 // Adds a marker at the provided location
 Visualizer.addMarker = function(lat, long, title){
+  
   var title = (title) ? title : "";
+
   L.marker([lat, long], {title : title}).addTo(map);
 }
 
@@ -112,11 +117,7 @@ Visualizer.loadData = function(){
 
   UI.loading(true, "Loading Data....");
 
-  var options = {
-    game : settings.game,
-    area : settings.map.name,
-    fidelity : 5,
-  }
+  var options = Visualizer.getContext();
 
   // Hit API
   $.get(settings.API_url + "entries", options, function(data){
@@ -177,4 +178,16 @@ Visualizer.getColor = function(i){
                 "#abd9e9", "#74add1", "#4575b4"];
 
   return (i < colors.length - 1) ? colors[i] : "#000000";
+}
+
+// Returns a representation of the current state of the
+// map. This object provided context for what data
+// the API should return in order to be mapped.
+Visualizer.getContext = function(){
+
+  return {
+    game : settings.game,
+    area : settings.map.name,
+    fidelity : 5,
+  }
 }
