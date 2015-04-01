@@ -20,9 +20,9 @@ var saveEntry = function(data) {
                 
                 // gets the rest of the key
                 var restKeys = _.chain(data)
-                                .omit(['game', 'area', 'playerID', 'timestamp', 'posX', 'posY'])
-                                .keys()
-                                .value();
+                .omit(['game', 'area', 'playerID', 'timestamp', 'posX', 'posY'])
+                .keys()
+                .value();
 
                 restKeys.forEach(function(key) {
                     tempObj[key] = data[key]
@@ -42,7 +42,7 @@ var saveEntry = function(data) {
             }
         }
     });
-    
+
 }
 
 module.exports = {
@@ -54,16 +54,16 @@ module.exports = {
     multiPost: function(req, res) {
 
         // Extract DATA from request body
-    	var data = JSON.parse(req.body.entries);
+        var data = JSON.parse(req.body.entries);
 
         console.log("\nMulti-Post Request");
         console.log(req.body.entries);
 
-    	data.forEach(function(entry){
-    		saveEntry(entry);
-    	});
+        data.forEach(function(entry){
+          saveEntry(entry);
+      });
         
-    	return res.send("added multi");
+        return res.send("added multi");
     },
 
     get: function(req, res) {
@@ -85,15 +85,13 @@ module.exports = {
 
             } else {
 
+                if (!fidelity || fidelity < 2){
+                    return res.send(entries);
+                    
+                // If user specified a data fidelity
+            } else {
+
                 var index = 0;
-
-                if (!entries[index]){
-
-                    // Debug
-                    console.log(entries[index])
-                    console.log("Index: " + index + "\n")
-                }
-
                 var filteredResults = _.filter(entries, function(entry){
                     if (!entry.action) {
                         console.log(index);
@@ -109,88 +107,90 @@ module.exports = {
                     }
                 });
                 return res.send(filteredResults);
-            }
-        });
-    },
 
-    getById: function(req, res) {
-        return EntryModel.findById(req.params.id, function(err, entry) {
+            }
+        }
+    });
+},
+
+getById: function(req, res) {
+    return EntryModel.findById(req.params.id, function(err, entry) {
+        if (err) {
+            console.log(err);
+        } else {
+            return res.send(entry);
+        }
+    });
+},
+
+put: function(req, res) {
+    return EntryModel.findById(req.params.id, function(err, entry) {
+
+        var entry = {
+            area : req.body.area,
+            playerID : req.body.playerID,
+            timestamp : req.body.timestamp,
+            posX : req.body.posX,
+            posY : req.body.posY,
+            cameraX : req.body.cameraX,
+            cameraY : req.body.cameraY,
+        }
+
+        return entry.save(function(err) {
             if (err) {
                 console.log(err);
             } else {
-                return res.send(entry);
+                console.log('updated');
             }
+            return res.send(entry);
         });
-    },
+    })
+},
 
-    put: function(req, res) {
-        return EntryModel.findById(req.params.id, function(err, entry) {
-
-            var entry = {
-                area : req.body.area,
-                playerID : req.body.playerID,
-                timestamp : req.body.timestamp,
-                posX : req.body.posX,
-                posY : req.body.posY,
-                cameraX : req.body.cameraX,
-                cameraY : req.body.cameraY,
-            }
-
-            return entry.save(function(err) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    console.log('updated');
-                }
-                return res.send(entry);
-            });
-        })
-    },
-
-    delete: function(req, res) {
-        return EntryModel.findById(req.params.id, function(err, entry) {
-            return entry.remove(function(err) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    console.log('deleted')
-                    res.send('Deleted Entry ' + req.params.id);
-                }
-            });
-        })
-    },
-
-    query: function(req, res) {
-        return EntryModel.find({timestamp: req.params.time}, function(err, result){
-            if (err) {
-                    console.log(err);
-                } else {
-                    console.log('query')
-                    res.send(result);
-                }
-        });
-    },
-
-    getUsers : function(req, res) {
-        return EntryModel.find().distinct('playerID', function(err, result){
+delete: function(req, res) {
+    return EntryModel.findById(req.params.id, function(err, entry) {
+        return entry.remove(function(err) {
             if (err) {
                 console.log(err);
             } else {
-                console.log('getUsers');
-                res.send(result);
+                console.log('deleted')
+                res.send('Deleted Entry ' + req.params.id);
             }
         });
-    },
+    })
+},
 
-    getActions : function(req, res){
-        return EntryModel.find().distinct('action', function(err, result){
-            if (err) {
-                console.log(err);
-            } else {
-                console.log('getAction');
-                res.send(result);
-            }
-        });
-    },
+query: function(req, res) {
+    return EntryModel.find({timestamp: req.params.time}, function(err, result){
+        if (err) {
+            console.log(err);
+        } else {
+            console.log('query')
+            res.send(result);
+        }
+    });
+},
+
+getUsers : function(req, res) {
+    return EntryModel.find().distinct('playerID', function(err, result){
+        if (err) {
+            console.log(err);
+        } else {
+            console.log('getUsers');
+            res.send(result);
+        }
+    });
+},
+
+getActions : function(req, res){
+    return EntryModel.find().distinct('action', function(err, result){
+        if (err) {
+            console.log(err);
+        } else {
+            console.log('getAction');
+            res.send(result);
+        }
+    });
+},
 
 }
