@@ -71,13 +71,12 @@ module.exports = {
         var game = req.query.game;
         var area = req.query.area;
         var fidelity = req.query.fidelity;
+        
         console.log("Getting entries for " + area + " of " + game);
 
         return EntryModel.find({game: game, area: area}, function(err, entries) {
 
             console.log("Returning " + entries.length + " entries.")
-
-            // return res.json(entries);
             
             if (err) {
 
@@ -85,11 +84,12 @@ module.exports = {
 
             } else {
 
+
                 if (!fidelity || fidelity < 2){
                     return res.send(entries);
                     
                 // If user specified a data fidelity
-            } else {
+                } else {
 
                 var index = 0;
                 var filteredResults = _.filter(entries, function(entry){
