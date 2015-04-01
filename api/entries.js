@@ -76,8 +76,6 @@ module.exports = {
         return EntryModel.find({game: game, area: area}, function(err, entries) {
 
             console.log("Returning " + entries.length + " entries.")
-
-            // return res.json(entries);
             
             if (err) {
 
@@ -94,7 +92,6 @@ module.exports = {
                 var index = 0;
                 var filteredResults = _.filter(entries, function(entry){
                     if (!entry.action) {
-                        console.log(index);
                         if ((index % fidelity) == 0){
                             index += 1;
                             return true;
