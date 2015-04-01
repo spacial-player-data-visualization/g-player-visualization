@@ -9,7 +9,7 @@ var Visualizer = {};
 // Add to the map.
 Visualizer.updateMap = function(){
 
-    Visualizer.clearMap();
+    // Visualizer.clearMap();
 
     // If we're plotting paths
     if (settings.paths) {
@@ -47,7 +47,7 @@ Visualizer.plotPoints = function(data){
 
     var circle = L.circle([p.latitude, p.longitude], radius, {
       color: 'black',
-      fillColor: '#000',
+      fillColor: '#fff',
       fillOpacity: 1,
     }) //.addTo(map);
 
@@ -112,6 +112,7 @@ Visualizer.toLatLng = function(point){
 
   // Return lat/long if they exist.
   if (lat && long) { return L.latLng(lat, long); }
+
 };
 
 // Adds a marker at the provided location
@@ -137,14 +138,11 @@ Visualizer.loadData = function(){
     offset = settings.map.offset;
     scale = settings.map.scale;
 
-    // Validate data. Ignore NPC interactions, etc
-    // @TODO: Temp data fix. Replaced by proper
-    // API and data validation.
+    // Validate data. Ignore non-spacial data
     data = _.filter(data, function(p){
       return p.posX && p.posY;
     })
 
-    // SETUP DATA
     // Convert data points into plottable data
     data = _.map(data, function(p){
       return Visualizer.formatData(p);
@@ -153,7 +151,9 @@ Visualizer.loadData = function(){
     // Save data for future reference
     settings.data = data;
 
+    // Update our map with new data.
     Visualizer.updateMap();
+
   })
 };
 
