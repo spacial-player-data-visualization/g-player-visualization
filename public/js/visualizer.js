@@ -79,15 +79,20 @@ Visualizer.polylineData = function(data){
   // Create a polyline for each unique playerID
   _.each(players, function(player){
 
+    player = sortBy(player, "timestamp");
+
     // Create list of latLng ojects
     var latLngs = _.map(player, function(point){
       return Visualizer.toLatLng(point);
     });
 
     var options = {
+      stroke: true,
       color: Visualizer.getColor(count++),
-      opacity: 1,
       weight: 2,
+      opacity: 1,
+      
+
     }
 
     // Create polyline
@@ -188,6 +193,13 @@ Visualizer.getContext = function(){
   return {
     game : settings.game,
     area : settings.map.name,
-    fidelity : 5,
+    fidelity : 1,
   }
+}
+
+// Sort the provided list by the provided key
+function sortBy (list, key){
+  return _.sortBy(list, function(l){
+        return l[key];
+      })
 }

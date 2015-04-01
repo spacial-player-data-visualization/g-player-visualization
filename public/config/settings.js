@@ -24,7 +24,7 @@ var settings = {
   heatmap : true,
 
   // enable player paths
-  paths : false,
+  paths : true,
 
   // Default Game
   game : "Fallout New Vegas",
