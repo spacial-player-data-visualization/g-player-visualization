@@ -3,6 +3,10 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var EntrySchema = new Schema({
+    game: {
+        type: String,
+        required: true
+    },
     area: {
         type: String,
         required: true
@@ -22,6 +26,9 @@ var EntrySchema = new Schema({
     posY: {
         type: Number,
         required: true
+    },
+    action: {
+        type: String
     }
 }, { strict: false });
 

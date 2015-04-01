@@ -80,36 +80,35 @@ module.exports = {
             // return res.json(entries);
             
             if (err) {
+
                 console.log(err);
 
             } else {
-                res.send(entries);
-                // console.log(entries[0]);
-                // console.log(entries[0].game);
-                // console.log(entries[0].area);
 
-                // var index = 0;
+                var index = 0;
 
-                // if (!entries[index]){
+                if (!entries[index]){
 
-                //     // Debug
-                //     console.log(entries[index])
-                //     console.log("Index: " + index + "\n")
-                // }
+                    // Debug
+                    console.log(entries[index])
+                    console.log("Index: " + index + "\n")
+                }
 
-                // return _.filter(entries, function(entry){
-                //     // console.log(entry.action);
+                var filteredResults = _.filter(entries, function(entry){
+                    if (!entry.action) {
+                        console.log(index);
+                        if ((index % fidelity) == 0){
+                            index += 1;
+                            return true;
+                        }
+                        index += 1;
 
-                //     if (!entry.action) {
-                //         if (index % fidelity == 0){
-                //             return true;
-
-                //         }
-                //     } else {
-                //         // if not a position value, return everything
-                //         return true
-                //     }
-                // });
+                    } else {
+                        // if not a position value, return everything
+                        return false;
+                    }
+                });
+                return res.send(filteredResults);
             }
         });
     },
