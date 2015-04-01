@@ -129,7 +129,7 @@ Visualizer.loadData = function(){
   var options = {
     game : settings.game,
     area : settings.map.name,
-    fidelity : 1,
+    fidelity : 5,
   }
 
   // Hit API
@@ -230,23 +230,9 @@ Visualizer.exportCSV = function(){
 
 Visualizer.getColor = function(i){
   
-  var colors = [
-    "#d73027",
-    "#f46d43",
-    "#fdae61",
-    "#fee090",
-    "#ffffbf",
-    "#e0f3f8",
-    "#abd9e9",
-    "#74add1",
-    "#4575b4"
-  ];
+  var colors = ["#d73027", "#f46d43", "#fdae61",
+                "#fee090", "#ffffbf", "#e0f3f8", 
+                "#abd9e9", "#74add1", "#4575b4"];
 
-  if (i < colors.length - 1) {
-    console.log(colors[i])
-    return colors[i];
-  } else {
-    console.log("#0")
-    return "#000000"
-  }
+  return (i < colors.length - 1) ? colors[i] : "#000000";
 }
