@@ -101,20 +101,6 @@ Visualizer.polylineData = function(data){
   });
 }
 
-// Convert the JSON Object to a leaflet LatLong object
-Visualizer.toLatLng = function(point){
-
-  // Extract keys. May be 'latitude' or 'lat'.
-  var lat  = (point.latitude)  ? point.latitude  : point.lat;
-
-  // Extract keys. May be 'longitude' or 'long'.
-  var long = (point.longitude) ? point.longitude : point.long;
-
-  // Return lat/long if they exist.
-  if (lat && long) { return L.latLng(lat, long); }
-
-};
-
 // Adds a marker at the provided location
 Visualizer.addMarker = function(lat, long, title){
   var title = (title) ? title : "";
@@ -170,62 +156,18 @@ Visualizer.formatData = function(data){
 
 }
 
-// Export currently active data set as .csv
-Visualizer.exportCSV = function(){
-  // http://jsfiddle.net/sturtevant/vUnF9/
-  // http://stackoverflow.com/a/4130939/317
+// Convert the JSON Object to a leaflet LatLong object
+Visualizer.toLatLng = function(point){
 
-  var json = settings.data;
+  // Extract keys. May be 'latitude' or 'lat'.
+  var lat  = (point.latitude)  ? point.latitude  : point.lat;
 
-  // var json = $.parseJSON(json);
-  var csv = JSON2CSV(json);
+  // Extract keys. May be 'longitude' or 'long'.
+  var long = (point.longitude) ? point.longitude : point.long;
 
-  // Trick browser to force download.
-  window.open("data:text/csv;charset=utf-8," + escape(csv))
+  // Return lat/long if they exist.
+  if (lat && long) { return L.latLng(lat, long); }
 
-
-  function JSON2CSV(objArray) {
-      var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-
-      var str = '';
-      var line = '';
-
-      if ($("#labels").is(':checked')) {
-          var head = array[0];
-          if ($("#quote").is(':checked')) {
-              for (var index in array[0]) {
-                  var value = index + "";
-                  line += '"' + value.replace(/"/g, '""') + '",';
-              }
-          } else {
-              for (var index in array[0]) {
-                  line += index + ',';
-              }
-          }
-
-          line = line.slice(0, -1);
-          str += line + '\r\n';
-      }
-
-      for (var i = 0; i < array.length; i++) {
-          var line = '';
-
-          if ($("#quote").is(':checked')) {
-              for (var index in array[i]) {
-                  var value = array[i][index] + "";
-                  line += '"' + value.replace(/"/g, '""') + '",';
-              }
-          } else {
-              for (var index in array[i]) {
-                  line += array[i][index] + ',';
-              }
-          }
-
-          line = line.slice(0, -1);
-          str += line + '\r\n';
-      }
-      return str;   
-  }
 };
 
 Visualizer.getColor = function(i){
