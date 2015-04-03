@@ -448,19 +448,3 @@ function fillEntry(data, current) {
 
   }
 }
-
-// Does the provided object contain the required keys?
-function containsRequiredKeys(obj){
-  
-  // Required keys
-  var keys = ["playerID", "area", "posX", "posY", "timestamp"];
-
-  var acc = true;
-
-  _.each(keys, function(key){
-    var containsKey = (obj && obj[key]) ? true : false;
-    acc = acc && containsKey;
-  })
-
-  return acc;
-}

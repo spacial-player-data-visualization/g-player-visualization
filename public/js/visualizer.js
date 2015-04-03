@@ -63,13 +63,13 @@ Visualizer.update = function(){
     // Create polyline
     var polyline = L.polyline(positions, options)
 
-    settings.activeLayer = polyline;
+    var positionsGroup = new L.FeatureGroup();
 
-    // Add polyline to map
-    polyline.addTo(map);
+    positionsGroup.addLayer(polyline);
+    
+    settings.layers.push(positionsGroup);
 
-    // Limit
-    map.fitBounds(polyline.getBounds());
+    map.addLayer(positionsGroup);
 
     // ***************
     // Plot Points
@@ -119,8 +119,12 @@ Visualizer.update = function(){
     UI.loading(false, "Success. " + settings.data.length + " points loaded.");
 
   });
+
+  // Set view
+  map.fitBounds(settings.layers[0].getBounds());
 }
 
+// Clears the active data set. Resets map
 Visualizer.clear = function(){
     
     // Clear data from memory
@@ -150,12 +154,9 @@ Visualizer.loadData = function(){
   // Hit API
   $.get(settings.API_url + "entries", options, function(data){
 
-    offset = settings.map.offset;
-    scale = settings.map.scale;
-
     // Validate data. Ignore non-spacial data
     data = _.filter(data, function(p){
-      return p.posX && p.posY;
+      return containsRequiredKeys(p);
     })
 
     // Convert data points into plottable data
@@ -178,8 +179,8 @@ Visualizer.formatData = function(data){
   // Maps the (x,y) position to a coordinate
   // on the earth. Makes plotting MUCH easier
 
-  data['latitude']  = ((data.posY + offset.y) * scale.y) / settings.scale;
-  data['longitude'] = ((data.posX + offset.x) * scale.x) / settings.scale;
+  data['latitude']  = ((data.posY + settings.map.offset.y) * settings.map.scale.y) / settings.scale;
+  data['longitude'] = ((data.posX + settings.map.offset.x) * settings.map.scale.x) / settings.scale;
   
   return data;
 
@@ -246,6 +247,22 @@ function convertJSONtoHTML(JSON){
       acc += "<p>" + key + " : <b>" + val + "</b></p>";
     }
     
+  })
+
+  return acc;
+}
+
+// Does the provided object contain the required keys?
+function containsRequiredKeys(obj){
+  
+  // Required keys
+  var keys = ["playerID", "area", "posX", "posY", "timestamp"];
+
+  var acc = true;
+
+  _.each(keys, function(key){
+    var containsKey = (obj && obj[key]) ? true : false;
+    acc = acc && containsKey;
   })
 
   return acc;
