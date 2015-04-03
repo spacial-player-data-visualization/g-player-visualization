@@ -106,8 +106,8 @@ UI.initialize = function(){
 
     // Given map size, and scale factor,
     // determin the latitude/longitude bounds.
-    var latitudeDistance = settings.map.height / settings.scale;
-    var longitudeDistance = settings.map.width / settings.scale;
+    var latitudeDistance = settings.map.height / 200;
+    var longitudeDistance = settings.map.width / 200;
 
     // Set Map Center
     map.setView([latitudeDistance / 2, longitudeDistance / 2], 1);
@@ -306,8 +306,8 @@ UI.setMap = function(mapname){
 
   // Given map size, and scale factor,
   // determine the latitude/longitude bounds.
-  var latitudeDistance = settings.map.height / settings.scale;
-  var longitudeDistance = settings.map.width / settings.scale;
+  var latitudeDistance = settings.map.height / 200;
+  var longitudeDistance = settings.map.width / 200;
 
   // Note: Lat/Long is represented as [Latitude (y), Longitude (x)].
   // Take care when converting from cartesian points, to lat/long.        
