@@ -186,7 +186,7 @@ Visualizer.formatData = function(data){
   // from -10,000 to 10,000) to their coordinate points 
   // on a geo projection.
   
-  var scale = 200;
+  var scale = Visualizer.scaleFactor;
 
   // Create a latitude & longitude field.
   // Maps the (x,y) position to a coordinate
@@ -225,8 +225,34 @@ Visualizer.getContext = function(){
 // Update the map's view port, as to
 // center the current data set.
 Visualizer.focus = function(){
-    map.fitBounds(settings.layers[0].getBounds());
+
+    var sample = settings.layers[0]
+    
+    map.fitBounds(sample.getBounds());
+
+    // TODO: Set max/min zoom levels dynamically
+
+    // map.minZoom()
+    // map.maxZoom()
+
+    /***************************
+          Setup Map
+    ****************************/
+
+    // Given map size, and scale factor,
+    // determin the latitude/longitude bounds.
+    // var latitudeDistance = settings.map.height / Visualizer.scaleFactor;
+    // var longitudeDistance = settings.map.width / Visualizer.scaleFactor;
+
+    // Set Map Center
+    // map.setView([latitudeDistance / 2, longitudeDistance / 2], 1);
 }
+
+// Global scale factor. Helps to max points (ranging 
+// from -10,000 to 10,000) to their coordinate points 
+// on a geo projection.
+
+Visualizer.scaleFactor = 200;
 
 /**************************************
          HELPER FUNCTIONS

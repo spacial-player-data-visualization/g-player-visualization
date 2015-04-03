@@ -84,7 +84,7 @@ UI.initialize = function(){
          Default Settings
     ****************************/
 
-    UI.setGame("Fallout New Vegas");
+    UI.setGame(settings.game);
 
     /***************************
          Watch form Values
@@ -99,18 +99,6 @@ UI.initialize = function(){
       var selected = $(this).find("option:selected").val();
       UI.setMap(selected);
     });
-
-    /***************************
-          Setup Map
-    ****************************/
-
-    // Given map size, and scale factor,
-    // determin the latitude/longitude bounds.
-    var latitudeDistance = settings.map.height / 200;
-    var longitudeDistance = settings.map.width / 200;
-
-    // Set Map Center
-    map.setView([latitudeDistance / 2, longitudeDistance / 2], 1);
     
     /***************************
        Initialize UI Options
@@ -306,8 +294,8 @@ UI.setMap = function(mapname){
 
   // Given map size, and scale factor,
   // determine the latitude/longitude bounds.
-  var latitudeDistance = settings.map.height / 200;
-  var longitudeDistance = settings.map.width / 200;
+  var latitudeDistance = settings.map.height / Visualizer.scaleFactor;
+  var longitudeDistance = settings.map.width / Visualizer.scaleFactor;
 
   // Note: Lat/Long is represented as [Latitude (y), Longitude (x)].
   // Take care when converting from cartesian points, to lat/long.        
