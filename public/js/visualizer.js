@@ -10,31 +10,39 @@ var Visualizer = {};
 // Draw lines on the map
 Visualizer.update = function(){
 
-  var data = settings.data;
-
   // Group data by PlayerID
-  var players = _.groupBy(data, 'playerID');
-  
-  // Keep track of current index
+  var players = _.groupBy(settings.data, 'playerID');
+
+  // Store current index
   var count = 0;
 
-  // Create a polyline for each unique playerID
-  // Loop for each player we have
-  _.each(players, function(entries){
+  // Iterate through players
+  _.each(players, function(player){
 
-    var color = Visualizer.getColor(count++);
+      // Render each player onto the map
+      Visualizer.draw(player, count++);
+  });
+
+  // Update view
+  Visualizer.focus();
+
+  // Loading complete
+  UI.loading(false, "Success. " + settings.data.length + " points loaded.");
+}
+
+// Draw a player onto the map. Positions are rendered
+// as lines, while actions are clickable points.
+Visualizer.draw = function(entries, index){
+
+    // Get selected color.
+    var color = Visualizer.getColor(index);
 
     // Ensure chronological order
     entries = sortBy(entries, "timestamp");
 
-    // @TODO : Find a better way to seperate this.
-
-    // Get list of actions
-    var actions = _.filter(entries, function(d){
-
-      // Do we have an action key?
-      return (d.action) ? true : false;
-    });
+    /********************************
+             POSITIONS
+     ********************************/
 
     // get list of positions
     var positions = _.filter(entries, function(d){
@@ -43,14 +51,11 @@ Visualizer.update = function(){
       return !d.action;
     });
 
-    console.log("Actions : " + actions.length);
-    console.log("Positions : " + positions.length);
-
     // Create list of latLng ojects
     var positions = _.map(positions, function(point){
 
       // Return formatted latLng point
-      return Visualizer.toLatLng(point);
+      return toLatLng(point);
     });
 
     var options = {
@@ -62,18 +67,21 @@ Visualizer.update = function(){
 
     // Create polyline
     var polyline = L.polyline(positions, options)
-
-    var positionsGroup = new L.FeatureGroup();
-
-    positionsGroup.addLayer(polyline);
     
-    settings.layers.push(positionsGroup);
+    var featureGroup = new L.FeatureGroup().addLayer(polyline);
 
-    map.addLayer(positionsGroup);
+    addFeatureGroup(featureGroup);
 
-    // ***************
-    // Plot Points
-    // ***************
+    /********************************
+             ACTIONS
+     ********************************/
+
+    // Get list of actions
+    var actions = _.filter(entries, function(d){
+
+      // Do we have an action key?
+      return (d.action) ? true : false;
+    });
 
     var markers = new L.FeatureGroup();
 
@@ -83,6 +91,8 @@ Visualizer.update = function(){
 
       var circle = L.circleMarker(latLng, {
         stroke: true,
+        weight: 4,
+        opacity: 1,
         color: color,
         fill: true,
         fillColor: "#fff",
@@ -110,18 +120,8 @@ Visualizer.update = function(){
 
     });
 
-    // Save layer to settings.
-    settings.layers.push(markers);
-    
-    // Save layer for reference
-    map.addLayer(markers)
+    addFeatureGroup(markers);
 
-    UI.loading(false, "Success. " + settings.data.length + " points loaded.");
-
-  });
-
-  // Set view
-  map.fitBounds(settings.layers[0].getBounds());
 }
 
 // Clears the active data set. Resets map
@@ -132,16 +132,21 @@ Visualizer.clear = function(){
 
     // Clear active data sets
     _.each(settings.layers, function(layer){
-      map.removeLayer(layer);
+        
+        // Remove each active layer
+        map.removeLayer(layer);
     })
 }
 
 // Adds a marker at the provided location
 Visualizer.addMarker = function(lat, long, title){
   
+  // Optional Title
   var title = (title) ? title : "";
 
+  // Place marker on the map
   L.marker([lat, long], {title : title}).addTo(map);
+
 }
 
 // Get Data from API
@@ -186,20 +191,6 @@ Visualizer.formatData = function(data){
 
 }
 
-// Convert the JSON Object to a leaflet LatLong object
-Visualizer.toLatLng = function(point){
-
-  // Extract keys. May be 'latitude' or 'lat'.
-  var lat  = (point.latitude)  ? point.latitude  : point.lat;
-
-  // Extract keys. May be 'longitude' or 'long'.
-  var long = (point.longitude) ? point.longitude : point.long;
-
-  // Return lat/long if they exist.
-  if (lat && long) { return L.latLng(lat, long); }
-
-};
-
 Visualizer.getColor = function(i){
   
   var colors = ["#d73027", "#f46d43", "#fdae61",
@@ -220,6 +211,18 @@ Visualizer.getContext = function(){
     fidelity : 1,
   }
 }
+
+// Update the map's view port, as to
+// center the current data set.
+Visualizer.focus = function(){
+    map.fitBounds(settings.layers[0].getBounds());
+}
+
+/**************************************
+         HELPER FUNCTIONS
+     ... these should *never* be
+   called from the User Interface.
+ **************************************/
 
 // Sort the provided list by the provided key
 function sortBy (list, key){
@@ -267,3 +270,34 @@ function containsRequiredKeys(obj){
 
   return acc;
 }
+
+// Adds the provided featureGroup to the map.
+// Feature groups are objects representing 
+// "bulked", or otherwise grouped vector
+// objects as a single layer on the map.
+function addFeatureGroup (featureGroup){
+    
+    // Save layer to settings.
+    // We must save a reference to each layer, 
+    // as it's the most effective way to iterate
+    // through and remove layers.
+
+    settings.layers.push(featureGroup);
+
+    // Save layer for reference
+    map.addLayer(featureGroup);
+}
+
+// Convert the JSON Object to a leaflet LatLong object
+function toLatLng (point){
+
+  // Extract keys. May be 'latitude' or 'lat'.
+  var lat  = (point.latitude)  ? point.latitude  : point.lat;
+
+  // Extract keys. May be 'longitude' or 'long'.
+  var long = (point.longitude) ? point.longitude : point.long;
+
+  // Return lat/long if they exist.
+  if (lat && long) { return L.latLng(lat, long); }
+
+};
