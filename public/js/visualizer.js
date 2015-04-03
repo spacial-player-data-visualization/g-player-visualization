@@ -12,17 +12,20 @@ Visualizer.updateMap = function(){
     // Visualizer.clearMap();
 
     // If we're plotting paths
-    if (settings.paths) {
 
-      // Add player paths to map
-      Visualizer.polylineData(settings.data);
+    Visualizer.render(settings.data);
 
-    // Else, we're plotting points
-    } else {
+    // if (settings.paths) {
 
-      // Add points to map
-      Visualizer.plotPoints(settings.data);      
-    }
+    //   // Add player paths to map
+    //   Visualizer.polylineData(settings.data);
+
+    // // Else, we're plotting points
+    // } else {
+
+    //   // Add points to map
+    //   Visualizer.plotPoints(settings.data);      
+    // }
 
     UI.loading(false, "Success. " + settings.data.length + " points loaded.");
 }
@@ -38,37 +41,8 @@ Visualizer.clearMap = function(){
     })
 }
 
-// Add the provided data to the map.
-// Returns a feature group.
-Visualizer.plotPoints = function(data){
-
-  var radius = 10;
-
-  var markers = new L.FeatureGroup();
-
-  _.each(data, function(p){
-
-    var circle = L.circle([p.latitude, p.longitude], radius, {
-      color: 'black',
-      fillColor: '#fff',
-      fillOpacity: 1,
-    }) //.addTo(map);
-
-    markers.addLayer(circle);
-
-  });
-
-  // Save layer to settings.
-  settings.layers.push(markers);
-  
-  // Save layer for reference
-  map.addLayer(markers)
-
-  return markers;
-}
-
-// Create lines between player locations
-Visualizer.polylineData = function(data){
+// Draw lines on the map
+Visualizer.render = function(data){
 
   // Group data by PlayerID
   var players = _.groupBy(data, 'playerID');
@@ -77,26 +51,49 @@ Visualizer.polylineData = function(data){
   var count = 0;
 
   // Create a polyline for each unique playerID
-  _.each(players, function(player){
+  // Loop for each player we have
+  _.each(players, function(entries){
 
-    player = sortBy(player, "timestamp");
+    var color = Visualizer.getColor(count++);
+
+    // Ensure chronological order
+    entries = sortBy(entries, "timestamp");
+
+    // @TODO : Find a better way to seperate this.
+
+    // Get list of actions
+    var actions = _.filter(entries, function(d){
+
+      // Do we have an action key?
+      return (d.action) ? true : false;
+    });
+
+    // get list of positions
+    var positions = _.filter(entries, function(d){
+
+      // Do we not have an action key?
+      return !d.action;
+    });
+
+    console.log("Actions : " + actions.length);
+    console.log("Positions : " + positions.length);
 
     // Create list of latLng ojects
-    var latLngs = _.map(player, function(point){
+    var positions = _.map(positions, function(point){
+
+      // Return formatted latLng point
       return Visualizer.toLatLng(point);
     });
 
     var options = {
       stroke: true,
-      color: Visualizer.getColor(count++),
+      color: color,
       weight: 2,
       opacity: 1,
-      
-
     }
 
     // Create polyline
-    var polyline = L.polyline(latLngs, options)
+    var polyline = L.polyline(positions, options)
 
     settings.activeLayer = polyline;
 
@@ -105,6 +102,53 @@ Visualizer.polylineData = function(data){
 
     // Limit
     map.fitBounds(polyline.getBounds());
+
+    // ***************
+    // Plot Points
+    // ***************
+
+    var markers = new L.FeatureGroup();
+
+    _.each(actions, function(p){
+
+      var latLng = [p.latitude, p.longitude]
+
+      var circle = L.circleMarker(latLng, {
+        stroke: true,
+        color: color,
+        fill: true,
+        fillColor: "#fff",
+        fillOpacity: 1,
+        radius: 5,
+      })
+
+      // Create a new popup object
+      var popup = L.popup()
+        .setLatLng(latLng)
+        .setContent(convertJSONtoHTML(p))
+
+      // Add popup to the circle
+      circle.bindPopup(popup);
+
+      // Provide hover of JUST the action
+      circle.on('mouseover', function(e) {
+
+        // $("#legend").html(p.action);
+        console.log(p.action)
+
+      });
+
+      markers.addLayer(circle);
+
+    });
+
+    // Save layer to settings.
+    settings.layers.push(markers);
+    
+    // Save layer for reference
+    map.addLayer(markers)
+
+    return markers;
 
   });
 }
@@ -202,4 +246,28 @@ function sortBy (list, key){
   return _.sortBy(list, function(l){
         return l[key];
       })
+}
+
+// Convert the provided JSON object into an
+// HTML representation
+function convertJSONtoHTML(JSON){
+  var acc = "";
+
+  _.each(JSON, function(val, key){
+
+    // Lets ignore a few keys
+    // These keys are automatically generated
+    // by the system, so the end user
+    // won't miss them.
+
+    if (key != "__v" &&
+        key != "latitude" &&
+        key != "longitude"){
+
+      acc += "<p>" + key + " : <b>" + val + "</b></p>";
+    }
+    
+  })
+
+  return acc;
 }
