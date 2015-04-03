@@ -7,42 +7,10 @@ var Visualizer = {};
 
 // Take data from settings.data.
 // Add to the map.
-Visualizer.updateMap = function(){
-
-    // Visualizer.clearMap();
-
-    // If we're plotting paths
-
-    Visualizer.render(settings.data);
-
-    // if (settings.paths) {
-
-    //   // Add player paths to map
-    //   Visualizer.polylineData(settings.data);
-
-    // // Else, we're plotting points
-    // } else {
-
-    //   // Add points to map
-    //   Visualizer.plotPoints(settings.data);      
-    // }
-
-    UI.loading(false, "Success. " + settings.data.length + " points loaded.");
-}
-
-Visualizer.clearMap = function(){
-    
-    // Clear data from memory
-    settings.data = null;
-
-    // Clear active data sets
-    _.each(settings.layers, function(layer){
-      map.removeLayer(layer);
-    })
-}
-
 // Draw lines on the map
-Visualizer.render = function(data){
+Visualizer.update = function(){
+
+  var data = settings.data;
 
   // Group data by PlayerID
   var players = _.groupBy(data, 'playerID');
@@ -148,9 +116,20 @@ Visualizer.render = function(data){
     // Save layer for reference
     map.addLayer(markers)
 
-    return markers;
+    UI.loading(false, "Success. " + settings.data.length + " points loaded.");
 
   });
+}
+
+Visualizer.clear = function(){
+    
+    // Clear data from memory
+    settings.data = null;
+
+    // Clear active data sets
+    _.each(settings.layers, function(layer){
+      map.removeLayer(layer);
+    })
 }
 
 // Adds a marker at the provided location
@@ -188,7 +167,7 @@ Visualizer.loadData = function(){
     settings.data = data;
 
     // Update our map with new data.
-    Visualizer.updateMap();
+    Visualizer.update();
 
   })
 };

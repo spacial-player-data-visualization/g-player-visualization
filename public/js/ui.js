@@ -153,7 +153,7 @@ UI.addPlayerPathToggle = function(){
       settings.paths = checked;
       
       // Update map
-      Visualizer.updateMap();
+      Visualizer.update();
 
     });
 }
@@ -293,7 +293,7 @@ UI.setGame = function(gamename){
 UI.setMap = function(mapname){
 
   // Remove previous data
-  Visualizer.clearMap();
+  Visualizer.clear();
 
   if (settings.overlay){
     map.removeLayer(settings.overlay);  
