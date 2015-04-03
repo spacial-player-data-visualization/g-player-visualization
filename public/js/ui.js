@@ -291,33 +291,33 @@ UI.setMap = function(mapname){
   // Find chosen map data
   settings.map = _.findWhere(options.maps, { name : mapname });
 
+  // Temp representing map
+  var m = settings.map
+
   // Alert user if no suitable map found
   if (!settings.map){ alert("Unable to Find Suitable Map Data"); }
 
-  // Given map size, and scale factor,
-  // determine the latitude/longitude bounds.
-  // Scale the map size by the global scale factor.
-  var latitudeDistance = settings.map.height / Visualizer.scaleFactor;
-  var longitudeDistance = settings.map.width / Visualizer.scaleFactor;
+  var bottomLeft = Visualizer.formatData({
+    posY : m.bottom,
+    posX : m.left
+  })
 
-  // Careful: GPS goes [lat, long] aka [y, x]
-  var bottom_left = [
-    0 + settings.map.offsetY, 
-    0 + settings.map.offsetX
-  ];
-
-  // Careful: GPS goes [lat, long] aka [y, x]
-  var top_right = [
-    latitudeDistance * settings.map.scale + settings.map.offsetY,
-    longitudeDistance * settings.map.scale + settings.map.offsetX,
-  ]
+  var topRight = Visualizer.formatData({
+    posY : m.top,
+    posX : m.right
+  })
 
   // Note: Lat/Long is represented as [Latitude (y), Longitude (x)].
   // Take care when converting from cartesian points, to lat/long.        
-  var imageBounds = [bottom_left, top_right];
+  
+  var imageBounds = [[bottomLeft['latitude'], bottomLeft['longitude']], 
+                     [topRight['latitude'],   topRight['longitude']]];
+
+  Visualizer.addMarker(bottomLeft['latitude'], bottomLeft['longitude']);
+  Visualizer.addMarker(topRight['latitude'],   topRight['longitude']);
 
   // Add image overlay to map
-  settings.overlay = L.imageOverlay('img/maps/' + settings.map.url, imageBounds)
+  settings.overlay = L.imageOverlay('img/maps/' + m.url, imageBounds)
 
   settings.overlay.addTo(map);
   

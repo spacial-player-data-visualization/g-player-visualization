@@ -60,15 +60,13 @@ options.maps = [{
     height : 1178,
 
     // Map player locations to their points
-    // on the map. Manually offset for accuracy.
-    // Multiplied to base
-    offsetX : -3.2,
-    offsetY : -2.5,
+    // on the map. Define the corners.
+    bottom : -166,
+    left : -123,
+    
+    top : 2373,
+    right : 2917,
 
-    // Map player locations to their points
-    // on the map. Manually scale for accuracy.
-    // added to base
-    scale : 2.2,
 }, {
 
     // Save map configuration
@@ -83,13 +81,11 @@ options.maps = [{
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
-    offsetX : -20,
-    offsetY : -20,
+    top : 0,
+    bottom : 0,
+    left : 0,
+    right : 0,
 
-    // Map player locations to their points
-    // on the map. Manually scale for accuracy.
-    // added to base
-    scale : 30,
 }, {
 
     // Save map configuration
@@ -104,13 +100,11 @@ options.maps = [{
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
-    offsetX : 5,
-    offsetY : 0,
+    top : 0,
+    bottom : 0,
+    left : 0,
+    right : 0,
 
-    // Map player locations to their points
-    // on the map. Manually scale for accuracy.
-    // added to base
-    scale : 1,
 }, {
 
     // Save map configuration
@@ -125,13 +119,10 @@ options.maps = [{
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
-    offsetX : 0,
-    offsetY : 0,
-
-    // Map player locations to their points
-    // on the map. Manually scale for accuracy.
-    // added to base
-    scale : 1,
+    top : 0,
+    bottom : 0,
+    left : 0,
+    right : 0,
 }];
 
 

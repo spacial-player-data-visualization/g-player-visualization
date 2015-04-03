@@ -201,6 +201,17 @@ Visualizer.formatData = function(data){
   return data;
 }
 
+// Convert a lat/long to it's raw X/Y values
+Visualizer.unformatData = function(latLong){
+
+  var scale = Visualizer.scaleFactor;
+
+  return {
+    posX : latLong['longitude'] * scale,
+    posY : latLong['latitude'] * scale,
+  }
+}
+
 Visualizer.getColor = function(i){
   
   var colors = ["#d73027", "#f46d43", "#fdae61",

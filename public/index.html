@@ -127,6 +127,16 @@ Authors:
     // Support Leaflet.draw
     drawControl: false,
   })
+
+  map.on('click', function(e) {
+    var data = { 
+      latitude : e.latlng.lat,
+      longitude : e.latlng.lng,
+    }
+    
+    console.log(Visualizer.unformatData(data));
+    
+  });
   
 </script>
 </body>
