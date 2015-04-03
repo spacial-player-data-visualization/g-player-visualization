@@ -329,6 +329,54 @@ UI.setMap = function(mapname){
 
 }
 
+UI.moveMap = function(xOffset, yOffset){
+
+  var m = _.findWhere(options.maps, { name : settings.map.name });
+
+  var index = options.maps.indexOf(m);
+
+  options.maps[index].left = m.left + xOffset;
+  options.maps[index].right = m.right + xOffset;
+  options.maps[index].top = m.top + yOffset;
+  options.maps[index].bottom = m.bottom + yOffset;
+
+
+  // options.maps[index].left = m.left * scale;
+  // options.maps[index].right = m.right * scale;
+  // options.maps[index].top = m.top * scale;
+  // options.maps[index].bottom = m.bottom * scale;
+
+  console.log(options.maps[index]);
+
+  UI.setMap(m.name);
+
+}
+
+UI.scaleMap = function(scale){
+
+  var m = _.findWhere(options.maps, { name : settings.map.name });
+  
+  var index = options.maps.indexOf(m);
+
+  var width  = m.right - m.left;
+  var height = m.top - m.bottom;
+
+  var xScale = width  * scale * .05;
+  var yScale = height * scale * .05;
+
+  console.log(xScale + " " + yScale)
+
+  options.maps[index].left = m.left   - xScale;
+  options.maps[index].right = m.right + xScale;
+  
+  options.maps[index].bottom = m.bottom - yScale;
+  options.maps[index].top = m.top       + yScale;
+
+  console.log(options.maps[index]);
+
+  UI.setMap(m.name);
+};
+
 UI.updateAvailablePlayerActions = function(callback){
     
     // Get current game/map
