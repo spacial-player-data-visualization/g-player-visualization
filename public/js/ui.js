@@ -313,8 +313,8 @@ UI.setMap = function(mapname){
   var imageBounds = [[bottomLeft['latitude'], bottomLeft['longitude']], 
                      [topRight['latitude'],   topRight['longitude']]];
 
-  Visualizer.addMarker(bottomLeft['latitude'], bottomLeft['longitude']);
-  Visualizer.addMarker(topRight['latitude'],   topRight['longitude']);
+  // Visualizer.addMarker(bottomLeft['latitude'], bottomLeft['longitude']);
+  // Visualizer.addMarker(topRight['latitude'],   topRight['longitude']);
 
   // Add image overlay to map
   settings.overlay = L.imageOverlay('img/maps/' + m.url, imageBounds)
