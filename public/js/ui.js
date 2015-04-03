@@ -92,11 +92,15 @@ UI.initialize = function(){
 
     $('#select-game').on('change', function(){
       var selected = $(this).find("option:selected").val();
+      
       UI.setGame(selected);
     });
 
     $('#select-map').on('change', function(){
       var selected = $(this).find("option:selected").val();
+      
+      // Remove previous data
+      Visualizer.clear();
       UI.setMap(selected);
     });
     
@@ -257,6 +261,9 @@ UI.setGame = function(gamename){
 
     // Available maps
     var game_maps = _.where(options.maps, { game : settings.game });
+    
+    // Remove previous data
+    Visualizer.clear();
 
     // Reset map
     UI.setMap(game_maps[0].name);
@@ -275,13 +282,13 @@ UI.setGame = function(gamename){
 
         $("#select-map").append(option);
     });
+
+    // Change available actions
+    UI.updateAvailablePlayerActions();
 }
 
 // When user selects a new map
-UI.setMap = function(mapname){
-
-  // Remove previous data
-  Visualizer.clear();
+UI.setMap = function(mapname, callback){
 
   // Clear previous map
   if (settings.overlay){
@@ -320,13 +327,10 @@ UI.setMap = function(mapname){
   settings.overlay = L.imageOverlay('img/maps/' + m.url, imageBounds)
 
   settings.overlay.addTo(map);
-  
-  // Change available actions
-  UI.updateAvailablePlayerActions();
 
-  // Load available data
-  Visualizer.loadData();
-
+  // Default callback is to load the data set.
+  // Execute provided callback otherwise
+  (callback) ? callback() : Visualizer.loadData();
 }
 
 UI.moveMap = function(xOffset, yOffset){
@@ -346,9 +350,9 @@ UI.moveMap = function(xOffset, yOffset){
   // options.maps[index].top = m.top * scale;
   // options.maps[index].bottom = m.bottom * scale;
 
-  console.log(options.maps[index]);
+  // console.log(options.maps[index]);
 
-  UI.setMap(m.name);
+  UI.setMap(m.name, function(){ console.log(settings.map); });
 
 }
 
@@ -358,23 +362,23 @@ UI.scaleMap = function(scale){
   
   var index = options.maps.indexOf(m);
 
-  var width  = m.right - m.left;
-  var height = m.top - m.bottom;
+  // var width  = m.right - m.left;
+  // var height = m.top - m.bottom;
 
-  var xScale = width  * scale * .05;
-  var yScale = height * scale * .05;
+  // var xScale = width  * scale * .05;
+  // var yScale = height * scale * .05;
 
-  console.log(xScale + " " + yScale)
+  // console.log(xScale + " " + yScale)
 
-  options.maps[index].left = m.left   - xScale;
-  options.maps[index].right = m.right + xScale;
+  options.maps[index].left = m.left   - scale // xScale;
+  options.maps[index].right = m.right + scale // xScale;
   
-  options.maps[index].bottom = m.bottom - yScale;
-  options.maps[index].top = m.top       + yScale;
+  options.maps[index].bottom = m.bottom - scale // yScale;
+  options.maps[index].top = m.top       + scale // yScale;
 
-  console.log(options.maps[index]);
+  // console.log(options.maps[index]);
 
-  UI.setMap(m.name);
+  UI.setMap(m.name, function(){ console.log(settings.map); });
 };
 
 UI.updateAvailablePlayerActions = function(callback){

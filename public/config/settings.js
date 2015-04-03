@@ -48,6 +48,7 @@ options.games = [
 	"Game Gaze",
 ];
 
+
 options.maps = [{
 
     // Save map configuration
@@ -61,11 +62,11 @@ options.maps = [{
 
     // Map player locations to their points
     // on the map. Define the corners.
-    bottom : -166,
-    left : -123,
+    bottom : -836,
+    left : -823,
     
-    top : 2373,
-    right : 2917,
+    top : 2463,
+    right : 2977,
 
 }, {
 
@@ -81,10 +82,12 @@ options.maps = [{
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
-    top : 0,
+    
     bottom : 0,
     left : 0,
-    right : 0,
+
+    top : 814,
+    right : 789,
 
 }, {
 
@@ -100,10 +103,12 @@ options.maps = [{
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
-    top : 0,
-    bottom : 0,
-    left : 0,
-    right : 0,
+
+    bottom : 70,
+    left : 1020,
+
+    top : 1248,
+    right : 2620,
 
 }, {
 
