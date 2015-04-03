@@ -302,6 +302,8 @@ UI.setMap = function(mapname){
   // Find map data
   settings.map = _.findWhere(options.maps, { name : mapname });
 
+  if (!settings.map){ alert("Unable to Find Suitable Map Data"); }
+
   // Given map size, and scale factor,
   // determine the latitude/longitude bounds.
   var latitudeDistance = settings.map.height / settings.scale;
