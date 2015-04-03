@@ -178,17 +178,24 @@ Visualizer.loadData = function(){
   })
 };
 
+// Convert the (x,y) values from the player logs
+// into Latitude and Longitude positions on a map.
 Visualizer.formatData = function(data){
   
+  // Global scale factor. Helps to max points (ranging 
+  // from -10,000 to 10,000) to their coordinate points 
+  // on a geo projection.
+  
+  var scale = 100;
+
   // Create a latitude & longitude field.
   // Maps the (x,y) position to a coordinate
   // on the earth. Makes plotting MUCH easier
 
-  data['latitude']  = ((data.posY + settings.map.offset.y) * settings.map.scale.y) / settings.scale;
-  data['longitude'] = ((data.posX + settings.map.offset.x) * settings.map.scale.x) / settings.scale;
+  data['latitude']  = ((data.posY + settings.map.offset.y) * settings.map.scale.y) / scale;
+  data['longitude'] = ((data.posX + settings.map.offset.x) * settings.map.scale.x) / scale;
   
   return data;
-
 }
 
 Visualizer.getColor = function(i){
