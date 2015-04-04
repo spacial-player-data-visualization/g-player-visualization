@@ -9,12 +9,17 @@ var Visualizer = {};
 // Add to the map.
 Visualizer.updateMap = function(){
 
+    // Visualizer.clearMap();
+
+    // If we're plotting paths
     if (settings.paths) {
 
       // Add player paths to map
       Visualizer.polylineData(settings.data);
 
+    // Else, we're plotting points
     } else {
+
       // Add points to map
       Visualizer.plotPoints(settings.data);      
     }
@@ -22,18 +27,41 @@ Visualizer.updateMap = function(){
     UI.loading(false, "Success. " + settings.data.length + " points loaded.");
 }
 
+Visualizer.clearMap = function(){
+    
+    // Clear active data sets
+    _.each(settings.layers, function(layer){
+      map.removeLayer(layer);
+    })
+}
+
 // Add the provided data to the map.
+// Returns a feature group.
 Visualizer.plotPoints = function(data){
 
   var radius = 10;
 
+  var markers = new L.FeatureGroup();
+
   _.each(data, function(p){
+
     var circle = L.circle([p.latitude, p.longitude], radius, {
       color: 'black',
-      fillColor: '#000',
+      fillColor: '#fff',
       fillOpacity: 1,
-    }).addTo(map);
+    }) //.addTo(map);
+
+    markers.addLayer(circle);
+
   });
+
+  // Save layer to settings.
+  settings.layers.push(markers);
+  
+  // Save layer for reference
+  map.addLayer(markers)
+
+  return markers;
 }
 
 // Create lines between player locations
@@ -62,6 +90,8 @@ Visualizer.polylineData = function(data){
     // Create polyline
     var polyline = L.polyline(latLngs, options)
 
+    settings.activeLayer = polyline;
+
     // Add polyline to map
     polyline.addTo(map);
 
@@ -70,19 +100,6 @@ Visualizer.polylineData = function(data){
 
   });
 }
-
-// Convert the JSON Object to a leaflet LatLong object
-Visualizer.toLatLng = function(point){
-
-  // Extract keys. May be 'latitude' or 'lat'.
-  var lat  = (point.latitude)  ? point.latitude  : point.lat;
-
-  // Extract keys. May be 'longitude' or 'long'.
-  var long = (point.longitude) ? point.longitude : point.long;
-
-  // Return lat/long if they exist.
-  if (lat && long) { return L.latLng(lat, long); }
-};
 
 // Adds a marker at the provided location
 Visualizer.addMarker = function(lat, long, title){
@@ -98,128 +115,66 @@ Visualizer.loadData = function(){
   var options = {
     game : settings.game,
     area : settings.map.name,
-    fidelity : 1,
+    fidelity : 5,
   }
 
   // Hit API
   $.get(settings.API_url + "entries", options, function(data){
 
-    var offset = settings.map.offset;
-    var scale = settings.map.scale;
+    offset = settings.map.offset;
+    scale = settings.map.scale;
 
-    // Validate data. Ignore NPC interactions, etc
-    // @TODO: Temp data fix. Replaced by proper
-    // API and data validation.
+    // Validate data. Ignore non-spacial data
     data = _.filter(data, function(p){
       return p.posX && p.posY;
     })
 
-    // SETUP DATA
     // Convert data points into plottable data
     data = _.map(data, function(p){
-      return { 
-  
-          // Create a latitude & longitude field.
-          // Maps the (x,y) position to a coordinate
-          // on the earth. Makes plotting MUCH easier
-  
-          latitude  : ((p.posY + offset.y) * scale.y) / settings.scale,
-          longitude : ((p.posX + offset.x) * scale.x) / settings.scale, 
-  
-          // Preserve Object
-          area : p.area,
-          playerID : p.playerID,
-          timestamp : p.timestamp,
-          cameraX : p.cameraX,
-          cameraY : p.cameraY
-      }
+      return Visualizer.formatData(p);
     })
 
     // Save data for future reference
     settings.data = data;
 
+    // Update our map with new data.
     Visualizer.updateMap();
+
   })
 };
 
+Visualizer.formatData = function(data){
+  
+  // Create a latitude & longitude field.
+  // Maps the (x,y) position to a coordinate
+  // on the earth. Makes plotting MUCH easier
 
-// Export currently active data set as .csv
-Visualizer.exportCSV = function(){
-  // http://jsfiddle.net/sturtevant/vUnF9/
-  // http://stackoverflow.com/a/4130939/317
+  data['latitude']  = ((data.posY + offset.y) * scale.y) / settings.scale;
+  data['longitude'] = ((data.posX + offset.x) * scale.x) / settings.scale;
+  
+  return data;
 
-  var json = settings.data;
+}
 
-  // var json = $.parseJSON(json);
-    var csv = JSON2CSV(json);
+// Convert the JSON Object to a leaflet LatLong object
+Visualizer.toLatLng = function(point){
 
-    // Trick browser to force download.
-    window.open("data:text/csv;charset=utf-8," + escape(csv))
+  // Extract keys. May be 'latitude' or 'lat'.
+  var lat  = (point.latitude)  ? point.latitude  : point.lat;
 
+  // Extract keys. May be 'longitude' or 'long'.
+  var long = (point.longitude) ? point.longitude : point.long;
 
-  function JSON2CSV(objArray) {
-      var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+  // Return lat/long if they exist.
+  if (lat && long) { return L.latLng(lat, long); }
 
-      var str = '';
-      var line = '';
-
-      if ($("#labels").is(':checked')) {
-          var head = array[0];
-          if ($("#quote").is(':checked')) {
-              for (var index in array[0]) {
-                  var value = index + "";
-                  line += '"' + value.replace(/"/g, '""') + '",';
-              }
-          } else {
-              for (var index in array[0]) {
-                  line += index + ',';
-              }
-          }
-
-          line = line.slice(0, -1);
-          str += line + '\r\n';
-      }
-
-      for (var i = 0; i < array.length; i++) {
-          var line = '';
-
-          if ($("#quote").is(':checked')) {
-              for (var index in array[i]) {
-                  var value = array[i][index] + "";
-                  line += '"' + value.replace(/"/g, '""') + '",';
-              }
-          } else {
-              for (var index in array[i]) {
-                  line += array[i][index] + ',';
-              }
-          }
-
-          line = line.slice(0, -1);
-          str += line + '\r\n';
-      }
-      return str;   
-  }
 };
 
 Visualizer.getColor = function(i){
   
-  var colors = [
-    "#d73027",
-    "#f46d43",
-    "#fdae61",
-    "#fee090",
-    "#ffffbf",
-    "#e0f3f8",
-    "#abd9e9",
-    "#74add1",
-    "#4575b4"
-  ];
+  var colors = ["#d73027", "#f46d43", "#fdae61",
+                "#fee090", "#ffffbf", "#e0f3f8", 
+                "#abd9e9", "#74add1", "#4575b4"];
 
-  if (i < colors.length - 1) {
-    console.log(colors[i])
-    return colors[i];
-  } else {
-    console.log("#0")
-    return "#000000"
-  }
+  return (i < colors.length - 1) ? colors[i] : "#000000";
 }

@@ -291,6 +291,12 @@ UI.setGame = function(gamename){
 // When user selects a new map
 UI.setMap = function(mapname){
 
+  // Remove previous data
+  Visualizer.clearMap();
+
+  // Clear data from memory
+  settings.data = null;
+
   if (settings.overlay){
     map.removeLayer(settings.overlay);  
   }
@@ -308,10 +314,18 @@ UI.setMap = function(mapname){
   var imageBounds = [[0, 0], [latitudeDistance, longitudeDistance]];
 
   // Add image overlay to map
-  settings.overlay = L.imageOverlay('img/maps/' + settings.map.url, imageBounds).addTo(map);
+  settings.overlay = L.imageOverlay('img/maps/' + settings.map.url, imageBounds)
+
+  settings.overlay.addTo(map);
+
+  // settings.overlay.bringToBack();
+
   
   // Change available actions
   UI.setPlayerActions();
+
+  // Load available data
+  Visualizer.loadData();
 
 }
 
