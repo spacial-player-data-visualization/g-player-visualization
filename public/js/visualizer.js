@@ -255,6 +255,8 @@ Visualizer.focus = function(){
     
     if (sample) map.fitBounds(sample.getBounds());
 
+    // map.fitBounds(bounds)
+
     // TODO: Set max/min zoom levels dynamically
 
     // map.minZoom()

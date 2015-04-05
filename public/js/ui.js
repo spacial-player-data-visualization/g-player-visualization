@@ -329,6 +329,8 @@ UI.setMap = function(mapname, callback){
 
   settings.overlay.addTo(map);
 
+  map.fitBounds(imageBounds);
+
   // Default callback is to load the data set.
   // Execute provided callback otherwise
   (callback) ? callback() : Visualizer.loadData();
