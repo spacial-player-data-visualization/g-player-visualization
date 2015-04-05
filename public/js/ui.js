@@ -344,14 +344,6 @@ UI.moveMap = function(xOffset, yOffset){
   options.maps[index].top = m.top + yOffset;
   options.maps[index].bottom = m.bottom + yOffset;
 
-
-  // options.maps[index].left = m.left * scale;
-  // options.maps[index].right = m.right * scale;
-  // options.maps[index].top = m.top * scale;
-  // options.maps[index].bottom = m.bottom * scale;
-
-  // console.log(options.maps[index]);
-
   UI.setMap(m.name, function(){ console.log(settings.map); });
 
 }
@@ -362,19 +354,20 @@ UI.scaleMap = function(scale){
   
   var index = options.maps.indexOf(m);
 
-  // var width  = m.right - m.left;
-  // var height = m.top - m.bottom;
-
-  // var xScale = width  * scale * .05;
-  // var yScale = height * scale * .05;
-
-  // console.log(xScale + " " + yScale)
-
-  options.maps[index].left = m.left   - scale // xScale;
-  options.maps[index].right = m.right + scale // xScale;
+  // 
+  var width  = m.right - m.left;
+  var height = m.top - m.bottom;
   
-  options.maps[index].bottom = m.bottom - scale // yScale;
-  options.maps[index].top = m.top       + scale // yScale;
+  var xScale = .01 * width  * scale;
+  var yScale = .01 * height * scale;
+
+  console.log(xScale + " " + yScale)
+
+  options.maps[index].left = m.left   - xScale;
+  options.maps[index].right = m.right + xScale;
+  
+  options.maps[index].bottom = m.bottom - yScale;
+  options.maps[index].top = m.top + yScale;
 
   // console.log(options.maps[index]);
 
