@@ -1,3 +1,7 @@
+/*.leaflet-image-layer {
+    border: 1px dashed red;
+}
+*/
 /************************
         Styles
  ************************/
@@ -273,6 +277,16 @@ ul.messenger-theme-air .messenger-message {
 .leaflet-image-layer {
     z-index: -1;
 }
+
+.leaflet-popup-content {
+
+}
+
+.leaflet-popup-content p {
+    margin: 0;
+}
+
+
 
 
 @media(min-width:768px) {

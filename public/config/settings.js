@@ -12,21 +12,16 @@ var settings = {
   // Feature Group representation of data
   layers : [],
 
+  // Target API URL
+  API_url : (window.location.href.indexOf("herokuapp.com") > -1) ? "http://g-player.herokuapp.com/api/" : "http://localhost:5000/api/",
+
   // enable heatmap
   heatmap : true,
 
   // enable player paths
-  paths : false,
+  paths : true,
 
-  // Global scale factor.
-  // Helps to max points (ranging from -10,000 to 10,000)
-  // to their coordinate points on a geo projection.
-  scale : 100,
-
-  // Target API URL
-  API_url : (window.location.href.indexOf("herokuapp.com") > -1) ? "http://g-player.herokuapp.com/api/" : "http://localhost:5000/api/",
-
-  // Current Game
+  // Default Game
   game : "Fallout New Vegas",
 
   // Current Map
@@ -34,9 +29,6 @@ var settings = {
 
   // Current overlay
   overlay : null,
-
-  // Available actions
-  actions : null,
 
 };
 
@@ -58,32 +50,22 @@ options.games = [
 	"Game Gaze",
 ];
 
+
 options.maps = [{
 
     // Save map configuration
     name: "Position_Introhouse",
     game: "Fallout New Vegas",
     url: "/fallout/intro.png",
-	
-	// Background image size
-    width : 1600,
-    height : 1178,
 
     // Map player locations to their points
-    // on the map. Manually offset for accuracy.
-    // Multiplied to base
-    offset : {
-      x : 650,
-      y : 550,
-    },
+    // on the map. Define the corners.
+    bottom : -836,
+    left : -823,
+    
+    top : 2463,
+    right : 2977,
 
-    // Map player locations to their points
-    // on the map. Manually scale for accuracy.
-    // added to base
-    scale : {
-      x : 0.45,
-      y : 0.45,
-    }
 }, {
 
     // Save map configuration
@@ -91,25 +73,17 @@ options.maps = [{
     game: "Fallout New Vegas",
     url: "/fallout/outside.png",
 	
-	// Background image size
-    width : 789,
-    height : 814,
 
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
-    offset : {
-      x : 850,
-      y : 950,
-    },
+    
+    bottom : 0,
+    left : 0,
 
-    // Map player locations to their points
-    // on the map. Manually scale for accuracy.
-    // added to base
-    scale : {
-      x : .030,
-      y : .030,
-    }
+    top : 814,
+    right : 789,
+
 }, {
 
     // Save map configuration
@@ -117,51 +91,31 @@ options.maps = [{
     game: "Fallout New Vegas",
     url: "/fallout/bar.png",
 	
-	// Background image size
-    width : 1600,
-    height : 1178,
-
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
-    offset : {
-      x : 650,
-      y : 550,
-    },
 
-    // Map player locations to their points
-    // on the map. Manually scale for accuracy.
-    // added to base
-    scale : {
-      x : 0.45,
-      y : 0.45,
-    }
+    bottom : 70,
+    left : 1020,
+
+    top : 1248,
+    right : 2620,
+
 }, {
 
     // Save map configuration
     name: "Map",
     game: "League of Legends",
     url: "/leagueoflegends/map.jpg",
-	
-	// Background image size
-    width : 2000,
-    height : 1833,
+
 
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
-    offset : {
-      x : 650,
-      y : 550,
-    },
-
-    // Map player locations to their points
-    // on the map. Manually scale for accuracy.
-    // added to base
-    scale : {
-      x : 0.45,
-      y : 0.45,
-    }
+    top : 0,
+    bottom : 0,
+    left : 0,
+    right : 0,
 }];
 
 
