@@ -239,7 +239,7 @@ Visualizer.focus = function(){
 
     var sample = settings.layers[0]
     
-    map.fitBounds(sample.getBounds());
+    if (sample) map.fitBounds(sample.getBounds());
 
     // TODO: Set max/min zoom levels dynamically
 

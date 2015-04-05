@@ -285,6 +285,7 @@ UI.setGame = function(gamename){
 
     // Change available actions
     UI.updateAvailablePlayerActions();
+    UI.updateAvailablePlayers();
 }
 
 // When user selects a new map
@@ -369,7 +370,6 @@ UI.scaleMap = function(scale){
   options.maps[index].top = m.top + yScale;
 
   // console.log(options.maps[index]);
-
   UI.setMap(m.name, function(){ console.log(settings.map); });
 };
 
@@ -394,13 +394,15 @@ UI.updateAvailablePlayerActions = function(callback){
 
 }
 
-UI.setPlayers = function(callback){
+UI.updateAvailablePlayers = function(callback){
+
+    var options = Visualizer.getContext();
 
     // Get actions from API
-    $.get(settings.API_url + "users", function(data){
+    $.get(settings.API_url + "users", options, function(data){
         options.players = data;
 
-        console.log(players)
+        console.log(options.players)
     })
 
 }
@@ -408,5 +410,4 @@ UI.setPlayers = function(callback){
 
 UI.debug = function(){
   console.log("Game : " + settings.game + " | Map : " + settings.map.name);
-
 }
