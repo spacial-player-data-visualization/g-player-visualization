@@ -119,6 +119,7 @@ UI.initialize = function(){
     UI.addHeatmapToggle();
     UI.addPlayerPathToggle();
     UI.addToggleAbleSideNavigation();
+
     // UI.addLeafletDraw();
 }
 
@@ -152,7 +153,7 @@ UI.addPlayerPathToggle = function(){
       settings.paths = checked;
       
       // Update map
-      Visualizer.updateMap();
+      Visualizer.update();
 
     });
 }
@@ -292,20 +293,17 @@ UI.setGame = function(gamename){
 UI.setMap = function(mapname){
 
   // Remove previous data
-  Visualizer.clearMap();
-
-  // Clear data from memory
-  settings.data = null;
+  Visualizer.clear();
 
   if (settings.overlay){
     map.removeLayer(settings.overlay);  
   }
-  
+
   // Find map data
   settings.map = _.findWhere(options.maps, { name : mapname });
 
   // Given map size, and scale factor,
-  // determin the latitude/longitude bounds.
+  // determine the latitude/longitude bounds.
   var latitudeDistance = settings.map.height / settings.scale;
   var longitudeDistance = settings.map.width / settings.scale;
 
@@ -317,22 +315,22 @@ UI.setMap = function(mapname){
   settings.overlay = L.imageOverlay('img/maps/' + settings.map.url, imageBounds)
 
   settings.overlay.addTo(map);
-
-  // settings.overlay.bringToBack();
-
   
   // Change available actions
-  UI.setPlayerActions();
+  UI.updateAvailablePlayerActions();
 
   // Load available data
   Visualizer.loadData();
 
 }
 
-UI.setPlayerActions = function(callback){
+UI.updateAvailablePlayerActions = function(callback){
+    
+    // Get current game/map
+    var options = Visualizer.getContext();
 
     // Get actions from API
-    $.get(settings.API_url + "actions", function(data){
+    $.get(settings.API_url + "actions", options, function(data){
         options.actions = data;
 
         // Clear old list of actions

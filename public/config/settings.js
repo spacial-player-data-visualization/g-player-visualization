@@ -12,12 +12,6 @@ var settings = {
   // Feature Group representation of data
   layers : [],
 
-  // enable heatmap
-  heatmap : true,
-
-  // enable player paths
-  paths : false,
-
   // Global scale factor.
   // Helps to max points (ranging from -10,000 to 10,000)
   // to their coordinate points on a geo projection.
@@ -26,7 +20,13 @@ var settings = {
   // Target API URL
   API_url : (window.location.href.indexOf("herokuapp.com") > -1) ? "http://g-player.herokuapp.com/api/" : "http://localhost:5000/api/",
 
-  // Current Game
+  // enable heatmap
+  heatmap : true,
+
+  // enable player paths
+  paths : true,
+
+  // Default Game
   game : "Fallout New Vegas",
 
   // Current Map
@@ -34,9 +34,6 @@ var settings = {
 
   // Current overlay
   overlay : null,
-
-  // Available actions
-  actions : null,
 
 };
 
