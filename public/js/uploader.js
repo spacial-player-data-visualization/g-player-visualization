@@ -229,7 +229,10 @@ Uploader.bulkUpload = function(){
   entries = Uploader.removeInvalidEntries(entries);
   
   // Get user approval before storing in database
-  if (!confirm("Upload " + entries.length + " entries to the database?")) return;
+  if (!confirm("Upload " + entries.length + " entries to the database?")) {
+    UI.loading(false, "Upload cancelled.");
+    return;
+  } 
 
   // When POSTing data to the API, we occasionally
   // encounter a size/entry limit. Just to be safe,
@@ -328,7 +331,10 @@ Uploader.formatData = function(data, flag){
   }
 
   UI.alert(acc.length + " of " + data.length + " Entries Valid.")
-  
+  if (acc.length != data.length) {
+    UI.alert("For invalid entries, make sure each entry has "
+      + "X and Y position data, and a timestamp.")
+  }
   return acc;
 }
 
