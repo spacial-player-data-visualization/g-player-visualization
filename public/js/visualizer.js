@@ -21,7 +21,7 @@ Visualizer.updateMap = function(){
     } else {
 
       // Add points to map
-      Visualizer.plotPoints(settings.data);      
+      Visualizer.plotPoints(settings.data);
     }
 
     UI.loading(false, "Success. " + settings.data.length + " points loaded.");

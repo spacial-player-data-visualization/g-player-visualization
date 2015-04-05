@@ -324,6 +324,9 @@ UI.setMap = function(mapname){
   // Change available actions
   UI.setPlayerActions();
 
+  // Change available users
+  UI.setPlayers();
+
   // Load available data
   Visualizer.loadData();
 
@@ -346,6 +349,27 @@ UI.setPlayerActions = function(callback){
     })
 
 }
+
+UI.setPlayers = function(callback){
+
+    // Get actions from API
+    $.get(settings.API_url + "users", function(data){
+        options.players = data;
+
+        // Clear old list of actions
+        // $(".action-select").children().remove();
+
+        // // Add new list of actions
+        // _.each(options.actions, function(action){
+        //     var option  = $("<option />").val(action).text(action);
+        //     $(".action-select").append(option);
+        // })
+
+      console.log(players)
+    })
+
+}
+
 
 UI.debug = function(){
   console.log("Game : " + settings.game + " | Map : " + settings.map.name);
