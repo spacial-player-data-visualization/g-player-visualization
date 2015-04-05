@@ -17,6 +17,12 @@ $(document).ready(function(){
 
 })
 
+$('#gameSelect').on('change', function(){
+      var selected = $(this).find("option:selected").val();
+      
+      settings.game = selected;
+    });
+
 var Uploader = {};
 
 // Extract data from the uploaded .csv file
@@ -100,15 +106,19 @@ Uploader.removeEmptyLines = function(data){
 
 // Populate multiple tables
 Uploader.populateTables = function(data){
-
   // Clear tables
   $(".tableContainer").html("");
+  
+  // some games only have 1 data type, which doesn't
+  // need to be "bucketed"
+  var element = document.getElementById("gameSelect");
+  var selectedGame = element.options[element.selectedIndex].text;
+  if (numberOfGameMappings(selectedGame) > 1) {
+    // Bucket data by type of entry
+    var buckets = Uploader.sortByEntryType(data);
 
-  // Bucket data by type of entry
-  var buckets = Uploader.sortByEntryType(data);
-
-  // Print each table to DOM
-  _.each(buckets, function(bucket){
+    // Print each table to DOM
+    _.each(buckets, function(bucket){
 
     // The first data point is the
     // type of data.
@@ -118,6 +128,11 @@ Uploader.populateTables = function(data){
     Uploader.populateTable(bucket, key);
 
   })
+  } else {
+    Uploader.populateTable(data, settings.game);
+  }
+  
+
 };
 
 // Render content into HTML table.
@@ -397,7 +412,10 @@ function sanitizeEntries(data, column) {
   data = Uploader.removeEmptyLines(data);
   
   for (var index in data) {
-    data[index][column] = data[index][column].replace(/(?:\r\n|\r|\n)/g, '');
+    if (typeof data[index][column] == 'string' || 
+      data[index][column] instanceof String) {
+        data[index][column] = data[index][column].replace(/(?:\r\n|\r|\n)/g, '');
+    }
   }
 
   return data;
@@ -447,4 +465,16 @@ function fillEntry(data, current) {
     return null;
 
   }
+}
+
+// find how many mappings exist for a game
+// take in a game, return a number
+function numberOfGameMappings(game) {
+  console.log("finding number of game mappings for " + game);
+  var gameMappings = _.filter(options.mappings, function(mapping) {
+    console.log(mapping);
+    console.log(game);
+    return mapping.game == game;
+  })
+  return gameMappings.length;
 }

@@ -226,6 +226,8 @@ options.lookup_table = {
 
 	"Quest" : "quest",
 	"Stat" : "stat",
+
+	"Gaze" : "gazeDefault",
 }
 
 // Store a list of available key mappings
@@ -324,6 +326,12 @@ options.mappings = [{
 	game  : "Fallout New Vegas",
 	type  : "stat",
 	columns : ["action", "playerID", "action", "key", "value", "status"],
+},
+
+{
+	game : "Gaze",
+	type : "gazeDefault",
+	colums : ["timestamp", "gazeX", "gazeY", "posX", "posY", "posZ", "cameraX", "cameraY"],
 }];
 
 // Return the key mapping given the 
