@@ -178,17 +178,38 @@ Visualizer.loadData = function(){
   })
 };
 
+// Convert the (x,y) values from the player logs
+// into Latitude and Longitude positions on a map.
 Visualizer.formatData = function(data){
   
+  // Global scale factor. Helps to max points (ranging 
+  // from -10,000 to 10,000) to their coordinate points 
+  // on a geo projection.
+  
+  var scale = Visualizer.scaleFactor;
+
   // Create a latitude & longitude field.
   // Maps the (x,y) position to a coordinate
   // on the earth. Makes plotting MUCH easier
 
-  data['latitude']  = ((data.posY + settings.map.offset.y) * settings.map.scale.y) / settings.scale;
-  data['longitude'] = ((data.posX + settings.map.offset.x) * settings.map.scale.x) / settings.scale;
+  // data['latitude']  = ((data.posY + settings.map.offset.y) * settings.map.scale.y) / scale;
+  // data['longitude'] = ((data.posX + settings.map.offset.x) * settings.map.scale.x) / scale;
+
+  data['latitude']  = data.posY / scale;
+  data['longitude'] = data.posX / scale;
   
   return data;
+}
 
+// Convert a lat/long to it's raw X/Y values
+Visualizer.unformatData = function(latLong){
+
+  var scale = Visualizer.scaleFactor;
+
+  return {
+    posX : latLong['longitude'] * scale,
+    posY : latLong['latitude'] * scale,
+  }
 }
 
 Visualizer.getColor = function(i){
@@ -215,8 +236,34 @@ Visualizer.getContext = function(){
 // Update the map's view port, as to
 // center the current data set.
 Visualizer.focus = function(){
-    map.fitBounds(settings.layers[0].getBounds());
+
+    var sample = settings.layers[0]
+    
+    map.fitBounds(sample.getBounds());
+
+    // TODO: Set max/min zoom levels dynamically
+
+    // map.minZoom()
+    // map.maxZoom()
+
+    /***************************
+          Setup Map
+    ****************************/
+
+    // Given map size, and scale factor,
+    // determin the latitude/longitude bounds.
+    // var latitudeDistance = settings.map.height / Visualizer.scaleFactor;
+    // var longitudeDistance = settings.map.width / Visualizer.scaleFactor;
+
+    // Set Map Center
+    // map.setView([latitudeDistance / 2, longitudeDistance / 2], 1);
 }
+
+// Global scale factor. Helps to max points (ranging 
+// from -10,000 to 10,000) to their coordinate points 
+// on a geo projection.
+
+Visualizer.scaleFactor = 200;
 
 /**************************************
          HELPER FUNCTIONS

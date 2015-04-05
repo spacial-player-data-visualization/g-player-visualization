@@ -84,7 +84,7 @@ UI.initialize = function(){
          Default Settings
     ****************************/
 
-    UI.setGame("Fallout New Vegas");
+    UI.setGame(settings.game);
 
     /***************************
          Watch form Values
@@ -92,25 +92,17 @@ UI.initialize = function(){
 
     $('#select-game').on('change', function(){
       var selected = $(this).find("option:selected").val();
+      
       UI.setGame(selected);
     });
 
     $('#select-map').on('change', function(){
       var selected = $(this).find("option:selected").val();
+      
+      // Remove previous data
+      Visualizer.clear();
       UI.setMap(selected);
     });
-
-    /***************************
-          Setup Map
-    ****************************/
-
-    // Given map size, and scale factor,
-    // determin the latitude/longitude bounds.
-    var latitudeDistance = settings.map.height / settings.scale;
-    var longitudeDistance = settings.map.width / settings.scale;
-
-    // Set Map Center
-    map.setView([latitudeDistance / 2, longitudeDistance / 2], 1);
     
     /***************************
        Initialize UI Options
@@ -269,6 +261,9 @@ UI.setGame = function(gamename){
 
     // Available maps
     var game_maps = _.where(options.maps, { game : settings.game });
+    
+    // Remove previous data
+    Visualizer.clear();
 
     // Reset map
     UI.setMap(game_maps[0].name);
@@ -287,42 +282,104 @@ UI.setGame = function(gamename){
 
         $("#select-map").append(option);
     });
+
+    // Change available actions
+    UI.updateAvailablePlayerActions();
 }
 
 // When user selects a new map
-UI.setMap = function(mapname){
+UI.setMap = function(mapname, callback){
 
-  // Remove previous data
-  Visualizer.clear();
-
+  // Clear previous map
   if (settings.overlay){
     map.removeLayer(settings.overlay);  
   }
 
-  // Find map data
+  // Find chosen map data
   settings.map = _.findWhere(options.maps, { name : mapname });
 
-  // Given map size, and scale factor,
-  // determine the latitude/longitude bounds.
-  var latitudeDistance = settings.map.height / settings.scale;
-  var longitudeDistance = settings.map.width / settings.scale;
+  // Temp representing map
+  var m = settings.map
+
+  // Alert user if no suitable map found
+  if (!settings.map){ alert("Unable to Find Suitable Map Data"); }
+
+  var bottomLeft = Visualizer.formatData({
+    posY : m.bottom,
+    posX : m.left
+  })
+
+  var topRight = Visualizer.formatData({
+    posY : m.top,
+    posX : m.right
+  })
 
   // Note: Lat/Long is represented as [Latitude (y), Longitude (x)].
   // Take care when converting from cartesian points, to lat/long.        
-  var imageBounds = [[0, 0], [latitudeDistance, longitudeDistance]];
+  
+  var imageBounds = [[bottomLeft['latitude'], bottomLeft['longitude']], 
+                     [topRight['latitude'],   topRight['longitude']]];
+
+  // Visualizer.addMarker(bottomLeft['latitude'], bottomLeft['longitude']);
+  // Visualizer.addMarker(topRight['latitude'],   topRight['longitude']);
 
   // Add image overlay to map
-  settings.overlay = L.imageOverlay('img/maps/' + settings.map.url, imageBounds)
+  settings.overlay = L.imageOverlay('img/maps/' + m.url, imageBounds)
 
   settings.overlay.addTo(map);
-  
-  // Change available actions
-  UI.updateAvailablePlayerActions();
 
-  // Load available data
-  Visualizer.loadData();
+  // Default callback is to load the data set.
+  // Execute provided callback otherwise
+  (callback) ? callback() : Visualizer.loadData();
+}
+
+UI.moveMap = function(xOffset, yOffset){
+
+  var m = _.findWhere(options.maps, { name : settings.map.name });
+
+  var index = options.maps.indexOf(m);
+
+  options.maps[index].left = m.left + xOffset;
+  options.maps[index].right = m.right + xOffset;
+  options.maps[index].top = m.top + yOffset;
+  options.maps[index].bottom = m.bottom + yOffset;
+
+
+  // options.maps[index].left = m.left * scale;
+  // options.maps[index].right = m.right * scale;
+  // options.maps[index].top = m.top * scale;
+  // options.maps[index].bottom = m.bottom * scale;
+
+  // console.log(options.maps[index]);
+
+  UI.setMap(m.name, function(){ console.log(settings.map); });
 
 }
+
+UI.scaleMap = function(scale){
+
+  var m = _.findWhere(options.maps, { name : settings.map.name });
+  
+  var index = options.maps.indexOf(m);
+
+  // var width  = m.right - m.left;
+  // var height = m.top - m.bottom;
+
+  // var xScale = width  * scale * .05;
+  // var yScale = height * scale * .05;
+
+  // console.log(xScale + " " + yScale)
+
+  options.maps[index].left = m.left   - scale // xScale;
+  options.maps[index].right = m.right + scale // xScale;
+  
+  options.maps[index].bottom = m.bottom - scale // yScale;
+  options.maps[index].top = m.top       + scale // yScale;
+
+  // console.log(options.maps[index]);
+
+  UI.setMap(m.name, function(){ console.log(settings.map); });
+};
 
 UI.updateAvailablePlayerActions = function(callback){
     
