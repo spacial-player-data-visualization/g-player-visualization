@@ -335,10 +335,11 @@ UI.setMap = function(mapname, callback){
 
 UI.moveMap = function(xOffset, yOffset){
 
+  // 
   var m = _.findWhere(options.maps, { name : settings.map.name });
-
   var index = options.maps.indexOf(m);
 
+  // 
   options.maps[index].left = m.left + xOffset;
   options.maps[index].right = m.right + xOffset;
   options.maps[index].top = m.top + yOffset;
@@ -351,18 +352,17 @@ UI.moveMap = function(xOffset, yOffset){
 UI.scaleMap = function(scale){
 
   var m = _.findWhere(options.maps, { name : settings.map.name });
-  
   var index = options.maps.indexOf(m);
 
   // 
   var width  = m.right - m.left;
   var height = m.top - m.bottom;
   
+  // 
   var xScale = .01 * width  * scale;
   var yScale = .01 * height * scale;
 
-  console.log(xScale + " " + yScale)
-
+  // 
   options.maps[index].left = m.left   - xScale;
   options.maps[index].right = m.right + xScale;
   
