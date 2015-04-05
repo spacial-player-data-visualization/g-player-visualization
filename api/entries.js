@@ -125,15 +125,13 @@ module.exports = {
     put: function(req, res) {
         return EntryModel.findById(req.params.id, function(err, entry) {
 
-            var entry = {
-                area : req.body.area,
-                playerID : req.body.playerID,
-                timestamp : req.body.timestamp,
-                posX : req.body.posX,
-                posY : req.body.posY,
-                cameraX : req.body.cameraX,
-                cameraY : req.body.cameraY,
-            }
+            entry.area = req.body.area;
+            entry.playerID = req.body.playerID;
+            entry.timestamp = req.body.timestamp;
+            entry.posX = req.body.posX;
+            entry.posY = req.body.posY;
+            entry.cameraX = req.body.cameraX;
+            entry.cameraY = req.body.cameraY;
 
             return entry.save(function(err) {
                 if (err) {
