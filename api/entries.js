@@ -169,7 +169,9 @@ module.exports = {
     },
 
     getUsers : function(req, res) {
-        return EntryModel.find().distinct('playerID', function(err, result){
+        var game = req.query.game;
+        var actions = req.query.actions || [];
+        return EntryModel.find({game: game, action: {$in: actions}}).distinct('playerID', function(err, result){
             if (err) {
                 console.log(err);
             } else {
