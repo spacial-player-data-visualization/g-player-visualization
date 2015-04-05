@@ -71,9 +71,11 @@ module.exports = {
         var game = req.query.game;
         var area = req.query.area;
         var fidelity = req.query.fidelity;
+        var playerIDs = req.query.playerIDs || [];
+
         console.log("Getting entries for " + area + " of " + game);
 
-        return EntryModel.find({game: game, area: area}, function(err, entries) {
+        return EntryModel.find({game: game, area: area, playerID: {$in: playerIDs}}, function(err, entries) {
 
             console.log("Returning " + entries.length + " entries.")
             
