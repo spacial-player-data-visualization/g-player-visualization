@@ -55,10 +55,6 @@ options.maps = [{
     name: "Position_Introhouse",
     game: "Fallout New Vegas",
     url: "/fallout/intro.png",
-	
-	// Background image size
-    width : 1600,
-    height : 1178,
 
     // Map player locations to their points
     // on the map. Define the corners.
@@ -75,9 +71,6 @@ options.maps = [{
     game: "Fallout New Vegas",
     url: "/fallout/outside.png",
 	
-	// Background image size
-    width : 789,
-    height : 814,
 
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
@@ -96,10 +89,6 @@ options.maps = [{
     game: "Fallout New Vegas",
     url: "/fallout/bar.png",
 	
-	// Background image size
-    width : 1600,
-    height : 1178,
-
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
@@ -116,10 +105,7 @@ options.maps = [{
     name: "Map",
     game: "League of Legends",
     url: "/leagueoflegends/map.jpg",
-	
-	// Background image size
-    width : 2000,
-    height : 1833,
+
 
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
