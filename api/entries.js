@@ -180,7 +180,8 @@ module.exports = {
     },
 
     getActions : function(req, res){
-        return EntryModel.find().distinct('action', function(err, result){
+        var game = req.query.game;
+        return EntryModel.find({game: game}).distinct('action', function(err, result){
             if (err) {
                 console.log(err);
             } else {
