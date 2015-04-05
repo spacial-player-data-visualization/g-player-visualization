@@ -396,10 +396,12 @@ UI.updateAvailablePlayerActions = function(callback){
 
 UI.updateAvailablePlayers = function(callback){
 
-    var options = Visualizer.getContext();
+    var opts = Visualizer.getContext();
+
+    opts.actions = ['Attacked'];
 
     // Get actions from API
-    $.get(settings.API_url + "users", options, function(data){
+    $.get(settings.API_url + "users", opts, function(data){
         options.players = data;
 
         console.log(options.players)
