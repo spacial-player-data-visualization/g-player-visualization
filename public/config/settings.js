@@ -110,11 +110,11 @@ options.maps = [{
     // on the map. Manually offset for accuracy.
     // Multiplied to base
 
-    bottom : 0,
-    left : 0,
+    bottom : -2104,
+    left : -274,
 
-    top : 100,
-    right : 100,
+    top : 84,
+    right : 1914,
 
 }, {
 
