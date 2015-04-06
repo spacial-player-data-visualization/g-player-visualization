@@ -18,6 +18,7 @@ function loader(){
 
   // make settings.game the selected option
   $("#gameSelect").val(localStorage.getItem("selectedGame"));
+  settings.game = localStorage.getItem("selectedGame");
 
 }
 

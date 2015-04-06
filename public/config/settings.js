@@ -227,7 +227,7 @@ options.lookup_table = {
 	"Quest" : "quest",
 	"Stat" : "stat",
 
-	"Gaze" : "gazeDefault",
+	"Game Gaze" : "gazeDefault",
 }
 
 // Store a list of available key mappings
@@ -329,7 +329,7 @@ options.mappings = [{
 },
 
 {
-	game : "Gaze",
+	game : "Game Gaze",
 	type : "gazeDefault",
 	colums : ["timestamp", "gazeX", "gazeY", "posX", "posY", "posZ", "cameraX", "cameraY"],
 }];
