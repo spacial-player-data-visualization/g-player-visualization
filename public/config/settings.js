@@ -128,7 +128,19 @@ options.maps = [{
     bottom : 0,
     left : 0,
     right : 0,
-}];
+}, {
+	
+	name: "White",
+	game: "Game Gaze",
+	url: "http://www.ledr.com/colours/white.jpg",
+	width: 1000,
+	height: 1000,
+	top: 0,
+	bottom: 0,
+	left: 0,
+	right: 0,
+}
+];
 
 
 /******************************

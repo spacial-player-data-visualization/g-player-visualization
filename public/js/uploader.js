@@ -20,6 +20,11 @@ function loader(){
   $("#gameSelect").val(localStorage.getItem("selectedGame"));
   settings.game = localStorage.getItem("selectedGame");
 
+  // Pull data from the previous upload
+  var data = lastUpload();
+
+  // Preview last upload
+  Uploader.populateTables(data);
 }
 
 // Watch File Input
