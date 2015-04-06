@@ -286,8 +286,46 @@ ul.messenger-theme-air .messenger-message {
     margin: 0;
 }
 
+/* Utility class for making objects
+   unseletable. Useful for icon that
+   get double-clicked */
+.unselectable {
+   -moz-user-select: none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+}
 
+.position-map .clickable .fa {
+    margin-right: 0px;
+    font-size: 20px;
+    padding: 3px;
+}
 
+.position-map .clickable .fa:hover {
+    margin-right: 0px;
+    font-size: 20px;
+    padding: 3px;
+    color: #222;
+    background-color: #eee;
+    cursor: pointer;
+}
+
+table#player-list {
+
+}
+
+table#player-list td {
+    padding: 10px !important;
+}
+
+table#player-list button {
+    float: right;
+}
+
+table#player-list button i.fa{
+    margin: 0px;
+    width: auto;
+}
 
 @media(min-width:768px) {
     #wrapper {

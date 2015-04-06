@@ -3,7 +3,23 @@
          Mapping Logic
  ************************************/
 
+
 var Visualizer = {};
+
+/************************************
+         Global Variables
+ ************************************/
+
+// Global scale factor. Helps to max points (ranging 
+// from -10,000 to 10,000) to their coordinate points 
+// on a geo projection.
+Visualizer.scaleFactor = 200;
+
+// Feature Group representation of data
+Visualizer.layers = [];
+
+// Target API url
+Visualizer.API_url = (window.location.href.indexOf("herokuapp.com") > -1) ? "http://g-player.herokuapp.com/api/" : "http://localhost:5000/api/";
 
 // Take data from settings.data.
 // Add to the map.
@@ -22,6 +38,8 @@ Visualizer.update = function(){
       // Render each player onto the map
       Visualizer.draw(player, count++);
   });
+
+//   if (settings.heatmap) Heatmap.addheatmap(settings.data);
 
   // Update view
   Visualizer.focus();
@@ -70,7 +88,7 @@ Visualizer.draw = function(entries, index){
     
     var featureGroup = new L.FeatureGroup().addLayer(polyline);
 
-    addFeatureGroup(featureGroup);
+    if (settings.paths) addFeatureGroup(featureGroup);
 
     /********************************
              ACTIONS
@@ -127,16 +145,14 @@ Visualizer.draw = function(entries, index){
 // Clears the active data set. Resets map
 Visualizer.clear = function(){
     
-    // Clear data from memory
-    settings.data = null;
-
     // Clear active data sets
-    _.each(settings.layers, function(layer){
+    _.each(Visualizer.layers, function(layer){
         
         // Remove each active layer
         map.removeLayer(layer);
     })
 }
+
 
 // Adds a marker at the provided location
 Visualizer.addMarker = function(lat, long, title){
@@ -154,10 +170,10 @@ Visualizer.loadData = function(){
 
   UI.loading(true, "Loading Data....");
 
-  var options = Visualizer.getContext();
+  var opts = Visualizer.getContext();
 
   // Hit API
-  $.get(settings.API_url + "entries", options, function(data){
+  $.get(Visualizer.API_url + "entries", opts, function(data){
 
     // Validate data. Ignore non-spacial data
     data = _.filter(data, function(p){
@@ -192,9 +208,6 @@ Visualizer.formatData = function(data){
   // Maps the (x,y) position to a coordinate
   // on the earth. Makes plotting MUCH easier
 
-  // data['latitude']  = ((data.posY + settings.map.offset.y) * settings.map.scale.y) / scale;
-  // data['longitude'] = ((data.posX + settings.map.offset.x) * settings.map.scale.x) / scale;
-
   data['latitude']  = data.posY / scale;
   data['longitude'] = data.posX / scale;
   
@@ -224,46 +237,38 @@ Visualizer.getColor = function(i){
 // Returns a representation of the current state of the
 // map. This object provided context for what data
 // the API should return in order to be mapped.
-Visualizer.getContext = function(){
+Visualizer.getContext = function(callback){
 
-  return {
+  var obj = {
     game : settings.game,
     area : settings.map.name,
     fidelity : 1,
+    playerIDs : settings.players,
+    actions : settings.actions,
+
   }
+
+  console.log("\nCurrent Settings of the Map:");
+  console.log(obj);
+
+  return obj;
 }
 
 // Update the map's view port, as to
 // center the current data set.
 Visualizer.focus = function(){
 
-    var sample = settings.layers[0]
+    var sample = Visualizer.layers[0]
     
-    map.fitBounds(sample.getBounds());
+    if (sample) map.fitBounds(sample.getBounds());
+
+    // map.fitBounds(bounds)
 
     // TODO: Set max/min zoom levels dynamically
 
     // map.minZoom()
     // map.maxZoom()
-
-    /***************************
-          Setup Map
-    ****************************/
-
-    // Given map size, and scale factor,
-    // determin the latitude/longitude bounds.
-    // var latitudeDistance = settings.map.height / Visualizer.scaleFactor;
-    // var longitudeDistance = settings.map.width / Visualizer.scaleFactor;
-
-    // Set Map Center
-    // map.setView([latitudeDistance / 2, longitudeDistance / 2], 1);
 }
-
-// Global scale factor. Helps to max points (ranging 
-// from -10,000 to 10,000) to their coordinate points 
-// on a geo projection.
-
-Visualizer.scaleFactor = 200;
 
 /**************************************
          HELPER FUNCTIONS
@@ -329,7 +334,7 @@ function addFeatureGroup (featureGroup){
     // as it's the most effective way to iterate
     // through and remove layers.
 
-    settings.layers.push(featureGroup);
+    Visualizer.layers.push(featureGroup);
 
     // Save layer for reference
     map.addLayer(featureGroup);
@@ -348,3 +353,79 @@ function toLatLng (point){
   if (lat && long) { return L.latLng(lat, long); }
 
 };
+
+// Return the key mapping given the 
+// game name, and the event name
+// ex: getKeyMapping("Fallout New Vegas", "Attacked")
+var getKeyMapping = function(game, eventName){
+
+  // Get the type of event from the lookup table
+  var type = options.lookup_table[eventName];
+
+  // Find mapping
+  var mapping = _.findWhere(options.mappings, {game : settings.game, type : type});
+
+  if (!mapping || !type) {
+    console.error("Unable to find key mapping for: " + eventName);
+    return;
+  }
+
+  return mapping;
+}
+
+// assignKeys() returns a JSON object, where
+// the values of the 'values' array are assigned
+// to the column names provided in the 'mapping' array.
+
+// For example:
+// values : ["apple", "orange", "pear"]
+// columns : ["fruit", "color", "shape"]
+
+// Results in:
+// { fruit : "Apple", color : "orange", shape : "pear" }
+
+var assignKeys = function(values, columns){
+  var acc = {};
+
+  // Check data. Make sure we have enough keys for our data.
+  if (columns.length != values.length){
+    console.error("Warning: Mismatch in key mapping. Amount of keys and values differ." + columns.length + " Columns, " + values.length + " Values");
+    console.log(columns);
+    console.log(values);
+    console.log("\n");
+  }
+
+  _.each(columns, function(value, key){
+    // Ensure data exists. If not, make it null for DB.
+    if (!values[key]) {
+      values[key] = null;
+    }; 
+
+    // Create key/value pair
+    acc[value] = values[key];
+  });
+
+  acc["game"] = settings.game;
+  return acc;
+  // ex: assignKeys(["apple", "orange", "pear"], ["fruit", "color", "shape"])
+}
+
+// Given a list of arrays, convert the data into JSON objects.
+//   game : String of game name
+//   eventName : the event name for this table
+//   data : multudimensional array container player data
+
+var assignKeysForEntireTable = function(game, eventName, data) {
+  var acc = [];
+
+  // Key the key mapping
+  var mapping = getKeyMapping(game, eventName).columns;
+
+  // Apply key mapping to each object in the data array
+  _.each(data, function(d){
+    var json = assigKeys(d, mapping);
+    if (json) acc.push(json);
+  })
+
+  return acc;
+}

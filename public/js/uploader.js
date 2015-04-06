@@ -298,7 +298,7 @@ Uploader.upload = function(bins, callback) {
   };
 
   // POST to server
-  $.post(settings.API_url + "entries", data, function(data, textStatus, jqXHR){ 
+  $.post(Visualizer.API_url + "entries", data, function(data, textStatus, jqXHR){ 
 
     // Log feedback
     console.log(textStatus + " " + data);

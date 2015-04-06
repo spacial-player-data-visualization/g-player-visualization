@@ -62,6 +62,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Require entries controller
 var entries = require('./api/entries');
+var maps = require('./api/map');
 
 /****************************
          ROUTES 
@@ -73,6 +74,8 @@ app.get('/', function(request, response) {
   response.render('index');
 });
 
+// Entry Endpoints
+
 // Create an Entry
 app.post('/api/entry', function (req, res){
     console.log("\nPOST api/entry");
@@ -81,7 +84,6 @@ app.post('/api/entry', function (req, res){
 
 // Get Multiple Entries
 app.get('/api/entries', function (req, res){
-    console.log("\nGET api/entries");
 	entries.get(req, res);
 });
 
@@ -103,13 +105,31 @@ app.get('/api/timestamp/:time', function (req, res){
 })
 
 // Get list of unique users
-app.get('/api/users/', function (req, res){
-  entries.getUsers(req, res);
+app.get('/api/players/', function (req, res){
+  entries.getPlayers(req, res);
 });
 
 // Get list of unique actions
 app.get('/api/actions/', function (req, res){
   entries.getActions(req, res);
+});
+
+// Map Endpoint
+
+app.post('/api/maps', function (req, res){
+  maps.post(req, res);
+});
+
+app.get('/api/maps', function (req, res){
+  maps.get(req, res);
+});
+
+app.put('/api/maps/:id', function (req, res){
+  maps.put(req, res);
+});
+
+app.delete('/api/maps/:id', function (req, res){
+  maps.delete(req, res);
 });
 
 /****************************
