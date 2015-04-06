@@ -71,9 +71,11 @@ module.exports = {
         var game = req.query.game;
         var area = req.query.area;
         var fidelity = req.query.fidelity;
+        var playerIDs = req.query.playerIDs || [];
+
         console.log("Getting entries for " + area + " of " + game);
 
-        return EntryModel.find({game: game, area: area}, function(err, entries) {
+        return EntryModel.find({game: game, area: area, playerID: {$in: playerIDs}}, function(err, entries) {
 
             console.log("Returning " + entries.length + " entries.")
             
@@ -123,15 +125,13 @@ module.exports = {
     put: function(req, res) {
         return EntryModel.findById(req.params.id, function(err, entry) {
 
-            var entry = {
-                area : req.body.area,
-                playerID : req.body.playerID,
-                timestamp : req.body.timestamp,
-                posX : req.body.posX,
-                posY : req.body.posY,
-                cameraX : req.body.cameraX,
-                cameraY : req.body.cameraY,
-            }
+            entry.area = req.body.area;
+            entry.playerID = req.body.playerID;
+            entry.timestamp = req.body.timestamp;
+            entry.posX = req.body.posX;
+            entry.posY = req.body.posY;
+            entry.cameraX = req.body.cameraX;
+            entry.cameraY = req.body.cameraY;
 
             return entry.save(function(err) {
                 if (err) {
@@ -169,7 +169,9 @@ module.exports = {
     },
 
     getUsers : function(req, res) {
-        return EntryModel.find().distinct('playerID', function(err, result){
+        var game = req.query.game;
+        var actions = req.query.actions || [];
+        return EntryModel.find({game: game, action: {$in: actions}}).distinct('playerID', function(err, result){
             if (err) {
                 console.log(err);
             } else {
@@ -180,7 +182,8 @@ module.exports = {
     },
 
     getActions : function(req, res){
-        return EntryModel.find().distinct('action', function(err, result){
+        var game = req.query.game;
+        return EntryModel.find({game: game}).distinct('action', function(err, result){
             if (err) {
                 console.log(err);
             } else {
