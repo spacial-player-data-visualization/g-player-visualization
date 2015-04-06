@@ -9,6 +9,13 @@ var UI = {
 	loader : {},
 };
 
+UI.menu = function(){
+  $.get('templates/menu.tpl.html', function(result){
+    bootbox.alert(result);
+  });
+}
+
+
 /************************************
           Setup Page
 ************************************/
