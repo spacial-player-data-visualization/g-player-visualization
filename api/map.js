@@ -7,8 +7,10 @@ module.exports = {
 			name: req.body.name,
 			game: req.body.game,
 			imageURL: req.body.imageURL,
-			topLeft: req.body.topLeft,
-			bottomRight: req.body.bottomRight
+			top: req.body.top,
+			bottom: req.body.bottom
+			left: req.body.left,
+			right: req.body.right
 		}
 
 		var mapModel = new MapModel(map);
@@ -39,9 +41,11 @@ module.exports = {
 			map.name = req.body.name;
 			map.game = req.body.game;
 			map.imageURL = req.body.imageURL;
-			map.topLeft = req.body.topLeft;
-			map.bottomRight = req.body.bottomRight;
-			
+			map.top = req.body.top;
+			map.bottom = req.body.bottom;
+			map.left = req.body.left;
+			map.right = req.body.right;
+
 			return map.save(function(err) {
 				if (err) {
 					console.log(err);
@@ -58,7 +62,6 @@ module.exports = {
                 if (err) {
                     console.log(err);
                 } else {
-                    console.log('deleted')
                     res.send('Deleted Map ' + req.params.id);
                 }
             });
