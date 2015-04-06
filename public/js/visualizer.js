@@ -127,9 +127,6 @@ Visualizer.draw = function(entries, index){
 // Clears the active data set. Resets map
 Visualizer.clear = function(){
     
-    // Clear data from memory
-    settings.data = null;
-
     // Clear active data sets
     _.each(settings.layers, function(layer){
         
@@ -137,6 +134,7 @@ Visualizer.clear = function(){
         map.removeLayer(layer);
     })
 }
+
 
 // Adds a marker at the provided location
 Visualizer.addMarker = function(lat, long, title){
@@ -155,8 +153,6 @@ Visualizer.loadData = function(){
   UI.loading(true, "Loading Data....");
 
   var opts = Visualizer.getContext();
-
-  console.log(opts)
 
   // Hit API
   $.get(settings.API_url + "entries", opts, function(data){
@@ -233,6 +229,9 @@ Visualizer.getContext = function(callback){
     actions : settings.actions,
 
   }
+
+  console.log("\nCurrent Settings of the Map:");
+  console.log(obj);
 
   return obj;
 }

@@ -34,8 +34,11 @@ UI.initialize = function(){
     $('#select-map').on('change', function(){
       var selected = $(this).find("option:selected").val();
       
+      settings.data = null;
+      
       // Remove previous data
       Visualizer.clear();
+      
       UI.setMap(selected);
     });
     
@@ -162,6 +165,9 @@ UI.setGame = function(gamename){
 
     // Available maps
     var game_maps = _.where(options.maps, { game : settings.game });
+    
+    // Clear data
+    settings.data = null;
     
     // Remove previous data
     Visualizer.clear();

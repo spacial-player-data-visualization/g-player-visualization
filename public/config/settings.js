@@ -4,6 +4,7 @@
  *************************/
 
 // Settings
+// @TODO Extract SETTINGS from the STATE of the app
 var settings = {
 
   // Save data
@@ -33,6 +34,9 @@ var settings = {
   // Current players
   players : [],
 
+  // Currently selected actions
+  actions : [],
+
 };
 
 /******************************
@@ -42,6 +46,7 @@ var settings = {
 // Available options
 var options = {};
 
+// Available Acctions
 options.actions = [];
 
 options.games = [
