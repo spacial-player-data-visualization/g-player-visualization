@@ -203,7 +203,7 @@ options.maps = [{
     right : 0,
 }, {
 	
-	name: "White",
+	name: "default",
 	game: "Game Gaze",
 	url: "http://www.ledr.com/colours/white.jpg",
 	width: 1000,
