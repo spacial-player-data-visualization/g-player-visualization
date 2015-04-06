@@ -321,7 +321,7 @@ UI.listPlayers = function(){
     // Create table row with player data
     var tr = '<td>' + "Player <b>" + p + '</b></td>';
     tr += '<td>' +  'checbox' + '</td>';
-    tr += '<td>' +  '<a onclick="UI.showPlayerData(' + p + ')"><i class="fa fa-plus"></i></a>' + '</td>';
+    tr += '<td>' +  '<a onclick="UI.showPlayerData(' + p + ')"><i class="fa fa-code"></i></a>' + '</td>';
 
 
     // Add options buttons
@@ -332,17 +332,23 @@ UI.listPlayers = function(){
 }
 
 UI.showPlayerData = function(playerID){
-  var data = _.filter(settings.data, { playerID : playerID });
-  var data = _.map(data, function(d){
-    return convertJSONtoHTML(d);
-  })
 
-  var data = _.reduce(data, function(memo, num){ 
-    return memo + num + "<hr>"; 
-  }, 0);
+  var opts = Visualizer.getContext();
 
-  bootbox.alert(data);
+  // Get specific player
+  opts.players = [playerID];
+
+  // Data from API
+  $.get(Visualizer.API_url + "entries", opts, function(data){
+    
+    // Show to developers
+    console.log(data);
+    
+    // Show as massive string
+    bootbox.alert(JSON.stringify(data));
+  });
 }
+
 
 UI.debug = function(){
   console.log("Game : " + settings.game + " | Map : " + settings.map.name);
