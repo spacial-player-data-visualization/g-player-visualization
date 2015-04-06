@@ -403,7 +403,7 @@ UI.updateAvailablePlayers = function(callback){
     opts.actions = ['Attacked'];
 
     // Get actions from API
-    $.get(settings.API_url + "users", opts, function(data){
+    $.get(settings.API_url + "players", opts, function(data){
         options.players = data;
 
         console.log(options.players)

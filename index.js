@@ -106,8 +106,8 @@ app.get('/api/timestamp/:time', function (req, res){
 })
 
 // Get list of unique users
-app.get('/api/users/', function (req, res){
-  entries.getUsers(req, res);
+app.get('/api/players/', function (req, res){
+  entries.getPlayers(req, res);
 });
 
 // Get list of unique actions
