@@ -313,6 +313,9 @@ UI.listPlayers = function(){
 
     // Create table row with player data
     var tr = '<td>' + "Player <b>" + p + '</b></td>';
+    tr += '<td>' +  'checbox' + '</td>';
+    tr += '<td>' +  '<a onclick="UI.showPlayerData(' + p + ')"><i class="fa fa-plus"></i></a>' + '</td>';
+
 
     // Add options buttons
     // tr += '<td><button class="btn btn-primary"><i class="fa fa-plus"></i></button></td>';
@@ -321,6 +324,18 @@ UI.listPlayers = function(){
   })
 }
 
+UI.showPlayerData = function(playerID){
+  var data = _.filter(settings.data, { playerID : playerID });
+  var data = _.map(data, function(d){
+    return convertJSONtoHTML(d);
+  })
+
+  var data = _.reduce(data, function(memo, num){ 
+    return memo + num + "<hr>"; 
+  }, 0);
+
+  bootbox.alert(data);
+}
 
 UI.debug = function(){
   console.log("Game : " + settings.game + " | Map : " + settings.map.name);
