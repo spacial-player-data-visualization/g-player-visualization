@@ -3,6 +3,24 @@
         uploader.js 
         ******************************/
 
+// Load games into dropdown
+function loader(){
+  var selector = $("#gameSelect");
+  
+  // add game options to dropdown
+  for (var index in options.games) {
+    var option = options.games[index];
+    var dropdownAdd = document.createElement("option");
+    dropdownAdd.textContent = option;
+    dropdownAdd.value = option;
+    selector.append(dropdownAdd);
+  }
+
+  // make settings.game the selected option
+  $("#gameSelect").val(localStorage.getItem("selectedGame"));
+
+}
+
 // Watch File Input
 $(document).ready(function(){
 
@@ -21,9 +39,11 @@ $('#gameSelect').on('change', function(){
   var selected = $(this).find("option:selected").val();
 
   settings.game = selected;
+  localStorage.setItem("selectedGame", settings.game);
 });
 
 var Uploader = {};
+var selectedGame = "";
 
 // Extract data from the uploaded .csv file
 // http://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
@@ -111,8 +131,8 @@ Uploader.populateTables = function(data){
   
   // some games only have 1 data type, which doesn't
   // need to be "bucketed"
-  var element = document.getElementById("gameSelect");
-  var selectedGame = element.options[element.selectedIndex].text;
+  var element = $("#gameSelect");
+  selectedGame = element.value;
   if (numberOfGameMappings(selectedGame) > 1) {
     // Bucket data by type of entry
     var buckets = Uploader.sortByEntryType(data);
@@ -364,17 +384,17 @@ Uploader.fillMissingData = function(data) {
 
     // Else, if data is missing:
     // Populate the missing data
-  } else {
-    if (settings.game == "Gaze") {
-      data[i] = current;
-      data[i].area = "default";
-      data[i].playerID = playerID;
     } else {
-      current.playerID = playerID;
-      data[i] = fillEntry(data, current);  
+      if (numberOfGameMappings(selectedGame) < 2) {
+        data[i] = current;
+        data[i].area = "default";
+        data[i].playerID = playerID;
+      } else {
+        current.playerID = playerID;
+        data[i] = fillEntry(data, current);  
+      }
     }
-  }
-};
+  };
 
 return data;
 }
@@ -503,9 +523,7 @@ function fillEntry(data, current) {
 
 // find how many mappings exist for a game
 // take in a game, return a number
-function numberOfGameMappings(game) {
-  var gameMappings = _.filter(options.mappings, function(mapping) {
-    return mapping.game == game;
-  })
+function numberOfGameMappings(gameSelected) {
+  var gameMappings = _.where(options.mappings, {game : gameSelected});
   return gameMappings.length;
 }
