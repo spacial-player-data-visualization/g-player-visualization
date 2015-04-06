@@ -16,31 +16,8 @@ var UI = {
 // Initialize the User Interface
 UI.initialize = function(){
     
-    /***************************
-         Default Settings
-    ****************************/
-
+    // Default Settings
     UI.setGame(settings.game);
-
-    /***************************
-         Watch form Values
-    ****************************/
-
-    $('#select-game').on('change', function(){
-      var selected = $(this).find("option:selected").val();
-      UI.setGame(selected);
-    });
-
-    $('#select-map').on('change', function(){
-      var selected = $(this).find("option:selected").val();
-      
-      settings.data = null;
-      
-      // Remove previous data
-      Visualizer.clear();
-      
-      UI.setMap(selected);
-    });
     
     /***************************
        Initialize UI Options

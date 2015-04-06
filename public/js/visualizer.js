@@ -13,18 +13,13 @@ var Visualizer = {};
 // Global scale factor. Helps to max points (ranging 
 // from -10,000 to 10,000) to their coordinate points 
 // on a geo projection.
-
 Visualizer.scaleFactor = 200;
 
 // Feature Group representation of data
-
 Visualizer.layers = [];
 
 // Target API url
-
 Visualizer.API_url = (window.location.href.indexOf("herokuapp.com") > -1) ? "http://g-player.herokuapp.com/api/" : "http://localhost:5000/api/";
-
-
 
 // Take data from settings.data.
 // Add to the map.
@@ -359,14 +354,9 @@ function toLatLng (point){
 
 };
 
-
-
-
 // Return the key mapping given the 
 // game name, and the event name
-
 // ex: getKeyMapping("Fallout New Vegas", "Attacked")
-
 var getKeyMapping = function(game, eventName){
 
   // Get the type of event from the lookup table
