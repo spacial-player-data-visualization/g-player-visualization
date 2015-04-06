@@ -325,7 +325,7 @@ UI.setMap = function(mapname, callback){
   // Visualizer.addMarker(topRight['latitude'],   topRight['longitude']);
 
   // Add image overlay to map
-  settings.overlay = L.imageOverlay('img/maps/' + m.url, imageBounds)
+  settings.overlay = L.imageOverlay(m.url, imageBounds)
 
   settings.overlay.addTo(map);
 

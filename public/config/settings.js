@@ -56,7 +56,7 @@ options.maps = [{
     // Save map configuration
     name: "Position_Introhouse",
     game: "Fallout New Vegas",
-    url: "/fallout/intro.png",
+    url: "http://i.imgur.com/zWbog8y.jpg",
 
     // Map player locations to their points
     // on the map. Define the corners.
@@ -71,25 +71,25 @@ options.maps = [{
     // Save map configuration
     name: "Position_Outside",
     game: "Fallout New Vegas",
-    url: "/fallout/outside.png",
+    url: "http://i.imgur.com/sSYRyve.jpg",
 	
 
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
     
-    bottom : 0,
-    left : 0,
+    bottom : -13981,
+    left : -7682,
 
-    top : 814,
-    right : 789,
+    top : 14735,
+    right : 20151,
 
 }, {
 
     // Save map configuration
     name: "Position_Bar",
     game: "Fallout New Vegas",
-    url: "/fallout/bar.png",
+    url: "http://i.imgur.com/9lo12qd.jpg",
 	
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
@@ -100,6 +100,91 @@ options.maps = [{
 
     top : 1248,
     right : 2620,
+
+}, {
+
+    // Save map configuration
+    name: "Position_AbandonedHouse",
+    game: "Fallout New Vegas",
+    url: "http://i.imgur.com/kMyybLB.jpg",
+	
+    // Map player locations to their points
+    // on the map. Manually offset for accuracy.
+    // Multiplied to base
+
+    bottom : -2104,
+    left : -274,
+
+    top : 84,
+    right : 1914,
+
+}, {
+
+    // Save map configuration
+    name: "Position_Cave",
+    game: "Fallout New Vegas",
+    url: "http://i.imgur.com/ynqOvIh.png",
+	
+    // Map player locations to their points
+    // on the map. Manually offset for accuracy.
+    // Multiplied to base
+
+    bottom : 0,
+    left : 0,
+
+    top : 100,
+    right : 100,
+
+}, {
+
+    // Save map configuration
+    name: "Position_SheriffOffice",
+    game: "Fallout New Vegas",
+    url: "http://i.imgur.com/kMPpXSW.jpg",
+	
+    // Map player locations to their points
+    // on the map. Manually offset for accuracy.
+    // Multiplied to base
+
+    bottom : 590,
+    left : 1490,
+
+    top : 1950,
+    right : 2428,
+
+}, {
+
+    // Save map configuration
+    name: "Position_Mine",
+    game: "Fallout New Vegas",
+    url: "http://i.imgur.com/2j0T2C0.jpg",
+	
+    // Map player locations to their points
+    // on the map. Manually offset for accuracy.
+    // Multiplied to base
+
+    bottom : 0,
+    left : 0,
+
+    top : 100,
+    right : 100,
+
+}, {
+
+    // Save map configuration
+    name: "Position_Hotel",
+    game: "Fallout New Vegas",
+    url: "http://i.imgur.com/sKG9eRI.jpg",
+	
+    // Map player locations to their points
+    // on the map. Manually offset for accuracy.
+    // Multiplied to base
+
+    bottom : 170,
+    left : 60,
+
+    top : 4200,
+    right : 4310,
 
 }, {
 
