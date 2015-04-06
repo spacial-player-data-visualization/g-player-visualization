@@ -114,7 +114,7 @@ options.maps = [{
     left : 21,
 
     top : 1678,
-    right : -291,
+    right : 1621,
 
 }, {
 
