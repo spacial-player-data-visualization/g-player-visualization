@@ -15,13 +15,21 @@ var MapSchema = new Schema({
         type: String,
         required: true
     },
-    topLeft: {
+    top: {
     	type: Number,
     	required: true
     },
-    bottomRight: {
+    bottom: {
     	type: Number,
     	required: true
+    },
+    left: {
+        type: Number,
+        required: true
+    },
+    right: {
+        type: Number,
+        required: true
     },
 });
 
