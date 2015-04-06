@@ -296,9 +296,9 @@ UI.getPlayers = function(callback){
     // Get actions from API
     $.get(Visualizer.API_url + "players", opts, function(data){
         
-        settings.players = data;
+        options.players = data;
 
-        console.log(settings.players)
+        console.log(options.players)
 
         UI.listPlayers();
 
@@ -311,7 +311,7 @@ UI.getPlayers = function(callback){
 UI.listPlayers = function(){
   
   // Grab current list of playerIDs
-  var players = settings.players;
+  var players = options.players;
 
   // Clear previous player list
   $('#player-list').html("");
@@ -319,11 +319,12 @@ UI.listPlayers = function(){
   _.each(players, function(p){
 
     // Create table row with player data
-    var tr = '<td>' + "Player <b>" + p + '</b></td>';
-    tr += '<td>' +  'checbox' + '</td>';
-    tr += '<td>' +  '<a onclick="UI.showPlayerData(' + p + ')"><i class="fa fa-code"></i></a>' + '</td>';
-
-
+    var tr = ""
+    tr += '<td>' + '<a onclick="UI.showPlayerData(' + p + ')"><i class="fa fa-code"></i></a>' + '</td>';
+    tr += '<td>' + "Player <b>" + p + '</b></td>';
+    // tr += '<td>' +  '<input type="checkbox" id="toggle_user user-"' + p +  '></td>';
+    tr += '<td>' + '<a onclick="Visualizer.loadData([' + p + '])"><i class="fa fa-plus"></i></a>' + '</td>';
+    
     // Add options buttons
     // tr += '<td><button class="btn btn-primary"><i class="fa fa-plus"></i></button></td>';
 

@@ -40,9 +40,13 @@ var settings = {
 // Available options
 var options = {};
 
-// Available Acctions
+// Available Actions
 options.actions = [];
 
+// Available Players
+options.players = [];
+
+// Available Games
 options.games = [
 	"Fallout New Vegas", 
 	"League of Legends", 
