@@ -2,75 +2,11 @@
          UI Functions
 ************************************/
 
-// Use Hubspot's Messenger plugin to
-// provide text/popup feedback to the user.
-// http://github.hubspot.com/messenger/docs/welcome/
-
-Messenger.options = {
-  extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right',
-  theme: 'air'
-}
-
 // Provide user feedback with the interface
 var UI = {
 
 	// Store reference to loading indicator
 	loader : {},
-};
-
-// Alert the user with a message.
-// (optional) provide ID for singleton box
-UI.alert = function(msg, id){
-	return Messenger().post({
-		message : msg,
-		id : (id) ? id : Math.random(1,100),
-	});
-}
-
-// Show error message
-UI.error = function(msg){
-	return Messenger().post({
-  		message: msg,
-  		type: 'error',
-  		showCloseButton: true
-	});
-};
-
-// Show success message
-UI.success = function(msg){
-	return Messenger().post({
-		message : msg,
-		type: "success",
-	});
-}
-
-// Show/hide a loading indicator.
-UI.loading = function(boolean, msg){
-	
-	// Show loading box
-	if (boolean){
-		UI.loader = Messenger().post({
-			type: "type-loading",
-			message : (msg) ? msg : "Loading...",
-			id : "loading",
-			hideAfter: null,
-		});
-
-		return UI.loader;
-
-	} else {
-
-		// Hide loading box. 
-		UI.loader.hide();
-		
-		// Add success message.
-		return Messenger().post({
-			type: "success",
-			message : (msg) ? msg : "Loading Complete",
-			id : "loading",
-			hideAfter: 3,
-		});
-	}
 };
 
 /************************************
@@ -92,7 +28,6 @@ UI.initialize = function(){
 
     $('#select-game').on('change', function(){
       var selected = $(this).find("option:selected").val();
-      
       UI.setGame(selected);
     });
 
@@ -108,50 +43,13 @@ UI.initialize = function(){
        Initialize UI Options
     ****************************/
 
-    UI.addHeatmapToggle();
-    UI.addPlayerPathToggle();
     UI.addToggleAbleSideNavigation();
-
     // UI.addLeafletDraw();
 }
 
 /************************************
       Setup: Help Functions
 ************************************/
-
-UI.addHeatmapToggle = function(){
-
-    // Show/Hide Heatmap
-    $('#toggle_heatmap').change(function(e) {
-      
-      // Enable
-      if ($('#toggle_heatmap').is(':checked')) {
-        Heatmap.addHeatmap(settings.data);
-      
-      //  Disable
-      } else {
-        map.removeLayer(Heatmap.heatmapLayer)
-      }
-    });
-}
-
-UI.addPlayerPathToggle = function(){
-
-    // Show/Hide Heatmap
-    $('#toggle_paths').change(function(e) {
-
-      // Get current status
-      var checked = $('#toggle_paths').is(':checked');
-
-      settings.paths = checked;
-
-      console.log(settings)
-      
-      // Update map
-      Visualizer.update();
-
-    });
-}
 
 // Initialize toggle-able side nav
 UI.addToggleAbleSideNavigation = function(){
@@ -443,4 +341,70 @@ UI.listPlayers = function(){
 
 UI.debug = function(){
   console.log("Game : " + settings.game + " | Map : " + settings.map.name);
+}
+
+
+// Alert the user with a message.
+// (optional) provide ID for singleton box
+UI.alert = function(msg, id){
+  return Messenger().post({
+    message : msg,
+    id : (id) ? id : Math.random(1,100),
+  });
+}
+
+// Show error message
+UI.error = function(msg){
+  return Messenger().post({
+      message: msg,
+      type: 'error',
+      showCloseButton: true
+  });
+};
+
+// Show success message
+UI.success = function(msg){
+  return Messenger().post({
+    message : msg,
+    type: "success",
+  });
+}
+
+// Show/hide a loading indicator.
+UI.loading = function(boolean, msg){
+  
+  // Show loading box
+  if (boolean){
+    UI.loader = Messenger().post({
+      type: "type-loading",
+      message : (msg) ? msg : "Loading...",
+      id : "loading",
+      hideAfter: null,
+    });
+
+    return UI.loader;
+
+  } else {
+
+    // Hide loading box. 
+    UI.loader.hide();
+    
+    // Add success message.
+    return Messenger().post({
+      type: "success",
+      message : (msg) ? msg : "Loading Complete",
+      id : "loading",
+      hideAfter: 3,
+    });
+  }
+};
+
+
+// Use Hubspot's Messenger plugin to
+// provide text/popup feedback to the user.
+// http://github.hubspot.com/messenger/docs/welcome/
+
+Messenger.options = {
+  extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right',
+  theme: 'air'
 }

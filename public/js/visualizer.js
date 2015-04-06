@@ -70,7 +70,7 @@ Visualizer.draw = function(entries, index){
     
     var featureGroup = new L.FeatureGroup().addLayer(polyline);
 
-    addFeatureGroup(featureGroup);
+    if (settings.paths) addFeatureGroup(featureGroup);
 
     /********************************
              ACTIONS
