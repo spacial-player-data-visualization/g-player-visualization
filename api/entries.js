@@ -195,7 +195,7 @@ module.exports = {
         var promises = [];
 
         actions.forEach(function(action){
-            promises.push(findPromise(action));
+            promises.push(createFindPromise(action));
         });
 
         function createFindPromise(action) {
@@ -213,7 +213,7 @@ module.exports = {
 
         Q.all(promises).done(function(){
            return res.send(_.intersection.apply(_, playersThatDidActions));
-        })
+        });
     },
 
     getActions : function(req, res){
