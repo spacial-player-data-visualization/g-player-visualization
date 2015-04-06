@@ -3,7 +3,28 @@
          Mapping Logic
  ************************************/
 
+
 var Visualizer = {};
+
+/************************************
+         Global Variables
+ ************************************/
+
+// Global scale factor. Helps to max points (ranging 
+// from -10,000 to 10,000) to their coordinate points 
+// on a geo projection.
+
+Visualizer.scaleFactor = 200;
+
+// Feature Group representation of data
+
+Visualizer.layers = [];
+
+// Target API url
+
+Visualizer.API_url = (window.location.href.indexOf("herokuapp.com") > -1) ? "http://g-player.herokuapp.com/api/" : "http://localhost:5000/api/";
+
+
 
 // Take data from settings.data.
 // Add to the map.
@@ -130,7 +151,7 @@ Visualizer.draw = function(entries, index){
 Visualizer.clear = function(){
     
     // Clear active data sets
-    _.each(settings.layers, function(layer){
+    _.each(Visualizer.layers, function(layer){
         
         // Remove each active layer
         map.removeLayer(layer);
@@ -157,7 +178,7 @@ Visualizer.loadData = function(){
   var opts = Visualizer.getContext();
 
   // Hit API
-  $.get(settings.API_url + "entries", opts, function(data){
+  $.get(Visualizer.API_url + "entries", opts, function(data){
 
     // Validate data. Ignore non-spacial data
     data = _.filter(data, function(p){
@@ -242,7 +263,7 @@ Visualizer.getContext = function(callback){
 // center the current data set.
 Visualizer.focus = function(){
 
-    var sample = settings.layers[0]
+    var sample = Visualizer.layers[0]
     
     if (sample) map.fitBounds(sample.getBounds());
 
@@ -253,12 +274,6 @@ Visualizer.focus = function(){
     // map.minZoom()
     // map.maxZoom()
 }
-
-// Global scale factor. Helps to max points (ranging 
-// from -10,000 to 10,000) to their coordinate points 
-// on a geo projection.
-
-Visualizer.scaleFactor = 200;
 
 /**************************************
          HELPER FUNCTIONS
@@ -324,7 +339,7 @@ function addFeatureGroup (featureGroup){
     // as it's the most effective way to iterate
     // through and remove layers.
 
-    settings.layers.push(featureGroup);
+    Visualizer.layers.push(featureGroup);
 
     // Save layer for reference
     map.addLayer(featureGroup);

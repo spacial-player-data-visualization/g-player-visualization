@@ -288,7 +288,7 @@ UI.getActions = function(callback){
     var options = Visualizer.getContext();
 
     // Get actions from API
-    $.get(settings.API_url + "actions", options, function(data){
+    $.get(Visualizer.API_url + "actions", options, function(data){
         options.actions = data;
 
         // Clear old list of actions
@@ -310,7 +310,7 @@ UI.getPlayers = function(callback){
     var opts = Visualizer.getContext();
 
     // Get actions from API
-    $.get(settings.API_url + "players", opts, function(data){
+    $.get(Visualizer.API_url + "players", opts, function(data){
         
         settings.players = data;
 

@@ -10,12 +10,6 @@ var settings = {
   // Save data
   data : null,
 
-  // Feature Group representation of data
-  layers : [],
-
-  // Target API url
-  API_url : (window.location.href.indexOf("herokuapp.com") > -1) ? "http://g-player.herokuapp.com/api/" : "http://localhost:5000/api/",
-
   // enable heatmap
   heatmap : true,
 
