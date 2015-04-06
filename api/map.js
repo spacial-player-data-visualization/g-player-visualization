@@ -8,7 +8,7 @@ module.exports = {
 			game: req.body.game,
 			imageURL: req.body.imageURL,
 			top: req.body.top,
-			bottom: req.body.bottom
+			bottom: req.body.bottom,
 			left: req.body.left,
 			right: req.body.right
 		}
