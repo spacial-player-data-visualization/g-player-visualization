@@ -154,10 +154,10 @@ Visualizer.loadData = function(){
 
   UI.loading(true, "Loading Data....");
 
-  var options = Visualizer.getContext();
+  var opts = Visualizer.getContext();
 
   // Hit API
-  $.get(settings.API_url + "entries", options, function(data){
+  $.get(settings.API_url + "entries", opts, function(data){
 
     // Validate data. Ignore non-spacial data
     data = _.filter(data, function(p){
@@ -224,13 +224,27 @@ Visualizer.getColor = function(i){
 // Returns a representation of the current state of the
 // map. This object provided context for what data
 // the API should return in order to be mapped.
-Visualizer.getContext = function(){
+Visualizer.getContext = function(callback){
 
-  return {
+  var obj = {
     game : settings.game,
     area : settings.map.name,
     fidelity : 1,
+    playerIDs : options.players
   }
+
+  // if (options.players.length < 1){
+    
+  //   // Get players
+  //   UI.updateAvailablePlayers(function(resp){
+  //     callback(obj);
+  //   })
+    
+  // } else {
+  //   callback(obj);
+  // }
+
+  return obj;
 }
 
 // Update the map's view port, as to
@@ -239,7 +253,9 @@ Visualizer.focus = function(){
 
     var sample = settings.layers[0]
     
-    map.fitBounds(sample.getBounds());
+    if (sample) map.fitBounds(sample.getBounds());
+
+    // map.fitBounds(bounds)
 
     // TODO: Set max/min zoom levels dynamically
 

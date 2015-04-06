@@ -285,6 +285,7 @@ UI.setGame = function(gamename){
 
     // Change available actions
     UI.updateAvailablePlayerActions();
+    UI.updateAvailablePlayers();
 }
 
 // When user selects a new map
@@ -328,13 +329,14 @@ UI.setMap = function(mapname, callback){
 
   settings.overlay.addTo(map);
 
+  map.fitBounds(imageBounds);
+
   // Default callback is to load the data set.
   // Execute provided callback otherwise
   (callback) ? callback() : Visualizer.loadData();
 }
 
 UI.moveMap = function(xOffset, yOffset){
-
   // 
   var m = _.findWhere(options.maps, { name : settings.map.name });
   var index = options.maps.indexOf(m);
@@ -370,7 +372,6 @@ UI.scaleMap = function(scale){
   options.maps[index].top = m.top + yScale;
 
   // console.log(options.maps[index]);
-
   UI.setMap(m.name, function(){ console.log(settings.map); });
 };
 
@@ -395,7 +396,22 @@ UI.updateAvailablePlayerActions = function(callback){
 
 }
 
+UI.updateAvailablePlayers = function(callback){
+
+    var opts = Visualizer.getContext();
+
+    opts.actions = ['Attacked'];
+
+    // Get actions from API
+    $.get(settings.API_url + "users", opts, function(data){
+        options.players = data;
+
+        console.log(options.players)
+    })
+
+}
+
+
 UI.debug = function(){
   console.log("Game : " + settings.game + " | Map : " + settings.map.name);
-
 }

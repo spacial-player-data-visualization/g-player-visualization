@@ -41,6 +41,8 @@ var options = {};
 
 options.actions = [];
 
+options.players = [];
+
 options.games = [
 	"Fallout New Vegas", 
 	"League of Legends", 
