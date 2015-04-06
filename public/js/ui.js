@@ -284,8 +284,8 @@ UI.setGame = function(gamename){
     });
 
     // Change available actions
-    UI.updateAvailablePlayerActions();
-    UI.updateAvailablePlayers();
+    UI.getActions();
+    UI.getPlayers();
 }
 
 // When user selects a new map
@@ -325,7 +325,7 @@ UI.setMap = function(mapname, callback){
   // Visualizer.addMarker(topRight['latitude'],   topRight['longitude']);
 
   // Add image overlay to map
-  settings.overlay = L.imageOverlay(m.url, imageBounds)
+  settings.overlay = L.imageOverlay(m.imageURL, imageBounds)
 
   settings.overlay.addTo(map);
 
@@ -375,7 +375,7 @@ UI.scaleMap = function(scale){
   UI.setMap(m.name, function(){ console.log(settings.map); });
 };
 
-UI.updateAvailablePlayerActions = function(callback){
+UI.getActions = function(callback){
     
     // Get current game/map
     var options = Visualizer.getContext();
@@ -396,11 +396,11 @@ UI.updateAvailablePlayerActions = function(callback){
 
 }
 
-UI.updateAvailablePlayers = function(callback){
+UI.getPlayers = function(callback){
 
     var opts = Visualizer.getContext();
 
-    opts.actions = ['Attacked'];
+    // opts.actions = ['Attacked'];
 
     // Get actions from API
     $.get(settings.API_url + "players", opts, function(data){

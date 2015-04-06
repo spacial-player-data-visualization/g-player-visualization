@@ -84,7 +84,6 @@ app.post('/api/entry', function (req, res){
 
 // Get Multiple Entries
 app.get('/api/entries', function (req, res){
-    console.log("\nGET api/entries");
 	entries.get(req, res);
 });
 
