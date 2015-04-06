@@ -286,8 +286,29 @@ ul.messenger-theme-air .messenger-message {
     margin: 0;
 }
 
+/* Utility class for making objects
+   unseletable. Useful for icon that
+   get double-clicked */
+.unselectable {
+   -moz-user-select: none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+}
 
+.position-map .clickable .fa {
+    margin-right: 0px;
+    font-size: 20px;
+    padding: 3px;
+}
 
+.position-map .clickable .fa:hover {
+    margin-right: 0px;
+    font-size: 20px;
+    padding: 3px;
+    color: #222;
+    background-color: #eee;
+    cursor: pointer;
+}
 
 @media(min-width:768px) {
     #wrapper {

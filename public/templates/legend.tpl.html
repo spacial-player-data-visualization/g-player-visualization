@@ -3,17 +3,17 @@
 <div class="panel panel-default tools">
   <div class="panel-heading" role="tab">
     <h4 class="panel-title">
-      <i class="fa fa-wrench"></i> Scale Map
+      <i class="fa fa-arrows-alt"></i> Position Map
     </h4>
   </div>
   <div>
-    <div class="panel-body">
-      <a onclick="UI.moveMap(-10, 0)">Move Left</a><br/>
-      <a onclick="UI.moveMap(10, 0)">Move Right</a><br/>
-      <a onclick="UI.moveMap(0, 10)">Move Up</a><br/>
-      <a onclick="UI.moveMap(0, -10)">Move Down</a><br/>
-      <a onclick="UI.scaleMap(1)">Scale Up</a><br/>
-      <a onclick="UI.scaleMap(-1)">Scale Down</a><br/>
+    <div class="panel-body position-map">
+      <a class="unselectable clickable" onclick="UI.moveMap(-10, 0)"><i class="fa fa-arrow-left"></i></a>
+      <a class="unselectable clickable" onclick="UI.moveMap(10, 0)"><i class="fa fa-arrow-right"></i></a>
+      <a class="unselectable clickable" onclick="UI.moveMap(0, 10)"><i class="fa fa-arrow-up"></i></a>
+      <a class="unselectable clickable" onclick="UI.moveMap(0, -10)"><i class="fa fa-arrow-down"></i></a>
+      <a class="unselectable clickable" onclick="UI.scaleMap(1)"><i class="fa fa-expand"></i></a>
+      <a class="unselectable clickable" onclick="UI.scaleMap(-1)"><i class="fa fa-compress"></i></a>
    </div>
  </div>
 </div>
