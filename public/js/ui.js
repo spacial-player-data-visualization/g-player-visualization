@@ -139,10 +139,13 @@ UI.addPlayerPathToggle = function(){
 
     // Show/Hide Heatmap
     $('#toggle_paths').change(function(e) {
-      
+
       // Get current status
       var checked = $('#toggle_paths').is(':checked');
+
       settings.paths = checked;
+
+      console.log(settings)
       
       // Update map
       Visualizer.update();
@@ -396,19 +399,45 @@ UI.getActions = function(callback){
 
 }
 
+// For the currently selected actions, 
+// get a list of playerIDs
 UI.getPlayers = function(callback){
 
     var opts = Visualizer.getContext();
 
-    // opts.actions = ['Attacked'];
-
     // Get actions from API
     $.get(settings.API_url + "players", opts, function(data){
-        options.players = data;
+        
+        settings.players = data;
 
-        console.log(options.players)
+        console.log(settings.players)
+
+        UI.listPlayers();
+
+        if (callback) callback();
     })
 
+}
+
+// Render an HTML list of available players
+UI.listPlayers = function(){
+  
+  // Grab current list of playerIDs
+  var players = settings.players;
+
+  // Clear previous player list
+  $('#player-list').html("");
+
+  _.each(players, function(p){
+
+    // Create table row with player data
+    var tr = '<td>' + "Player <b>" + p + '</b></td>';
+
+    // Add options buttons
+    // tr += '<td><button class="btn btn-primary"><i class="fa fa-plus"></i></button></td>';
+
+    $('#player-list').append("<tr>" + tr + "</tr>");
+  })
 }
 
 

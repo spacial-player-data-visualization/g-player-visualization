@@ -30,6 +30,9 @@ var settings = {
   // Current overlay
   overlay : null,
 
+  // Current players
+  players : [],
+
 };
 
 /******************************
@@ -40,8 +43,6 @@ var settings = {
 var options = {};
 
 options.actions = [];
-
-options.players = [];
 
 options.games = [
 	"Fallout New Vegas", 

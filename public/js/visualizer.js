@@ -156,6 +156,8 @@ Visualizer.loadData = function(){
 
   var opts = Visualizer.getContext();
 
+  console.log(opts)
+
   // Hit API
   $.get(settings.API_url + "entries", opts, function(data){
 
@@ -192,9 +194,6 @@ Visualizer.formatData = function(data){
   // Maps the (x,y) position to a coordinate
   // on the earth. Makes plotting MUCH easier
 
-  // data['latitude']  = ((data.posY + settings.map.offset.y) * settings.map.scale.y) / scale;
-  // data['longitude'] = ((data.posX + settings.map.offset.x) * settings.map.scale.x) / scale;
-
   data['latitude']  = data.posY / scale;
   data['longitude'] = data.posX / scale;
   
@@ -230,19 +229,10 @@ Visualizer.getContext = function(callback){
     game : settings.game,
     area : settings.map.name,
     fidelity : 1,
-    playerIDs : options.players
-  }
+    playerIDs : settings.players,
+    actions : settings.actions,
 
-  // if (options.players.length < 1){
-    
-  //   // Get players
-  //   UI.updateAvailablePlayers(function(resp){
-  //     callback(obj);
-  //   })
-    
-  // } else {
-  //   callback(obj);
-  // }
+  }
 
   return obj;
 }
@@ -261,18 +251,6 @@ Visualizer.focus = function(){
 
     // map.minZoom()
     // map.maxZoom()
-
-    /***************************
-          Setup Map
-    ****************************/
-
-    // Given map size, and scale factor,
-    // determin the latitude/longitude bounds.
-    // var latitudeDistance = settings.map.height / Visualizer.scaleFactor;
-    // var longitudeDistance = settings.map.width / Visualizer.scaleFactor;
-
-    // Set Map Center
-    // map.setView([latitudeDistance / 2, longitudeDistance / 2], 1);
 }
 
 // Global scale factor. Helps to max points (ranging 

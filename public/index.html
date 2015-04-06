@@ -88,21 +88,25 @@ Authors:
       UI.initialize();
   });
 
+  // Load side options template
   $("#legend").load('templates/legend.tpl.html', function(result){
-    $(".action-select").select2();
     
-    $('#toggle_all_data').change(function(e) {
-      
-      // Get current status
-      var checked = $('#toggle_all_data').is(':checked');
+    // Initialize Multiselect
+    $(".action-select").select2();
 
-      if (checked) {
-        $('.filter-by-action').hide();
-      } else {
-        $('.filter-by-action').show();
-      }
+    // Watcher
+    $(".action-select").on("change", function (e) { 
+      
+      // Get list of selected actions
+      var actions = $(".action-select").val();
+
+      // Save to settings
+      settings.actions = actions;
+      
+      UI.getPlayers(Visualizer.loadData());
 
     });
+    
   });
 
   /*************************
