@@ -12,8 +12,8 @@ var settings = {
   // Feature Group representation of data
   layers : [],
 
-  // Target API URL
-  API_url : (window.location.href.indexOf("herokuapp.com") > -1) ? "http://g-player.herokuapp.com/api/" : "http://localhost:5000/api/",
+  // Target API url
+  API_URL : (window.location.href.indexOf("herokuapp.com") > -1) ? "http://g-player.herokuapp.com/api/" : "http://localhost:5000/api/",
 
   // enable heatmap
   heatmap : true,
@@ -56,7 +56,7 @@ options.maps = [{
     // Save map configuration
     name: "Position_Introhouse",
     game: "Fallout New Vegas",
-    url: "http://i.imgur.com/zWbog8y.jpg",
+    imageURL: "http://i.imgur.com/zWbog8y.jpg",
 
     // Map player locations to their points
     // on the map. Define the corners.
@@ -71,7 +71,7 @@ options.maps = [{
     // Save map configuration
     name: "Position_Outside",
     game: "Fallout New Vegas",
-    url: "http://i.imgur.com/sSYRyve.jpg",
+    imageURL: "http://i.imgur.com/sSYRyve.jpg",
 	
 
     // Map player locations to their points
@@ -89,7 +89,7 @@ options.maps = [{
     // Save map configuration
     name: "Position_Bar",
     game: "Fallout New Vegas",
-    url: "http://i.imgur.com/9lo12qd.jpg",
+    imageURL: "http://i.imgur.com/9lo12qd.jpg",
 	
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
@@ -106,7 +106,7 @@ options.maps = [{
     // Save map configuration
     name: "Position_AbandonedHouse",
     game: "Fallout New Vegas",
-    url: "http://i.imgur.com/kMyybLB.jpg",
+    imageURL: "http://i.imgur.com/kMyybLB.jpg",
 	
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
@@ -123,7 +123,7 @@ options.maps = [{
     // Save map configuration
     name: "Position_Cave",
     game: "Fallout New Vegas",
-    url: "http://i.imgur.com/ynqOvIh.png",
+    imageURL: "http://i.imgur.com/ynqOvIh.png",
 	
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
@@ -140,7 +140,7 @@ options.maps = [{
     // Save map configuration
     name: "Position_SheriffOffice",
     game: "Fallout New Vegas",
-    url: "http://i.imgur.com/kMPpXSW.jpg",
+    imageURL: "http://i.imgur.com/kMPpXSW.jpg",
 	
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
@@ -157,7 +157,7 @@ options.maps = [{
     // Save map configuration
     name: "Position_Mine",
     game: "Fallout New Vegas",
-    url: "http://i.imgur.com/2j0T2C0.jpg",
+    imageURL: "http://i.imgur.com/2j0T2C0.jpg",
 	
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
@@ -174,7 +174,7 @@ options.maps = [{
     // Save map configuration
     name: "Position_Hotel",
     game: "Fallout New Vegas",
-    url: "http://i.imgur.com/sKG9eRI.jpg",
+    imageURL: "http://i.imgur.com/sKG9eRI.jpg",
 	
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
@@ -191,7 +191,7 @@ options.maps = [{
     // Save map configuration
     name: "Map",
     game: "League of Legends",
-    url: "/leagueoflegends/map.jpg",
+    imageURL: "/leagueoflegends/map.jpg",
 
 
     // Map player locations to their points
