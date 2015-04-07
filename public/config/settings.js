@@ -4,16 +4,11 @@
  *************************/
 
 // Settings
+// @TODO Extract SETTINGS from the STATE of the app
 var settings = {
 
   // Save data
   data : null,
-
-  // Feature Group representation of data
-  layers : [],
-
-  // Target API URL
-  API_url : (window.location.href.indexOf("herokuapp.com") > -1) ? "http://g-player.herokuapp.com/api/" : "http://localhost:5000/api/",
 
   // enable heatmap
   heatmap : true,
@@ -30,6 +25,12 @@ var settings = {
   // Current overlay
   overlay : null,
 
+  // Current players
+  players : [],
+
+  // Currently selected actions
+  actions : [],
+
 };
 
 /******************************
@@ -39,8 +40,13 @@ var settings = {
 // Available options
 var options = {};
 
+// Available Actions
 options.actions = [];
 
+// Available Players
+options.players = [];
+
+// Available Games
 options.games = [
 	"Fallout New Vegas", 
 	"League of Legends", 
@@ -54,11 +60,7 @@ options.maps = [{
     // Save map configuration
     name: "Position_Introhouse",
     game: "Fallout New Vegas",
-    url: "/fallout/intro.png",
-	
-	// Background image size
-    width : 1600,
-    height : 1178,
+    imageURL: "http://i.imgur.com/zWbog8y.jpg",
 
     // Map player locations to their points
     // on the map. Define the corners.
@@ -73,33 +75,26 @@ options.maps = [{
     // Save map configuration
     name: "Position_Outside",
     game: "Fallout New Vegas",
-    url: "/fallout/outside.png",
+    imageURL: "http://i.imgur.com/sSYRyve.jpg",
 	
-	// Background image size
-    width : 789,
-    height : 814,
 
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
     
-    bottom : 0,
-    left : 0,
+    bottom : -13981,
+    left : -7682,
 
-    top : 814,
-    right : 789,
+    top : 14735,
+    right : 20151,
 
 }, {
 
     // Save map configuration
     name: "Position_Bar",
     game: "Fallout New Vegas",
-    url: "/fallout/bar.png",
+    imageURL: "http://i.imgur.com/9lo12qd.jpg",
 	
-	// Background image size
-    width : 1600,
-    height : 1178,
-
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
@@ -113,13 +108,95 @@ options.maps = [{
 }, {
 
     // Save map configuration
+    name: "Position_AbandonedHouse",
+    game: "Fallout New Vegas",
+    imageURL: "http://i.imgur.com/kMyybLB.jpg",
+	
+    // Map player locations to their points
+    // on the map. Manually offset for accuracy.
+    // Multiplied to base
+
+    bottom : -2104,
+    left : -274,
+
+    top : 84,
+    right : 1914,
+
+}, {
+
+    // Save map configuration
+    name: "Position_Cave",
+    game: "Fallout New Vegas",
+    imageURL: "http://i.imgur.com/ynqOvIh.png",
+	
+    // Map player locations to their points
+    // on the map. Manually offset for accuracy.
+    // Multiplied to base
+
+    bottom : 0,
+    left : 0,
+
+    top : 100,
+    right : 100,
+
+}, {
+
+    // Save map configuration
+    name: "Position_SheriffOffice",
+    game: "Fallout New Vegas",
+    imageURL: "http://i.imgur.com/kMPpXSW.jpg",
+	
+    // Map player locations to their points
+    // on the map. Manually offset for accuracy.
+    // Multiplied to base
+
+    bottom : 590,
+    left : 1490,
+
+    top : 1950,
+    right : 2428,
+
+}, {
+
+    // Save map configuration
+    name: "Position_Mine",
+    game: "Fallout New Vegas",
+    imageURL: "http://i.imgur.com/2j0T2C0.jpg",
+	
+    // Map player locations to their points
+    // on the map. Manually offset for accuracy.
+    // Multiplied to base
+
+    bottom : 0,
+    left : 0,
+
+    top : 100,
+    right : 100,
+
+}, {
+
+    // Save map configuration
+    name: "Position_Hotel",
+    game: "Fallout New Vegas",
+    imageURL: "http://i.imgur.com/sKG9eRI.jpg",
+	
+    // Map player locations to their points
+    // on the map. Manually offset for accuracy.
+    // Multiplied to base
+
+    bottom : 170,
+    left : 60,
+
+    top : 4200,
+    right : 4310,
+
+}, {
+
+    // Save map configuration
     name: "Map",
     game: "League of Legends",
-    url: "/leagueoflegends/map.jpg",
-	
-	// Background image size
-    width : 2000,
-    height : 1833,
+    imageURL: "http://i.imgur.com/vattHJi.jpg",
+
 
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
@@ -130,15 +207,15 @@ options.maps = [{
     right : 0,
 }, {
 	
-	name: "White",
+	name: "default",
 	game: "Game Gaze",
-	url: "http://www.ledr.com/colours/white.jpg",
-	width: 1000,
-	height: 1000,
-	top: 0,
+	imageURL: "http://i.imgur.com/6ADPz34.jpg",
+
+	top: 1000,
 	bottom: 0,
+
 	left: 0,
-	right: 0,
+	right: 1000,
 }
 ];
 
@@ -239,7 +316,7 @@ options.lookup_table = {
 	"Quest" : "quest",
 	"Stat" : "stat",
 
-	"Game Gaze" : "gazeDefault",
+	"Game Gaze" : "default",
 }
 
 // Store a list of available key mappings
@@ -342,84 +419,6 @@ options.mappings = [{
 
 {
 	game : "Game Gaze",
-	type : "gazeDefault",
+	type : "default",
 	colums : ["timestamp", "gazeX", "gazeY", "posX", "posY", "posZ", "cameraX", "cameraY"],
 }];
-
-// Return the key mapping given the 
-// game name, and the event name
-
-// ex: getKeyMapping("Fallout New Vegas", "Attacked")
-
-var getKeyMapping = function(game, eventName){
-
-	// Get the type of event from the lookup table
-	var type = options.lookup_table[eventName];
-
-	// Find mapping
-	var mapping = _.findWhere(options.mappings, {game : settings.game, type : type});
-
-	if (!mapping || !type) {
-		console.error("Unable to find key mapping for: " + eventName);
-		return;
-	}
-
-	return mapping;
-}
-
-// assignKeys() returns a JSON object, where
-// the values of the 'values' array are assigned
-// to the column names provided in the 'mapping' array.
-
-// For example:
-// values : ["apple", "orange", "pear"]
-// columns : ["fruit", "color", "shape"]
-
-// Results in:
-// { fruit : "Apple", color : "orange", shape : "pear" }
-
-var assignKeys = function(values, columns){
-	var acc = {};
-
-	// Check data. Make sure we have enough keys for our data.
-	if (columns.length != values.length){
-		console.error("Warning: Mismatch in key mapping. Amount of keys and values differ." + columns.length + " Columns, " + values.length + " Values");
-		console.log(columns);
-		console.log(values);
-		console.log("\n");
-	}
-
-	_.each(columns, function(value, key){
-		// Ensure data exists. If not, make it null for DB.
-		if (!values[key]) {
-			values[key] = null;
-		}; 
-
-		// Create key/value pair
-		acc[value] = values[key];
-	});
-
-	acc["game"] = settings.game;
-	return acc;
-	// ex: assignKeys(["apple", "orange", "pear"], ["fruit", "color", "shape"])
-}
-
-// Given a list of arrays, convert the data into JSON objects.
-//   game : String of game name
-//   eventName : the event name for this table
-//   data : multudimensional array container player data
-
-var assignKeysForEntireTable = function(game, eventName, data) {
-	var acc = [];
-
-	// Key the key mapping
-	var mapping = getKeyMapping(game, eventName).columns;
-
-	// Apply key mapping to each object in the data array
-	_.each(data, function(d){
-		var json = assigKeys(d, mapping);
-		if (json) acc.push(json);
-	})
-
-	return acc;
-}

@@ -1,12 +1,16 @@
 var EntryModel = require('../models/entries');
 var _ = require('underscore');
+var Q = require('q');
 
 // save entry helper
 var saveEntry = function(data) {
     EntryModel.find({playerID: data.playerID, timestamp: data.timestamp}, function(err, result){
+
         if (err) {
             console.log(err);
         } else {
+
+            // Prevent duplicate keys
             if (!result.length){
 
                 var tempObj = {
@@ -27,7 +31,9 @@ var saveEntry = function(data) {
                 restKeys.forEach(function(key) {
                     tempObj[key] = data[key]
                 });
+
                 console.log(tempObj);
+
                 var entry = new EntryModel(tempObj);
 
                 entry.save(function(err) {
@@ -37,6 +43,7 @@ var saveEntry = function(data) {
                         return console.log('saved');
                     }
                 });
+            
             } else {
                 console.log('already added');
             }
@@ -71,11 +78,11 @@ module.exports = {
         var game = req.query.game;
         var area = req.query.area;
         var fidelity = req.query.fidelity;
-        console.log("Getting entries for " + area + " of " + game);
+        var playerIDs = req.query.playerIDs || [];
 
-        return EntryModel.find({game: game, area: area}, function(err, entries) {
+        return EntryModel.find({game: game, area: area, playerID: {$in: playerIDs}}, function(err, entries) {
 
-            console.log("Returning " + entries.length + " entries.")
+            console.log("\nGET entries for " + area + " of " + game + " | " + entries.length + " entries.")
             
             if (err) {
 
@@ -90,19 +97,30 @@ module.exports = {
                 } else {
 
                 var index = 0;
+
+                // Filter entries by fidelity. Restrict number
+                // of datapoints per second being returned
                 var filteredResults = _.filter(entries, function(entry){
+
+                    // Filter any POSITIONS.
+                    // Exlude actions from being removed.
                     if (!entry.action) {
+
                         if ((index % fidelity) == 0){
                             index += 1;
                             return true;
                         }
+
                         index += 1;
 
                     } else {
-                        // if not a position value, return everything
+
+                        // if not a position value, 
+                        // return everything
                         return false;
                     }
                 });
+
                 return res.send(filteredResults);
 
                 }
@@ -123,15 +141,13 @@ module.exports = {
     put: function(req, res) {
         return EntryModel.findById(req.params.id, function(err, entry) {
 
-            var entry = {
-                area : req.body.area,
-                playerID : req.body.playerID,
-                timestamp : req.body.timestamp,
-                posX : req.body.posX,
-                posY : req.body.posY,
-                cameraX : req.body.cameraX,
-                cameraY : req.body.cameraY,
-            }
+            entry.area = req.body.area;
+            entry.playerID = req.body.playerID;
+            entry.timestamp = req.body.timestamp;
+            entry.posX = req.body.posX;
+            entry.posY = req.body.posY;
+            entry.cameraX = req.body.cameraX;
+            entry.cameraY = req.body.cameraY;
 
             return entry.save(function(err) {
                 if (err) {
@@ -144,47 +160,77 @@ module.exports = {
         })
     },
 
-    delete: function(req, res) {
-        return EntryModel.findById(req.params.id, function(err, entry) {
-            return entry.remove(function(err) {
+    // delete: function(req, res) {
+    //     return EntryModel.findById(req.params.id, function(err, entry) {
+    //         return entry.remove(function(err) {
+    //             if (err) {
+    //                 console.log(err);
+    //             } else {
+    //                 console.log('deleted')
+    //                 res.send('Deleted Entry ' + req.params.id);
+    //             }
+    //         });
+    //     })
+    // },
+
+    // query: function(req, res) {
+    //     return EntryModel.find({timestamp: req.params.time}, function(err, result){
+    //         if (err) {
+    //                 console.log(err);
+    //             } else {
+    //                 console.log('query')
+    //                 res.send(result);
+    //             }
+    //     });
+    // },
+
+    getPlayers : function(req, res) {
+
+        var game = req.query.game;
+        var actions = req.query.actions;
+        var param = actions ? {game: game, action: {$in: actions}} : {game: game};
+
+        var playersThatDidActions = []
+
+        var promises = [];
+
+        if (!actions) { 
+            res.status(500).send({ error: 'No Actions Provided.' }); 
+            return;
+        }
+
+        actions.forEach(function(action){
+            promises.push(createFindPromise(action));
+        });
+
+        function createFindPromise(action) {
+            
+            var deferred = Q.defer();
+
+            EntryModel.find({game: game, action: action}).distinct('playerID', function(err, result){
                 if (err) {
                     console.log(err);
                 } else {
-                    console.log('deleted')
-                    res.send('Deleted Entry ' + req.params.id);
+                    deferred.resolve(playersThatDidActions.push(result));
                 }
             });
-        })
-    },
 
-    query: function(req, res) {
-        return EntryModel.find({timestamp: req.params.time}, function(err, result){
-            if (err) {
-                    console.log(err);
-                } else {
-                    console.log('query')
-                    res.send(result);
-                }
-        });
-    },
+            return deferred.promise;
+        }
 
-    getUsers : function(req, res) {
-        return EntryModel.find().distinct('playerID', function(err, result){
-            if (err) {
-                console.log(err);
-            } else {
-                console.log('getUsers');
-                res.send(result);
-            }
+        Q.all(promises).done(function(){
+           return res.send(_.intersection.apply(_, playersThatDidActions));
         });
     },
 
     getActions : function(req, res){
-        return EntryModel.find().distinct('action', function(err, result){
+        var game = req.query.game;
+        
+        return EntryModel.find({game: game}).distinct('action', function(err, result){
             if (err) {
                 console.log(err);
             } else {
-                console.log('getAction');
+                console.log('\nGET Actions | ' + result.length + ' results');
                 res.send(result);
             }
         });

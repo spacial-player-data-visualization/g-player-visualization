@@ -1,6 +1,11 @@
 <ul class="sidebar-nav">
   <div class="panel panel-default">
     <div class="panel-heading">
+      <h3 class="panel-title" onclick="UI.menu()" style="cursor:pointer"><i class="fa fa-bars"></i> Menu</h3>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
       <h3 class="panel-title"><i class="fa fa-leanpub"></i> Select Map</h3>
     </div>
     <div class="panel-body">
@@ -21,34 +26,24 @@
       <h3 class="panel-title"><i class="fa fa-table"></i> Select Data
     </div>
     <div class="panel-body" style="margin-bottom: 20px;">
-      <label style="margin: 8px;">
-        <input type="checkbox" id="toggle_all_data"> Load All Users?
-      </label>
 
       <div class="filter-by-action">
     
-        <p style="margin: 5px 10px;">Load users who did:</p>
-
-        <!-- Select Actions -->
-        <select class="action-select" multiple="multiple" style="width: 100%; display: none;">
-        </select>
-
-        <p style="margin: 5px 10px;">But <b>Didn't</b> do:</p>
+        <p style="margin: 5px 10px;">Filter users who:</p>
 
         <!-- Select Actions -->
         <select class="action-select" multiple="multiple" style="width: 100%; display: none;">
         </select>
 
       </div>
+      <div>
 
-      <div class="col-sm-6">
-        <div class="btn btn-default">Clear</div>
+        <!-- Select Players -->
+        <table id="player-list" class="table table-condensed table-hover"></table>
+
+        <button class="btn btn-default" onclick="Visualizer.clear()">Clear</button>
+        <button class="btn btn-primary" onclick="Visualizer.loadData()">Load All</button>
       </div>
-
-      <div class="col-sm-6">
-        <div class="btn btn-success" style="margin-left: -15px;" onclick="Visualizer.loadData();">Load Data</div>
-      </div>
-
     </div>
   </div>
 </ul>

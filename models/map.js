@@ -3,25 +3,33 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var MapSchema = new Schema({
-    area: {
+    name: {
         type: String,
         required: true
     },
-    offsetX: {
+    game: {
+        type: String,
+        required: true
+    },
+    imageURL: {
+        type: String,
+        required: true
+    },
+    top: {
     	type: Number,
     	required: true
     },
-    offsetY: {
+    bottom: {
     	type: Number,
     	required: true
     },
-    scaleX: {
-    	type: Number,
-    	required: true
+    left: {
+        type: Number,
+        required: true
     },
-    scaleY: {
-    	type: Number,
-    	required: true
+    right: {
+        type: Number,
+        required: true
     },
 });
 

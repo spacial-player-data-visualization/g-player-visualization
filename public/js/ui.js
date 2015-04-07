@@ -2,15 +2,6 @@
          UI Functions
 ************************************/
 
-// Use Hubspot's Messenger plugin to
-// provide text/popup feedback to the user.
-// http://github.hubspot.com/messenger/docs/welcome/
-
-Messenger.options = {
-  extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right',
-  theme: 'air'
-}
-
 // Provide user feedback with the interface
 var UI = {
 
@@ -18,60 +9,12 @@ var UI = {
 	loader : {},
 };
 
-// Alert the user with a message.
-// (optional) provide ID for singleton box
-UI.alert = function(msg, id){
-	return Messenger().post({
-		message : msg,
-		id : (id) ? id : Math.random(1,100),
-	});
+UI.menu = function(){
+  $.get('templates/menu.tpl.html', function(result){
+    bootbox.alert(result);
+  });
 }
 
-// Show error message
-UI.error = function(msg){
-	return Messenger().post({
-  		message: msg,
-  		type: 'error',
-  		showCloseButton: true
-	});
-};
-
-// Show success message
-UI.success = function(msg){
-	return Messenger().post({
-		message : msg,
-		type: "success",
-	});
-}
-
-// Show/hide a loading indicator.
-UI.loading = function(boolean, msg){
-	
-	// Show loading box
-	if (boolean){
-		UI.loader = Messenger().post({
-			type: "type-loading",
-			message : (msg) ? msg : "Loading...",
-			id : "loading",
-			hideAfter: null,
-		});
-
-		return UI.loader;
-
-	} else {
-
-		// Hide loading box. 
-		UI.loader.hide();
-		
-		// Add success message.
-		return Messenger().post({
-			type: "success",
-			message : (msg) ? msg : "Loading Complete",
-			id : "loading",
-			hideAfter: 3,
-		});
-	}
-};
 
 /************************************
           Setup Page
@@ -80,75 +23,20 @@ UI.loading = function(boolean, msg){
 // Initialize the User Interface
 UI.initialize = function(){
     
-    /***************************
-         Default Settings
-    ****************************/
-
+    // Default Settings
     UI.setGame(settings.game);
-
-    /***************************
-         Watch form Values
-    ****************************/
-
-    $('#select-game').on('change', function(){
-      var selected = $(this).find("option:selected").val();
-      
-      UI.setGame(selected);
-    });
-
-    $('#select-map').on('change', function(){
-      var selected = $(this).find("option:selected").val();
-      
-      // Remove previous data
-      Visualizer.clear();
-      UI.setMap(selected);
-    });
     
     /***************************
        Initialize UI Options
     ****************************/
 
-    UI.addHeatmapToggle();
-    UI.addPlayerPathToggle();
     UI.addToggleAbleSideNavigation();
-
     // UI.addLeafletDraw();
 }
 
 /************************************
       Setup: Help Functions
 ************************************/
-
-UI.addHeatmapToggle = function(){
-
-    // Show/Hide Heatmap
-    $('#toggle_heatmap').change(function(e) {
-      
-      // Enable
-      if ($('#toggle_heatmap').is(':checked')) {
-        Heatmap.addHeatmap(settings.data);
-      
-      //  Disable
-      } else {
-        map.removeLayer(Heatmap.heatmapLayer)
-      }
-    });
-}
-
-UI.addPlayerPathToggle = function(){
-
-    // Show/Hide Heatmap
-    $('#toggle_paths').change(function(e) {
-      
-      // Get current status
-      var checked = $('#toggle_paths').is(':checked');
-      settings.paths = checked;
-      
-      // Update map
-      Visualizer.update();
-
-    });
-}
 
 // Initialize toggle-able side nav
 UI.addToggleAbleSideNavigation = function(){
@@ -262,6 +150,9 @@ UI.setGame = function(gamename){
     // Available maps
     var game_maps = _.where(options.maps, { game : settings.game });
     
+    // Clear data
+    settings.data = null;
+    
     // Remove previous data
     Visualizer.clear();
 
@@ -284,7 +175,8 @@ UI.setGame = function(gamename){
     });
 
     // Change available actions
-    UI.updateAvailablePlayerActions();
+    UI.getActions();
+    UI.getPlayers();
 }
 
 // When user selects a new map
@@ -324,9 +216,11 @@ UI.setMap = function(mapname, callback){
   // Visualizer.addMarker(topRight['latitude'],   topRight['longitude']);
 
   // Add image overlay to map
-  settings.overlay = L.imageOverlay('img/maps/' + m.url, imageBounds)
+  settings.overlay = L.imageOverlay(m.imageURL, imageBounds)
 
   settings.overlay.addTo(map);
+
+  map.fitBounds(imageBounds);
 
   // Default callback is to load the data set.
   // Execute provided callback otherwise
@@ -334,23 +228,15 @@ UI.setMap = function(mapname, callback){
 }
 
 UI.moveMap = function(xOffset, yOffset){
-
+  // 
   var m = _.findWhere(options.maps, { name : settings.map.name });
-
   var index = options.maps.indexOf(m);
 
+  // 
   options.maps[index].left = m.left + xOffset;
   options.maps[index].right = m.right + xOffset;
   options.maps[index].top = m.top + yOffset;
   options.maps[index].bottom = m.bottom + yOffset;
-
-
-  // options.maps[index].left = m.left * scale;
-  // options.maps[index].right = m.right * scale;
-  // options.maps[index].top = m.top * scale;
-  // options.maps[index].bottom = m.bottom * scale;
-
-  // console.log(options.maps[index]);
 
   UI.setMap(m.name, function(){ console.log(settings.map); });
 
@@ -359,35 +245,34 @@ UI.moveMap = function(xOffset, yOffset){
 UI.scaleMap = function(scale){
 
   var m = _.findWhere(options.maps, { name : settings.map.name });
-  
   var index = options.maps.indexOf(m);
 
-  // var width  = m.right - m.left;
-  // var height = m.top - m.bottom;
-
-  // var xScale = width  * scale * .05;
-  // var yScale = height * scale * .05;
-
-  // console.log(xScale + " " + yScale)
-
-  options.maps[index].left = m.left   - scale // xScale;
-  options.maps[index].right = m.right + scale // xScale;
+  // 
+  var width  = m.right - m.left;
+  var height = m.top - m.bottom;
   
-  options.maps[index].bottom = m.bottom - scale // yScale;
-  options.maps[index].top = m.top       + scale // yScale;
+  // 
+  var xScale = .01 * width  * scale;
+  var yScale = .01 * height * scale;
+
+  // 
+  options.maps[index].left = m.left   - xScale;
+  options.maps[index].right = m.right + xScale;
+  
+  options.maps[index].bottom = m.bottom - yScale;
+  options.maps[index].top = m.top + yScale;
 
   // console.log(options.maps[index]);
-
   UI.setMap(m.name, function(){ console.log(settings.map); });
 };
 
-UI.updateAvailablePlayerActions = function(callback){
+UI.getActions = function(callback){
     
     // Get current game/map
     var options = Visualizer.getContext();
 
     // Get actions from API
-    $.get(settings.API_url + "actions", options, function(data){
+    $.get(Visualizer.API_url + "actions", options, function(data){
         options.actions = data;
 
         // Clear old list of actions
@@ -402,7 +287,144 @@ UI.updateAvailablePlayerActions = function(callback){
 
 }
 
+// For the currently selected actions, 
+// get a list of playerIDs
+UI.getPlayers = function(callback){
+
+    var opts = Visualizer.getContext();
+
+    // Get actions from API
+    $.get(Visualizer.API_url + "players", opts, function(data){
+        
+        options.players = data;
+
+        console.log(options.players)
+
+        UI.listPlayers();
+
+        if (callback) callback();
+    })
+
+}
+
+// Render an HTML list of available players
+UI.listPlayers = function(){
+  
+  // Grab current list of playerIDs
+  var players = options.players;
+
+  // Clear previous player list
+  $('#player-list').html("");
+
+  _.each(players, function(p){
+
+    // Create table row with player data
+    var tr = ""
+    tr += '<td>' + '<a onclick="UI.showPlayerData(' + p + ')"><i class="fa fa-code"></i></a>' + '</td>';
+    tr += '<td>' + "Player <b>" + p + '</b></td>';
+    // tr += '<td>' +  '<input type="checkbox" id="toggle_user user-"' + p +  '></td>';
+    tr += '<td>' + '<a onclick="Visualizer.loadData([' + p + '])"><i class="fa fa-plus"></i></a>' + '</td>';
+    
+    // Add options buttons
+    // tr += '<td><button class="btn btn-primary"><i class="fa fa-plus"></i></button></td>';
+
+    $('#player-list').append("<tr>" + tr + "</tr>");
+  })
+}
+
+UI.showPlayerData = function(playerID){
+
+  var opts = Visualizer.getContext();
+
+  // Get specific player
+  opts.players = [playerID];
+
+  // Data from API
+  $.get(Visualizer.API_url + "entries", opts, function(data){
+
+    // Show to developers
+    console.log(data);
+    
+    var data = _.map(data, function(d){
+      return convertJSONtoHTML(d);
+    })
+    
+    var data = _.reduce(data, function(memo, num){ 
+      return memo + num + "<hr>"; 
+    }, 0);
+
+    // Show as massive string
+    bootbox.alert(data);
+  });
+}
+
+
 UI.debug = function(){
   console.log("Game : " + settings.game + " | Map : " + settings.map.name);
+}
 
+
+// Alert the user with a message.
+// (optional) provide ID for singleton box
+UI.alert = function(msg, id){
+  return Messenger().post({
+    message : msg,
+    id : (id) ? id : Math.random(1,100),
+  });
+}
+
+// Show error message
+UI.error = function(msg){
+  return Messenger().post({
+      message: msg,
+      type: 'error',
+      showCloseButton: true
+  });
+};
+
+// Show success message
+UI.success = function(msg){
+  return Messenger().post({
+    message : msg,
+    type: "success",
+  });
+}
+
+// Show/hide a loading indicator.
+UI.loading = function(boolean, msg){
+  
+  // Show loading box
+  if (boolean){
+    UI.loader = Messenger().post({
+      type: "type-loading",
+      message : (msg) ? msg : "Loading...",
+      id : "loading",
+      hideAfter: null,
+    });
+
+    return UI.loader;
+
+  } else {
+
+    // Hide loading box. 
+    UI.loader.hide();
+    
+    // Add success message.
+    return Messenger().post({
+      type: "success",
+      message : (msg) ? msg : "Loading Complete",
+      id : "loading",
+      hideAfter: 3,
+    });
+  }
+};
+
+
+// Use Hubspot's Messenger plugin to
+// provide text/popup feedback to the user.
+// http://github.hubspot.com/messenger/docs/welcome/
+
+Messenger.options = {
+  extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right',
+  theme: 'air'
 }
