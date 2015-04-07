@@ -312,6 +312,8 @@ options.lookup_table = {
 	"Position_Introhouse" : "position",
 	"Position_Outside" : "position",
 	"Position_SheriffOffice" : "position",
+	"Position_Mine" : "position",
+	"Position_Cave" : "position",
 
 	"Quest" : "quest",
 	"Stat" : "stat",
