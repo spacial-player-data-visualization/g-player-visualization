@@ -323,7 +323,7 @@ UI.listPlayers = function(){
     tr += '<td>' + '<a onclick="UI.showPlayerData(' + p + ')"><i class="fa fa-code"></i></a>' + '</td>';
     tr += '<td>' + "Player <b>" + p + '</b></td>';
     // tr += '<td>' +  '<input type="checkbox" id="toggle_user user-"' + p +  '></td>';
-    tr += '<td>' + '<a onclick="Visualizer.loadData([' + p + '])"><i class="fa fa-plus"></i></a>' + '</td>';
+    tr += '<td>' + '<a onclick="Visualizer.loadData([' + p + '])"><i class="fa fa-plus" style="font-size:20px;"></i></a>' + '</td>';
     
     // Add options buttons
     // tr += '<td><button class="btn btn-primary"><i class="fa fa-plus"></i></button></td>';
