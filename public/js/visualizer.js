@@ -122,12 +122,14 @@ Visualizer.draw = function(entries, index){
       circle.bindPopup(popup);
 
       // Provide hover of JUST the action
-      circle.on('mouseover', function(e) {
+      // circle.on('mouseover', function(e) {
 
-        // $("#legend").html(p.action);
-        console.log(p.action)
+      //   // $("#legend").html(p.action);
+      //   console.log(p.action)
 
-      });
+      // });
+
+      circle.bindLabel(p.action, { className : "tooltip-hover" })
 
       markers.addLayer(circle);
 
