@@ -20,11 +20,12 @@ function loader(){
   $("#gameSelect").val(localStorage.getItem("selectedGame"));
   settings.game = localStorage.getItem("selectedGame");
 
+  // DEPRECATED
   // Pull data from the previous upload
-  var data = lastUpload();
+  // var data = lastUpload();
 
   // Preview last upload
-  Uploader.populateTables(data);
+  // Uploader.populateTables(data);
 }
 
 // Watch File Input
@@ -33,11 +34,12 @@ $(document).ready(function(){
   // Watch the file upload. Parse when file selected.
   $("#csv-file").change(Uploader.parseFile);
 
+  // LOAD LAST UPLOAD NOW DEPRECATED
   // Pull data from the previous upload
-  var data = lastUpload();
+  //  var data = lastUpload();
 
   // Preview last upload
-  Uploader.populateTables(data);
+  //Uploader.populateTables(data);
 
 })
 
@@ -137,7 +139,7 @@ Uploader.populateTables = function(data){
   
   // some games only have 1 data type, which doesn't
   // need to be "bucketed"
-  var element = $("#gameSelect");
+  var element = document.getElementById("gameSelect");
   selectedGame = element.value;
   if (numberOfGameMappings(selectedGame) > 1) {
     // Bucket data by type of entry
