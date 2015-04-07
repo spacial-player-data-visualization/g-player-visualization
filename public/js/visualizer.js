@@ -242,7 +242,7 @@ Visualizer.getContext = function(callback){
   var obj = {
     game : settings.game,
     area : settings.map.name,
-    fidelity : 1,
+    fidelity : 10,
     playerIDs : settings.players,
     actions : settings.actions,
 

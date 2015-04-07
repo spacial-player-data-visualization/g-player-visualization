@@ -191,7 +191,7 @@ options.maps = [{
     // Save map configuration
     name: "Map",
     game: "League of Legends",
-    imageURL: "/leagueoflegends/map.jpg",
+    imageURL: "http://i.imgur.com/vattHJi.jpg",
 
 
     // Map player locations to their points
@@ -205,13 +205,13 @@ options.maps = [{
 	
 	name: "default",
 	game: "Game Gaze",
-	url: "http://www.ledr.com/colours/white.jpg",
-	width: 1000,
-	height: 1000,
-	top: 0,
+	imageURL: "http://i.imgur.com/6ADPz34.jpg",
+
+	top: 1000,
 	bottom: 0,
+
 	left: 0,
-	right: 0,
+	right: 1000,
 }
 ];
 
@@ -312,7 +312,7 @@ options.lookup_table = {
 	"Quest" : "quest",
 	"Stat" : "stat",
 
-	"Game Gaze" : "gazeDefault",
+	"Game Gaze" : "default",
 }
 
 // Store a list of available key mappings
@@ -415,6 +415,6 @@ options.mappings = [{
 
 {
 	game : "Game Gaze",
-	type : "gazeDefault",
+	type : "default",
 	colums : ["timestamp", "gazeX", "gazeY", "posX", "posY", "posZ", "cameraX", "cameraY"],
 }];
