@@ -23,7 +23,7 @@ Heatmap.addHeatmap = function(data){
       data: data,
   };
 
-  map.addLayer(MAP.heatmapLayer)
-  MAP.heatmapLayer.setData(heatmapData);
+  map.addLayer(Heatmap.heatmapLayer)
+  Heatmap.heatmapLayer.setData(heatmapData);
 }
 
