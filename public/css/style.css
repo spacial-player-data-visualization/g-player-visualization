@@ -315,7 +315,7 @@ table#player-list {
 }
 
 table#player-list td {
-    padding: 10px !important;
+    padding: 10px 0px;
 }
 
 table#player-list button {

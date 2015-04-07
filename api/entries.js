@@ -1,5 +1,6 @@
 var EntryModel = require('../models/entries');
 var _ = require('underscore');
+var Q = require('q');
 
 // save entry helper
 var saveEntry = function(data) {
@@ -184,19 +185,41 @@ module.exports = {
     // },
 
     getPlayers : function(req, res) {
-    
+
         var game = req.query.game;
         var actions = req.query.actions;
         var param = actions ? {game: game, action: {$in: actions}} : {game: game};
-        
-        return EntryModel.find(param).distinct('playerID', function(err, result){
-            if (err) {
-                console.log(err);
-            } else {
 
-                console.log('\nGET Players | ' + result.length + " results");
-                res.send(result);
-            }
+        var playersThatDidActions = []
+
+        var promises = [];
+
+        if (!actions) { 
+            res.status(500).send({ error: 'No Actions Provided.' }); 
+            return;
+        }
+
+        actions.forEach(function(action){
+            promises.push(createFindPromise(action));
+        });
+
+        function createFindPromise(action) {
+            
+            var deferred = Q.defer();
+
+            EntryModel.find({game: game, action: action}).distinct('playerID', function(err, result){
+                if (err) {
+                    console.log(err);
+                } else {
+                    deferred.resolve(playersThatDidActions.push(result));
+                }
+            });
+
+            return deferred.promise;
+        }
+
+        Q.all(promises).done(function(){
+           return res.send(_.intersection.apply(_, playersThatDidActions));
         });
     },
 

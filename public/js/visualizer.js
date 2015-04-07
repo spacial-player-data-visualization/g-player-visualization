@@ -166,11 +166,13 @@ Visualizer.addMarker = function(lat, long, title){
 }
 
 // Get Data from API
-Visualizer.loadData = function(){
+Visualizer.loadData = function(playerIDs){
 
   UI.loading(true, "Loading Data....");
 
   var opts = Visualizer.getContext();
+
+  if (playerIDs) opts.playerIDs = playerIDs;
 
   // Hit API
   $.get(Visualizer.API_url + "entries", opts, function(data){
@@ -242,8 +244,8 @@ Visualizer.getContext = function(callback){
   var obj = {
     game : settings.game,
     area : settings.map.name,
-    fidelity : 10,
-    playerIDs : settings.players,
+    fidelity : 1,
+    playerIDs : options.players,
     actions : settings.actions,
 
   }
