@@ -4,6 +4,7 @@ var Q = require('q');
 
 // save entry helper
 var saveEntry = function(data) {
+    var deferred = Q.defer();
     EntryModel.find({playerID: data.playerID, timestamp: data.timestamp}, function(err, result){
 
         if (err) {
@@ -40,7 +41,7 @@ var saveEntry = function(data) {
                     if (err) {
                         console.log(err);
                     } else {
-                        return console.log('saved');
+                        deferred.resolve(console.log('saved'));
                     }
                 });
             
@@ -49,7 +50,7 @@ var saveEntry = function(data) {
             }
         }
     });
-    
+    return deferred.promise;
 }
 
 module.exports = {
@@ -60,6 +61,7 @@ module.exports = {
 
     multiPost: function(req, res) {
 
+        var promises = [];
         // Extract DATA from request body
     	var data = JSON.parse(req.body.entries);
 
@@ -67,10 +69,12 @@ module.exports = {
         console.log(req.body.entries);
 
     	data.forEach(function(entry){
-    		saveEntry(entry);
+    		promises.push(saveEntry(entry));
     	});
-        
-    	return res.send("added multi");
+
+        Q.all(promises).done(function(){
+            return res.send("added multi");
+        });        
     },
 
     get: function(req, res) {
