@@ -41,9 +41,6 @@ Visualizer.update = function(){
 
 //   if (settings.heatmap) Heatmap.addheatmap(settings.data);
 
-  // Update view
-  Visualizer.focus();
-
   // Loading complete
   UI.loading(false, "Success. " + settings.data.length + " points loaded.");
 }
@@ -264,10 +261,7 @@ Visualizer.focus = function(){
     
     if (sample) map.fitBounds(sample.getBounds());
 
-    // map.fitBounds(bounds)
-
     // TODO: Set max/min zoom levels dynamically
-
     // map.minZoom()
     // map.maxZoom()
 }
