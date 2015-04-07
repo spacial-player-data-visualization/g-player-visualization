@@ -194,7 +194,10 @@ module.exports = {
 
         var promises = [];
 
-        if (!actions) { res.status(500).send({ error: 'No Actions Provided.' }); }
+        if (!actions) { 
+            res.status(500).send({ error: 'No Actions Provided.' }); 
+            return;
+        }
 
         actions.forEach(function(action){
             promises.push(createFindPromise(action));
@@ -203,7 +206,7 @@ module.exports = {
         function createFindPromise(action) {
             
             var deferred = Q.defer();
-            
+
             EntryModel.find({game: game, action: action}).distinct('playerID', function(err, result){
                 if (err) {
                     console.log(err);
