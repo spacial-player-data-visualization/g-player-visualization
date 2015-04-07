@@ -39,8 +39,6 @@ Visualizer.update = function(){
       Visualizer.draw(player, count++);
   });
 
-//   if (settings.heatmap) Heatmap.addheatmap(settings.data);
-
   // Loading complete
   UI.loading(false, "Success. " + settings.data.length + " points loaded.");
 }
