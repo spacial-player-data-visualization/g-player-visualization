@@ -340,12 +340,20 @@ UI.showPlayerData = function(playerID){
 
   // Data from API
   $.get(Visualizer.API_url + "entries", opts, function(data){
-    
+
     // Show to developers
     console.log(data);
     
+    var data = _.map(data, function(d){
+      return convertJSONtoHTML(d);
+    })
+    
+    var data = _.reduce(data, function(memo, num){ 
+      return memo + num + "<hr>"; 
+    }, 0);
+
     // Show as massive string
-    bootbox.alert(JSON.stringify(data));
+    bootbox.alert(data);
   });
 }
 
