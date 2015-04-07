@@ -10,7 +10,10 @@
     "body-parser": "^1.11.0",
     "connect": "^3.3.4",
     "express": "~4.9.x",
+    "mocha": "^2.2.1",
     "mongoose": "^4.x",
+    "should": "^5.2.0",
+    "supertest": "^0.15.0",
     "underscore": "^1.8.2"
   },
   "engines": {
