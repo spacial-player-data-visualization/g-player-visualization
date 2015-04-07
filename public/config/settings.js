@@ -136,8 +136,8 @@ options.maps = [{
     bottom : 0,
     left : 0,
 
-    top : 100,
-    right : 100,
+    top : 943,
+    right : 848,
 
 }, {
 
@@ -154,7 +154,7 @@ options.maps = [{
     left : 1490,
 
     top : 1950,
-    right : 2428,
+    right : 2828,
 
 }, {
 
@@ -170,8 +170,8 @@ options.maps = [{
     bottom : 0,
     left : 0,
 
-    top : 100,
-    right : 100,
+    top : 3471,
+    right : 3277,
 
 }, {
 

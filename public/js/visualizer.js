@@ -245,6 +245,8 @@ Visualizer.getContext = function(callback){
 
   }
 
+  if (obj.actions.length < 1) obj.actions = ["Quest"];
+
   console.log("\nCurrent Settings of the Map:");
   console.log(obj);
 
