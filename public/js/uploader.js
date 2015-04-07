@@ -1,7 +1,31 @@
 
 /******************************
         uploader.js 
- ******************************/
+        ******************************/
+
+// Load games into dropdown
+function loader(){
+  var selector = $("#gameSelect");
+  
+  // add game options to dropdown
+  for (var index in options.games) {
+    var option = options.games[index];
+    var dropdownAdd = document.createElement("option");
+    dropdownAdd.textContent = option;
+    dropdownAdd.value = option;
+    selector.append(dropdownAdd);
+  }
+
+  // make settings.game the selected option
+  $("#gameSelect").val(localStorage.getItem("selectedGame"));
+  settings.game = localStorage.getItem("selectedGame");
+
+  // Pull data from the previous upload
+  var data = lastUpload();
+
+  // Preview last upload
+  Uploader.populateTables(data);
+}
 
 // Watch File Input
 $(document).ready(function(){
@@ -17,7 +41,15 @@ $(document).ready(function(){
 
 })
 
+$('#gameSelect').on('change', function(){
+  var selected = $(this).find("option:selected").val();
+
+  settings.game = selected;
+  localStorage.setItem("selectedGame", settings.game);
+});
+
 var Uploader = {};
+var selectedGame = "";
 
 // Extract data from the uploaded .csv file
 // http://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
@@ -100,15 +132,19 @@ Uploader.removeEmptyLines = function(data){
 
 // Populate multiple tables
 Uploader.populateTables = function(data){
-
   // Clear tables
   $(".tableContainer").html("");
+  
+  // some games only have 1 data type, which doesn't
+  // need to be "bucketed"
+  var element = $("#gameSelect");
+  selectedGame = element.value;
+  if (numberOfGameMappings(selectedGame) > 1) {
+    // Bucket data by type of entry
+    var buckets = Uploader.sortByEntryType(data);
 
-  // Bucket data by type of entry
-  var buckets = Uploader.sortByEntryType(data);
-
-  // Print each table to DOM
-  _.each(buckets, function(bucket){
+    // Print each table to DOM
+    _.each(buckets, function(bucket){
 
     // The first data point is the
     // type of data.
@@ -118,6 +154,11 @@ Uploader.populateTables = function(data){
     Uploader.populateTable(bucket, key);
 
   })
+  } else {
+    Uploader.populateTable(data, settings.game);
+  }
+  
+
 };
 
 // Render content into HTML table.
@@ -133,8 +174,8 @@ Uploader.populateTable = function(bucket, type){
 
   // Create status <span>.
   var status = (keyMappingExists) ? 
-    '<span class="status key-mapping">Key Mapping Found</span>' :
-    '<span class="status no-key-mapping">No Key Mapping Found</span>' ;
+  '<span class="status key-mapping">Key Mapping Found</span>' :
+  '<span class="status no-key-mapping">No Key Mapping Found</span>' ;
 
   var tableID = "preview" + type.replace(/\s/g, '');
   
@@ -144,9 +185,9 @@ Uploader.populateTable = function(bucket, type){
   var tableTotal;
 
   var tableStart = '<div class="panel-heading">' +
-                   '<button type="button" class="btn btn-default button"' +
-                   'onclick="toggleHide(\'' + tableID + '\')">Toggle \"' + type + '\" Table</button>' + entryCount + " Entries"  + 
-                   status + '</div>';
+  '<button type="button" class="btn btn-default button"' +
+  'onclick="toggleHide(\'' + tableID + '\')">Toggle \"' + type + '\" Table</button>' + entryCount + " Entries"  + 
+  status + '</div>';
 
   // Hide table if we have a key mapping
   var display = (keyMappingExists) ? 'none' : 'table';
@@ -198,22 +239,26 @@ Uploader.bulkUpload = function(){
 
   // Get data from last upload
   entries = lastUpload();
-
-  // Convert data into JSON object.
+  
+   // Convert data into JSON object.
   // All data should now be represented
   // as a key/value pair
-  entries = Uploader.formatData(entries);
-
+  var flag = numberOfGameMappings(settings.game);
+  entries = Uploader.formatData(entries, flag);
+  
   // Populate missing fields. In the case of bad data,
   // we'll use previous entries to make the data
   // 'at least' plottable
   entries = Uploader.fillMissingData(entries);
-
+  
   // Remove invalid entries
   entries = Uploader.removeInvalidEntries(entries);
-
+  
   // Get user approval before storing in database
-  if (!confirm("Upload " + entries.length + " entries to the database?")) return;
+  if (!confirm("Upload " + entries.length + " entries to the database?")) {
+    UI.loading(false, "Upload cancelled.");
+    return;
+  } 
 
   // When POSTing data to the API, we occasionally
   // encounter a size/entry limit. Just to be safe,
@@ -273,61 +318,91 @@ Uploader.upload = function(bins, callback) {
 // Apply a key mapping.
 // Converts arrays from .csv file input
 // into the corresponding JSON objects
-Uploader.formatData = function(data){
+// flag: whether or not multiple key mappings need to be found.
+Uploader.formatData = function(data, flag){
 
   UI.alert("Filtering Valid Data.");
 
   var acc = [];
+  if (flag > 1) {
+    _.each(data, function(current){
 
-  _.each(data, function(current){
+      var action = current[0];
 
-    var action = current[0];
+      // Get key mapping for the current entry
+      var keyMapping = getKeyMapping(settings.game, action);
 
-    // Get key mapping for the current entry
-    var keyMapping = getKeyMapping(settings.game, action);
+      // If we have a key mapping, assign keys to the current data
+      if (keyMapping){ 
+        var entry = assignKeys(current, keyMapping.columns) 
+      };  
 
-    // If we have a key mapping, assign keys to the current data
-    if (keyMapping){ 
-      var entry = assignKeys(current, keyMapping.columns) 
-    };  
-  
-   // Return data that was converted.
-   if (entry) { acc.push(entry); }
+      // Return data that was converted.
+      if (entry) { acc.push(entry); }
 
- });
+    });
+  } else {
+    
+      var keyMapping = getKeyMapping(settings.game, settings.game);
+      _.each(data, function(current) {
+        
+        if (keyMapping) {
+          //console.log("calling assignKeys on " + current + " and " + keyMapping);
+          var entry = assignKeys(current, keyMapping.colums)
+        };
 
-UI.alert(acc.length + " of " + data.length + " Entries Valid.")
+        if (entry) { acc.push(entry); };
 
-return acc;
+      });
+  }
+
+  UI.alert(acc.length + " of " + data.length + " Entries Valid.")
+  if (acc.length != data.length) {
+    UI.alert("For invalid entries, make sure each entry has "
+      + "X and Y position data, and a timestamp.")
+  }
+  return acc;
 }
+
+
 
 Uploader.fillMissingData = function(data) {
   var entries = [];
-
+  
   // Iterate through entries
+  var playerID = '';
+  if (data[0].playerID) {
+    playerID = data[0].playerID;
+  } else {
+    playerID = prompt("The data seems to be missing a player ID."
+      + " Please indicate one to use.");
+  }
   for (var i = data.length - 1; i >= 0; i--) {
-    
+
     // Current entry
     var current = data[i];
-
     // Ensure data has time, x, and y data
     // If not, get it from the last user entry that does
-    // Note - this is only to fix a data error with the client's current data
-    // set. It is not meant to be a full fledged feature.
     if (current.posX &&  current.posY && current.timestamp && current.area) {
 
       // 
       data[i] = current;
-    
+
     // Else, if data is missing:
     // Populate the missing data
     } else {
-
-      data[i] = fillEntry(data, current);
+      if (numberOfGameMappings(selectedGame) < 2) {
+        data[i] = current;
+        data[i].area = "default";
+        data[i].playerID = playerID;
+      } else {
+        current.playerID = playerID;
+        data[i] = fillEntry(data, current);  
+      }
     }
   };
 
-  return data;
+return data;
 }
 
 Uploader.removeInvalidEntries = function(data){
@@ -338,7 +413,7 @@ Uploader.removeInvalidEntries = function(data){
 
 /******************************
        Helper Functions
- ******************************/
+       ******************************/
 
 // Find the entry with the most entries.
 // This will determine the amount of
@@ -397,10 +472,13 @@ function sanitizeEntries(data, column) {
   data = Uploader.removeEmptyLines(data);
   
   for (var index in data) {
-    data[index][column] = data[index][column].replace(/(?:\r\n|\r|\n)/g, '');
+    if (typeof data[index][column] == 'string' || 
+      data[index][column] instanceof String) {
+      data[index][column] = data[index][column].replace(/(?:\r\n|\r|\n)/g, '');
   }
+}
 
-  return data;
+return data;
 }
 
 // toggle hidden or visible for the parent div
@@ -429,7 +507,7 @@ function fillEntry(data, current) {
   }
   
   if (entryToCheck && containsRequiredKeys(entryToCheck)) {
-    
+
     current["playerID"]  = entryToCheck["playerID"];
     current["area"]      = entryToCheck["area"];
     current["posX"]      = entryToCheck["posX"];
@@ -447,4 +525,11 @@ function fillEntry(data, current) {
     return null;
 
   }
+}
+
+// find how many mappings exist for a game
+// take in a game, return a number
+function numberOfGameMappings(gameSelected) {
+  var gameMappings = _.where(options.mappings, {game : gameSelected});
+  return gameMappings.length;
 }

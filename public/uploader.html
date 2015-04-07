@@ -22,7 +22,7 @@
   <link href="css/style.css" rel="stylesheet" />
 
 </head>
-<body class="uploader">
+<body class="uploader" onload="loader();">
 
   <!-- Left Options Sidebar -->
   <div id="sidebar-wrapper">
@@ -41,10 +41,11 @@
             <div class="col-sm-3">
               <form class="form">
                 <label>Select Game</label>
-                <select class="form-control">
-                  <option>Fallout</option>
-                  <option>...etc</option>
-                </select><br>
+                <select class="form-control" id="gameSelect">
+                  <!-- <option>Fallout New Vegas</option>
+                  <option>Gaze</option>
+                 -->
+                 </select><br>
               </form>
             </div>
 
