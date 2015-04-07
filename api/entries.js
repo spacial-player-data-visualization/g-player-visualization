@@ -188,15 +188,20 @@ module.exports = {
 
         var game = req.query.game;
         var actions = req.query.actions;
-        var param = actions ? {game: game, action: {$in: actions}} : {game: game};
 
         var playersThatDidActions = []
 
         var promises = [];
 
         if (!actions) { 
-            res.status(500).send({ error: 'No Actions Provided.' }); 
-            return;
+            return EntryModel.find({game: game}).distinct('playerID', function(err, result){
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('getUsers with no actions');
+                    res.send(result);
+                }
+            });
         }
 
         actions.forEach(function(action){
