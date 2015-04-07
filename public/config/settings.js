@@ -40,9 +40,13 @@ var settings = {
 // Available options
 var options = {};
 
-// Available Acctions
+// Available Actions
 options.actions = [];
 
+// Available Players
+options.players = [];
+
+// Available Games
 options.games = [
 	"Fallout New Vegas", 
 	"League of Legends", 
@@ -191,7 +195,7 @@ options.maps = [{
     // Save map configuration
     name: "Map",
     game: "League of Legends",
-    imageURL: "/leagueoflegends/map.jpg",
+    imageURL: "http://i.imgur.com/vattHJi.jpg",
 
 
     // Map player locations to their points
@@ -201,7 +205,19 @@ options.maps = [{
     bottom : 0,
     left : 0,
     right : 0,
-}];
+}, {
+	
+	name: "default",
+	game: "Game Gaze",
+	imageURL: "http://i.imgur.com/6ADPz34.jpg",
+
+	top: 1000,
+	bottom: 0,
+
+	left: 0,
+	right: 1000,
+}
+];
 
 
 /******************************
@@ -299,6 +315,8 @@ options.lookup_table = {
 
 	"Quest" : "quest",
 	"Stat" : "stat",
+
+	"Game Gaze" : "default",
 }
 
 // Store a list of available key mappings
@@ -397,4 +415,10 @@ options.mappings = [{
 	game  : "Fallout New Vegas",
 	type  : "stat",
 	columns : ["action", "playerID", "action", "key", "value", "status"],
+},
+
+{
+	game : "Game Gaze",
+	type : "default",
+	colums : ["timestamp", "gazeX", "gazeY", "posX", "posY", "posZ", "cameraX", "cameraY"],
 }];

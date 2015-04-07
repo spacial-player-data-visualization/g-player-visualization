@@ -9,6 +9,13 @@ var UI = {
 	loader : {},
 };
 
+UI.menu = function(){
+  $.get('templates/menu.tpl.html', function(result){
+    bootbox.alert(result);
+  });
+}
+
+
 /************************************
           Setup Page
 ************************************/
@@ -289,9 +296,9 @@ UI.getPlayers = function(callback){
     // Get actions from API
     $.get(Visualizer.API_url + "players", opts, function(data){
         
-        settings.players = data;
+        options.players = data;
 
-        console.log(settings.players)
+        console.log(options.players)
 
         UI.listPlayers();
 
@@ -304,7 +311,7 @@ UI.getPlayers = function(callback){
 UI.listPlayers = function(){
   
   // Grab current list of playerIDs
-  var players = settings.players;
+  var players = options.players;
 
   // Clear previous player list
   $('#player-list').html("");
@@ -312,13 +319,43 @@ UI.listPlayers = function(){
   _.each(players, function(p){
 
     // Create table row with player data
-    var tr = '<td>' + "Player <b>" + p + '</b></td>';
-
+    var tr = ""
+    tr += '<td>' + '<a onclick="UI.showPlayerData(' + p + ')"><i class="fa fa-code"></i></a>' + '</td>';
+    tr += '<td>' + "Player <b>" + p + '</b></td>';
+    // tr += '<td>' +  '<input type="checkbox" id="toggle_user user-"' + p +  '></td>';
+    tr += '<td>' + '<a onclick="Visualizer.loadData([' + p + '])"><i class="fa fa-plus"></i></a>' + '</td>';
+    
     // Add options buttons
     // tr += '<td><button class="btn btn-primary"><i class="fa fa-plus"></i></button></td>';
 
     $('#player-list').append("<tr>" + tr + "</tr>");
   })
+}
+
+UI.showPlayerData = function(playerID){
+
+  var opts = Visualizer.getContext();
+
+  // Get specific player
+  opts.players = [playerID];
+
+  // Data from API
+  $.get(Visualizer.API_url + "entries", opts, function(data){
+
+    // Show to developers
+    console.log(data);
+    
+    var data = _.map(data, function(d){
+      return convertJSONtoHTML(d);
+    })
+    
+    var data = _.reduce(data, function(memo, num){ 
+      return memo + num + "<hr>"; 
+    }, 0);
+
+    // Show as massive string
+    bootbox.alert(data);
+  });
 }
 
 
