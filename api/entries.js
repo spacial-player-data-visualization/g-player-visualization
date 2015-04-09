@@ -4,52 +4,36 @@ var Q = require('q');
 
 // save entry helper
 var saveEntry = function(data) {
-    EntryModel.find({playerID: data.playerID, timestamp: data.timestamp}, function(err, result){
+    var tempObj = {
+        game: data.game,
+        area: data.area,
+        playerID: data.playerID,
+        timestamp: data.timestamp,
+        posX: data.posX,
+        posY: data.posY,
+    }
+    
+    // gets the rest of the key
+    var restKeys = _.chain(data)
+    .omit(['game', 'area', 'playerID', 'timestamp', 'posX', 'posY'])
+    .keys()
+    .value();
 
+    restKeys.forEach(function(key) {
+        tempObj[key] = data[key]
+    });
+
+    console.log(tempObj);
+
+    var entry = new EntryModel(tempObj);
+
+    entry.save(function(err) {
         if (err) {
             console.log(err);
         } else {
-
-            // Prevent duplicate keys
-            if (!result.length){
-
-                var tempObj = {
-                    game: data.game,
-                    area: data.area,
-                    playerID: data.playerID,
-                    timestamp: data.timestamp,
-                    posX: data.posX,
-                    posY: data.posY,
-                }
-                
-                // gets the rest of the key
-                var restKeys = _.chain(data)
-                                .omit(['game', 'area', 'playerID', 'timestamp', 'posX', 'posY'])
-                                .keys()
-                                .value();
-
-                restKeys.forEach(function(key) {
-                    tempObj[key] = data[key]
-                });
-
-                console.log(tempObj);
-
-                var entry = new EntryModel(tempObj);
-
-                entry.save(function(err) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        return console.log('saved');
-                    }
-                });
-            
-            } else {
-                console.log('already added');
-            }
+            return console.log('saved');
         }
     });
-    
 }
 
 module.exports = {
