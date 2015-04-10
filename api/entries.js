@@ -80,6 +80,11 @@ module.exports = {
         var fidelity = req.query.fidelity;
         var playerIDs = req.query.playerIDs || [];
 
+        if (!game || !area) {
+            return res.status(500).send('Missing parameters. Endpoint requires "game" and "area"');
+        }
+        
+
         return EntryModel.find({game: game, area: area, playerID: {$in: playerIDs}}, function(err, entries) {
 
             console.log("\nGET entries for " + area + " of " + game + " | " + entries.length + " entries.")
@@ -193,6 +198,10 @@ module.exports = {
 
         var promises = [];
 
+        if (!game) {
+            return res.status(500).send('Missing parameter: "game"');
+        }
+
         if (!actions) { 
             return EntryModel.find({game: game}).distinct('playerID', function(err, result){
                 if (err) {
@@ -230,7 +239,11 @@ module.exports = {
 
     getActions : function(req, res){
         var game = req.query.game;
-        
+
+        if (!game) {
+            return res.status(500).send('Missing parameter: "game"');
+        }
+
         return EntryModel.find({game: game}).distinct('action', function(err, result){
             if (err) {
                 console.log(err);
