@@ -350,18 +350,15 @@ function toLatLng (point){
 // ex: getKeyMapping("Fallout New Vegas", "Attacked")
 var getKeyMapping = function(game, eventName){
 
-  // Get the type of event from the lookup table
-  var type = options.lookup_table[eventName];
-
-  // Find mapping
-  var mapping = _.findWhere(options.mappings, {game : settings.game, type : type});
-
-  if (!mapping || !type) {
-    console.error("Unable to find key mapping for: " + eventName);
-    return;
+  for (index in options.mappings) {
+    if (_.contains(options.mappings[index].actions, eventName)) {
+      return options.mappings[index];
+    }
   }
+  
+  console.error("Unable to find key mapping for: " + eventName);
 
-  return mapping;
+  return;
 }
 
 // assignKeys() returns a JSON object, where

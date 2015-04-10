@@ -251,75 +251,8 @@ options.maps = [{
  */
 
 
-/* 
-
-This is a lookup table.
-The first column of a row will always
-tell us the name of the action. Using
-this name, we fetch the corresponding
-key mapping.
-
-*/
-
 // Lookup Table for Mapping action 
 // name to action type.
-
-options.lookup_table = {
-
-	"Attacked" : "action",
-	"CraftingTable" : "craft",
-	"Creature Giant Rat attacked first" : "ratattack",
-	"Dialogue" : "dialogue",
-
-	"InteractionContainer" : "interaction",
-	"InteractionDoor" : "interactionNoTarget",
-	"InteractionInterior" : "interaction",
-	"InteractionNPC" : "interaction",
-	"InteractionObject" : "interaction",
-	
-	"NPC Bean attacked first" : "attacked",
-	"NPC Bobby D attacked first" : "attacked",
-	"NPC Collin attacked first" : "attacked",
-	"NPC Dough attacked first" : "attacked",
-	"NPC JD attacked first" : "attacked",
-	"NPC Mel attacked first" : "attacked",
-	"NPC Munz attacked first" : "attacked",
-	"NPC Ray attacked first" : "attacked",
-	"NPC Sara attacked first" : "attacked",
-	"NPC Sheriff attacked first" : "attacked",
-	"NPC Slater attacked first" : "attacked",
-
-	"ObjectOnActivate" : "object",
-	"player attacked first" : "playeraction",
-	"Player killed" : "playeraction",
-	"Player looted dead" : "playeraction",
-	"Player looted Dead" : "playeraction",
-	"Player shooting a dead" : "playeraction",
-
-	"PlayerDropItem" : "item",
-	"PlayerDroppedItem" : "item",
-	"PlayerEquipped" : "item",
-	"PlayerLootedItem" : "item",
-	"PlayerShot" : "item",
-	"PlayerUnequipped" : "item",
-	"PlayerJumped" : "jump",
-
-	"PlayerSneaking" : "sneaking",
-
-	"Position_AbandonedHouse" : "position",
-	"Position_Bar" : "position",
-	"Position_Hotel" : "position",
-	"Position_Introhouse" : "position",
-	"Position_Outside" : "position",
-	"Position_SheriffOffice" : "position",
-	"Position_Mine" : "position",
-	"Position_Cave" : "position",
-
-	"Quest" : "quest",
-	"Stat" : "stat",
-
-	"Game Gaze" : "default",
-}
 
 // Store a list of available key mappings
 options.mappings = [{
@@ -327,54 +260,72 @@ options.mappings = [{
 	// Represent a player position in a map
 	game  : "Fallout New Vegas",
 	type  : "position",
+	actions : ["Position_AbandonedHouse", "Position_Bar", "Position_Hotel",
+				"Position_Introhouse", "Position_Outside",
+				"Position_SheriffOffice", "Position_Mine", "Position_Cave",],
 	columns : ["area", "playerID", "timestamp", "posX", "posY", "cameraX", "cameraY", "???", "??", "?"]
 }, {
 	
 	// Represent a user action
 	game  : "Fallout New Vegas",
 	type  : "action",
+	actions : [	"Attacked"],
 	columns : ["action", "playerID", "value", "target", "status"],
 }, {
 	
 	// Represent a user dialogue
 	game  : "Fallout New Vegas",
 	type  : "dialogue",
+	actions : ["Dialogue"],
 	columns : ["action", "playerId", "timestamp", "??", "NPC", "text", "response"],
 }, {
 	
 	// Represent a user interaction
 	game  : "Fallout New Vegas",
 	type  : "interaction",
-	columns : ["action", "location", "playerID", "object", "posX", "posY", "cameraX", "cameraY"],
+	actions : ["InteractionContainer", "InteractionInterior", 
+				"InteractionNPC", "InteractionObject"],
+	columns : ["action", "location", "playerID", "object", "posX", "posY", "cameraX", "cameraY"]
 }, {
 
 	// Represent item interactions
 	game  : "Fallout New Vegas",
 	type  : "item",
+	actions : ["PlayerDropItem", "PlayerDroppedItem", "PlayerEquipped",
+				"PlayerLootedItem", "PlayerShot", "PlayerUnequipped"],
 	columns : ["action", "item", "value"],
 }, {
 	
 	// Represent attacks against the player
 	game  : "Fallout New Vegas",
 	type  : "attacked",
+	actions : ["NPC Bean attacked first", "NPC Bobby D attacked first",
+				"NPC Collin attacked first", "NPC Dough attacked first",
+				"NPC JD attacked first", "NPC Mel attacked first",
+				"NPC Munz attacked first", "NPC Ray attacked first",
+				"NPC Sara attacked first", "NPC Sheriff attacked first",
+				"NPC Slater attacked first"],
 	columns : ["action", "playerID", "value"],
 }, {
 	
 	// Represents player sneaking
 	game  : "Fallout New Vegas",
 	type  : "sneaking",
+	actions : ["PlayerSneaking"],
 	columns : ["action", "area", "playerID", "value", "???"],
 }, {
 	
 	// Represents player jumping
 	game  : "Fallout New Vegas",
 	type  : "jump",
+	actions : ["PlayerJumped"],
 	columns : ["action", "value"],
 }, {
 
 	// Represents player interactions
 	game : "Fallout New Vegas",
-	type : "interaction",
+	type : "interactionNoTarget",
+	actions : ["InteractionDoor"],
 	columns : ["action", "area", "playerID", "target", "timestamp", "posX", "posY", "?"],
 }, {
 
@@ -386,41 +337,51 @@ options.mappings = [{
 	// Represents player crafting
 	game  : "Fallout New Vegas",
 	type  : "craft",
+	actions : ["CraftingTable"],
 	columns : ["action", "name", "playerID", "value"],
 }, {
 
 	// Represents player getting attacked by giant rat
 	game  : "Fallout New Vegas",
 	type  : "ratattack",
+	actions : ["Creature Giant Rat attacked first"],
 	columns : ["action", "playerID", "value"],
 }, {
 
 	// Represents player getting some object
 	game  : "Fallout New Vegas",
 	type  : "object",
+	actions : ["ObjectOnActivate"],
 	columns : ["action", "????", "value"],
 }, {
 
 	// Represents player doing some action
 	game  : "Fallout New Vegas",
 	type  : "playeraction",
-	columns : ["action", "playerID", "value", "object"],
+	actions : [ "player attacked first", "Player killed",
+				"Player looted dead", "Player looted Dead", "Player shooting a dead"],
+	columns : ["action", "playerID", "value", "object"]
 }, {
 
 	// Represents player on quest
 	game  : "Fallout New Vegas",
 	type  : "quest",
+	actions : ["Quest"],
 	columns : ["action", "playerID", "value", "name", "status"],
 }, {
 
 	// Represents player stat
 	game  : "Fallout New Vegas",
 	type  : "stat",
+	actions : ["Stat"],
 	columns : ["action", "playerID", "action", "key", "value", "status"],
 },
 
 {
 	game : "Game Gaze",
 	type : "default",
+	actions : ["Game Gaze"],
 	colums : ["timestamp", "gazeX", "gazeY", "posX", "posY", "posZ", "cameraX", "cameraY"],
 }];
+
+options.getKeyMap 
