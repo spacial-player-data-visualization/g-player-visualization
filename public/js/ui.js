@@ -352,9 +352,9 @@ UI.filters.addFilter = function(mapping){
 UI.filters.toggleAll = function(checked){
 
   if (checked) {
-    $('input:checkbox').prop('checked', true);
+    $('#filters input:checkbox').prop('checked', true);
   } else {
-    $('input:checkbox').removeAttr('checked');
+    $('#filters input:checkbox').removeAttr('checked');
   }
   
 }
