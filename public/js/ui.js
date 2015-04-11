@@ -237,31 +237,48 @@ UI.players = {};
 
 // Add a new player ID to the map.
 UI.players.add = function(playerID){
-  
-  settings.players.push[{
-    playerID : playerID,
-    color : "#FF0000"
-  }];
+    
+  // Prevent Duplicates
+  var existing = _.findWhere(settings.players, { playerID : playerID })
+  if (existing) return;
+
+  // Add to list
+  settings.players.push({ 
+    playerID : playerID, 
+    color : "#FF0000" 
+  });
+
   console.log(settings.players)
 
-  UI.players.updateList();
+  UI.players.buildUI();
 
 }
 
-UI.players.edit = function(id, player){}
+UI.players.remove = function(playerID){
 
-UI.players.remove = function(id){}
+  settings.players = _.filter(settings.players, function(player){
+    return player.playerID != playerID;
+  });
+
+  UI.players.buildUI();
+
+}
 
 // Return list of player IDs
 UI.players.listIDs = function(){  
   return _.pluck(settings.players, 'playerID')
 };
 
-UI.players.updateList = function(){
+UI.players.buildUI = function(){
   $("#active-players").html("");
 
   _.each(settings.players, function(player){
-    $("#active-players").append("<p>" + player.id + "</p>");
+
+    var a = "<p>" + player.playerID;
+    var b = '<i class="fa fa-trash-o" onclick="UI.players.remove(' + player.playerID + ')"></i>'
+    var c = "</p>";
+
+    $("#active-players").append(a + b + c);
   })
 
 }
