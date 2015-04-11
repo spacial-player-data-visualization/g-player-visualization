@@ -243,7 +243,7 @@ Visualizer.getContext = function(callback){
     fidelity : $('#select-fidelity').val(),
 
     // Select players IDs
-    playerIDs : options.players,
+    playerIDs : settings.players,
     
     // List of filtered actions
     actions : settings.actions,
