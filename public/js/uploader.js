@@ -125,8 +125,11 @@ Uploader.populateTables = function(data){
   
   // some games only have 1 data type, which doesn't
   // need to be "bucketed"
+  
   var element = document.getElementById("gameSelect");
+  
   selectedGame = element.value;
+
   if (numberOfGameMappings(selectedGame) > 1) {
     // Bucket data by type of entry
     var buckets = Uploader.sortByEntryType(data);
@@ -191,16 +194,15 @@ Uploader.populateTable = function(bucket, type){
 
     while (tableSize > key) {
 
-      if (typeof current[key] != 'undefined') {
-        tr += "<td>" + current[key] + "</td>";
-      } else {
-        tr += "<td>" + "-" + "</td>";
-      }
+      var a = (typeof current[key] != 'undefined') ? current[key] : "-"
+      
+      tr += "<td>" + a + "</td>";
 
       key++;
     }
 
     var tr = "<tr>" + tr + "</tr>";
+    
     tableStart = tableStart + tr;
   }
 
@@ -544,6 +546,7 @@ var getKeyMapping = function(game, eventName){
 
   return;
 }
+
 // assignKeys() returns a JSON object, where
 // the values of the 'values' array are assigned
 // to the column names provided in the 'mapping' array.

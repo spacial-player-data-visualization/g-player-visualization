@@ -3,8 +3,9 @@
      Default Settings
  *************************/
 
-// Settings
-// @TODO Extract SETTINGS from the STATE of the app
+// Used to represent the current state of the map,
+// and options that the user has selected. 
+
 var settings = {
 
   // Save data
@@ -296,10 +297,6 @@ Visualizer.focus = function(){
     var sample = Visualizer.layers[0]
     
     if (sample) map.fitBounds(sample.getBounds());
-
-    // TODO: Set max/min zoom levels dynamically
-    // map.minZoom()
-    // map.maxZoom()
 }
 
 /**************************************
