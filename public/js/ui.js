@@ -112,7 +112,7 @@ UI.setGame = function(gamename){
         var option = $("<option />").val(map.name).text(map.name);
 
         if (settings.map && settings.map.name == map.name){
-          option.attr('selected', 'selected')
+            option.attr('selected', 'selected')
         };
 
         $("#select-map").append(option);
@@ -172,11 +172,12 @@ UI.setMap = function(mapname, callback){
 }
 
 UI.moveMap = function(xOffset, yOffset){
-  // 
+  
+  // Get map data from settings
   var m = _.findWhere(options.maps, { name : settings.map.name });
   var index = options.maps.indexOf(m);
 
-  // 
+  // Adjust coordinates for map
   options.maps[index].left = m.left + xOffset;
   options.maps[index].right = m.right + xOffset;
   options.maps[index].top = m.top + yOffset;
@@ -188,25 +189,26 @@ UI.moveMap = function(xOffset, yOffset){
 
 UI.scaleMap = function(scale){
 
+  // Get map data from settings
   var m = _.findWhere(options.maps, { name : settings.map.name });
   var index = options.maps.indexOf(m);
 
-  // 
+  // Adjust coordinates for map
   var width  = m.right - m.left;
   var height = m.top - m.bottom;
   
-  // 
+  // Generate the scale multiplier
   var xScale = .01 * width  * scale;
   var yScale = .01 * height * scale;
 
-  // 
+  // Adjust scaling for map
   options.maps[index].left = m.left   - xScale;
   options.maps[index].right = m.right + xScale;
   
   options.maps[index].bottom = m.bottom - yScale;
   options.maps[index].top = m.top + yScale;
 
-  // console.log(options.maps[index]);
+  // Update Map
   UI.setMap(m.name, function(){ console.log(settings.map); });
 };
 
@@ -217,13 +219,12 @@ UI.getActions = function(callback){
 
     // Get actions from API
     $.get(Visualizer.API_url + "actions", options, function(data){
-        options.actions = data;
-
+      
         // Clear old list of actions
         $(".action-select").children().remove();
 
         // Add new list of actions
-        _.each(options.actions, function(action){
+        _.each(data, function(action){
             var option  = $("<option />").val(action).text(action);
             $(".action-select").append(option);
         })

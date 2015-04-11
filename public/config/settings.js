@@ -40,9 +40,6 @@ var settings = {
 // Available options
 var options = {};
 
-// Available Actions
-options.actions = [];
-
 // Available Players
 options.players = [];
 
