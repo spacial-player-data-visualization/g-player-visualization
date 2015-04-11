@@ -219,7 +219,7 @@ UI.getActions = function(callback){
 
     // Get actions from API
     $.get(Visualizer.API_url + "actions", options, function(data){
-      
+
         // Clear old list of actions
         $(".action-select").children().remove();
 
@@ -241,9 +241,9 @@ UI.getPlayers = function(callback){
     // Get actions from API
     $.get(Visualizer.API_url + "players", opts, function(data){
         
-        options.players = data;
+        settings.players = data;
 
-        console.log(options.players)
+        console.log(settings.players)
 
         UI.listPlayers();
 
@@ -256,7 +256,7 @@ UI.getPlayers = function(callback){
 UI.listPlayers = function(){
   
   // Grab current list of playerIDs
-  var players = options.players;
+  var players = settings.players;
 
   // Clear previous player list
   $('#player-list').html("");

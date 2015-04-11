@@ -40,9 +40,6 @@ var settings = {
 // Available options
 var options = {};
 
-// Available Players
-options.players = [];
-
 options.maps = [{
 
     // Save map configuration
