@@ -359,10 +359,12 @@ Uploader.formatData = function(data, flag){
   }
 
   UI.alert(acc.length + " of " + data.length + " Entries Valid.")
+
   if (acc.length != data.length) {
     UI.alert("For invalid entries, make sure each entry has "
       + "X and Y position data, and a timestamp.")
   }
+  
   return acc;
 }
 

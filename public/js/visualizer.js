@@ -232,15 +232,23 @@ Visualizer.getColor = function(i){
 Visualizer.getContext = function(callback){
 
   var obj = {
+    
+    // Currently active game
     game : settings.game,
+
+    // Currently active map
     area : settings.map.name,
-    fidelity : 1,
+
+    // Currently set data fidelity
+    fidelity : $('#select-fidelity').val(),
+
+    // Select players IDs
     playerIDs : options.players,
+    
+    // List of filtered actions
     actions : settings.actions,
 
   }
-
-  if (obj.actions.length < 1) obj.actions = ["Quest"];
 
   console.log("\nCurrent Settings of the Map:");
   console.log(obj);
