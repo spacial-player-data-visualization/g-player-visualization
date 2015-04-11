@@ -130,21 +130,6 @@ Authors:
       UI.setMap(selected);
     });
 
-    $('#toggle_paths').change(function(e) {
-
-      // Get current status
-      var checked = $('#toggle_paths').is(':checked');
-
-      settings.paths = checked;
-
-      // Clear current state
-      Visualizer.clear();
-
-      // Update map
-      Visualizer.update();
-
-    });
-
     // Show/Hide Heatmap
     $('#toggle_heatmap').change(function(e) {
       

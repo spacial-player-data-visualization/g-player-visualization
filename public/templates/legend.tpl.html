@@ -39,15 +39,10 @@
       <i class="fa fa-toggle-on"></i> Filter Data
     </h4>
   </div>
-  <div>
-    <div class="panel-body" id="filters">
-      <div class="checkbox">
-        <div class="checkbox">
-         <label>
-           <input type="checkbox" id="toggle_paths" checked>Player Paths
-         </label>
-       </div>
-     </div>
+  <div class="panel-body">
+      <div class="btn btn-default" onclick="UI.filters.toggleAll(true)">Select All</div>
+      <div class="btn btn-default" onclick="UI.filters.toggleAll(false)">None</div>
+      <div id="filters"></div>
    </div>
  </div>
 </div>

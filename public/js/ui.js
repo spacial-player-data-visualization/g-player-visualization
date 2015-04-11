@@ -349,6 +349,16 @@ UI.filters.addFilter = function(mapping){
   return a + b + c
 }
 
+UI.filters.toggleAll = function(checked){
+
+  if (checked) {
+    $('input:checkbox').prop('checked', true);
+  } else {
+    $('input:checkbox').removeAttr('checked');
+  }
+  
+}
+
 /************************************
          Helpers
 ************************************/
