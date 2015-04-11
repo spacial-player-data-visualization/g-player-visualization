@@ -154,32 +154,19 @@ Authors:
          Setup MAP
    *************************/
 
-  // Save window size.
-  var windowWidth  = $(document).width();
-  var windowHeight = $(document).height();
-
   // Initialize Map's Size
-  $("#map").css("width", windowWidth);
-  $("#map").css("height", windowHeight);
+  $("#map").css("width", $(document).width());
+  $("#map").css("height", $(document).height());
 
   // Define Map Parameters
-  var map = L.map('map', {
-    
-    // Initialize Zoom Limits
-    minZoom: 2,
-    maxZoom: 8,
-
-    // Support Leaflet.draw
-    drawControl: false,
-  })
+  var map = L.map('map', { minZoom: 2, maxZoom: 8 });
 
   map.on('click', function(e) {
-    var data = { 
+
+    console.log(Visualizer.unformatData({ 
       latitude : e.latlng.lat,
       longitude : e.latlng.lng,
-    }
-    
-    console.log(Visualizer.unformatData(data));
+    }));
     
   });
   
