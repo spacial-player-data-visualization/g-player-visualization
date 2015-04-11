@@ -1,10 +1,10 @@
-# G­-Player: Visualization of Spatial­-Temporal Play Data
+# G­-Player: Visualization of Spatial-Temporal Play Data
 
 > Visualization and Data Management for Player Activity in Games
 
 ## Overview
 
-A data visualization system for viewing and manipulating multiplayer game data. Software will allow researchers to analyze data sets of user activity to understand actions and trends. The system will provide a visual representation of the recorded spatial­-temporal behavior of all players and allow researchers to query data based on metrics such as trajectories of events, frequency of events, and others.
+A data visualization system for viewing and manipulating multiplayer game data. Software will allow researchers to analyze data sets of user activity to understand actions and trends. The system will provide a visual representation of the recorded spatial-temporal behavior of all players and allow researchers to query data based on metrics such as trajectories of events, frequency of events, and others.
 
 Created in association with Truong-Huy D. Nguyen, Game Development Researcher at Northeastern University. 
 
@@ -18,7 +18,6 @@ Available at: [g-player.herokuapp.com](g-player.herokuapp.com)
 
 Download from our [GitHub](https://github.com/spacial-player-data-visualization/g-player-visualization)
 
-
 > Installing Database
 
 After downloading the repository, create a directory for the database
@@ -29,10 +28,9 @@ $ sudo mkdir /data/db
 $ brew install mongo
 ```
 
-
 > Installing the Node Server
 
-Make sure you have [Node.js](http://nodejs.org/) and the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed.
+Make sure you have [Node.js](http://nodejs.org/) installed.
 
 ```sh
 $ npm install
@@ -44,7 +42,7 @@ $ npm install
 
 ```sh
 $ sudo mongod
-$ npm start
+$ node index.js
 
 ```
 

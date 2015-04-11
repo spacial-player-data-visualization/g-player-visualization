@@ -1,7 +1,7 @@
 
 /******************************
         uploader.js 
-        ******************************/
+ ******************************/
 
 // Load games into dropdown
 function loader(){
@@ -19,13 +19,6 @@ function loader(){
   // make settings.game the selected option
   $("#gameSelect").val(localStorage.getItem("selectedGame"));
   settings.game = localStorage.getItem("selectedGame");
-
-  // DEPRECATED
-  // Pull data from the previous upload
-  // var data = lastUpload();
-
-  // Preview last upload
-  // Uploader.populateTables(data);
 }
 
 // Watch File Input
@@ -33,13 +26,6 @@ $(document).ready(function(){
 
   // Watch the file upload. Parse when file selected.
   $("#csv-file").change(Uploader.parseFile);
-
-  // LOAD LAST UPLOAD NOW DEPRECATED
-  // Pull data from the previous upload
-  //  var data = lastUpload();
-
-  // Preview last upload
-  //Uploader.populateTables(data);
 
 })
 
@@ -325,8 +311,15 @@ Uploader.formatData = function(data, flag){
 
   UI.alert("Filtering Valid Data.");
 
+  if (!settings.game) {
+    alert("No game selected. Please select the game for which you are currently uploading data.")
+    return;
+  }
+
   var acc = [];
+
   if (flag > 1) {
+
     _.each(data, function(current){
 
       var action = current[0];
@@ -359,14 +352,14 @@ Uploader.formatData = function(data, flag){
   }
 
   UI.alert(acc.length + " of " + data.length + " Entries Valid.")
+
   if (acc.length != data.length) {
     UI.alert("For invalid entries, make sure each entry has "
       + "X and Y position data, and a timestamp.")
   }
+  
   return acc;
 }
-
-
 
 Uploader.fillMissingData = function(data) {
   var entries = [];
@@ -415,7 +408,7 @@ Uploader.removeInvalidEntries = function(data){
 
 /******************************
        Helper Functions
-       ******************************/
+ ******************************/
 
 // Find the entry with the most entries.
 // This will determine the amount of
@@ -534,4 +527,61 @@ function fillEntry(data, current) {
 function numberOfGameMappings(gameSelected) {
   var gameMappings = _.where(options.mappings, {game : gameSelected});
   return gameMappings.length;
+}
+
+
+// Return the key mapping given the 
+// game name, and the event name
+// ex: getKeyMapping("Fallout New Vegas", "Attacked")
+var getKeyMapping = function(game, eventName){
+
+  // Get the type of event from the lookup table
+  var type = options.lookup_table[eventName];
+
+  // Find mapping
+  var mapping = _.findWhere(options.mappings, {game : settings.game, type : type});
+
+  if (!mapping || !type) {
+    console.error("Unable to find key mapping for: " + eventName);
+    return;
+  }
+
+  return mapping;
+}
+
+// assignKeys() returns a JSON object, where
+// the values of the 'values' array are assigned
+// to the column names provided in the 'mapping' array.
+
+// For example:
+// values : ["apple", "orange", "pear"]
+// columns : ["fruit", "color", "shape"]
+
+// Results in:
+// { fruit : "Apple", color : "orange", shape : "pear" }
+
+var assignKeys = function(values, columns){
+  var acc = {};
+
+  // Check data. Make sure we have enough keys for our data.
+  if (columns.length != values.length){
+    console.error("Warning: Mismatch in key mapping. Amount of keys and values differ." + columns.length + " Columns, " + values.length + " Values");
+    console.log(columns);
+    console.log(values);
+    console.log("\n");
+  }
+
+  _.each(columns, function(value, key){
+    // Ensure data exists. If not, make it null for DB.
+    if (!values[key]) {
+      values[key] = null;
+    }; 
+
+    // Create key/value pair
+    acc[value] = values[key];
+  });
+
+  acc["game"] = settings.game;
+  
+  return acc;
 }

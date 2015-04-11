@@ -24,26 +24,18 @@ UI.menu = function(){
 UI.initialize = function(){
     
     // Default Settings
-    UI.setGame(settings.game);
+    UI.setGame("Fallout New Vegas");
     
-    /***************************
-       Initialize UI Options
-    ****************************/
-
+    // Initialize side nav
     UI.addToggleAbleSideNavigation();
-    // UI.addLeafletDraw();
 }
 
 /************************************
-      Setup: Help Functions
+      Setup UI / Side Options
 ************************************/
 
 // Initialize toggle-able side nav
 UI.addToggleAbleSideNavigation = function(){
-
-    /***************************
-       Setup UI / Side Options
-    ****************************/
 
     var SideOptionsToggle = L.Control.extend({
       
@@ -58,7 +50,7 @@ UI.addToggleAbleSideNavigation = function(){
 
         // Add Listener
         L.DomEvent.addListener(button, 'click', function(){
-          $("#wrapper").toggleClass("toggled");
+            $("#wrapper").toggleClass("toggled");
         });
 
         return button;
@@ -69,56 +61,8 @@ UI.addToggleAbleSideNavigation = function(){
 
     // Toggle Side Options Meny
     $("#toggle-menu").click(function(e) {
-      e.preventDefault();
-      $("#wrapper").toggleClass("toggled");
-    });
-}
-
-// Implement Leaflet Draw for creating
-// shapes on the map
-UI.addLeafletDraw = function(){
-
-    /***************************
-       Initialize Leaflet.draw
-       Enables shape creation/selection
-       https://github.com/Leaflet/Leaflet.draw#using
-    ****************************/
-
-
-    // Initialise the FeatureGroup to store editable layers
-    var drawnItems = new L.FeatureGroup();
-
-    // Initialize empty player
-    map.addLayer(drawnItems);
-
-    // Initialise the draw control and pass it the FeatureGroup of editable layers
-    var drawControl = new L.Control.Draw({
-        
-        // Disable certain shapes
-        draw : {circle: false, polyline: false, marker: false,},
-
-        // Define layer
-        edit: { featureGroup: drawnItems }
-    });
-
-    // Add Drawing Tools
-    map.addControl(drawControl);
-
-    // Listen for draw actions
-    map.on('draw:created', function(e) {
-
-        var type = e.layerType,
-            layer = e.layer;
-
-        drawnItems.addLayer(e.layer);
-
-        if (type === 'polygon') {
-          console.log(e)
-        }
-
-        if (type === 'rectangle') {
-          console.log(e)
-        }
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
     });
 }
 
@@ -168,7 +112,7 @@ UI.setGame = function(gamename){
         var option = $("<option />").val(map.name).text(map.name);
 
         if (settings.map && settings.map.name == map.name){
-          option.attr('selected', 'selected')
+            option.attr('selected', 'selected')
         };
 
         $("#select-map").append(option);
@@ -228,11 +172,12 @@ UI.setMap = function(mapname, callback){
 }
 
 UI.moveMap = function(xOffset, yOffset){
-  // 
+  
+  // Get map data from settings
   var m = _.findWhere(options.maps, { name : settings.map.name });
   var index = options.maps.indexOf(m);
 
-  // 
+  // Adjust coordinates for map
   options.maps[index].left = m.left + xOffset;
   options.maps[index].right = m.right + xOffset;
   options.maps[index].top = m.top + yOffset;
@@ -244,25 +189,26 @@ UI.moveMap = function(xOffset, yOffset){
 
 UI.scaleMap = function(scale){
 
+  // Get map data from settings
   var m = _.findWhere(options.maps, { name : settings.map.name });
   var index = options.maps.indexOf(m);
 
-  // 
+  // Adjust coordinates for map
   var width  = m.right - m.left;
   var height = m.top - m.bottom;
   
-  // 
+  // Generate the scale multiplier
   var xScale = .01 * width  * scale;
   var yScale = .01 * height * scale;
 
-  // 
+  // Adjust scaling for map
   options.maps[index].left = m.left   - xScale;
   options.maps[index].right = m.right + xScale;
   
   options.maps[index].bottom = m.bottom - yScale;
   options.maps[index].top = m.top + yScale;
 
-  // console.log(options.maps[index]);
+  // Update Map
   UI.setMap(m.name, function(){ console.log(settings.map); });
 };
 
@@ -273,13 +219,12 @@ UI.getActions = function(callback){
 
     // Get actions from API
     $.get(Visualizer.API_url + "actions", options, function(data){
-        options.actions = data;
 
         // Clear old list of actions
         $(".action-select").children().remove();
 
         // Add new list of actions
-        _.each(options.actions, function(action){
+        _.each(data, function(action){
             var option  = $("<option />").val(action).text(action);
             $(".action-select").append(option);
         })
@@ -296,9 +241,9 @@ UI.getPlayers = function(callback){
     // Get actions from API
     $.get(Visualizer.API_url + "players", opts, function(data){
         
-        options.players = data;
+        settings.players = data;
 
-        console.log(options.players)
+        console.log(settings.players)
 
         UI.listPlayers();
 
@@ -311,7 +256,7 @@ UI.getPlayers = function(callback){
 UI.listPlayers = function(){
   
   // Grab current list of playerIDs
-  var players = options.players;
+  var players = settings.players;
 
   // Clear previous player list
   $('#player-list').html("");

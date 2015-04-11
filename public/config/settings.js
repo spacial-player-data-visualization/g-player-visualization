@@ -17,7 +17,7 @@ var settings = {
   paths : true,
 
   // Default Game
-  game : "Fallout New Vegas",
+  game : null,
 
   // Current Map
   map : null,
@@ -39,21 +39,6 @@ var settings = {
 
 // Available options
 var options = {};
-
-// Available Actions
-options.actions = [];
-
-// Available Players
-options.players = [];
-
-// Available Games
-options.games = [
-	"Fallout New Vegas", 
-	"League of Legends", 
-	"Quake 3",
-	"Game Gaze",
-];
-
 
 options.maps = [{
 
@@ -375,13 +360,19 @@ options.mappings = [{
 	type  : "stat",
 	actions : ["Stat"],
 	columns : ["action", "playerID", "action", "key", "value", "status"],
-},
-
-{
+}, {
 	game : "Game Gaze",
 	type : "default",
 	actions : ["Game Gaze"],
 	colums : ["timestamp", "gazeX", "gazeY", "posX", "posY", "posZ", "cameraX", "cameraY"],
 }];
 
-options.getKeyMap 
+function getListOfGames(){
+  var games = _.uniq(options.mappings, function(mapping){ return mapping.game });
+  games = _.map(games, function(g){ return g.game });
+  return games;
+}
+
+// Available Games
+options.games = getListOfGames();
+

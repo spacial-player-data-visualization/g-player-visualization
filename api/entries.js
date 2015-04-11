@@ -4,52 +4,36 @@ var Q = require('q');
 
 // save entry helper
 var saveEntry = function(data) {
-    EntryModel.find({playerID: data.playerID, timestamp: data.timestamp}, function(err, result){
+    var tempObj = {
+        game: data.game,
+        area: data.area,
+        playerID: data.playerID,
+        timestamp: data.timestamp,
+        posX: data.posX,
+        posY: data.posY,
+    }
+    
+    // gets the rest of the key
+    var restKeys = _.chain(data)
+    .omit(['game', 'area', 'playerID', 'timestamp', 'posX', 'posY'])
+    .keys()
+    .value();
 
+    restKeys.forEach(function(key) {
+        tempObj[key] = data[key]
+    });
+
+    console.log(tempObj);
+
+    var entry = new EntryModel(tempObj);
+
+    entry.save(function(err) {
         if (err) {
             console.log(err);
         } else {
-
-            // Prevent duplicate keys
-            if (!result.length){
-
-                var tempObj = {
-                    game: data.game,
-                    area: data.area,
-                    playerID: data.playerID,
-                    timestamp: data.timestamp,
-                    posX: data.posX,
-                    posY: data.posY,
-                }
-                
-                // gets the rest of the key
-                var restKeys = _.chain(data)
-                                .omit(['game', 'area', 'playerID', 'timestamp', 'posX', 'posY'])
-                                .keys()
-                                .value();
-
-                restKeys.forEach(function(key) {
-                    tempObj[key] = data[key]
-                });
-
-                console.log(tempObj);
-
-                var entry = new EntryModel(tempObj);
-
-                entry.save(function(err) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        return console.log('saved');
-                    }
-                });
-            
-            } else {
-                console.log('already added');
-            }
+            return console.log('saved');
         }
     });
-    
 }
 
 module.exports = {
@@ -79,6 +63,11 @@ module.exports = {
         var area = req.query.area;
         var fidelity = req.query.fidelity;
         var playerIDs = req.query.playerIDs || [];
+
+        if (!game || !area) {
+            return res.status(500).send('Missing parameters. Endpoint requires "game" and "area"');
+        }
+        
 
         return EntryModel.find({game: game, area: area, playerID: {$in: playerIDs}}, function(err, entries) {
 
@@ -193,6 +182,10 @@ module.exports = {
 
         var promises = [];
 
+        if (!game) {
+            return res.status(500).send('Missing parameter: "game"');
+        }
+
         if (!actions) { 
             return EntryModel.find({game: game}).distinct('playerID', function(err, result){
                 if (err) {
@@ -230,7 +223,11 @@ module.exports = {
 
     getActions : function(req, res){
         var game = req.query.game;
-        
+
+        if (!game) {
+            return res.status(500).send('Missing parameter: "game"');
+        }
+
         return EntryModel.find({game: game}).distinct('action', function(err, result){
             if (err) {
                 console.log(err);
