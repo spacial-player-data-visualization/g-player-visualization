@@ -1,8 +1,41 @@
 
+/*************************
+     Default Settings
+ *************************/
+
+// Settings
+// @TODO Extract SETTINGS from the STATE of the app
+var settings = {
+
+  // Save data
+  data : null,
+
+  // enable heatmap
+  heatmap : true,
+
+  // enable player paths
+  paths : true,
+
+  // Default Game
+  game : null,
+
+  // Current Map
+  map : null,
+
+  // Current overlay
+  overlay : null,
+
+  // Current players
+  players : [],
+
+  // Currently selected actions
+  actions : [],
+
+};
+
 /************************************
          Mapping Logic
  ************************************/
-
 
 var Visualizer = {};
 

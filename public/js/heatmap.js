@@ -26,4 +26,3 @@ Heatmap.addHeatmap = function(data){
   map.addLayer(Heatmap.heatmapLayer)
   Heatmap.heatmapLayer.setData(heatmapData);
 }
-

@@ -7,6 +7,7 @@ var UI = {
 
 	// Store reference to loading indicator
 	loader : {},
+
 };
 
 UI.menu = function(){
@@ -14,7 +15,6 @@ UI.menu = function(){
     bootbox.alert(result);
   });
 }
-
 
 /************************************
           Setup Page
@@ -67,7 +67,7 @@ UI.addToggleAbleSideNavigation = function(){
 }
 
 /************************************
-         Update Functions
+         Game Functions
 ************************************/
 
 // When user selects a new game
@@ -122,6 +122,10 @@ UI.setGame = function(gamename){
     UI.getActions();
     UI.getPlayers();
 }
+
+/************************************
+         Map Functions
+************************************/
 
 // When user selects a new map
 UI.setMap = function(mapname, callback){
@@ -212,6 +216,10 @@ UI.scaleMap = function(scale){
   UI.setMap(m.name, function(){ console.log(settings.map); });
 };
 
+/************************************
+         Actions
+************************************/
+
 UI.getActions = function(callback){
     
     // Get current game/map
@@ -231,6 +239,10 @@ UI.getActions = function(callback){
     })
 
 }
+
+/************************************
+          Players
+************************************/
 
 // For the currently selected actions, 
 // get a list of playerIDs
@@ -303,11 +315,9 @@ UI.showPlayerData = function(playerID){
   });
 }
 
-
-UI.debug = function(){
-  console.log("Game : " + settings.game + " | Map : " + settings.map.name);
-}
-
+/************************************
+         Helpers
+************************************/
 
 // Alert the user with a message.
 // (optional) provide ID for singleton box
@@ -363,7 +373,6 @@ UI.loading = function(boolean, msg){
     });
   }
 };
-
 
 // Use Hubspot's Messenger plugin to
 // provide text/popup feedback to the user.
