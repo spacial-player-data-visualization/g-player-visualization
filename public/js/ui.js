@@ -31,7 +31,6 @@ UI.initialize = function(){
     ****************************/
 
     UI.addToggleAbleSideNavigation();
-    // UI.addLeafletDraw();
 }
 
 /************************************
@@ -71,54 +70,6 @@ UI.addToggleAbleSideNavigation = function(){
     $("#toggle-menu").click(function(e) {
       e.preventDefault();
       $("#wrapper").toggleClass("toggled");
-    });
-}
-
-// Implement Leaflet Draw for creating
-// shapes on the map
-UI.addLeafletDraw = function(){
-
-    /***************************
-       Initialize Leaflet.draw
-       Enables shape creation/selection
-       https://github.com/Leaflet/Leaflet.draw#using
-    ****************************/
-
-
-    // Initialise the FeatureGroup to store editable layers
-    var drawnItems = new L.FeatureGroup();
-
-    // Initialize empty player
-    map.addLayer(drawnItems);
-
-    // Initialise the draw control and pass it the FeatureGroup of editable layers
-    var drawControl = new L.Control.Draw({
-        
-        // Disable certain shapes
-        draw : {circle: false, polyline: false, marker: false,},
-
-        // Define layer
-        edit: { featureGroup: drawnItems }
-    });
-
-    // Add Drawing Tools
-    map.addControl(drawControl);
-
-    // Listen for draw actions
-    map.on('draw:created', function(e) {
-
-        var type = e.layerType,
-            layer = e.layer;
-
-        drawnItems.addLayer(e.layer);
-
-        if (type === 'polygon') {
-          console.log(e)
-        }
-
-        if (type === 'rectangle') {
-          console.log(e)
-        }
     });
 }
 

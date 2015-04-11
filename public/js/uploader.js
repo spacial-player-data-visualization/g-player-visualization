@@ -19,13 +19,6 @@ function loader(){
   // make settings.game the selected option
   $("#gameSelect").val(localStorage.getItem("selectedGame"));
   settings.game = localStorage.getItem("selectedGame");
-
-  // DEPRECATED
-  // Pull data from the previous upload
-  // var data = lastUpload();
-
-  // Preview last upload
-  // Uploader.populateTables(data);
 }
 
 // Watch File Input
@@ -33,13 +26,6 @@ $(document).ready(function(){
 
   // Watch the file upload. Parse when file selected.
   $("#csv-file").change(Uploader.parseFile);
-
-  // LOAD LAST UPLOAD NOW DEPRECATED
-  // Pull data from the previous upload
-  //  var data = lastUpload();
-
-  // Preview last upload
-  //Uploader.populateTables(data);
 
 })
 
@@ -368,8 +354,6 @@ Uploader.formatData = function(data, flag){
   return acc;
 }
 
-
-
 Uploader.fillMissingData = function(data) {
   var entries = [];
   
@@ -417,7 +401,7 @@ Uploader.removeInvalidEntries = function(data){
 
 /******************************
        Helper Functions
-       ******************************/
+ ******************************/
 
 // Find the entry with the most entries.
 // This will determine the amount of

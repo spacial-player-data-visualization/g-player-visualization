@@ -405,8 +405,8 @@ var assignKeys = function(values, columns){
   });
 
   acc["game"] = settings.game;
+  
   return acc;
-  // ex: assignKeys(["apple", "orange", "pear"], ["fruit", "color", "shape"])
 }
 
 // Given a list of arrays, convert the data into JSON objects.
