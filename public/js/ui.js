@@ -121,6 +121,7 @@ UI.setGame = function(gamename){
     // Change available actions
     UI.getActions();
     UI.getPlayers();
+    UI.filters.create();
 }
 
 /************************************
@@ -313,6 +314,39 @@ UI.showPlayerData = function(playerID){
     // Show as massive string
     bootbox.alert(data);
   });
+}
+
+/************************************
+         Filters
+************************************/
+
+UI.filters = {};
+
+UI.filters.create = function(){
+
+  // Get list of this game's mappings
+  var mappings = _.filter(options.mappings, { game : settings.game });
+
+  // Clear filters list
+  $("#filters").html("");
+
+  _.each(mappings, function(mapping){
+
+      var html = UI.filters.addFilter(mapping);
+      $("#filters").append(html);
+
+  })
+
+  return true;
+}
+
+UI.filters.addFilter = function(mapping){
+
+  var a = '<div class="checkbox"><label>';
+  var b = '<input type="checkbox" id="toggle_paths" checked>' + mapping.type;
+  var c = '</label></div>';
+
+  return a + b + c
 }
 
 /************************************
