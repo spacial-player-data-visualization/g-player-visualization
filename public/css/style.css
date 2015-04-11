@@ -311,19 +311,19 @@ ul.messenger-theme-air .messenger-message {
 }
 
 
-table#player-list {
+table#available-players {
 
 }
 
-table#player-list td {
+table#available-players td {
     padding: 10px 0px;
 }
 
-table#player-list button {
+table#available-players button {
     float: right;
 }
 
-table#player-list button i.fa{
+table#available-players button i.fa{
     margin: 0px;
     width: auto;
 }

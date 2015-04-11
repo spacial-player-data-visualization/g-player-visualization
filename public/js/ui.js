@@ -106,7 +106,7 @@ UI.setGame = function(gamename){
 
     // Change available actions
     UI.getActions();
-    UI.getPlayerList();
+    UI.getListOfAvailablePlayerIDs();
     UI.filters.create();
 }
 
@@ -231,51 +231,75 @@ UI.getActions = function(callback){
           Players
 ************************************/
 
+// Manage the players being represented
+// on the visualizer.
+UI.players = {};
 
+// Add a new player ID to the map.
+UI.players.add = function(playerID){
+  
+  settings.players.push[{
+    playerID : playerID,
+    color : "#FF0000"
+  }];
+  console.log(settings.players)
+
+  UI.players.updateList();
+
+}
+
+UI.players.edit = function(id, player){}
+
+UI.players.remove = function(id){}
+
+// Return list of player IDs
+UI.players.listIDs = function(){  
+  return _.pluck(settings.players, 'playerID')
+};
+
+UI.players.updateList = function(){
+  $("#active-players").html("");
+
+  _.each(settings.players, function(player){
+    $("#active-players").append("<p>" + player.id + "</p>");
+  })
+
+}
 
 // For the currently selected actions, 
 // get a list of playerIDs
-UI.getPlayerList = function(callback){
+UI.getListOfAvailablePlayerIDs = function(callback){
 
     var opts = Visualizer.getContext();
 
     // Get actions from API
     $.get(Visualizer.API_url + "players", opts, function(data){
         
-        settings.players = data;
+        var players = data;
+        
+        // Clear previous player list
+        $('#available-players').html("");
 
-        console.log(settings.players)
+        // Render players from database to 
+        // table on left menu
+        _.each(players, function(p){
 
-        UI.listPlayers();
+          // Create table row with player data
+          var tr = ""
+          tr += '<td>' + '<a onclick="UI.showPlayerData(' + p + ')"><i class="fa fa-code"></i></a>' + '</td>';
+          tr += '<td>' + "Player <b>" + p + '</b></td>';
+          // tr += '<td>' +  '<input type="checkbox" id="toggle_user user-"' + p +  '></td>';
+          tr += '<td>' + '<a onclick="UI.players.add(' + p + ')"><i class="fa fa-plus" style="font-size:20px;"></i></a>' + '</td>';
+          
+          // Add options buttons
+          // tr += '<td><button class="btn btn-primary"><i class="fa fa-plus"></i></button></td>';
+
+          $('#available-players').append("<tr>" + tr + "</tr>");
+        })
 
         if (callback) callback();
     })
 
-}
-
-// Render an HTML list of available players
-UI.listPlayers = function(){
-  
-  // Grab current list of playerIDs
-  var players = settings.players;
-
-  // Clear previous player list
-  $('#player-list').html("");
-
-  _.each(players, function(p){
-
-    // Create table row with player data
-    var tr = ""
-    tr += '<td>' + '<a onclick="UI.showPlayerData(' + p + ')"><i class="fa fa-code"></i></a>' + '</td>';
-    tr += '<td>' + "Player <b>" + p + '</b></td>';
-    // tr += '<td>' +  '<input type="checkbox" id="toggle_user user-"' + p +  '></td>';
-    tr += '<td>' + '<a onclick="Visualizer.loadData([' + p + '])"><i class="fa fa-plus" style="font-size:20px;"></i></a>' + '</td>';
-    
-    // Add options buttons
-    // tr += '<td><button class="btn btn-primary"><i class="fa fa-plus"></i></button></td>';
-
-    $('#player-list').append("<tr>" + tr + "</tr>");
-  })
 }
 
 UI.showPlayerData = function(playerID){

@@ -55,6 +55,12 @@ Visualizer.layers = [];
 // Target API url
 Visualizer.API_url = (window.location.href.indexOf("herokuapp.com") > -1) ? "http://g-player.herokuapp.com/api/" : "http://localhost:5000/api/";
 
+// Re-plot the map with updated settings
+Visualizer.refresh = function(){
+  Visualizer.clear();
+  Visualizer.update();
+};
+
 // Take data from settings.data.
 // Add to the map.
 // Draw lines on the map
@@ -190,7 +196,9 @@ Visualizer.addMarker = function(lat, long, title){
 }
 
 // Get Data from API
-Visualizer.loadData = function(playerIDs){
+Visualizer.loadData = function(){
+
+  var playerIDs = UI.players.listIDs();
 
   UI.loading(true, "Loading Data....");
 
@@ -277,14 +285,14 @@ Visualizer.getContext = function(callback){
     fidelity : $('#select-fidelity').val(),
 
     // Select players IDs
-    playerIDs : settings.players,
+    playerIDs : UI.players.listIDs(),
     
     // List of filtered actions
     actions : settings.actions,
 
   }
 
-  console.log("\nCurrent Settings of the Map:");
+  console.log("\nCurrent State of the Map:");
   console.log(obj);
 
   return obj;
