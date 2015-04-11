@@ -24,25 +24,18 @@ UI.menu = function(){
 UI.initialize = function(){
     
     // Default Settings
-    UI.setGame(settings.game);
+    UI.setGame("Fallout New Vegas");
     
-    /***************************
-       Initialize UI Options
-    ****************************/
-
+    // Initialize side nav
     UI.addToggleAbleSideNavigation();
 }
 
 /************************************
-      Setup: Help Functions
+      Setup UI / Side Options
 ************************************/
 
 // Initialize toggle-able side nav
 UI.addToggleAbleSideNavigation = function(){
-
-    /***************************
-       Setup UI / Side Options
-    ****************************/
 
     var SideOptionsToggle = L.Control.extend({
       
@@ -57,7 +50,7 @@ UI.addToggleAbleSideNavigation = function(){
 
         // Add Listener
         L.DomEvent.addListener(button, 'click', function(){
-          $("#wrapper").toggleClass("toggled");
+            $("#wrapper").toggleClass("toggled");
         });
 
         return button;
@@ -68,8 +61,8 @@ UI.addToggleAbleSideNavigation = function(){
 
     // Toggle Side Options Meny
     $("#toggle-menu").click(function(e) {
-      e.preventDefault();
-      $("#wrapper").toggleClass("toggled");
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
     });
 }
 

@@ -17,7 +17,7 @@ var settings = {
   paths : true,
 
   // Default Game
-  game : "Fallout New Vegas",
+  game : null,
 
   // Current Map
   map : null,
@@ -412,7 +412,7 @@ options.mappings = [{
 
 {
 	game : "Game Gaze",
-	type : "default",
+	type : "default", // If a game has one type of data, it's type is 'default'
 	colums : ["timestamp", "gazeX", "gazeY", "posX", "posY", "posZ", "cameraX", "cameraY"],
 }];
 
