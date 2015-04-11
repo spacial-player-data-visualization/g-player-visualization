@@ -96,8 +96,15 @@ Authors:
   // Load side options template
   $("#legend").load('templates/legend.tpl.html', function(result){
     
+    // Available Actions
+    UI.filters.create();
+    
     // Initialize Multiselect
     $(".action-select").select2();
+
+    /***************************
+         Watch form Values
+    ****************************/
 
     // Watcher
     $(".action-select").on("change", function (e) { 
@@ -111,13 +118,6 @@ Authors:
       UI.getPlayerList();
 
     });
-
-    // Available Actions
-    UI.filters.create();
-
-    /***************************
-         Watch form Values
-    ****************************/
 
     $('#select-game').on('change', function(){
       var selected = $(this).find("option:selected").val();
