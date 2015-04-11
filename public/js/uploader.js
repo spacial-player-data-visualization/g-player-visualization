@@ -585,23 +585,3 @@ var assignKeys = function(values, columns){
   
   return acc;
 }
-
-// Given a list of arrays, convert the data into JSON objects.
-//   game : String of game name
-//   eventName : the event name for this table
-//   data : multudimensional array container player data
-
-// var assignKeysForEntireTable = function(game, eventName, data) {
-//   var acc = [];
-
-//   // Key the key mapping
-//   var mapping = getKeyMapping(game, eventName).columns;
-
-//   // Apply key mapping to each object in the data array
-//   _.each(data, function(d){
-//     var json = assigKeys(d, mapping);
-//     if (json) acc.push(json);
-//   })
-
-//   return acc;
-// }
