@@ -322,6 +322,8 @@ UI.showPlayerData = function(playerID){
 
 UI.filters = {};
 
+// Create list of checboxes in order
+// to filter a set of actions
 UI.filters.create = function(){
 
   // Get list of this game's mappings
@@ -340,19 +342,37 @@ UI.filters.create = function(){
   return true;
 }
 
+// Create a new checkbox
 UI.filters.addFilter = function(mapping){
 
   var a = '<div class="checkbox"><label>';
-  var b = '<input type="checkbox" id="toggle_paths" checked>' + mapping.type;
+  var b = '<input type="checkbox" id="toggle_paths" value="' + mapping.type + '" checked>' + mapping.type;
   var c = '</label></div>';
 
   return a + b + c
 }
 
-UI.filters.toggleAll = function(checked){
+// Return list of selected data
+UI.filters.get = function(){
 
+  var acc = [];
+
+  // Enabled check boxes
+  $('#filters input:checkbox:checked').each(function(index, checkbox){
+    acc.push(checkbox["value"]);
+  })
+
+  return acc;
+}
+
+// Support UI element for Check All / None.
+UI.filters.toggleAll = function(checked){
+  
+  // Select All
   if (checked) {
     $('#filters input:checkbox').prop('checked', true);
+
+  // Select None
   } else {
     $('#filters input:checkbox').removeAttr('checked');
   }
