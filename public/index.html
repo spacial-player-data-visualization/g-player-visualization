@@ -85,7 +85,12 @@ Authors:
    *************************/
 
   $("#sidebar-wrapper").load('templates/left-options-menu.tpl.html', function(result){
-      UI.initialize();
+      
+      // Default Settings
+      UI.setGame("Fallout New Vegas");
+      
+      // Initialize side nav
+      UI.addToggleAbleSideNavigation();
   });
 
   // Load side options template
@@ -103,7 +108,7 @@ Authors:
       // Save to settings
       settings.actions = actions;
       
-      UI.getPlayers();
+      UI.getPlayerList();
 
     });
 

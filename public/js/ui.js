@@ -17,20 +17,6 @@ UI.menu = function(){
 }
 
 /************************************
-          Setup Page
-************************************/
-
-// Initialize the User Interface
-UI.initialize = function(){
-    
-    // Default Settings
-    UI.setGame("Fallout New Vegas");
-    
-    // Initialize side nav
-    UI.addToggleAbleSideNavigation();
-}
-
-/************************************
       Setup UI / Side Options
 ************************************/
 
@@ -120,7 +106,7 @@ UI.setGame = function(gamename){
 
     // Change available actions
     UI.getActions();
-    UI.getPlayers();
+    UI.getPlayerList();
     UI.filters.create();
 }
 
@@ -245,9 +231,11 @@ UI.getActions = function(callback){
           Players
 ************************************/
 
+
+
 // For the currently selected actions, 
 // get a list of playerIDs
-UI.getPlayers = function(callback){
+UI.getPlayerList = function(callback){
 
     var opts = Visualizer.getContext();
 
