@@ -1,9 +1,22 @@
+/*
+map.js
+G-Player Data Visualization
+
+- allows persistence of map configurations
+
+Authors:
+Tommy Hu @tomxhu
+
+Created: 
+April 12, 2015
+*/
 var app = angular.module('Maps', []);
 
+// purpose: api calls for map data
 app.factory('maps', function mapFactory($http) {
     return {
 
-        // GET
+        // GET call that gets map data
         get: function(callback) {
 
             $http.get("/api/maps")
@@ -16,7 +29,7 @@ app.factory('maps', function mapFactory($http) {
                 })
         },
 
-        // DELETE
+        // DELETE call that deletes map data at given index
         delete: function(index, callback) {
             $http.delete('/api/maps/' + index)
                 .success(function(maps) {
@@ -26,8 +39,8 @@ app.factory('maps', function mapFactory($http) {
                     alert("API Error in removing map");
                 })
         },
-
-        // PUT
+ 
+        // PUT call that updates the map data at given index
         put: function(id, map, callback) {
             $http.put('/api/maps/' + id, map)
                 .success(function(maps) {
@@ -38,7 +51,7 @@ app.factory('maps', function mapFactory($http) {
                 })
         },
 
-        // POST
+        // POST call that saves the map data for given map
         post: function(map, callback) {
 
             // Convert array to object
@@ -63,6 +76,8 @@ app.factory('maps', function mapFactory($http) {
         }
     }
 });
+
+// controller for map
 app.controller('MapsController', function($scope, $http, $filter, maps) {
 
     // Local variable for map list
@@ -85,7 +100,7 @@ app.controller('MapsController', function($scope, $http, $filter, maps) {
             UI 
      *****************/
 
-    // Open edit modal
+    // purpose: open edit map modal
     $scope.openEdit = function(index) {
 
         // Selected ID
@@ -100,7 +115,7 @@ app.controller('MapsController', function($scope, $http, $filter, maps) {
         $("#editModal").modal()
     }
 
-    // Open create modal
+    // purpose: open create map modal
     $scope.openNew = function() {
 
         $scope.selectedMapId = -1;
@@ -112,7 +127,7 @@ app.controller('MapsController', function($scope, $http, $filter, maps) {
         $("#editModal").modal()
     }
 
-    // Save a map
+    // purpose: save a map
     $scope.save = function(map) {
 
         var id = $scope.selectedMapId;
@@ -140,8 +155,9 @@ app.controller('MapsController', function($scope, $http, $filter, maps) {
 
     /*****************
            CRUD
-     *****************/
+    *****************/
 
+    // purpose: calls backend to delete at given index
     $scope.delete = function(index) {
         bootbox.confirm('are you sure', function(result) {
             if (result) {
@@ -156,6 +172,7 @@ app.controller('MapsController', function($scope, $http, $filter, maps) {
         });
     }
 
+    // purpose: calls backend to update map at given index
     $scope.update = function(id, map) {
         maps.put($scope.maps[id]._id, map, function() {
             maps.get(function(maps) {
@@ -164,6 +181,7 @@ app.controller('MapsController', function($scope, $http, $filter, maps) {
         })
     }
 
+    // purpose: calls backend to add map
     $scope.add = function(map) {
         maps.post(map, function(maps) {
             $scope.maps = maps;
