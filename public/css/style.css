@@ -328,6 +328,30 @@ table#available-players button i.fa{
     width: auto;
 }
 
+.modal-dialog {
+    max-width: 500px;
+}
+
+.modal-body, .modal-title {
+    padding: 17px;
+}
+
+.color-select {
+    margin: 0 30px;
+}
+
+.color-select .radio {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: auto;
+  display: inline-block;
+  min-width: 70px;
+}
+
+.color-select .fa {
+    font-size: 35px;
+}
+
 @media(min-width:768px) {
     #wrapper {
         padding-left: 200px;

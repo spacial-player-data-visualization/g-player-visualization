@@ -235,22 +235,58 @@ UI.getActions = function(callback){
 // on the visualizer.
 UI.players = {};
 
-// Add a new player ID to the map.
-UI.players.add = function(playerID){
-    
+UI.players.addPlayer = function(playerID){
+
   // Prevent Duplicates
   var existing = _.findWhere(settings.players, { playerID : playerID })
-  if (existing) return;
 
-  // Add to list
-  settings.players.push({ 
-    playerID : playerID, 
-    color : "#FF0000" 
+  if (existing) {
+    alert("Player " + playerID + " Already Selected");
+    return;
+  };
+
+  var colors = ["#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf", "#e0f3f8", "#abd9e9", "#74add1", "#4575b4"];
+
+  var color_radio_buttons = _.reduce(colors, function(memo, color){ 
+    return memo + '<label class="radio"><input type="radio" name="group1" value="' + color + '" checked><i class="fa fa-square" style="color: ' + color + '"></i></label>';
+  }, "");
+
+  bootbox.dialog({
+    message: '<div class="color-select">' + color_radio_buttons + '</div>',
+    title: "Adding Player " + playerID,
+    
+    buttons: {
+      success: {
+        label: "Cancel",
+        className: "btn-default",
+        callback: function() {}
+      },
+      main: {
+        label: "Add Player",
+        className: "btn-primary",
+        callback: function() {
+          var color =  $('.color-select input[type=radio]:checked').val();
+          if (!color) { color : "#000" };
+          
+          UI.players.add(playerID, color);
+        }
+      }
+    }
   });
+}
 
-  console.log(settings.players)
+// Add a new player ID to the map.
+UI.players.add = function(playerID, color){
+  
+    // Add to list
+    settings.players.push({ 
+      playerID : playerID, 
+      color : color 
+    });
 
-  UI.players.buildUI();
+    console.log(settings.players)
+
+    UI.players.buildUI();    
 
 }
 
@@ -306,7 +342,7 @@ UI.getListOfAvailablePlayerIDs = function(callback){
           tr += '<td>' + '<a onclick="UI.showPlayerData(' + p + ')"><i class="fa fa-code"></i></a>' + '</td>';
           tr += '<td>' + "Player <b>" + p + '</b></td>';
           // tr += '<td>' +  '<input type="checkbox" id="toggle_user user-"' + p +  '></td>';
-          tr += '<td>' + '<a onclick="UI.players.add(' + p + ')"><i class="fa fa-plus" style="font-size:20px;"></i></a>' + '</td>';
+          tr += '<td>' + '<a onclick="UI.players.addPlayer(' + p + ')"><i class="fa fa-plus" style="font-size:20px;"></i></a>' + '</td>';
           
           // Add options buttons
           // tr += '<td><button class="btn btn-primary"><i class="fa fa-plus"></i></button></td>';
