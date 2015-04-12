@@ -293,6 +293,7 @@ UI.players.remove = function(playerID){
     return player.playerID != playerID;
   });
 
+  Visualizer.clear();
   UI.players.refreshMap();
 
 }
@@ -315,7 +316,6 @@ UI.players.refreshMap = function(){
   })
 
   Visualizer.loadData();
-
 }
 
 // For the currently selected actions, 

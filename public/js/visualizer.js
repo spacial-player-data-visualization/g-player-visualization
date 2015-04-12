@@ -197,13 +197,9 @@ Visualizer.addMarker = function(lat, long, title){
 // Get Data from API
 Visualizer.loadData = function(){
 
-  var playerIDs = UI.players.listIDs();
-
   UI.loading(true, "Loading Data....");
 
   var opts = Visualizer.getContext();
-
-  if (playerIDs) opts.playerIDs = playerIDs;
 
   // Hit API
   $.get(Visualizer.API_url + "entries", opts, function(data){
