@@ -275,6 +275,12 @@ UI.players.addPlayer = function(playerID){
   });
 }
 
+UI.players.addPlayers = function(playerIDs){
+  _.each(playerIDs, function(playerID){
+    UI.players.add(playerID, "#f00");
+  })
+}
+
 // Add a new player ID to the map.
 UI.players.add = function(playerID, color){
   
@@ -300,7 +306,9 @@ UI.players.remove = function(playerID){
 
 // Return list of player IDs
 UI.players.listIDs = function(){
-  return _.pluck(settings.players, 'playerID')
+  var ids = _.pluck(settings.players, 'playerID');
+  if (!ids) { ids = []; } 
+  return ids;
 };
 
 UI.players.refreshMap = function(){
@@ -345,7 +353,7 @@ UI.getListOfAvailablePlayerIDs = function(callback){
           $('#available-players').append("<tr>" + tr + "</tr>");
         })
 
-        if (callback) callback();
+        if (callback) callback(data);
     })
 
 }
