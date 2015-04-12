@@ -4,6 +4,7 @@ var Q = require('q');
 
 // save entry helper
 var saveEntry = function(data) {
+    var deferred = Q.defer();
     var tempObj = {
         game: data.game,
         area: data.area,
@@ -31,9 +32,11 @@ var saveEntry = function(data) {
         if (err) {
             console.log(err);
         } else {
-            return console.log('saved');
+            deferred.resolve(console.log('saved'));
         }
     });
+
+    return deferred.promise;
 }
 
 module.exports = {
@@ -48,13 +51,16 @@ module.exports = {
     	var data = JSON.parse(req.body.entries);
 
         console.log("\nMulti-Post Request");
-        console.log(req.body.entries);
+        // console.log(req.body.entries);
+
+        var promises = []
 
     	data.forEach(function(entry){
-    		saveEntry(entry);
+    		promises.push(saveEntry(entry));
     	});
-        
-    	return res.send("added multi");
+        Q.all(promises).done(function(){
+            return res.send("added multi");
+        });
     },
 
     get: function(req, res) {
