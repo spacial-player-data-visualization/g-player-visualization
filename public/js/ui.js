@@ -284,10 +284,7 @@ UI.players.add = function(playerID, color){
       color : color 
     });
 
-    console.log(settings.players)
-
     UI.players.refreshMap();    
-
 }
 
 UI.players.remove = function(playerID){
