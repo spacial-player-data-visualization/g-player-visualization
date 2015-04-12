@@ -258,15 +258,6 @@ Visualizer.unformatData = function(latLong){
   }
 }
 
-// Visualizer.getColor = function(i){
-  
-//   var colors = ["#d73027", "#f46d43", "#fdae61",
-//                 "#fee090", "#ffffbf", "#e0f3f8", 
-//                 "#abd9e9", "#74add1", "#4575b4"];
-
-//   return (i < colors.length - 1) ? colors[i] : "#000000";
-// }
-
 // Returns a representation of the current state of the
 // map. This object provided context for what data
 // the API should return in order to be mapped.
