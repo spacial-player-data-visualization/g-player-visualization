@@ -112,7 +112,7 @@ module.exports = {
 
                         // if not a position value, 
                         // return everything
-                        return false;
+                        return true;
                     }
                 });
 
