@@ -35,7 +35,6 @@ module.exports = {
 		})
 	},
 	put: function(req, res) {
-		console.log(req.params.id);
 		return MapModel.findById(req.params.id, function(err, map){
 
 			map.name = req.body.name;
