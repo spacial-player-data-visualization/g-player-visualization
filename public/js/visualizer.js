@@ -92,6 +92,9 @@ Visualizer.draw = function(entries, color, index){
     // Ensure chronological order
     entries = sortBy(entries, "timestamp");
 
+    // Get the currently selected list of actions
+    var enabledActions = UI.filters.actions();
+
     /********************************
              POSITIONS
      ********************************/
@@ -122,7 +125,7 @@ Visualizer.draw = function(entries, color, index){
     
     var featureGroup = new L.FeatureGroup().addLayer(polyline);
 
-    if (settings.paths) addFeatureGroup(featureGroup);
+    if (_.contains(UI.filters.categories(), 'position')) addFeatureGroup(featureGroup);
 
     /********************************
              ACTIONS
@@ -132,7 +135,10 @@ Visualizer.draw = function(entries, color, index){
     var actions = _.filter(entries, function(d){
 
       // Do we have an action key?
-      return (d.action) ? true : false;
+      var exists = (d.action) ? true : false;
+
+      // Is the action enabled in the side nav?
+      return exists && (_.contains(enabledActions, d.action))
     });
 
     var markers = new L.FeatureGroup();

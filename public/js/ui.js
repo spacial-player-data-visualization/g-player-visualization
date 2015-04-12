@@ -299,7 +299,7 @@ UI.players.remove = function(playerID){
 }
 
 // Return list of player IDs
-UI.players.listIDs = function(){  
+UI.players.listIDs = function(){
   return _.pluck(settings.players, 'playerID')
 };
 
@@ -412,17 +412,39 @@ UI.filters.addFilter = function(mapping){
   return a + b + c
 }
 
-// Return list of selected data
-UI.filters.get = function(){
+// Return list of selected actions
+// NOTE: The checkboxes toggle CATEGORIES of key 
+// mappings. This function collects, and returns
+// an array of ALL actions that are allowed.
 
-  var acc = [];
+UI.filters.actions = function(){
+
+  var categories = UI.filters.categories();
+
+  // Find key mappings for current set of categories
+  var enabledKeyMappings = _.filter(options.mappings, function(mapping){
+    return _.contains(categories, mapping.type);
+  });
+
+  // Build list of ALL actions
+  var actions = _.reduce(enabledKeyMappings, function(memo, mapping){ 
+    return memo.concat(mapping.actions); 
+  }, []);
+
+  return actions;
+}
+
+// Return list of selected categories
+UI.filters.categories = function(){
+    
+    // List of actions
+  var categories = [];
 
   // Enabled check boxes
   $('#filters input:checkbox:checked').each(function(index, checkbox){
-    acc.push(checkbox["value"]);
+    categories.push(checkbox["value"]);
   })
-
-  return acc;
+  return categories;
 }
 
 // Support UI element for Check All / None.
