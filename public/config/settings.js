@@ -1,7 +1,16 @@
+/*
 
-/******************************
-        config.js
- ******************************/
+settings.js
+G-Player Data Visualization
+
+- A file used to store global settings for the app
+- Stores the current state of the application
+
+Created: March 25th, 2015
+Authors:
+Alex Johnson @alexjohnson505
+
+*/
 
 // Available options
 var options = {};
@@ -66,12 +75,11 @@ options.maps = [{
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
+    bottom : -2143.1626916348123,
+    left : -73.16269163481242,
 
-    bottom : -2104,
-    left : -274,
-
-    top : 84,
-    right : 1914,
+    top : -356.83730836518754,
+    right : 1713.1626916348123,
 
 }, {
 
@@ -84,11 +92,11 @@ options.maps = [{
     // on the map. Manually offset for accuracy.
     // Multiplied to base
 
-    bottom : 0,
-    left : 0,
+    bottom : 4846.907302239601,
+    left : -1858.9105065756294,
 
-    top : 943,
-    right : 848,
+    top : 10836.0926977604,
+    right : 3526.9105065756266,
 
 }, {
 
@@ -101,11 +109,11 @@ options.maps = [{
     // on the map. Manually offset for accuracy.
     // Multiplied to base
 
-    bottom : 590,
-    left : 1490,
+    bottom : 909.9856107934693,
+    left : 1477.3976082659278,
 
-    top : 1950,
-    right : 2828,
+    top : 1950.0143892065314,
+    right : 2500.6023917340713,
 
 }, {
 
@@ -118,11 +126,11 @@ options.maps = [{
     // on the map. Manually offset for accuracy.
     // Multiplied to base
 
-    bottom : 0,
-    left : 0,
+    bottom : -4278.8948593636815,
+    left : -2202.1430291370752,
 
-    top : 3471,
-    right : 3277,
+    top : 3369.8948593636815,
+    right : 5019.143029137077,
 
 }, {
 
@@ -134,12 +142,11 @@ options.maps = [{
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
+    bottom : -1060.6062191263106,
+    left : -981.582241014099,
 
-    bottom : 170,
-    left : 60,
-
-    top : 4200,
-    right : 4310,
+    top : 4470.606219126312,
+    right : 4851.582241014096,
 
 }, {
 

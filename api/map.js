@@ -1,6 +1,21 @@
+/*
+
+map.js
+G-Player Data Visualization
+
+- Creates endpoint for all map-related operations
+
+Created: April 5, 2015
+Authors:
+Alex Johnson @alexjohnson505
+Tommy Hu @tomxhu
+
+*/
+
 var MapModel = require('../models/map');
 var _ = require('underscore');
 
+// handles CRUD operations
 module.exports = {
 	post: function(req, res) {
 		var map = {

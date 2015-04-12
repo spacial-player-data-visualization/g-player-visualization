@@ -1,3 +1,16 @@
+/*
+
+key_mapping.js
+G-Player Data Visualization
+
+- Schema for Key Mappings for the Mongo database
+
+Created: March 22, 2015
+Authors:
+Tommy Hu @tomxhu
+
+*/
+
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
