@@ -253,7 +253,7 @@ UI.players.addPlayer = function(playerID){
 
   bootbox.dialog({
     message: '<div class="color-select">' + color_radio_buttons + '</div>',
-    title: "Adding Player " + playerID,
+    title: "Select Color for Player " + playerID,
     
     buttons: {
       success: {
@@ -267,7 +267,7 @@ UI.players.addPlayer = function(playerID){
         callback: function() {
           var color =  $('.color-select input[type=radio]:checked').val();
           if (!color) { color : "#000" };
-          
+
           UI.players.add(playerID, color);
         }
       }
@@ -286,7 +286,7 @@ UI.players.add = function(playerID, color){
 
     console.log(settings.players)
 
-    UI.players.buildUI();    
+    UI.players.refreshMap();    
 
 }
 
@@ -296,7 +296,7 @@ UI.players.remove = function(playerID){
     return player.playerID != playerID;
   });
 
-  UI.players.buildUI();
+  UI.players.refreshMap();
 
 }
 
@@ -305,17 +305,19 @@ UI.players.listIDs = function(){
   return _.pluck(settings.players, 'playerID')
 };
 
-UI.players.buildUI = function(){
+UI.players.refreshMap = function(){
   $("#active-players").html("");
 
   _.each(settings.players, function(player){
 
-    var a = '<i class="fa fa-square" style="color: ' + '#f00' + '"></i>';
+    var a = '<i class="fa fa-square" style="color: ' + player.color + '"></i>';
     var b = '<i class="fa fa-trash-o" onclick="UI.players.remove(' + player.playerID + ')"></i>';
     var c = player.playerID;
 
     $("#active-players").append("<p>" + a + b + c + "</p>");
   })
+
+  Visualizer.loadData();
 
 }
 
@@ -341,11 +343,7 @@ UI.getListOfAvailablePlayerIDs = function(callback){
           var tr = ""
           tr += '<td>' + '<a onclick="UI.showPlayerData(' + p + ')"><i class="fa fa-code"></i></a>' + '</td>';
           tr += '<td>' + "Player <b>" + p + '</b></td>';
-          // tr += '<td>' +  '<input type="checkbox" id="toggle_user user-"' + p +  '></td>';
           tr += '<td>' + '<a onclick="UI.players.addPlayer(' + p + ')"><i class="fa fa-plus" style="font-size:20px;"></i></a>' + '</td>';
-          
-          // Add options buttons
-          // tr += '<td><button class="btn btn-primary"><i class="fa fa-plus"></i></button></td>';
 
           $('#available-players').append("<tr>" + tr + "</tr>");
         })

@@ -73,10 +73,12 @@ Visualizer.update = function(){
   var count = 0;
 
   // Iterate through players
-  _.each(players, function(player){
+  _.each(players, function(player, playerID){
+
+      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
 
       // Render each player onto the map
-      Visualizer.draw(player, count++);
+      Visualizer.draw(player, thisPlayer.color, count++);
   });
 
   // Loading complete
@@ -85,10 +87,7 @@ Visualizer.update = function(){
 
 // Draw a player onto the map. Positions are rendered
 // as lines, while actions are clickable points.
-Visualizer.draw = function(entries, index){
-
-    // Get selected color.
-    var color = Visualizer.getColor(index);
+Visualizer.draw = function(entries, color, index){
 
     // Ensure chronological order
     entries = sortBy(entries, "timestamp");
@@ -259,14 +258,14 @@ Visualizer.unformatData = function(latLong){
   }
 }
 
-Visualizer.getColor = function(i){
+// Visualizer.getColor = function(i){
   
-  var colors = ["#d73027", "#f46d43", "#fdae61",
-                "#fee090", "#ffffbf", "#e0f3f8", 
-                "#abd9e9", "#74add1", "#4575b4"];
+//   var colors = ["#d73027", "#f46d43", "#fdae61",
+//                 "#fee090", "#ffffbf", "#e0f3f8", 
+//                 "#abd9e9", "#74add1", "#4575b4"];
 
-  return (i < colors.length - 1) ? colors[i] : "#000000";
-}
+//   return (i < colors.length - 1) ? colors[i] : "#000000";
+// }
 
 // Returns a representation of the current state of the
 // map. This object provided context for what data
