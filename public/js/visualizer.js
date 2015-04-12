@@ -55,6 +55,12 @@ Visualizer.layers = [];
 // Target API url
 Visualizer.API_url = (window.location.href.indexOf("herokuapp.com") > -1) ? "http://g-player.herokuapp.com/api/" : "http://localhost:5000/api/";
 
+// Re-plot the map with updated settings
+Visualizer.refresh = function(){
+  Visualizer.clear();
+  Visualizer.update();
+};
+
 // Take data from settings.data.
 // Add to the map.
 // Draw lines on the map
@@ -67,10 +73,12 @@ Visualizer.update = function(){
   var count = 0;
 
   // Iterate through players
-  _.each(players, function(player){
+  _.each(players, function(player, playerID){
+
+      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
 
       // Render each player onto the map
-      Visualizer.draw(player, count++);
+      Visualizer.draw(player, thisPlayer.color, count++);
   });
 
   // Loading complete
@@ -79,10 +87,7 @@ Visualizer.update = function(){
 
 // Draw a player onto the map. Positions are rendered
 // as lines, while actions are clickable points.
-Visualizer.draw = function(entries, index){
-
-    // Get selected color.
-    var color = Visualizer.getColor(index);
+Visualizer.draw = function(entries, color, index){
 
     // Ensure chronological order
     entries = sortBy(entries, "timestamp");
@@ -190,7 +195,9 @@ Visualizer.addMarker = function(lat, long, title){
 }
 
 // Get Data from API
-Visualizer.loadData = function(playerIDs){
+Visualizer.loadData = function(){
+
+  var playerIDs = UI.players.listIDs();
 
   UI.loading(true, "Loading Data....");
 
@@ -251,15 +258,6 @@ Visualizer.unformatData = function(latLong){
   }
 }
 
-Visualizer.getColor = function(i){
-  
-  var colors = ["#d73027", "#f46d43", "#fdae61",
-                "#fee090", "#ffffbf", "#e0f3f8", 
-                "#abd9e9", "#74add1", "#4575b4"];
-
-  return (i < colors.length - 1) ? colors[i] : "#000000";
-}
-
 // Returns a representation of the current state of the
 // map. This object provided context for what data
 // the API should return in order to be mapped.
@@ -277,14 +275,14 @@ Visualizer.getContext = function(callback){
     fidelity : $('#select-fidelity').val(),
 
     // Select players IDs
-    playerIDs : settings.players,
+    playerIDs : UI.players.listIDs(),
     
     // List of filtered actions
     actions : settings.actions,
 
   }
 
-  console.log("\nCurrent Settings of the Map:");
+  console.log("\nCurrent State of the Map:");
   console.log(obj);
 
   return obj;

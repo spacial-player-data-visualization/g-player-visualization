@@ -25,10 +25,7 @@
     </h4>
   </div>
   <div>
-    <div class="panel-body">
-      <div class="checkbox">
-        ...
-     </div>
+    <div class="panel-body" id="active-players">
    </div>
  </div>
 </div>
@@ -40,6 +37,7 @@
     </h4>
   </div>
   <div class="panel-body">
+      <div class="btn btn-primary" onclick="Visualizer.refresh();" style="margin-bottom: 10px; width: 100%;">Update</div>
       <div class="btn btn-default" onclick="UI.filters.toggleAll(true)">Select All</div>
       <div class="btn btn-default" onclick="UI.filters.toggleAll(false)">None</div>
       <div id="filters"></div>

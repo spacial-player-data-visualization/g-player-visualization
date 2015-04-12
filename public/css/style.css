@@ -311,21 +311,45 @@ ul.messenger-theme-air .messenger-message {
 }
 
 
-table#player-list {
+table#available-players {
 
 }
 
-table#player-list td {
+table#available-players td {
     padding: 10px 0px;
 }
 
-table#player-list button {
+table#available-players button {
     float: right;
 }
 
-table#player-list button i.fa{
+table#available-players button i.fa{
     margin: 0px;
     width: auto;
+}
+
+.modal-dialog {
+    max-width: 500px;
+}
+
+.modal-body, .modal-title {
+    padding: 17px;
+}
+
+.color-select {
+    margin: 0 30px;
+}
+
+.color-select .radio {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: auto;
+  display: inline-block;
+  min-width: 70px;
+}
+
+.color-select .fa {
+    font-size: 35px;
 }
 
 @media(min-width:768px) {
@@ -354,6 +378,10 @@ table#player-list button i.fa{
         position: relative;
         margin-right: 0;
     }
+}
+
+#active-players .fa {
+    margin-right: 10px;
 }
 
 .tooltip-hover {
