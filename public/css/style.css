@@ -356,6 +356,10 @@ table#available-players button i.fa{
     }
 }
 
+#active-players .fa {
+    margin-right: 10px;
+}
+
 .tooltip-hover {
     background-color: #fff;
     padding: 2px;

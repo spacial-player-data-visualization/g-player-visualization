@@ -274,11 +274,11 @@ UI.players.buildUI = function(){
 
   _.each(settings.players, function(player){
 
-    var a = "<p>" + player.playerID;
-    var b = '<i class="fa fa-trash-o" onclick="UI.players.remove(' + player.playerID + ')"></i>'
-    var c = "</p>";
+    var a = '<i class="fa fa-square" style="color: ' + '#f00' + '"></i>';
+    var b = '<i class="fa fa-trash-o" onclick="UI.players.remove(' + player.playerID + ')"></i>';
+    var c = player.playerID;
 
-    $("#active-players").append(a + b + c);
+    $("#active-players").append("<p>" + a + b + c + "</p>");
   })
 
 }

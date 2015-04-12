@@ -27,12 +27,12 @@ options.maps = [{
     name: "Position_Outside",
     game: "Fallout New Vegas",
     imageURL: "http://i.imgur.com/sSYRyve.jpg",
-	
+
 
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
-    
+
     bottom : -13981,
     left : -7682,
 
@@ -258,7 +258,7 @@ options.mappings = [{
 				"NPC Slater attacked first"],
 	columns : ["action", "playerID", "value"],
 }, {
-	
+
 	// Represents player sneaking
 	game  : "Fallout New Vegas",
 	type  : "sneaking",
