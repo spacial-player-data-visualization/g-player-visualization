@@ -63,7 +63,7 @@ app.factory('maps', function mapFactory($http) {
         }
     }
 });
-app.controller('MapsController', function($scope, $http, $filter, maps, $window) {
+app.controller('MapsController', function($scope, $http, $filter, maps) {
 
     // Local variable for map list
     $scope.maps = [];
