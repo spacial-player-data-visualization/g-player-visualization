@@ -8,12 +8,13 @@ var KeyMappingSchema = new Schema({
         required: true
     },
     type: {
-    	type: String
+    	type: String,
+        required: true
     },
-    label: {
-    	type: String
+    actions: {
+    	type: Array
     },
-    keys: {
+    columns: {
     	type: Array,
         required: true
     }
