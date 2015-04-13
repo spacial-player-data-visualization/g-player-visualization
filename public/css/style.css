@@ -1,7 +1,3 @@
-/*.leaflet-image-layer {
-    border: 1px dashed red;
-}
-*/
 /************************
         Styles
  ************************/
@@ -189,13 +185,6 @@ ul.messenger-theme-air .messenger-message {
 .sidebar-nav .panel-body form {
     padding: 17px;
 }
-
-/*.sidebar-nav .tools {
-    bottom: 0px;
-    position: fixed;
-    width: 100%;
-    max-width: 300px;
-}*/
 
 .sidebar-nav .select2-container {
   padding: 10px;

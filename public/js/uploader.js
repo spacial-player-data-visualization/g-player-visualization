@@ -1,7 +1,16 @@
+/*
 
-/******************************
-        uploader.js 
- ******************************/
+uploader.js
+G-Player Data Visualization
+
+- This is an endpoint for uploading data to the Mongo DB
+
+Created: March 23, 2015
+Authors:
+Alex Johnson @alexjohnson505
+Alex Jacks @alexjacks92
+
+*/
 
 // Load games into dropdown
 function loader(){
@@ -363,6 +372,8 @@ Uploader.formatData = function(data, flag){
   return acc;
 }
 
+// populate certain data types with a player idea based on nearby actions
+// e.g. dialogue has no playerId, so we use the id from nearby position events
 Uploader.fillMissingData = function(data) {
   var entries = [];
   
@@ -402,6 +413,7 @@ Uploader.fillMissingData = function(data) {
 return data;
 }
 
+// Remove blank entries from the uploaded data
 Uploader.removeInvalidEntries = function(data){
   return _.filter(data, function(d){
     return containsRequiredKeys(d);
@@ -426,7 +438,6 @@ function maxEntrySize(data) {
 
 // Split the array into an N different arrays
 // http://stackoverflow.com/questions/8188548/splitting-a-js-array-into-n-arrays
-
 function split(array, n) {
   var length = array.length
   var bins = [];

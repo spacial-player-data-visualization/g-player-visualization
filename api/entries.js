@@ -1,8 +1,23 @@
+/*
+
+entries.js
+G-Player Data Visualization
+
+- Creates endpoint for all CRUD operations on data
+
+Created: March 18, 2015
+Authors:
+Alex Johnson @alexjohnson505
+Tommy Hu @tomxhu
+
+*/
+
 var EntryModel = require('../models/entries');
 var _ = require('underscore');
 var Q = require('q');
 
-// save entry helper
+
+// saves the data entry to the Mongo DB 
 var saveEntry = function(data) {
     var deferred = Q.defer();
     var tempObj = {
@@ -39,6 +54,7 @@ var saveEntry = function(data) {
     return deferred.promise;
 }
 
+// handles CRUD operations
 module.exports = {
     post: function(req, res) {
         saveEntry(req.body);
@@ -154,30 +170,6 @@ module.exports = {
             });
         })
     },
-
-    // delete: function(req, res) {
-    //     return EntryModel.findById(req.params.id, function(err, entry) {
-    //         return entry.remove(function(err) {
-    //             if (err) {
-    //                 console.log(err);
-    //             } else {
-    //                 console.log('deleted')
-    //                 res.send('Deleted Entry ' + req.params.id);
-    //             }
-    //         });
-    //     })
-    // },
-
-    // query: function(req, res) {
-    //     return EntryModel.find({timestamp: req.params.time}, function(err, result){
-    //         if (err) {
-    //                 console.log(err);
-    //             } else {
-    //                 console.log('query')
-    //                 res.send(result);
-    //             }
-    //     });
-    // },
 
     getPlayers : function(req, res) {
 
