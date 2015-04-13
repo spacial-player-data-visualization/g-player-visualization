@@ -17,7 +17,13 @@ var _ = require('underscore');
 var Q = require('q');
 
 
-// saves the data entry to the Mongo DB 
+/* 
+name: saveEntry
+author: Alex Johnson
+created: March 18, 2015
+purpose: saves the data entry to the Mongo DB 
+argument: data is the active dataset
+*/
 var saveEntry = function(data) {
     var deferred = Q.defer();
     var tempObj = {
@@ -54,7 +60,11 @@ var saveEntry = function(data) {
     return deferred.promise;
 }
 
-// handles CRUD operations
+/* 
+author: Tommy Hu
+created: March 18, 2015
+purpose: handles CRUD operations
+*/
 module.exports = {
     post: function(req, res) {
         saveEntry(req.body);

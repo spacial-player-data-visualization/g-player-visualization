@@ -15,7 +15,12 @@ Tommy Hu @tomxhu
 var MapModel = require('../models/map');
 var _ = require('underscore');
 
-// handles CRUD operations
+/* 
+author: Tommy Hu
+created: April 5, 2015
+purpose: handles CRUD operations
+contributions by: Alex Johnson
+*/
 module.exports = {
 	post: function(req, res) {
 		var map = {
