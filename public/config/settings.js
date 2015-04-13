@@ -9,6 +9,8 @@ G-Player Data Visualization
 Created: March 25th, 2015
 Authors:
 Alex Johnson @alexjohnson505
+Alex Jacks @alexjacks92
+Pragathi Sanshi @pragsanshi
 
 */
 
