@@ -1,3 +1,16 @@
+/*
+
+entries.js
+G-Player Data Visualization
+
+- Schema for Data entries for the Mongo database
+
+Created: March 1, 2015
+Authors:
+Tommy Hu @tomxhu
+
+*/
+
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;

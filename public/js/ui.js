@@ -1,3 +1,22 @@
+/*
+ui.js
+G-Player Data Visualization
+
+- gives functionality to the main UI (homepage)
+- loads all sidebars and menus
+- handles game and map selections
+- manipulates map (move and scale)
+- allows selection of players and colors for players
+- filtering of dataset by actions 
+- status messages in lower right corner
+
+Authors:
+Alex Johnson @alexjohnson505
+
+Created: 
+March 29, 2015
+*/
+
 /************************************
          UI Functions
 ************************************/
@@ -10,6 +29,7 @@ var UI = {
 
 };
 
+// purpose: retrieves the html for the menu
 UI.menu = function(){
   $.get('templates/menu.tpl.html', function(result){
     bootbox.alert(result);
@@ -20,7 +40,7 @@ UI.menu = function(){
       Setup UI / Side Options
 ************************************/
 
-// Initialize toggle-able side nav
+// purpose: initialize toggle-able side nav
 UI.addToggleAbleSideNavigation = function(){
 
     var SideOptionsToggle = L.Control.extend({
@@ -56,7 +76,7 @@ UI.addToggleAbleSideNavigation = function(){
          Game Functions
 ************************************/
 
-// When user selects a new game
+// purpose: handles user selection of a new game
 UI.setGame = function(gamename){
 
     // Save game name
@@ -114,7 +134,7 @@ UI.setGame = function(gamename){
          Map Functions
 ************************************/
 
-// When user selects a new map
+// purpose: hanldes user selection of a new map
 UI.setMap = function(mapname, callback){
 
   // Clear previous map
@@ -131,11 +151,13 @@ UI.setMap = function(mapname, callback){
   // Alert user if no suitable map found
   if (!settings.map){ alert("Unable to Find Suitable Map Data"); }
 
+  // position of bottom left corner
   var bottomLeft = Visualizer.formatData({
     posY : m.bottom,
     posX : m.left
   })
 
+  // position of top right corner
   var topRight = Visualizer.formatData({
     posY : m.top,
     posX : m.right
@@ -143,12 +165,8 @@ UI.setMap = function(mapname, callback){
 
   // Note: Lat/Long is represented as [Latitude (y), Longitude (x)].
   // Take care when converting from cartesian points, to lat/long.        
-  
   var imageBounds = [[bottomLeft['latitude'], bottomLeft['longitude']], 
                      [topRight['latitude'],   topRight['longitude']]];
-
-  // Visualizer.addMarker(bottomLeft['latitude'], bottomLeft['longitude']);
-  // Visualizer.addMarker(topRight['latitude'],   topRight['longitude']);
 
   // Add image overlay to map
   settings.overlay = L.imageOverlay(m.imageURL, imageBounds)
@@ -162,6 +180,7 @@ UI.setMap = function(mapname, callback){
   (callback) ? callback() : Visualizer.loadData();
 }
 
+// purpose: handles moving map using left, right, top and bottom movements
 UI.moveMap = function(xOffset, yOffset){
   
   // Get map data from settings
@@ -174,10 +193,12 @@ UI.moveMap = function(xOffset, yOffset){
   options.maps[index].top = m.top + yOffset;
   options.maps[index].bottom = m.bottom + yOffset;
 
+  // produces the coordinates of current map
   UI.setMap(m.name, function(){ console.log(settings.map); });
 
 }
 
+// purpose: handles manipulating map using expand or contract selections
 UI.scaleMap = function(scale){
 
   // Get map data from settings
@@ -207,6 +228,7 @@ UI.scaleMap = function(scale){
          Actions
 ************************************/
 
+// purpose: grabs all available actions in dataset for use for filtering
 UI.getActions = function(callback){
     
     // Get current game/map
@@ -235,6 +257,7 @@ UI.getActions = function(callback){
 // on the visualizer.
 UI.players = {};
 
+// purpose: plots selected playerID onto map from left menu
 UI.players.addPlayer = function(playerID){
 
   // Prevent Duplicates
@@ -245,8 +268,10 @@ UI.players.addPlayer = function(playerID){
     return;
   };
 
+  // array of colors for color selection for each player 
   var colors = ["#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf", "#e0f3f8", "#abd9e9", "#74add1", "#4575b4"];
 
+  // dialog for selection of color for selected player
   var color_radio_buttons = _.reduce(colors, function(memo, color){ 
     return memo + '<label class="radio"><input type="radio" name="group1" value="' + color + '" checked><i class="fa fa-square" style="color: ' + color + '"></i></label>';
   }, "");
@@ -293,6 +318,7 @@ UI.players.add = function(playerID, color){
     UI.players.refreshMap();    
 }
 
+// purpose: remove selected playerID from the map
 UI.players.remove = function(playerID){
 
   settings.players = _.filter(settings.players, function(player){
@@ -309,8 +335,10 @@ UI.players.listIDs = function(){
   var ids = _.pluck(settings.players, 'playerID');
   if (!ids) { ids = []; } 
   return ids;
+
 };
 
+// purpose: helper function that refreshes map on a change
 UI.players.refreshMap = function(){
   $("#active-players").html("");
 
@@ -326,8 +354,7 @@ UI.players.refreshMap = function(){
   Visualizer.loadData();
 }
 
-// For the currently selected actions, 
-// get a list of playerIDs
+// purpose: for the currently selected actions, get a list of playerIDs
 UI.getListOfAvailablePlayerIDs = function(callback){
 
     var opts = Visualizer.getContext();
@@ -358,6 +385,7 @@ UI.getListOfAvailablePlayerIDs = function(callback){
 
 }
 
+// purpose: pops up complete view of selected playerID's data
 UI.showPlayerData = function(playerID){
 
   var opts = Visualizer.getContext();
@@ -390,8 +418,7 @@ UI.showPlayerData = function(playerID){
 
 UI.filters = {};
 
-// Create list of checboxes in order
-// to filter a set of actions
+// purpose: create list of checkboxes in order to filter a set of actions
 UI.filters.create = function(){
 
   // Get list of this game's mappings
@@ -455,7 +482,7 @@ UI.filters.categories = function(){
   return categories;
 }
 
-// Support UI element for Check All / None.
+// purpose: support UI element for Check All / None
 UI.filters.toggleAll = function(checked){
   
   // Select All
@@ -473,7 +500,7 @@ UI.filters.toggleAll = function(checked){
          Helpers
 ************************************/
 
-// Alert the user with a message.
+// purpose: alert the user with a status message in lower right corner
 // (optional) provide ID for singleton box
 UI.alert = function(msg, id){
   return Messenger().post({
@@ -482,7 +509,7 @@ UI.alert = function(msg, id){
   });
 }
 
-// Show error message
+// purpose: show error message
 UI.error = function(msg){
   return Messenger().post({
       message: msg,
@@ -491,7 +518,7 @@ UI.error = function(msg){
   });
 };
 
-// Show success message
+// purpose: show success message
 UI.success = function(msg){
   return Messenger().post({
     message : msg,
@@ -499,7 +526,7 @@ UI.success = function(msg){
   });
 }
 
-// Show/hide a loading indicator.
+// purpose: show/hide a loading indicator
 UI.loading = function(boolean, msg){
   
   // Show loading box

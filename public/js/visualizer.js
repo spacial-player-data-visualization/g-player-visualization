@@ -1,3 +1,15 @@
+/*
+
+visualizer.js
+G-Player Data Visualization
+
+- This is an endpoint for visualizing data on the Map
+
+Created: March 29, 2015
+Authors:
+Alex Johnson @alexjohnson505
+
+*/
 
 /*************************
      Default Settings
