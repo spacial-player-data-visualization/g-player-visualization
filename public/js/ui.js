@@ -447,7 +447,7 @@ name: showPlayerData
 author: Alex Johnson
 created: March 29, 2015
 purpose: pops up complete view of selected playerID's data
-argument: callback is some call
+argument: playerID is current player
 */
 UI.showPlayerData = function(playerID){
 
