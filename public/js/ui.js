@@ -300,7 +300,13 @@ UI.players.addPlayer = function(playerID){
   });
 }
 
-// purpose: add a new player ID to the map with associated color
+UI.players.addPlayers = function(playerIDs){
+  _.each(playerIDs, function(playerID){
+    UI.players.add(playerID, "#f00");
+  })
+}
+
+// Add a new player ID to the map.
 UI.players.add = function(playerID, color){
   
     // Add to list
@@ -324,9 +330,12 @@ UI.players.remove = function(playerID){
 
 }
 
-// purpose: return list of player IDs onto right menu
-UI.players.listIDs = function(){  
-  return _.pluck(settings.players, 'playerID')
+// Return list of player IDs
+UI.players.listIDs = function(){
+  var ids = _.pluck(settings.players, 'playerID');
+  if (!ids) { ids = []; } 
+  return ids;
+
 };
 
 // purpose: helper function that refreshes map on a change
@@ -371,7 +380,7 @@ UI.getListOfAvailablePlayerIDs = function(callback){
           $('#available-players').append("<tr>" + tr + "</tr>");
         })
 
-        if (callback) callback();
+        if (callback) callback(data);
     })
 
 }
@@ -438,17 +447,39 @@ UI.filters.addFilter = function(mapping){
   return a + b + c
 }
 
-// Return list of selected data
-UI.filters.get = function(){
+// Return list of selected actions
+// NOTE: The checkboxes toggle CATEGORIES of key 
+// mappings. This function collects, and returns
+// an array of ALL actions that are allowed.
 
-  var acc = [];
+UI.filters.actions = function(){
+
+  var categories = UI.filters.categories();
+
+  // Find key mappings for current set of categories
+  var enabledKeyMappings = _.filter(options.mappings, function(mapping){
+    return _.contains(categories, mapping.type);
+  });
+
+  // Build list of ALL actions
+  var actions = _.reduce(enabledKeyMappings, function(memo, mapping){ 
+    return memo.concat(mapping.actions); 
+  }, []);
+
+  return actions;
+}
+
+// Return list of selected categories
+UI.filters.categories = function(){
+    
+    // List of actions
+  var categories = [];
 
   // Enabled check boxes
   $('#filters input:checkbox:checked').each(function(index, checkbox){
-    acc.push(checkbox["value"]);
+    categories.push(checkbox["value"]);
   })
-
-  return acc;
+  return categories;
 }
 
 // purpose: support UI element for Check All / None

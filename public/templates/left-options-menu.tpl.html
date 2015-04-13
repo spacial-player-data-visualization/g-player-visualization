@@ -53,18 +53,21 @@ Alex Johnson @alexjohnson505
 
         <!-- Select Players -->
         <table id="available-players" class="table table-condensed table-hover"></table>
-  
-        <b>Data Fidelity</b> : For large datasets, improve performance by only loading one in every 
-        <select class="form-control" id="select-fidelity">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="25">25</option>
-        </select> points of data.
+    
+        <div style="margin: 10px">
+          For large datasets, improve performance by only loading 1 point in every 
+          <select class="form-control" id="select-fidelity">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="25">25</option>
+          </select> points of data.
 
-<!--         <button class="btn btn-default" onclick="Visualizer.clear()">Clear</button>
-        <button class="btn btn-primary" onclick="Visualizer.loadData()">Load All</button> -->
+        </div>
+
+        <button class="btn btn-default" onclick="Visualizer.clear()">Clear</button>
+        <button class="btn btn-primary" onclick="Visualizer.addPlayers()">Load All</button>
       </div>
     </div>
   </div>
