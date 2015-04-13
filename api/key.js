@@ -1,6 +1,23 @@
+/*
+
+key.js
+G-Player Data Visualization
+
+- Creates endpoint for all CRUD operations on kay mappings
+
+Created: April 13, 2015
+Authors:
+Tommy Hu @tomxhu
+
+*/
 var KeyModel = require('../models/key_mapping.js');
 var _ = require('underscore');
 
+/* 
+author: Tommy Hu
+created: April 13, 2015
+purpose: handles CRUD operations
+*/
 module.exports = {
 	post: function(req, res) {
 		console.log(req.body);

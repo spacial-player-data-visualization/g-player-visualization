@@ -12,7 +12,13 @@ April 12, 2015
 */
 var app = angular.module('Maps', []);
 
-// purpose: api calls for map data
+/* 
+name: mapFactory
+author: Tommy Hu
+created: April 12, 2015
+purpose: api calls for map data
+argument: $http is the api call 
+*/
 app.factory('maps', function mapFactory($http) {
     return {
 
@@ -77,7 +83,13 @@ app.factory('maps', function mapFactory($http) {
     }
 });
 
-// controller for map
+/* 
+author: Tommy Hu
+created: April 12, 2015
+purpose: controller for map
+arguments: $scope is the accessor, $http is the api call, $filter is the 
+applied filter, and maps is the maps list
+*/
 app.controller('MapsController', function($scope, $http, $filter, maps) {
 
     // Local variable for map list

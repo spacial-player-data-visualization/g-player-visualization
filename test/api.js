@@ -1,3 +1,14 @@
+/*
+api.js
+G-Player Data Visualization
+
+- Unit tests for the backend
+
+Authors:
+Tommy Hu @tomxhu
+
+Created: April 6, 2015
+*/
 var mongoose = require('mongoose');
 var should = require('should');
 var request = require('supertest');
@@ -5,6 +16,12 @@ var EntryModel = require('../models/entries');
 var entries = require('../api/entries');
 var url = 'localhost:5000/api'
 
+/*
+name: API tests
+author: Tommy Hu
+created: April 6, 2015
+purpose: to test the backend using mocha testing framework
+*/
 describe('API Tests', function() {
 	before(function(done) {
 		mongoose.connect('mongodb://localhost/test');
@@ -14,7 +31,7 @@ describe('API Tests', function() {
 		done();		
 	});
 
-
+	// testing empty array response
 	it('should respond with an empty array', function(done){
 		request(url)
 		.get('/entries')
@@ -26,6 +43,7 @@ describe('API Tests', function() {
 		});
 	})
 
+	// testing posting of data with no errors using test object
 	it('should post data with no errors', function (done) {
 		var testObj = {
 			game: 'test game',
@@ -48,6 +66,7 @@ describe('API Tests', function() {
 		});
 	});
 
+	// testing response after data has been posted 
 	it('should respond with data after post', function(done){
 		request(url)
 		.get('/entries?game=test+game&area=test+area&playerIDs[]=123')
@@ -67,6 +86,7 @@ describe('API Tests', function() {
 		});
 	});
 
+	// testing playerIDs response
 	it('should respond playerIDs', function(done){
 		request(url)
 		.get('/players?game=test+game&actions[]=test+action')
@@ -80,6 +100,7 @@ describe('API Tests', function() {
 		});
 	});
 
+	// testing actions response
 	it('should respond with actions', function(done){
 		request(url)
 		.get('/actions?game=test+game')
@@ -92,6 +113,4 @@ describe('API Tests', function() {
 			done();
 		});
 	});
-
-
 })
