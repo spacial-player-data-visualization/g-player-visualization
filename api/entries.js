@@ -64,6 +64,7 @@ var saveEntry = function(data) {
 author: Tommy Hu
 created: March 18, 2015
 purpose: handles CRUD operations
+contributions by: Alex Johnson
 */
 module.exports = {
     post: function(req, res) {
