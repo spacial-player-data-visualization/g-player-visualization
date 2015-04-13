@@ -1,3 +1,14 @@
+/*
+key.js
+G-Player Data Visualization
+
+- Allows user to upload their own key mappings
+
+Authors:
+Tommy Hi @tomxhu
+
+Created: April 13, 2015
+*/
 
 var app = angular.module('Keys', []);
 
