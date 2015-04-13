@@ -56,7 +56,7 @@ The api is available at [localhost:5000/api](http://localhost:5000/api).
 
 ## Testing
 
-> Make sure the database is running
+> Make sure you are running this locally, as the testing clears the database 
 
 ```sh
 $ mocha
