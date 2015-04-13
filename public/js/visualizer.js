@@ -97,8 +97,16 @@ Visualizer.update = function(){
   UI.loading(false, "Success. " + settings.data.length + " points loaded.");
 }
 
-// Draw a player onto the map. Positions are rendered
-// as lines, while actions are clickable points.
+/* 
+name: draw
+author: Alex Johnson
+created: March 29, 2015
+purpose: Draw a player onto the map. Positions are rendered
+as lines, while actions are clickable points.
+argument: entries are individual entries in data
+color is the associated color for that playerID
+index is some index of the dataset
+*/
 Visualizer.draw = function(entries, color, index){
 
     // Ensure chronological order

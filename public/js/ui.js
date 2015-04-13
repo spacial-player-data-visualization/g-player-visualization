@@ -29,7 +29,12 @@ var UI = {
 
 };
 
-// purpose: retrieves the html for the menu
+/* 
+name: menu
+author: Alex Johnson
+created: March 29, 2015
+purpose: retrieves the html for the menu
+*/
 UI.menu = function(){
   $.get('templates/menu.tpl.html', function(result){
     bootbox.alert(result);
@@ -40,7 +45,12 @@ UI.menu = function(){
       Setup UI / Side Options
 ************************************/
 
-// purpose: initialize toggle-able side nav
+/* 
+name: addToggleAbleSideNavigation
+author: Alex Johnson
+created: March 29, 2015
+purpose: initialize toggle-able side nav
+*/
 UI.addToggleAbleSideNavigation = function(){
 
     var SideOptionsToggle = L.Control.extend({
@@ -51,7 +61,8 @@ UI.addToggleAbleSideNavigation = function(){
       onAdd: function (map) {
         
         // create the control container with a particular class name
-        var button = L.DomUtil.create('div', 'toggle-side-options leaflet-control leaflet-bar');
+        var button = L.DomUtil.create('div', 
+          'toggle-side-options leaflet-control leaflet-bar');
         var icon = L.DomUtil.create('i', 'fa fa-bars', button);
 
         // Add Listener
@@ -76,7 +87,13 @@ UI.addToggleAbleSideNavigation = function(){
          Game Functions
 ************************************/
 
-// purpose: handles user selection of a new game
+/* 
+name: setGame
+author: Alex Johnson
+created: March 29, 2015
+purpose: handles user selection of a new game
+argument: gamename is the game (ex: Fallout or Game Gaze)
+*/
 UI.setGame = function(gamename){
 
     // Save game name
@@ -133,8 +150,13 @@ UI.setGame = function(gamename){
 /************************************
          Map Functions
 ************************************/
-
-// purpose: hanldes user selection of a new map
+/* 
+name: setMap
+author: Alex Johnson
+created: March 29, 2015
+purpose: hanldes user selection of a new map
+arguments: mapname is the map area used , callback is a call
+*/
 UI.setMap = function(mapname, callback){
 
   // Clear previous map
@@ -180,7 +202,14 @@ UI.setMap = function(mapname, callback){
   (callback) ? callback() : Visualizer.loadData();
 }
 
-// purpose: handles moving map using left, right, top and bottom movements
+/* 
+name: moveMap
+author: Alex Johnson
+created: March 29, 2015
+purpose: handles moving map using left, right, top and bottom movements
+arguments: xOffset is the left to right offset of coordinates
+yoffset is the bottom to top offset of coordinates
+*/
 UI.moveMap = function(xOffset, yOffset){
   
   // Get map data from settings
@@ -198,7 +227,13 @@ UI.moveMap = function(xOffset, yOffset){
 
 }
 
-// purpose: handles manipulating map using expand or contract selections
+/* 
+name: scaleMap
+author: Alex Johnson
+created: March 29, 2015
+purpose: handles manipulating map using expand or contract selections
+arguments: scale is the factor of scaling
+*/
 UI.scaleMap = function(scale){
 
   // Get map data from settings
@@ -228,7 +263,13 @@ UI.scaleMap = function(scale){
          Actions
 ************************************/
 
-// purpose: grabs all available actions in dataset for use for filtering
+/* 
+name: getActions
+author: Alex Johnson
+created: March 29, 2015
+purpose: grabs all available actions in dataset for use for filtering
+arguments: callback is some action call
+*/
 UI.getActions = function(callback){
     
     // Get current game/map
@@ -253,8 +294,13 @@ UI.getActions = function(callback){
           Players
 ************************************/
 
-// Manage the players being represented
-// on the visualizer.
+/* 
+name: addPlayer
+author: Alex Johnson
+created: March 29, 2015
+purpose: Manage the players being represented on the visualizer
+arguments: playerID is the selected player 
+*/
 UI.players = {};
 
 // purpose: plots selected playerID onto map from left menu
@@ -338,7 +384,12 @@ UI.players.listIDs = function(){
 
 };
 
-// purpose: helper function that refreshes map on a change
+/* 
+name: refreshMap
+author: Alex Johnson
+created: March 29, 2015
+purpose: helper function that refreshes map on a change
+*/
 UI.players.refreshMap = function(){
   $("#active-players").html("");
 
@@ -354,7 +405,13 @@ UI.players.refreshMap = function(){
   Visualizer.loadData();
 }
 
-// purpose: for the currently selected actions, get a list of playerIDs
+/* 
+name: getListOfAvailablePlayerIDs
+author: Alex Johnson
+created: March 29, 2015
+purpose: for the currently selected actions, get a list of playerIDs
+argument: callback is some call
+*/
 UI.getListOfAvailablePlayerIDs = function(callback){
 
     var opts = Visualizer.getContext();
@@ -385,7 +442,13 @@ UI.getListOfAvailablePlayerIDs = function(callback){
 
 }
 
-// purpose: pops up complete view of selected playerID's data
+/* 
+name: showPlayerData
+author: Alex Johnson
+created: March 29, 2015
+purpose: pops up complete view of selected playerID's data
+argument: playerID is current player
+*/
 UI.showPlayerData = function(playerID){
 
   var opts = Visualizer.getContext();
@@ -418,7 +481,12 @@ UI.showPlayerData = function(playerID){
 
 UI.filters = {};
 
-// purpose: create list of checkboxes in order to filter a set of actions
+/* 
+name: create
+author: Alex Johnson
+created: March 29, 2015
+purpose: create list of checkboxes in order to filter a set of actions
+*/
 UI.filters.create = function(){
 
   // Get list of this game's mappings

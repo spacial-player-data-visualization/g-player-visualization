@@ -29,8 +29,10 @@ Exporter.toCSV = function(){
 
 /* 
 name: JSON2CSV
+author: Alex Johnson
 created: April 1, 2015
 purpose: makes conversion of data saved in settings.js to .csv file
+argument: objArray is the JSON data array being converted to .csv form
 */
 function JSON2CSV(objArray) {
     var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
