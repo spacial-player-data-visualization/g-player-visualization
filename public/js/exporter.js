@@ -1,4 +1,14 @@
+/*
+exporter.js
+G-Player Data Visualization
 
+- Allows the exporting of present dataset as a downloadable .csv file
+
+Authors:
+Alex Johnson @alexjohnson505
+
+Created: April 1, 2015
+*/
 var Exporter = {};
 
 // Export provided data set as .csv
@@ -17,6 +27,11 @@ Exporter.toCSV = function(){
 
 };
 
+/* 
+name: JSON2CSV
+created: April 1, 2015
+purpose: makes conversion of data saved in settings.js to .csv file
+*/
 function JSON2CSV(objArray) {
     var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
 
