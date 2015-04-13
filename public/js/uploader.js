@@ -304,44 +304,60 @@ Uploader.bulkUpload = function(){
 
   // Get data from last upload
   entries = lastUpload();
-  
+
    // Convert data into JSON object.
   // All data should now be represented
   // as a key/value pair
   var flag = numberOfGameMappings(settings.game);
   entries = Uploader.formatData(entries, flag);
   
+
   // Populate missing fields. In the case of bad data,
   // we'll use previous entries to make the data
   // 'at least' plottable
   entries = Uploader.fillMissingData(entries);
   
-  // Remove invalid entries
-  entries = Uploader.removeInvalidEntries(entries);
-  
-  // Get user approval before storing in database
-  if (!confirm("Upload " + entries.length + " entries to the database?")) {
-    UI.loading(false, "Upload cancelled.");
-    return;
-  } 
 
-  // When POSTing data to the API, we occasionally
-  // encounter a size/entry limit. Just to be safe,
-  // lets send the data in multiple POSTS.
+  var playerUploaded = 0;
 
-  // Split data into multiple, smaller bins
-  var bins = split(entries, entries.length / 200);
+  $.get(Visualizer.API_url + "players", { game : settings.game}, function(data) {
+    var players = data;
 
-  UI.loading(true, "Uploaded " + entries.length + " entries");
+    _.contains(players, entries[0].playerID) ? playerUploaded = 1 : playerUploaded = 0;
+    if (playerUploaded == 1) {
+      if (!confirm("The database already has data for this player in this game. " +
+        "Are you sure you'd like to continue with this upload?")) {
+        UI.loading(false, "Upload cancelled.");
+      return;
+    }
+  }
 
-  bin_count = bins.length;
+    // Remove invalid entries
+    entries = Uploader.removeInvalidEntries(entries);
 
-  // Upload bins
-  Uploader.upload(bins, function(){
-    UI.loading(false, "Upload COMPLETE");
+    // Get user approval before storing in database
+    if (!confirm("Upload " + entries.length + " entries to the database?")) {
+      UI.loading(false, "Upload cancelled.");
+      return;
+    } 
+
+    // When POSTing data to the API, we occasionally
+    // encounter a size/entry limit. Just to be safe,
+    // lets send the data in multiple POSTS.
+
+    // Split data into multiple, smaller bins
+    var bins = split(entries, entries.length / 200);
+
+    UI.loading(true, "Uploaded " + entries.length + " entries");
+
+    bin_count = bins.length;
+
+    // Upload bins
+    Uploader.upload(bins, function(){
+      UI.loading(false, "Upload COMPLETE");
+    });
   });
 }
-
 /* 
 name: upload
 author: Alex Jacks
