@@ -64,6 +64,13 @@ Uploader.parseFile = function(event) {
     // Parser Callback
     complete: function(results) {
 
+      console.log(results.errors);
+
+      // error checking. Display errors to user.
+      if (results.errors.length != 0) {
+        Uploader.parserErrors(results.errors);
+      }
+
       UI.alert(results.data.length + " results loaded. ");
       
       if (results.errors.length > 0){
@@ -83,8 +90,20 @@ Uploader.parseFile = function(event) {
       Uploader.populateTables(data);
 
       UI.loading(false);
-    }
+    },
+
+
   });
+}
+
+
+
+// take all the errors and show them to the user
+Uploader.parserErrors = function(errors) {
+  for (index in errors) {
+    UI.error("Parsing encountered an error on row " + errors[index].row);
+    UI.error("Error: " + errors[index].message);
+  }
 }
 
 // Takes a list of entries. Sorts into JSON arrays
