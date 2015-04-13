@@ -1,5 +1,13 @@
+
 var app = angular.module('Keys', []);
 
+/* 
+name: keyFactory
+author: Tommy Hu
+created: April 13, 2015
+purpose: handles CRUD operations
+argument: $http is the api call
+*/
 app.factory('keys', function keyFactory($http) {
     return {
 
@@ -64,6 +72,14 @@ app.factory('keys', function keyFactory($http) {
         }
     }
 });
+
+/* 
+author: Tommy Hu
+created: April 13, 2015
+purpose: controller for key mappings
+arguments: $scope is the accessor, $http is the api call, $filter is the 
+applied filter, and kays is the key mapping list
+*/
 app.controller('KeysController', function($scope, $http, $filter, keys) {
 
     // Local variable for keys list
@@ -149,6 +165,7 @@ app.controller('KeysController', function($scope, $http, $filter, keys) {
            CRUD
      *****************/
 
+    // purpose: calls backend to delete at given index
     $scope.delete = function(index) {
         bootbox.confirm('are you sure', function(result) {
             if (result) {
@@ -163,6 +180,7 @@ app.controller('KeysController', function($scope, $http, $filter, keys) {
         });
     }
 
+    // purpose: calls backend to update key mapping at given index
     $scope.update = function(id, key) {
         console.log(key.actions);
         console.log(key.columns);
@@ -173,6 +191,7 @@ app.controller('KeysController', function($scope, $http, $filter, keys) {
         })
     }
 
+    // purpose: calls backend to add key mapping
     $scope.add = function(key) {
         keys.post(key, function(keys) {
             $scope.keys = keys;
