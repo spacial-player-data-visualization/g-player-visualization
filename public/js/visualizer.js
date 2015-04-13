@@ -111,33 +111,39 @@ Visualizer.draw = function(entries, color, index){
              POSITIONS
      ********************************/
 
-    // get list of positions
-    var positions = _.filter(entries, function(d){
+    // Should we show position data?
+    var show_positions = shouldWePlotPositionData();
 
-      // Do we not have an action key?
-      return !d.action;
-    });
+    if (show_positions) {
 
-    // Create list of latLng ojects
-    var positions = _.map(positions, function(point){
+      // get list of positions
+      var positions = _.filter(entries, function(d){
 
-      // Return formatted latLng point
-      return toLatLng(point);
-    });
+        // Do we not have an action key?
+        return !d.action;
+      });
 
-    var options = {
-      stroke: true,
-      color: color,
-      weight: 2,
-      opacity: 1,
+      // Create list of latLng ojects
+      var positions = _.map(positions, function(point){
+
+        // Return formatted latLng point
+        return toLatLng(point);
+      }); 
+
+      var options = {
+        stroke: true,
+        color: color,
+        weight: 2,
+        opacity: 1,
+      }
+
+      // Create polyline
+      var polyline = L.polyline(positions, options)
+      
+      var featureGroup = new L.FeatureGroup().addLayer(polyline);
+      
+      addFeatureGroup(featureGroup);
     }
-
-    // Create polyline
-    var polyline = L.polyline(positions, options)
-    
-    var featureGroup = new L.FeatureGroup().addLayer(polyline);
-
-    if (_.contains(UI.filters.categories(), 'position')) addFeatureGroup(featureGroup);
 
     /********************************
              ACTIONS
@@ -394,3 +400,22 @@ function toLatLng (point){
   if (lat && long) { return L.latLng(lat, long); }
 
 };
+
+// Should we plot position data?
+function shouldWePlotPositionData (){
+
+    var gameMappings = _.where(options.mappings, {game : settings.game});
+
+    // Does the game have more then 1 data type?
+    if (gameMappings.length < 2) {
+      return true;
+    
+    // Is the [position] check box selected?
+    } else if (_.contains(UI.filters.categories(), 'position')){
+      return true
+    
+    // Otherwise, don't show positions
+    } else {
+      return false
+    };
+}
