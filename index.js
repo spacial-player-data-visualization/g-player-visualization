@@ -63,6 +63,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Require entries controller
 var entries = require('./api/entries');
 var maps = require('./api/map');
+var keys = require('./api/key');
 
 /****************************
          ROUTES 
@@ -130,6 +131,24 @@ app.put('/api/maps/:id', function (req, res){
 
 app.delete('/api/maps/:id', function (req, res){
   maps.delete(req, res);
+});
+
+// Key Endpoint
+
+app.post('/api/keys', function (req, res){
+  keys.post(req, res);
+});
+
+app.get('/api/keys', function (req, res){
+  keys.get(req, res);
+});
+
+app.put('/api/keys/:id', function (req, res){
+  keys.put(req, res);
+});
+
+app.delete('/api/keys/:id', function (req, res){
+  keys.delete(req, res);
 });
 
 /****************************
