@@ -432,10 +432,9 @@ UI.getListOfAvailablePlayerIDs = function(callback){
           var tr = ""
 
           tr += '<td>' + '<a onclick="UI.showPlayerData(' + p + ')"><i class="fa fa-code"></i></a>' + '</td>';
-          tr += '<td>' + "Player <b>" + p + '</b></td>';
-          tr += '<td>' + '<a onclick="UI.players.addPlayer(' + p + ')">'
-          tr += '<i class="fa fa-plus-square"></i>';
-          tr += '</a>' + '</td>';
+          tr += '<td onclick="UI.players.addPlayer(' + p + ')">' + "Player <b>" + p + '</b></td>';
+          tr += '<td onclick="UI.players.addPlayer(' + p + ')">'
+          tr += '<i class="fa fa-sign-in"></i></td>';
 
           $('#available-players').append("<tr>" + tr + "</tr>");
         })
