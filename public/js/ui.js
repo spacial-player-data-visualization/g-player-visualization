@@ -346,9 +346,22 @@ UI.players.addPlayer = function(playerID){
   });
 }
 
-UI.players.addPlayers = function(playerIDs){
-  _.each(playerIDs, function(playerID){
-    UI.players.add(playerID, "#f00");
+// Add multiple players at once. 
+UI.players.addPlayers = function(){
+
+  UI.getListOfAvailablePlayerIDs(function(playerIDs){
+
+    _.each(playerIDs, function(playerID){
+
+        // Add to list
+        settings.players.push({ 
+          playerID : playerID, 
+          color : "#000" 
+        });
+
+    })
+
+    UI.players.refreshMap();
   })
 }
 
