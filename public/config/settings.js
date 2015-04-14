@@ -20,33 +20,33 @@ options.maps = [{
     // Save map configuration
     name: "Position_Introhouse",
     game: "Fallout New Vegas",
-    imageURL: "http://i.imgur.com/zWbog8y.jpg",
+    imageURL: "http://i.imgur.com/8zDo1iB.jpg",
 
     // Map player locations to their points
     // on the map. Define the corners.
-    bottom : -836,
-    left : -823,
+    bottom : -512.4305761910372,
+    left : -430.1821924060032,
     
-    top : 2463,
-    right : 2977,
+    top : 2015.381268553384,
+    right : 2846.5933252185027,
 
 }, {
 
     // Save map configuration
     name: "Position_Outside",
     game: "Fallout New Vegas",
-    imageURL: "http://i.imgur.com/sSYRyve.jpg",
+    imageURL: "http://i.imgur.com/MCfV82L.jpg",
 
 
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
 
-    bottom : -13981,
-    left : -7682,
+    bottom : -13797.39500601122,
+    left : -8442.484986063437,
 
-    top : 14735,
-    right : 20151,
+    top : 14847.0708843808,
+    right : 25743.8091076939,
 
 }, {
 
@@ -137,16 +137,17 @@ options.maps = [{
     // Save map configuration
     name: "Position_Hotel",
     game: "Fallout New Vegas",
-    imageURL: "http://i.imgur.com/sKG9eRI.jpg",
+    imageURL: "http://i.imgur.com/kv3BMnd.jpg?1",
 	
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
-    bottom : -1060.6062191263106,
-    left : -981.582241014099,
 
-    top : 4470.606219126312,
-    right : 4851.582241014096,
+    bottom : -643.0427310756933,
+    left : 294.7154648501225,
+
+    top : 3778.4365119493827,
+    right : 3343.702294135778,
 
 }, {
 
@@ -167,13 +168,13 @@ options.maps = [{
 	
 	name: "Default",
 	game: "Game Gaze",
-	imageURL: "http://i.imgur.com/6ADPz34.jpg",
+	imageURL: "http://i.imgur.com/0aXWffH.jpg",
 
-	top: 1000,
-	bottom: 0,
+	top: 604.5111946300519,
+	bottom: -164.511194630052,
 
-	left: 0,
-	right: 1000,
+	left: 615.4888053699481,
+	right: 1384.511194630052,
 }
 ];
 
