@@ -107,69 +107,43 @@ argument: entries are individual entries in data
 color is the associated color for that playerID
 index is some index of the dataset
 */
+
 Visualizer.draw = function(entries, color, index){
 
     // Ensure chronological order
     entries = sortBy(entries, "timestamp");
 
-    // Get the currently selected list of actions
-    var enabledActions = UI.filters.actions();
+    // Get the active set of data
+    var data = selectedData(entries);
 
     /********************************
              POSITIONS
      ********************************/
 
     // Should we show position data?
-    var show_positions = shouldWePlotPositionData();
-
-    if (show_positions) {
-
-      // get list of positions
-      var positions = _.filter(entries, function(d){
-
-        // Do we not have an action key?
-        return !d.action;
-      });
-
-      // Create list of latLng ojects
-      var positions = _.map(positions, function(point){
-
-        // Return formatted latLng point
-        return toLatLng(point);
-      }); 
-
-      var options = {
-        stroke: true,
-        color: color,
-        weight: 2,
-        opacity: 1,
-      }
+    if (shouldWePlotPositionData()) {
 
       // Create polyline
-      var polyline = L.polyline(positions, options)
+      var polyline = L.polyline(data.positions, {
+          stroke: true,
+          color: color,
+          weight: 2,
+          opacity: 1,
+      })
       
       var featureGroup = new L.FeatureGroup().addLayer(polyline);
       
       addFeatureGroup(featureGroup);
+      
     }
 
     /********************************
              ACTIONS
      ********************************/
 
-    // Get list of actions
-    var actions = _.filter(entries, function(d){
-
-      // Do we have an action key?
-      var exists = (d.action) ? true : false;
-
-      // Is the action enabled in the side nav?
-      return exists && (_.contains(enabledActions, d.action))
-    });
-
     var markers = new L.FeatureGroup();
 
-    _.each(actions, function(p){
+    _.each(data.actions, function(p){
 
       var latLng = [p.latitude, p.longitude]
 
@@ -429,4 +403,53 @@ function shouldWePlotPositionData (){
     } else {
       return false
     };
+}
+
+// Given a dataset, seperate the data into positions
+// and actions. In addition, remove any data type
+// that the user has disables from the UI
+function selectedData (dataset){
+
+    // Seperate data to positions and actions
+    var data = {
+      positions : null,
+      actions : null,
+    }
+
+    // Get the currently selected list of actions
+    var enabledActions = UI.filters.actions();
+
+    // Does the user want to see position data?
+    // This returns false if a.) a game has available
+    // action data, and b.) the user has selected to
+    // only show actions and events on the map
+
+    if (shouldWePlotPositionData()) {
+
+      // get list of positions
+      data.positions = _.filter(dataset, function(d){
+
+        // Do we not have an action key?
+        return !d.action;
+      });
+
+      // Create list of latLng ojects
+      data.positions = _.map(data.positions, function(point){
+
+        // Return formatted latLng point
+        return toLatLng(point);
+      }); 
+    }
+
+    // Get list of actions
+    data.actions = _.filter(dataset, function(d){
+
+      // Do we have an action key?
+      var exists = (d.action) ? true : false;
+
+      // Is the action enabled in the side nav?
+      return exists && (_.contains(enabledActions, d.action))
+    });
+
+    return data;
 }
