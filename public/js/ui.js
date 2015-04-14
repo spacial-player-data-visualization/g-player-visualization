@@ -35,8 +35,8 @@ author: Alex Johnson
 created: March 29, 2015
 purpose: retrieves the html for the menu
 */
-UI.menu = function(){
-  $.get('templates/menu.tpl.html', function(result){
+UI.optionsMenu = function(){
+  $.get('templates/menu-popup.html', function(result){
     bootbox.alert(result);
   });
 }

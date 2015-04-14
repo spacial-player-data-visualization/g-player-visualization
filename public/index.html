@@ -89,7 +89,7 @@ Alex Johnson @alexjohnson505
        Load Tempalates
    *************************/
 
-  $("#sidebar-wrapper").load('templates/left-options-menu.tpl.html', function(result){
+  $("#sidebar-wrapper").load('templates/menu-left.html', function(result){
       
       // Default Settings
       UI.setGame("Fallout New Vegas");
@@ -99,7 +99,7 @@ Alex Johnson @alexjohnson505
   });
 
   // Load side options template
-  $("#legend").load('templates/legend.tpl.html', function(result){
+  $("#legend").load('templates/menu-right.html', function(result){
     
     // Available Actions
     UI.filters.create();
