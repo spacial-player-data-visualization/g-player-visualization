@@ -22,33 +22,33 @@ options.maps = [{
     // Save map configuration
     name: "Position_Introhouse",
     game: "Fallout New Vegas",
-    imageURL: "http://i.imgur.com/zWbog8y.jpg",
+    imageURL: "http://i.imgur.com/8zDo1iB.jpg",
 
     // Map player locations to their points
     // on the map. Define the corners.
-    bottom : -836,
-    left : -823,
+    bottom : -512.4305761910372,
+    left : -430.1821924060032,
     
-    top : 2463,
-    right : 2977,
+    top : 2015.381268553384,
+    right : 2846.5933252185027,
 
 }, {
 
     // Save map configuration
     name: "Position_Outside",
     game: "Fallout New Vegas",
-    imageURL: "http://i.imgur.com/sSYRyve.jpg",
+    imageURL: "http://i.imgur.com/MCfV82L.jpg",
 
 
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
 
-    bottom : -13981,
-    left : -7682,
+    bottom : -14539.51622293143,
+    left : -6094.101035457432,
 
-    top : 14735,
-    right : 20151,
+    top : 15317.51622293143,
+    right : 21018.101035457432,
 
 }, {
 
@@ -139,16 +139,16 @@ options.maps = [{
     // Save map configuration
     name: "Position_Hotel",
     game: "Fallout New Vegas",
-    imageURL: "http://i.imgur.com/sKG9eRI.jpg",
+    imageURL: "http://i.imgur.com/kv3BMnd.jpg?1",
 	
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
-    bottom : -1060.6062191263106,
-    left : -981.582241014099,
+    bottom : 303.733632526706,
+    left : 813.8473271107482,
 
-    top : 4470.606219126312,
-    right : 4851.582241014096,
+    top : 4031.660148346984,
+    right : 3384.5704318751523,
 
 }, {
 
