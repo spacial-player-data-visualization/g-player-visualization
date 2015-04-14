@@ -22,9 +22,12 @@ body {
 
 #legend {
     position: absolute;
-    top: 15px;
+    top: 0px;
+    padding-top: 15px;
     right: 15px;
     width: 200px;
+    height: 100%;
+    overflow: scroll;
 }
 
 /* Map key*/
