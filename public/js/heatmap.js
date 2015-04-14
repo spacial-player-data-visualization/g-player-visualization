@@ -31,11 +31,24 @@ argument: data is the current active dataset
 */
 Heatmap.addHeatmap = function(data){
 
+  // Filter data by the positions and
+  // actions that are currently selected
+  var data = selectedData(data);
+
+  // Join selected data sets
+  // var data = data.positions.concat(data.actions);
+  data = data.actions;
+
+  console.log("\nData to be Heatmapped");
+  console.log(data);
+
+  // Initialize heatmap
   var heatmapData = { 
       max: 1,  
       data: data,
   };
 
+  // Add heatmap
   map.addLayer(Heatmap.heatmapLayer)
   Heatmap.heatmapLayer.setData(heatmapData);
 }

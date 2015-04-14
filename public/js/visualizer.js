@@ -131,6 +131,8 @@ Visualizer.draw = function(entries, color, index){
           opacity: 1,
       })
       
+      // Add a new Leaflet.js feature group, containing 
+      // the layer of our player's polyline.
       var featureGroup = new L.FeatureGroup().addLayer(polyline);
       
       addFeatureGroup(featureGroup);
