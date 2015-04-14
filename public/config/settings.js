@@ -144,11 +144,12 @@ options.maps = [{
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
-    bottom : -656.659431868238,
-    left : 367.42882087298267,
 
-    top : 4772.05321274193,
-    right : 4110.988938112918,
+    bottom : -643.0427310756933,
+    left : 294.7154648501225,
+
+    top : 3778.4365119493827,
+    right : 3343.702294135778,
 
 }, {
 
@@ -171,11 +172,11 @@ options.maps = [{
 	game: "Game Gaze",
 	imageURL: "http://i.imgur.com/0aXWffH.jpg",
 
-	top: 1000,
-	bottom: 0,
+	top: 604.5111946300519,
+	bottom: -164.511194630052,
 
-	left: 0,
-	right: 1000,
+	left: 615.4888053699481,
+	right: 1384.511194630052,
 }
 ];
 
