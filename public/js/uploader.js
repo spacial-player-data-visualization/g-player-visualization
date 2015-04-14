@@ -318,15 +318,17 @@ Uploader.bulkUpload = function(){
   entries = Uploader.fillMissingData(entries);
   
 
-  var playerUploaded = 0;
+  var playerUploaded = false;
 
   $.get(Visualizer.API_url + "players", { game : settings.game}, function(data) {
     var players = data;
 
-    _.contains(players, entries[0].playerID) ? playerUploaded = 1 : playerUploaded = 0;
-    if (playerUploaded == 1) {
-      if (!confirm("The database already has data for this player in this game. " +
-        "Are you sure you'd like to continue with this upload?")) {
+    playerUploaded = _.contains(players, entries[0].playerID);
+    if (playerUploaded == true) {
+      if (!confirm('Warning: The database already contains entries for player ' 
+        + entries[0].playerID + ' for ' + settings.game + '. Are you sure you would' + 
+        ' like to proceed in uploading this dataset?' + 
+        ' This may result in adding duplicate data to the database.')) {
         UI.loading(false, "Upload cancelled.");
       return;
     }
