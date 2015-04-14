@@ -451,8 +451,7 @@ Uploader.formatData = function(data, flag){
       _.each(data, function(current) {
         
         if (keyMapping) {
-          //console.log("calling assignKeys on " + current + " and " + keyMapping);
-          var entry = assignKeys(current, keyMapping.colums)
+          var entry = assignKeys(current, keyMapping.columns)
         };
 
         if (entry) { acc.push(entry); };
