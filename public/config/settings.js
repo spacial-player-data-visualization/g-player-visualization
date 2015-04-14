@@ -44,11 +44,11 @@ options.maps = [{
     // on the map. Manually offset for accuracy.
     // Multiplied to base
 
-    bottom : -14539.51622293143,
-    left : -6094.101035457432,
+    bottom : -13797.39500601122,
+    left : -8442.484986063437,
 
-    top : 15317.51622293143,
-    right : 21018.101035457432,
+    top : 14847.0708843808,
+    right : 25743.8091076939,
 
 }, {
 
@@ -144,11 +144,11 @@ options.maps = [{
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
-    bottom : 303.733632526706,
-    left : 813.8473271107482,
+    bottom : -656.659431868238,
+    left : 367.42882087298267,
 
-    top : 4031.660148346984,
-    right : 3384.5704318751523,
+    top : 4772.05321274193,
+    right : 4110.988938112918,
 
 }, {
 
