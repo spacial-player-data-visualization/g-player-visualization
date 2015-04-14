@@ -151,7 +151,7 @@ options.maps = [{
 }, {
 
     // Save map configuration
-    name: "Default Map",
+    name: "default",
     game: "League of Legends",
     imageURL: "http://i.imgur.com/vattHJi.jpg",
 
@@ -159,13 +159,13 @@ options.maps = [{
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
-    top : 1000,
-    bottom : 0,
-    left : 0,
-    right : 1000,
+    top : 12000,
+    bottom : 455,
+    left : 390,
+    right : 15490,
 }, {
 	
-	name: "Default Map",
+	name: "Default",
 	game: "Game Gaze",
 	imageURL: "http://i.imgur.com/6ADPz34.jpg",
 
