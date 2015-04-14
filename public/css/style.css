@@ -32,6 +32,10 @@ body {
     
 }
 
+label {
+    width: 100%;
+}
+
 /* Hubspot Messenger */
 ul.messenger-theme-air .messenger-message {
     background-color: #fff;
@@ -186,12 +190,14 @@ ul.messenger-theme-air .messenger-message {
     padding: 17px;
 }
 
-.sidebar-nav .select2-container {
-  padding: 10px;
-}
-
 .sidebar-nav .select2-container  li {
     line-height: 25px;
+}
+
+
+.sidebar-nav .fa.fa-info-circle {
+    float: right;
+    text-align: right;
 }
 
 #query-preset .fa-star {
@@ -339,6 +345,10 @@ table#available-players button i.fa{
 
 .color-select .fa {
     font-size: 35px;
+}
+
+.filter-by-action {
+    padding: 17px;
 }
 
 @media(min-width:768px) {

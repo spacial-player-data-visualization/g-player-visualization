@@ -32,7 +32,7 @@ Alex Johnson @alexjohnson505
         <select class="form-control" id="select-map">
         </select><br>
 
-        <label>Select Fidelity <i class="fa fa-pencil" onclick="alert('Description: For large datasets you may select to lower the data fidelity. This reduces the amount of position points per minute that the server returns. This option only reduces position data, and does not remove actions or events.')"></i></label>
+        <label>Select Fidelity <i class="fa fa-info-circle" onclick="alert('Description: For large datasets you may select to lower the data fidelity. This reduces the amount of position points per minute that the server returns. This option only reduces position data, and does not remove actions or events.')"></i></label>
 
           <select class="form-control" id="select-fidelity">
             <option value="1">100%</option>
@@ -49,13 +49,13 @@ Alex Johnson @alexjohnson505
   </div>
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title"><i class="fa fa-table"></i> Select Data
+      <h3 class="panel-title"><i class="fa fa-table"></i> Select Data </label>
     </div>
     <div class="panel-body" style="margin-bottom: 20px;">
 
       <div class="filter-by-action">
     
-        <p style="margin: 5px 10px;">Filter users who:</p>
+        <p>Filter users who: <i class="fa fa-info-circle" onclick="alert('View a list of players that performed the selected actions during their play time.')"></i></p>
 
         <!-- Select Actions -->
         <select class="action-select" multiple="multiple" style="width: 100%; display: none;">
@@ -67,8 +67,11 @@ Alex Johnson @alexjohnson505
         <!-- Select Players -->
         <table id="available-players" class="table table-condensed table-hover"></table>
     
-        <button class="btn btn-default" onclick="Visualizer.clear()">Clear</button>
-        <button class="btn btn-primary" onclick="Visualizer.addPlayers()">Load All</button>
+          
+        <div class="" style="padding: 5px 17px;">  
+          <button class="btn btn-default" onclick="Visualizer.clear()">Clear</button>
+          <button class="btn btn-primary" onclick="Visualizer.addPlayers()">Load All</button>
+        </div>
       </div>
     </div>
   </div>
