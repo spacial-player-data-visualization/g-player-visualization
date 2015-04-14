@@ -1,0 +1,80 @@
+<!--
+
+left-options-menu.tpl.html
+G-Player Data Visualization
+
+- A template file for the left options menu
+
+Created: March 25, 2015
+Authors:
+Alex Johnson @alexjohnson505
+
+-->
+
+<ul class="sidebar-nav">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title" onclick="UI.optionsMenu()" style="cursor:pointer"><i class="fa fa-bars"></i> Menu</h3>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title"><i class="fa fa-leanpub"></i> Select Map</h3>
+    </div>
+    <div class="panel-body">
+      <form class="form">
+
+        <label>Select Game</label>
+        <select class="form-control" id="select-game">
+        </select><br>
+
+        <label>Select Map</label>
+        <select class="form-control" id="select-map">
+        </select><br>
+
+        <label>Select Fidelity <i class="fa fa-info-circle" onclick="alert('Description: For large datasets you may select to lower the data fidelity. This reduces the amount of position points per minute that the server returns. This option only reduces position data, and does not remove actions or events.')"></i></label>
+
+          <select class="form-control" id="select-fidelity">
+            <option value="1">100%</option>
+            <option value="2">50%</option>
+            <option value="5">20%</option>
+            <option value="10">10%</option>
+            <option value="25">5%</option>
+            <option value="100">1%</option>
+          </select>
+
+        </div>
+
+      </form>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title"><i class="fa fa-table"></i> Select Data </label>
+    </div>
+    <div class="panel-body" style="margin-bottom: 20px;">
+
+      <div class="filter-by-action">
+    
+        <p>Filter users who: <i class="fa fa-info-circle" onclick="alert('View a list of players that performed the selected actions during their play time.')"></i></p>
+
+        <!-- Select Actions -->
+        <select class="action-select" multiple="multiple" style="width: 100%; display: none;">
+        </select>
+
+      </div>
+      <div>
+
+        <!-- Select Players -->
+        <table id="available-players" class="table table-condensed table-hover"></table>
+    
+          
+        <div class="" style="padding: 5px 17px;">  
+          <button class="btn btn-default" onclick="Visualizer.clear()">Clear</button>
+          <button class="btn btn-primary" onclick="UI.players.addPlayers()">Load All</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ul>
+

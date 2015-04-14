@@ -1,3 +1,14 @@
+/*
+api.js
+G-Player Data Visualization
+
+- Unit tests for the backend
+
+Authors:
+Tommy Hu @tomxhu
+
+Created: April 6, 2015
+*/
 var mongoose = require('mongoose');
 var should = require('should');
 var request = require('supertest');
@@ -5,6 +16,12 @@ var EntryModel = require('../models/entries');
 var entries = require('../api/entries');
 var url = 'localhost:5000/api'
 
+/*
+name: API tests
+author: Tommy Hu
+created: April 6, 2015
+purpose: to test the backend using mocha testing framework
+*/
 describe('API Tests', function() {
 	before(function(done) {
 		mongoose.connect('mongodb://localhost/test');
@@ -92,6 +109,5 @@ describe('API Tests', function() {
 				done();
 			});
 		});
-
 	});
 })

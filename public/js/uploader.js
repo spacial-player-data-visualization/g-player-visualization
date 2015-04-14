@@ -12,7 +12,13 @@ Alex Jacks @alexjacks92
 
 */
 
-// Load games into dropdown
+/* 
+name: loader
+author: Alex Jacks
+created: March 23, 2015
+purpose: Load games into dropdown
+modifications by: Alex Johnson
+*/
 function loader(){
   var selector = $("#gameSelect");
   
@@ -48,8 +54,15 @@ $('#gameSelect').on('change', function(){
 var Uploader = {};
 var selectedGame = "";
 
-// Extract data from the uploaded .csv file
-// http://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
+
+/* 
+name: parseFile
+author: Alex Jacks
+created: March 23, 2015
+purpose: Extract data from the uploaded .csv file
+http://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
+argument: event is parsing event
+*/
 Uploader.parseFile = function(event) {
 
   UI.loading(true, "Parsing File....");
@@ -63,6 +76,13 @@ Uploader.parseFile = function(event) {
 
     // Parser Callback
     complete: function(results) {
+
+      console.log(results.errors);
+
+      // error checking. Display errors to user.
+      if (results.errors.length != 0) {
+        Uploader.parserErrors(results.errors);
+      }
 
       UI.alert(results.data.length + " results loaded. ");
       
@@ -83,13 +103,39 @@ Uploader.parseFile = function(event) {
       Uploader.populateTables(data);
 
       UI.loading(false);
-    }
+    },
+
+
   });
 }
 
-// Takes a list of entries. Sorts into JSON arrays
-// containing the same entry type. For example:,
-// all "PlayerJumped" actions should be bulked together.
+
+
+
+/*
+name: parseErrors
+author: Alex Jacks
+created: April 13, 2015
+purpose: take a list of errors from papaparse and
+         display them to the user.
+argument: errors is an array of papaparse error objects.
+*/
+Uploader.parserErrors = function(errors) {
+  for (index in errors) {
+    UI.error("Parsing encountered an error on row " + errors[index].row);
+    UI.error("Error: " + errors[index].message);
+  }
+}
+
+/* 
+name: sortByEntryType
+author: Alex Jacks
+created: March 23, 2015
+purpose: Takes a list of entries. Sorts into JSON arrays ontaining the same 
+         entry type. For example:, all "PlayerJumped" actions should be bulked
+         together.
+argument: data is the active dataset 
+*/
 Uploader.sortByEntryType = function(data){
 
   // Order data by the first column
@@ -127,7 +173,14 @@ Uploader.removeEmptyLines = function(data){
   });
 };
 
-// Populate multiple tables
+/* 
+name: populateTables
+author: Alex Johnson
+created: March 23, 2015
+purpose: populate multiple tables
+argument: data is the active dataset 
+contributions by: Alex Jacks
+*/
 Uploader.populateTables = function(data){
   // Clear tables
   $(".tableContainer").html("");
@@ -161,8 +214,16 @@ Uploader.populateTables = function(data){
 
 };
 
-// Render content into HTML table.
-// Allow user to preview the uploaded .csv file.
+/* 
+name: populateTable
+author: Alex Johnson
+created: March 23, 2015
+purpose: Render content into HTML table.
+         Allow user to preview the uploaded .csv file.
+argument: bucket is the action subtable it falls to 
+          and type is key mapping type 
+contributions by: Alex Jacks
+*/
 Uploader.populateTable = function(bucket, type){
 
   var entryCount = bucket.length;
@@ -229,7 +290,12 @@ Uploader.populateTable = function(bucket, type){
 
 var bin_count = 0;
 
-// Multi-post uploading
+/* 
+name: bulkUpload
+author: Alex Jacks
+created: March 23, 2015
+purpose: Multi-post uploading
+*/
 Uploader.bulkUpload = function(){
 
   UI.loading(true, "Uploading Data.....");
@@ -276,7 +342,14 @@ Uploader.bulkUpload = function(){
   });
 }
 
-// Send data to database
+/* 
+name: upload
+author: Alex Jacks
+created: March 23, 2015
+purpose: Send data to database
+argument: bins is the data being uploaded and callback is some call
+contributions by: Alex Johnson
+*/
 Uploader.upload = function(bins, callback) {
 
   // If no bins remain, end recursion
@@ -314,10 +387,17 @@ Uploader.upload = function(bins, callback) {
   });
 }
 
-// Apply a key mapping.
-// Converts arrays from .csv file input
-// into the corresponding JSON objects
-// flag: whether or not multiple key mappings need to be found.
+/* 
+name: formatData
+author: Alex Jacks
+created: March 23, 2015
+purpose: Apply a key mapping.
+         Converts arrays from .csv file input
+         into the corresponding JSON objects
+argument: data is uploaded data and flag is whether or not multiple key 
+          mappings need to be found.
+contributions by: Alex Johnson
+*/
 Uploader.formatData = function(data, flag){
 
   UI.alert("Filtering Valid Data.");
@@ -372,8 +452,14 @@ Uploader.formatData = function(data, flag){
   return acc;
 }
 
-// populate certain data types with a player idea based on nearby actions
-// e.g. dialogue has no playerId, so we use the id from nearby position events
+/* 
+name: fillMissingData
+author: Alex Jacks
+created: March 23, 2015
+purpose: populate certain data types with a player idea based on nearby actions
+e.g. dialogue has no playerId, so we use the id from nearby position events
+argument: data is uploaded data
+*/
 Uploader.fillMissingData = function(data) {
   var entries = [];
   

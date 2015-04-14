@@ -54,6 +54,17 @@ Your app should now be running on [localhost:5000](http://localhost:5000/).
 
 The api is available at [localhost:5000/api](http://localhost:5000/api).
 
+## Testing
+
+> Run Mocha to test
+
+```sh
+$ mocha
+
+```
+
+Note: Make sure this is only run locally, as the tests clear out the database beforehand.
+
 ## Deployment to Server (Heroku)
 > Log into [heroku.com](http://heroku.com) and deploy from the GitHub repo.
 

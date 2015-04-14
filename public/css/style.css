@@ -22,14 +22,21 @@ body {
 
 #legend {
     position: absolute;
-    top: 15px;
+    top: 0px;
+    padding-top: 15px;
     right: 15px;
     width: 200px;
+    height: 100%;
+    overflow: scroll;
 }
 
 /* Map key*/
 #key {
     
+}
+
+label {
+    width: 100%;
 }
 
 /* Hubspot Messenger */
@@ -159,6 +166,11 @@ ul.messenger-theme-air .messenger-message {
     margin-right: 4px;
 }
 
+.sidebar-nav .panel-body .fa.fa-sign-in {
+    font-size: 25px;
+    color: #337AB7;
+}
+
 .sidebar-nav .panel-heading {
     padding: 10px;
 }
@@ -186,12 +198,14 @@ ul.messenger-theme-air .messenger-message {
     padding: 17px;
 }
 
-.sidebar-nav .select2-container {
-  padding: 10px;
-}
-
 .sidebar-nav .select2-container  li {
     line-height: 25px;
+}
+
+
+.sidebar-nav .fa.fa-info-circle {
+    float: right;
+    text-align: right;
 }
 
 #query-preset .fa-star {
@@ -339,6 +353,10 @@ table#available-players button i.fa{
 
 .color-select .fa {
     font-size: 35px;
+}
+
+.filter-by-action {
+    padding: 17px;
 }
 
 @media(min-width:768px) {

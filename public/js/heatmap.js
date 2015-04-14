@@ -24,8 +24,10 @@ Heatmap.heatmapLayer = new HeatmapOverlay({
 });
 
 /* 
+author: Alex Johnson
 created: March 29, 2015
 purpose: uses heatmapLayer configurations from above to add heatmap layer
+argument: data is the current active dataset
 */
 Heatmap.addHeatmap = function(data){
 
