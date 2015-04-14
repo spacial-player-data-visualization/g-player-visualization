@@ -169,7 +169,7 @@ options.maps = [{
 	
 	name: "default",
 	game: "Game Gaze",
-	imageURL: "http://i.imgur.com/6ADPz34.jpg",
+	imageURL: "http://i.imgur.com/0aXWffH.jpg",
 
 	top: 1000,
 	bottom: 0,
