@@ -430,9 +430,12 @@ UI.getListOfAvailablePlayerIDs = function(callback){
 
           // Create table row with player data
           var tr = ""
+
           tr += '<td>' + '<a onclick="UI.showPlayerData(' + p + ')"><i class="fa fa-code"></i></a>' + '</td>';
           tr += '<td>' + "Player <b>" + p + '</b></td>';
-          tr += '<td>' + '<a onclick="UI.players.addPlayer(' + p + ')"><i class="fa fa-plus" style="font-size:20px;"></i></a>' + '</td>';
+          tr += '<td>' + '<a onclick="UI.players.addPlayer(' + p + ')">'
+          tr += '<i class="fa fa-plus-square"></i>';
+          tr += '</a>' + '</td>';
 
           $('#available-players').append("<tr>" + tr + "</tr>");
         })

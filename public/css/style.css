@@ -166,6 +166,11 @@ ul.messenger-theme-air .messenger-message {
     margin-right: 4px;
 }
 
+.sidebar-nav .panel-body .fa.fa-plus-square {
+    font-size: 25px;
+    color: #337AB7;
+}
+
 .sidebar-nav .panel-heading {
     padding: 10px;
 }
