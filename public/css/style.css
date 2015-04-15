@@ -3,7 +3,7 @@
  ************************/
 
 body {
-    font-family: Raleway, sans-serif;
+    font-family: Raleway, sans-serif !important;
 }
 .leaflet-container {
     background-color: rgba(255,0,0,0.0);
@@ -156,6 +156,10 @@ ul.messenger-theme-air .messenger-message {
     width: 50px;
     text-align: center;
 } 
+
+.sidebar-nav .active {
+    background-color: #ddd;
+}
 
 .sidebar-nav .panel {
     margin-bottom: 0px;
