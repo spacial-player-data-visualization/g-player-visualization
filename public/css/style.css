@@ -5,6 +5,32 @@
 body {
     font-family: Raleway, sans-serif !important;
 }
+
+#loading {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,.5);
+    z-index: -1;
+    opacity: 0;
+    -webkit-transition: opacity 0.35s;
+    transition: opacity 0.35s;
+    -webkit-backface-visibility: hidden; /* Fix for Chrome 37.0.2062.120 (Mac) */
+}
+
+#loading.active {
+    z-index: 9999;
+    opacity: 1;
+}
+
+#loading .fa {
+    color: #eee;
+    top: 40%;
+    left: 45%;    
+    font-size: 150px;
+    position: fixed;
+}
+
 .leaflet-container {
     background-color: rgba(255,0,0,0.0);
 }

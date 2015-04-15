@@ -614,6 +614,8 @@ UI.loading = function(boolean, msg){
   
   // Show loading box
   if (boolean){
+    $("#loading").addClass('active');
+    
     UI.loader = Messenger().post({
       type: "type-loading",
       message : (msg) ? msg : "Loading...",
@@ -627,6 +629,8 @@ UI.loading = function(boolean, msg){
 
     // Hide loading box. 
     UI.loader.hide();
+
+    $("#loading").removeClass('active');
     
     // Add success message.
     return Messenger().post({
