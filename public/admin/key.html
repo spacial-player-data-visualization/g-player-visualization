@@ -8,9 +8,19 @@
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular-resource.min.js"></script>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.3.0/bootbox.min.js"></script>
   <script src="key.js"></script>
+  <link href="../css/style.css" rel="stylesheet" />
   
-  <div class="container" ng-app="Keys" ng-controller="KeysController">
-    <h2>Keys Created</h2>
+  <div id="sidebar-wrapper">
+    <ul class="sidebar-nav">
+      <li><a href="/index.html"><i class="fa fa-arrow-left"></i> Back to Map</a></li>
+      <li><a href="map.html" style="padding-left: 25px;">Edit Maps</a></li>
+      <li><a href="#" style="padding-left: 25px; background-color: #ccc">Edit Key Mappings</a></li>
+    </ul>
+  </div>
+
+  <div class="container" ng-app="Keys" ng-controller="KeysController" style="margin-left: 220px; padding-top: 20px; max-width: 900px;">
+    <h2>Key Mappings</h2>
+    <p>Key Mappings are sets of data that represent how the uploader interprets .CSV files.</p>
 <hr>
 
 <table class="table table-striped">
