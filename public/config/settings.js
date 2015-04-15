@@ -9,8 +9,6 @@ G-Player Data Visualization
 Created: March 25th, 2015
 Authors:
 Alex Johnson @alexjohnson505
-Alex Jacks @alexjacks92
-Pragathi Sanshi @pragsanshi
 
 */
 
@@ -154,7 +152,7 @@ options.maps = [{
 }, {
 
     // Save map configuration
-    name: "Map",
+    name: "default",
     game: "League of Legends",
     imageURL: "http://i.imgur.com/vattHJi.jpg",
 
@@ -162,13 +160,13 @@ options.maps = [{
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
-    top : 0,
-    bottom : 0,
-    left : 0,
-    right : 0,
+    top : 14539.0974490324,
+    bottom : -704.0974490324751,
+    left : -560.7673895530859,
+    right : 16200.767389553062,
 }, {
 	
-	name: "default",
+	name: "Default",
 	game: "Game Gaze",
 	imageURL: "http://i.imgur.com/0aXWffH.jpg",
 
@@ -340,7 +338,12 @@ options.mappings = [{
 	game : "Game Gaze",
 	type : "default",
 	actions : ["Game Gaze"],
-	colums : ["timestamp", "gazeX", "gazeY", "posX", "posY", "posZ", "cameraX", "cameraY"],
+	columns : ["timestamp", "gazeX", "gazeY", "posX", "posY", "posZ", "cameraX", "cameraY"],
+}, {
+	game: "League of Legends",
+	type: "default",
+	actions: ["League of Legends"],
+	columns: ["playerID", "timestamp", "posX", "posY"],
 }];
 
 function getListOfGames(){
