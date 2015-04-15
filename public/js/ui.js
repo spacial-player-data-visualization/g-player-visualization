@@ -96,6 +96,7 @@ argument: gamename is the game (ex: Fallout or Game Gaze)
 */
 UI.setGame = function(gamename){
 
+  
     // Save game name
     settings.game = gamename;
 
@@ -124,8 +125,12 @@ UI.setGame = function(gamename){
     Visualizer.clear();
 
     // Reset map
-    UI.setMap(game_maps[0].name);
-
+    if (game_maps && game_maps[0]){
+      UI.setMap(game_maps[0].name);  
+    } else {
+      UI.error("Unable to load Map Data");
+    }
+    
     // Clear List
     $("#select-map").children().remove();
 
@@ -445,6 +450,7 @@ UI.getListOfAvailablePlayerIDs = function(callback){
           var tr = ""
 
           tr += '<td>' + '<a onclick="UI.showPlayerData(' + p + ')"><i class="fa fa-code"></i></a>' + '</td>';
+          tr += '<td>' + '<a onclick="UI.showPlayerData(' + p + ', true)"><i class="fa fa-bolt"></i></a>' + '</td>';
           tr += '<td onclick="UI.players.addPlayer(' + p + ')">' + "Player <b>" + p + '</b></td>';
           tr += '<td onclick="UI.players.addPlayer(' + p + ')">'
           tr += '<i class="fa fa-sign-in"></i></td>';
@@ -462,32 +468,91 @@ name: showPlayerData
 author: Alex Johnson
 created: March 29, 2015
 purpose: pops up complete view of selected playerID's data
-argument: playerID is current player
+argument: playerID is current player, actionsOnly is a boolean
+     representing if we should filter out positions
 */
-UI.showPlayerData = function(playerID){
+UI.showPlayerData = function(playerID, actionsOnly){
+
+  UI.loading(true);
 
   var opts = Visualizer.getContext();
 
   // Get specific player
-  opts.players = [playerID];
+  opts.playerIDs = [playerID];
 
   // Data from API
   $.get(Visualizer.API_url + "entries", opts, function(data){
 
     // Show to developers
     console.log(data);
+
+    // Only show actions
+    if (actionsOnly) {
+      data = _.filter(data, function(p){
+        return p.action;
+      })
+    }
+
+    data = _.sortBy(data, 'timestamp');
     
-    var data = _.map(data, function(d){
+    var output = _.map(data, function(d){
       return convertJSONtoHTML(d);
     })
     
-    var data = _.reduce(data, function(memo, num){ 
+    output= _.reduce(output, function(memo, num){ 
       return memo + num + "<hr>"; 
     }, 0);
 
+    UI.loading(false);
+
+    if (actionsOnly){
+      UI.alert("Showing " + data.length + " Actions");
+    } else {
+      UI.alert("Showing " + data.length + " Data Points");
+    }
+    
     // Show as massive string
-    bootbox.alert(data);
+    bootbox.alert(output);
+
+    
   });
+}
+
+// Load available key mappings and maps from API
+// KEYS, KEY MAPPINGS, and GAME
+UI.loadOptions = function(){
+
+    // Available options
+    options = {
+      games : [],
+      mappings : [],
+      maps : [],
+    }
+
+    // Get list of Key Mappings
+    $.get(Visualizer.API_url + "keys", function(mappings){
+      console.log("Mappings");
+      console.log(mappings);
+      options.mappings = mappings;
+    
+    }, function(err){
+      console.error("Error loading data from API");
+      UI.error(err);
+    })
+
+    // Get list of Game Maps
+    $.get(Visualizer.API_url + "maps", function(maps){
+      console.log("Maps");
+      console.log(maps);
+      options.maps = maps;
+
+      // Generate list of games from the key mappings
+      options.games = getListOfGames(maps);
+
+    }, function(err){
+      console.error("Error loading data from API");
+      UI.error(err);
+    })
 }
 
 /************************************
@@ -649,4 +714,10 @@ UI.loading = function(boolean, msg){
 Messenger.options = {
   extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right',
   theme: 'air'
+}
+
+function getListOfGames(mappings){
+  var games = _.uniq(mappings, function(mapping){ return mapping.game });
+  games = _.map(games, function(g){ return g.game });
+  return games;
 }
