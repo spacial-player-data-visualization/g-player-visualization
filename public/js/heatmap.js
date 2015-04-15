@@ -33,11 +33,10 @@ Heatmap.addHeatmap = function(data){
 
   // Filter data by the positions and
   // actions that are currently selected
-  var data = selectedData(data);
+  var data = Visualizer.activeData(data);
 
   // Join selected data sets
-  // var data = data.positions.concat(data.actions);
-  data = data.actions;
+  data = data.positions.concat(data.actions);
 
   console.log("\nData to be Heatmapped");
   console.log(data);

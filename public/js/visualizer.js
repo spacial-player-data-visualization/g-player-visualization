@@ -114,7 +114,7 @@ Visualizer.draw = function(entries, color, index){
     entries = sortBy(entries, "timestamp");
 
     // Get the active set of data
-    var data = selectedData(entries);
+    var data = Visualizer.activeData(entries);
 
     /********************************
              POSITIONS
@@ -123,8 +123,15 @@ Visualizer.draw = function(entries, color, index){
     // Should we show position data?
     if (shouldWePlotPositionData()) {
 
+      // Create list of latLng ojects
+      var positions = _.map(data.positions, function(point){
+
+        // Return formatted latLng point
+        return toLatLng(point);
+      }); 
+
       // Create polyline
-      var polyline = L.polyline(data.positions, {
+      var polyline = L.polyline(positions, {
           stroke: true,
           color: color,
           weight: 2,
@@ -177,6 +184,48 @@ Visualizer.draw = function(entries, color, index){
 
     addFeatureGroup(markers);
 
+}
+
+// Given a dataset, seperate the data into positions
+// and actions. In addition, remove any data type
+// that the user has disables from the UI
+Visualizer.activeData = function(dataset){
+
+    // Seperate data to positions and actions
+    var data = {
+      positions : [],
+      actions : [],
+    }
+
+    // Get the currently selected list of actions
+    var enabledActions = UI.filters.actions();
+
+    // Does the user want to see position data?
+    // This returns false if a.) a game has available
+    // action data, and b.) the user has selected to
+    // only show actions and events on the map
+
+    if (shouldWePlotPositionData()) {
+
+      // get list of positions
+      data.positions = _.filter(dataset, function(d){
+
+        // Do we not have an action key?
+        return !d.action;
+      });
+    }
+
+    // Get list of actions
+    data.actions = _.filter(dataset, function(d){
+
+      // Do we have an action key?
+      var exists = (d.action) ? true : false;
+
+      // Is the action enabled in the side nav?
+      return exists && (_.contains(enabledActions, d.action))
+    });
+
+    return data;
 }
 
 // Clears the active data set. Resets map
@@ -405,53 +454,4 @@ function shouldWePlotPositionData (){
     } else {
       return false
     };
-}
-
-// Given a dataset, seperate the data into positions
-// and actions. In addition, remove any data type
-// that the user has disables from the UI
-function selectedData (dataset){
-
-    // Seperate data to positions and actions
-    var data = {
-      positions : null,
-      actions : null,
-    }
-
-    // Get the currently selected list of actions
-    var enabledActions = UI.filters.actions();
-
-    // Does the user want to see position data?
-    // This returns false if a.) a game has available
-    // action data, and b.) the user has selected to
-    // only show actions and events on the map
-
-    if (shouldWePlotPositionData()) {
-
-      // get list of positions
-      data.positions = _.filter(dataset, function(d){
-
-        // Do we not have an action key?
-        return !d.action;
-      });
-
-      // Create list of latLng ojects
-      data.positions = _.map(data.positions, function(point){
-
-        // Return formatted latLng point
-        return toLatLng(point);
-      }); 
-    }
-
-    // Get list of actions
-    data.actions = _.filter(dataset, function(d){
-
-      // Do we have an action key?
-      var exists = (d.action) ? true : false;
-
-      // Is the action enabled in the side nav?
-      return exists && (_.contains(enabledActions, d.action))
-    });
-
-    return data;
 }
