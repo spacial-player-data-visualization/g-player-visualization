@@ -160,10 +160,10 @@ options.maps = [{
     // Map player locations to their points
     // on the map. Manually offset for accuracy.
     // Multiplied to base
-    top : 12000,
-    bottom : 455,
-    left : 390,
-    right : 15490,
+    top : 14539.0974490324,
+    bottom : -704.0974490324751,
+    left : -560.7673895530859,
+    right : 16200.767389553062,
 }, {
 	
 	name: "Default",
