@@ -146,6 +146,16 @@ UI.setMap = function(mapname, callback){
   (callback) ? callback() : Visualizer.loadData();
 }
 
+// Save the edited map to the database
+UI.saveMap = function(){
+
+  $('#save-map').hide();
+
+  alert("Map changes have been saved. Your changes will now " +
+        "persists when you reload or return to this website.")
+
+}
+
 /* 
 name: moveMap
 author: Alex Johnson
@@ -155,6 +165,8 @@ arguments: xOffset is the left to right offset of coordinates
 yoffset is the bottom to top offset of coordinates
 */
 UI.moveMap = function(xOffset, yOffset){
+
+  $('#save-map').show();
   
   // Get map data from settings
   var m = _.findWhere(options.maps, { name : settings.map.name });
@@ -179,6 +191,8 @@ purpose: handles manipulating map using expand or contract selections
 arguments: scale is the factor of scaling
 */
 UI.scaleMap = function(scale){
+
+  $('#save-map').show();
 
   // Get map data from settings
   var m = _.findWhere(options.maps, { name : settings.map.name });

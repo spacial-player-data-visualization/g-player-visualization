@@ -413,6 +413,15 @@ body.admin td p {
     display: none;
 }
 
+#save-map {
+    display: block;
+}
+
+#save-map .btn {
+    margin: 10px 0;
+    display: block;
+}
+
 @media(min-width:768px) {
     #wrapper {
         padding-left: 200px;
