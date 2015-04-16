@@ -281,12 +281,17 @@ UI.players.addPlayer = function(playerID){
     message: message,
     title: "Select Color for Player " + playerID,
     
+    // Options available to the user
     buttons: {
+      
+      // Hide the modal
       success: {
         label: 'Cancel',
         className: "btn-default",
         callback: function() {}
       },
+
+      // Preview Data
       danger: {
         label: '<i class="fa fa-code"></i> Preview Data',
         className: "btn-default",
@@ -299,13 +304,18 @@ UI.players.addPlayer = function(playerID){
                 "like to limit the data to ignore positions, " +
                 "and only show action/event data points?";
 
+            // Load player data. 
+            // should we limit the data to actions?
             UI.showPlayerData(playerID, confirm(msg))
         }
       },
+
+      // Add player to the map
       main: {
         label: "Add Player",
         className: "btn-primary",
         callback: function() {
+          
           var color =  $('.color-select input[type=radio]:checked').val();
           if (!color) { color : "#000" };
 
@@ -339,11 +349,9 @@ UI.players.addPlayers = function(){
 UI.players.add = function(playerID, color){
   
     // Add to list
-    settings.players.push({ 
-      playerID : playerID, 
-      color : color 
-    });
-
+    settings.players.push({ playerID : playerID, color : color });
+    
+    // Update map
     UI.players.refreshMap();    
 }
 
@@ -354,17 +362,25 @@ UI.players.remove = function(playerID){
     return player.playerID != playerID;
   });
 
+  // Remove all data
   Visualizer.clear();
+
+  // Re-plot map
   UI.players.refreshMap();
 
 }
 
 // Return list of player IDs
 UI.players.listIDs = function(){
+  
+  // Create list of IDs
   var ids = _.pluck(settings.players, 'playerID');
+  
+  // Handle empty case
   if (!ids) { ids = []; } 
-  return ids;
 
+  // Return IDs
+  return ids;
 };
 
 /* 
@@ -412,15 +428,12 @@ UI.getListOfAvailablePlayerIDs = function(callback){
         _.each(players, function(p){
 
           // Create table row with player data
-          var tr = ""
+          var tr = '<tr><td onclick="UI.players.addPlayer(' + p + ')">' + 
+                   "Player <b>" + p + '</b></td>' +
+                  '<td onclick="UI.players.addPlayer(' + p + ')">' +
+                   '<i class="fa fa-sign-in"></i></td></tr>';
 
-          // tr += '<td>' + '<a onclick="UI.showPlayerData(' + p + ')"><i class="fa fa-code"></i></a>' + '</td>';
-          // tr += '<td>' + '<a onclick="UI.showPlayerData(' + p + ', true)"><i class="fa fa-bolt"></i></a>' + '</td>';
-          tr += '<td onclick="UI.players.addPlayer(' + p + ')">' + "Player <b>" + p + '</b></td>';
-          tr += '<td onclick="UI.players.addPlayer(' + p + ')">'
-          tr += '<i class="fa fa-sign-in"></i></td>';
-
-          $('#available-players').append("<tr>" + tr + "</tr>");
+          $('#available-players').append(tr);
         })
 
         if (callback) callback(data);
@@ -464,17 +477,14 @@ UI.showPlayerData = function(playerID, actionsOnly){
       return convertJSONtoHTML(d);
     })
     
-    output= _.reduce(output, function(memo, num){ 
+    output = _.reduce(output, function(memo, num){ 
       return memo + num + "<hr>"; 
     }, 0);
 
     UI.loading(false);
 
-    if (actionsOnly){
-      UI.alert("Showing " + data.length + " Actions");
-    } else {
-      UI.alert("Showing " + data.length + " Data Points");
-    }
+    var selectedData = (actionsOnly) ? "Actions" : "Data Points";
+    UI.alert("Showing " + data.length + " " + selectedData);
     
     // Show as massive string
     bootbox.alert(output);
@@ -485,39 +495,66 @@ UI.showPlayerData = function(playerID, actionsOnly){
 
 // Load available key mappings and maps from API
 // KEYS, KEY MAPPINGS, and GAME
-UI.loadOptions = function(){
+UI.loadOptions = function(next){
 
     // Available options
-    options = {
+    var opts = {
       games : [],
       mappings : [],
       maps : [],
     }
 
-    // Get list of Key Mappings
-    $.get(Visualizer.API_url + "keys", function(mappings){
-      console.log("Mappings");
-      console.log(mappings);
-      options.mappings = mappings;
-    
-    }, function(err){
-      console.error("Error loading data from API");
-      UI.error(err);
-    })
+    // Load Key Mapping and Available Maps
+    async.parallel({
+        one: function(callback){
+          // Get list of Key Mappings
+          $.get(Visualizer.API_url + "keys", function(mappings){
+            opts.mappings = mappings;
+            callback(null, 'keys');
+          })
+                
 
-    // Get list of Game Maps
-    $.get(Visualizer.API_url + "maps", function(maps){
-      console.log("Maps");
-      console.log(maps);
-      options.maps = maps;
+        },
+        two: function(callback){
+          // Get list of Game Maps
+          $.get(Visualizer.API_url + "maps", function(maps){
+            
+            opts.maps = maps;
 
-      // Generate list of games from the key mappings
-      options.games = getListOfGames(maps);
+            // Generate list of games from the key mappings
+            opts.games = getListOfGames(maps);
+            callback(null, 'maps');
+          })
+        }
+    },
+    function(err, results) {
 
-    }, function(err){
-      console.error("Error loading data from API");
-      UI.error(err);
-    })
+      // Throw errors in the case that the API
+      // didn't return entries for any key
+
+      if (opts.games.length < 1) {
+        UI.error("Warning: App was unable to get list of games from the Key Mappings");
+      }
+
+      if (opts.mappings.length < 1) {
+        UI.error("Warning: No key mappings were returned from the database");
+      }
+
+      if (opts.maps.length < 1) {
+        UI.error("Warning: No game Maps were returned from the database");
+      }
+
+      console.log(opts);
+
+      if (next) next(opts);
+
+    });
+
+
+    //  function(err){
+    //   console.error("Error loading data from API");
+    //   UI.error(err);
+    // }
 }
 
 /************************************

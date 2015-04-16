@@ -83,7 +83,7 @@ Alex Johnson @alexjohnson505
  <script src="lib/leaflet.label.js"></script>
 
  <!-- Load Settings -->
- <script src="config/settings.js"></script>
+ <!-- <script src="config/settings.js"></script> -->
 
  <!-- App Functionality -->
  <script src="js/visualizer.js"></script>
@@ -104,6 +104,8 @@ Alex Johnson @alexjohnson505
 
   // Define Map Parameters
   var map = L.map('map', { minZoom: 2, maxZoom: 8 });
+
+  var options = {};
   
   /*************************
        Load Tempalates
@@ -125,6 +127,12 @@ Alex Johnson @alexjohnson505
         $("#legend").load('templates/menu-right.html', function(result){
           callback(null, 'right');
 
+        });
+      }, 
+      function(callback){
+        UI.loadOptions(function(resp){
+          options = resp;
+          callback(null, 'data');
         });
       }
   ], 
