@@ -149,11 +149,24 @@ UI.setMap = function(mapname, callback){
 // Save the edited map to the database
 UI.saveMap = function(){
 
-  $('#save-map').hide();
+    var map = settings.map;
 
-  alert("Map changes have been saved. Your changes will now " +
-        "persists when you reload or return to this website.")
+    // Update current map in API
+    $.ajax({
+      url: Visualizer.API_url + "maps/" + map._id,
+      type: 'PUT',
+      success: success,
+      data: map,
+    });
 
+    function success(resp){
+        if (!resp) UI.error("Error saving map")
+              
+        $('#save-map').hide();
+
+        alert("Map changes have been saved. Your changes will now " +
+              "persists when you reload or return to this website.");        
+    }
 }
 
 /* 
