@@ -399,6 +399,16 @@ table#available-players button i.fa{
     padding: 17px;
 }
 
+body.admin {
+
+}
+
+body.admin td p {
+  max-width: 350px;
+  overflow: scroll;
+  word-wrap: break-word;
+}
+
 @media(min-width:768px) {
     #wrapper {
         padding-left: 200px;
