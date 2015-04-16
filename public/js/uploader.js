@@ -19,6 +19,7 @@ created: March 23, 2015
 purpose: Load games into dropdown
 modifications by: Alex Johnson
 */
+
 function loader(){
   var selector = $("#gameSelect");
   
@@ -53,7 +54,6 @@ $('#gameSelect').on('change', function(){
 
 var Uploader = {};
 var selectedGame = "";
-
 
 /* 
 name: parseFile
@@ -181,6 +181,7 @@ purpose: populate multiple tables
 argument: data is the active dataset 
 contributions by: Alex Jacks
 */
+
 Uploader.populateTables = function(data){
   // Clear tables
   $(".tableContainer").html("");

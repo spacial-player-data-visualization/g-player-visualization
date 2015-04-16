@@ -37,7 +37,7 @@ Alex Johnson @alexjohnson505
   <link href="../css/style.css" rel="stylesheet" />
 
 </head>
-<body class="uploader admin" onload="loader();">
+<body class="uploader admin">
 
   <!-- Left Options Sidebar -->
   <div id="sidebar-wrapper">
@@ -91,14 +91,31 @@ Alex Johnson @alexjohnson505
     <script src="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/js/messenger.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/js/messenger-theme-future.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/js/select2.min.js"></script>
-    
-    <!-- Settings -->
-    <script src="../config/settings.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/async/0.9.0/async.js"></script>
 
     <!-- Libraries Hosted Locally --> 
     <script src="../lib/papaparse.min.js"></script>
     <script src="../js/visualizer.js"></script>
     <script src="../js/ui.js"></script>
     <script src="../js/uploader.js"></script>
+    <script>
+      
+    // When document is loaded
+    $(document).ready(function(){
+
+      // Load the options (key mappings & games)
+      // from the API
+      UI.loadOptions(function(resp){
+        
+        // Save to global options object
+        options = resp;
+        
+        // Then initialize the page
+        loader();  
+
+      });
+    })
+    
+    </script>
   </body>
   </html>
