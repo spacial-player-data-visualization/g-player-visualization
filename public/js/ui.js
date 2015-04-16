@@ -29,18 +29,6 @@ var UI = {
 
 };
 
-/* 
-name: menu
-author: Alex Johnson
-created: March 29, 2015
-purpose: retrieves the html for the menu
-*/
-UI.optionsMenu = function(){
-  $.get('templates/menu-popup.html', function(result){
-    bootbox.alert(result);
-  });
-}
-
 /************************************
       Setup UI / Side Options
 ************************************/

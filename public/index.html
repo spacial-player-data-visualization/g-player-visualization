@@ -58,6 +58,11 @@ Alex Johnson @alexjohnson505
 
    <!-- Map Information -->
    <div id="legend"></div>
+
+   <!-- Popup Menu -->
+   <div style="display:none;">
+      <div id="popup-menu"></div>
+   </div>
    
  </div><!-- /#wrapper -->
 
@@ -92,8 +97,12 @@ Alex Johnson @alexjohnson505
        Load Tempalates
    *************************/
 
+   $("#popup-menu").load('templates/menu-popup.html', function(result){
+
+   })
+
   $("#sidebar-wrapper").load('templates/menu-left.html', function(result){
-      
+
       // Load Options
       UI.loadOptions();
 
