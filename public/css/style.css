@@ -409,6 +409,10 @@ body.admin td p {
   word-wrap: break-word;
 }
 
+#popup-menu {
+    display: none;
+}
+
 @media(min-width:768px) {
     #wrapper {
         padding-left: 200px;
