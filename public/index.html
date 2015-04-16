@@ -111,7 +111,7 @@ Alex Johnson @alexjohnson505
        Load Tempalates
    *************************/
 
-  // Load templates
+  // Load templates & initial options from API
   async.parallel([
       function(callback){
           $("#popup-menu").load('templates/menu-popup.html', function(result){
@@ -130,6 +130,8 @@ Alex Johnson @alexjohnson505
         });
       }, 
       function(callback){
+
+        // Load options from API
         UI.loadOptions(function(resp){
           options = resp;
           callback(null, 'data');
@@ -143,14 +145,8 @@ Alex Johnson @alexjohnson505
   // Initialize the page
   function initialize(){
 
-    // Load Options
-    // UI.loadOptions();
-
     // Default Settings
     UI.setGame("Fallout New Vegas");
-  
-    // Available Actions
-    UI.filters.create();
     
     // Initialize Multiselect
     $(".action-select").select2();
