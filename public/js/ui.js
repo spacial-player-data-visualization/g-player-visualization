@@ -30,48 +30,6 @@ var UI = {
 };
 
 /************************************
-      Setup UI / Side Options
-************************************/
-
-/* 
-name: addToggleAbleSideNavigation
-author: Alex Johnson
-created: March 29, 2015
-purpose: initialize toggle-able side nav
-*/
-UI.addToggleAbleSideNavigation = function(){
-
-    var SideOptionsToggle = L.Control.extend({
-      
-      options: { position: 'topleft' },
-
-      // Create a button for toggling left nav
-      onAdd: function (map) {
-        
-        // create the control container with a particular class name
-        var button = L.DomUtil.create('div', 
-          'toggle-side-options leaflet-control leaflet-bar');
-        var icon = L.DomUtil.create('i', 'fa fa-bars', button);
-
-        // Add Listener
-        L.DomEvent.addListener(button, 'click', function(){
-            $("#wrapper").toggleClass("toggled");
-        });
-
-        return button;
-      }
-    });
-
-    map.addControl(new SideOptionsToggle());
-
-    // Toggle Side Options Meny
-    $("#toggle-menu").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
-}
-
-/************************************
          Game Functions
 ************************************/
 
@@ -541,6 +499,48 @@ UI.loadOptions = function(){
       console.error("Error loading data from API");
       UI.error(err);
     })
+}
+
+/************************************
+      Setup UI / Side Options
+************************************/
+
+/* 
+name: addToggleAbleSideNavigation
+author: Alex Johnson
+created: March 29, 2015
+purpose: initialize toggle-able side nav
+*/
+UI.addToggleAbleSideNavigation = function(){
+
+    var SideOptionsToggle = L.Control.extend({
+      
+      options: { position: 'topleft' },
+
+      // Create a button for toggling left nav
+      onAdd: function (map) {
+        
+        // create the control container with a particular class name
+        var button = L.DomUtil.create('div', 
+          'toggle-side-options leaflet-control leaflet-bar');
+        var icon = L.DomUtil.create('i', 'fa fa-bars', button);
+
+        // Add Listener
+        L.DomEvent.addListener(button, 'click', function(){
+            $("#wrapper").toggleClass("toggled");
+        });
+
+        return button;
+      }
+    });
+
+    map.addControl(new SideOptionsToggle());
+
+    // Toggle Side Options Meny
+    $("#toggle-menu").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
 }
 
 /************************************

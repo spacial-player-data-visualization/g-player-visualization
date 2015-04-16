@@ -74,6 +74,8 @@ Alex Johnson @alexjohnson505
  <script src="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/js/messenger-theme-future.js"></script>
  <script src="http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/js/select2.min.js"></script>
  <script src="http://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.3.0/bootbox.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/async/0.9.0/async.js"></script>
+
 
  <!-- Libraries Hosted Locally --> 
  <script src="lib/heatmap.min.js"></script>
@@ -95,27 +97,65 @@ Alex Johnson @alexjohnson505
   /*************************
        Load Tempalates
    *************************/
+    
+  /*************************
+         Setup MAP
+   *************************/
 
-   $("#popup-menu").load('templates/menu-popup.html', function(result){
+  // Initialize Map's Size
+  $("#map").css("width", $(document).width());
+  $("#map").css("height", $(document).height());
 
-   })
+  // Define Map Parameters
+  var map = L.map('map', { minZoom: 2, maxZoom: 8 });
 
-  $("#sidebar-wrapper").load('templates/menu-left.html', function(result){
+  // map.on('click', function(e) {
 
-      // Load Options
-      UI.loadOptions();
+  //   console.log(Visualizer.unformatData({ 
+  //     latitude : e.latlng.lat,
+  //     longitude : e.latlng.lng,
+  //   }));
+    
+  // });
 
-      // Default Settings
-      UI.setGame("Fallout New Vegas");
-      
-      // Initialize side nav
-      UI.addToggleAbleSideNavigation();
+  // Load templates
+  async.parallel([
+      function(callback){
+          $("#popup-menu").load('templates/menu-popup.html', function(result){
+            callback(null, 'one');
+          })
+      },
+      function(callback){
+          $("#sidebar-wrapper").load('templates/menu-left.html', function(result){
+            callback(null, 'two');
+          });
+      }, 
+      function(callback){
+        $("#legend").load('templates/menu-right.html', function(result){
+          callback(null, 'three');
+
+        });
+      }
+  ],
+  // optional callback
+  function(err, results){
+
+    console.log(results)
+      // the results array will equal ['one','two'] even though
+      // the second function had a shorter timeout.
+
+      initialize();
 
   });
 
-  // Load side options template
-  $("#legend").load('templates/menu-right.html', function(result){
-    
+  function initialize(){
+
+    // Load Options
+    // UI.loadOptions();
+
+    // Default Settings
+    UI.setGame("Fallout New Vegas");
+  
     // Available Actions
     UI.filters.create();
     
@@ -167,28 +207,8 @@ Alex Johnson @alexjohnson505
         map.removeLayer(Heatmap.heatmapLayer)
       }
     });
-    
-  });
 
-  /*************************
-         Setup MAP
-   *************************/
-
-  // Initialize Map's Size
-  $("#map").css("width", $(document).width());
-  $("#map").css("height", $(document).height());
-
-  // Define Map Parameters
-  var map = L.map('map', { minZoom: 2, maxZoom: 8 });
-
-  map.on('click', function(e) {
-
-    console.log(Visualizer.unformatData({ 
-      latitude : e.latlng.lat,
-      longitude : e.latlng.lng,
-    }));
-    
-  });
+  };
   
 </script>
 </body>
