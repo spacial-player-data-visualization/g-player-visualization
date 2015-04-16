@@ -17,21 +17,13 @@ Created:
 March 29, 2015
 */
 
-/************************************
-         UI Functions
-************************************/
-
-// Provide user feedback with the interface
-var UI = {
-
-	// Store reference to loading indicator
-	loader : {},
-
-};
 
 /************************************
          Game Functions
 ************************************/
+
+// Provide user feedback with the interface
+var UI = {};
 
 /* 
 name: setGame
@@ -506,6 +498,7 @@ UI.loadOptions = function(next){
     // Load Key Mapping and Available Maps
     async.parallel({
         one: function(callback){
+
           // Get list of Key Mappings
           $.get(Visualizer.API_url + "keys", function(mappings){
             opts.mappings = mappings;
@@ -515,6 +508,7 @@ UI.loadOptions = function(next){
 
         },
         two: function(callback){
+          
           // Get list of Game Maps
           $.get(Visualizer.API_url + "maps", function(maps){
             
@@ -548,12 +542,6 @@ UI.loadOptions = function(next){
       if (next) next(opts);
 
     });
-
-
-    //  function(err){
-    //   console.error("Error loading data from API");
-    //   UI.error(err);
-    // }
 }
 
 /************************************
@@ -576,9 +564,8 @@ UI.addToggleAbleSideNavigation = function(){
       onAdd: function (map) {
         
         // create the control container with a particular class name
-        var button = L.DomUtil.create('div', 
-          'toggle-side-options leaflet-control leaflet-bar');
-        var icon = L.DomUtil.create('i', 'fa fa-bars', button);
+        var button = L.DomUtil.create('div', 'toggle-side-options leaflet-control leaflet-bar');
+        var icon   = L.DomUtil.create('i', 'fa fa-bars', button);
 
         // Add Listener
         L.DomEvent.addListener(button, 'click', function(){
@@ -620,7 +607,7 @@ UI.filters.create = function(){
 
   _.each(mappings, function(mapping){
 
-      var html = UI.filters.addFilter(mapping);
+      var html = UI.filters.generateCheckbox(mapping);
       $("#filters").append(html);
 
   })
@@ -629,7 +616,7 @@ UI.filters.create = function(){
 }
 
 // Create a new checkbox
-UI.filters.addFilter = function(mapping){
+UI.filters.generateCheckbox = function(mapping){
 
   var a = '<div class="checkbox"><label>';
   var b = '<input type="checkbox" id="toggle_paths" value="' + mapping.type + '" checked>' + mapping.type;
@@ -716,6 +703,9 @@ UI.success = function(msg){
     type: "success",
   });
 }
+
+// Store reference to loading indicator
+UI.loader = {};
 
 // purpose: show/hide a loading indicator
 UI.loading = function(boolean, msg){
