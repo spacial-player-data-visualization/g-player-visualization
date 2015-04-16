@@ -350,7 +350,7 @@ table#available-players {
 }
 
 table#available-players td {
-    padding: 10px 0px;
+    padding: 10px 18px 6px;
 }
 
 table#available-players td .fa {

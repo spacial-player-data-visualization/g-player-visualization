@@ -93,10 +93,6 @@ Alex Johnson @alexjohnson505
 
  <!-- Page-Specific Javascript -->
  <script>
-
-  /*************************
-       Load Tempalates
-   *************************/
     
   /*************************
          Setup MAP
@@ -108,46 +104,35 @@ Alex Johnson @alexjohnson505
 
   // Define Map Parameters
   var map = L.map('map', { minZoom: 2, maxZoom: 8 });
-
-  // map.on('click', function(e) {
-
-  //   console.log(Visualizer.unformatData({ 
-  //     latitude : e.latlng.lat,
-  //     longitude : e.latlng.lng,
-  //   }));
-    
-  // });
+  
+  /*************************
+       Load Tempalates
+   *************************/
 
   // Load templates
   async.parallel([
       function(callback){
           $("#popup-menu").load('templates/menu-popup.html', function(result){
-            callback(null, 'one');
+            callback(null, 'menu');
           })
       },
       function(callback){
           $("#sidebar-wrapper").load('templates/menu-left.html', function(result){
-            callback(null, 'two');
+            callback(null, 'left');
           });
       }, 
       function(callback){
         $("#legend").load('templates/menu-right.html', function(result){
-          callback(null, 'three');
+          callback(null, 'right');
 
         });
       }
-  ],
-  // optional callback
-  function(err, results){
+  ], 
 
-    console.log(results)
-      // the results array will equal ['one','two'] even though
-      // the second function had a shorter timeout.
-
-      initialize();
-
-  });
-
+  // Initialize Data once templates are loaded
+  function(err, results){ initialize(); });
+  
+  // Initialize the page
   function initialize(){
 
     // Load Options
@@ -166,7 +151,7 @@ Alex Johnson @alexjohnson505
          Watch form Values
     ****************************/
 
-    // Watcher
+    // WATCH for ACTIONS change
     $(".action-select").on("change", function (e) { 
       
       // Get list of selected actions
@@ -179,12 +164,19 @@ Alex Johnson @alexjohnson505
 
     });
 
+    // WATCH for GAME change
     $('#select-game').on('change', function(){
+        
+      // Status of checkbox
       var selected = $(this).find("option:selected").val();
+      
       UI.setGame(selected);
     });
 
+    // WATCH for MAP change
     $('#select-map').on('change', function(){
+      
+      // Status of checkbox
       var selected = $(this).find("option:selected").val();
       
       settings.data = null;
@@ -195,7 +187,7 @@ Alex Johnson @alexjohnson505
       UI.setMap(selected);
     });
 
-    // Show/Hide Heatmap
+    // WATCH for HEATMAP change
     $('#toggle_heatmap').change(function(e) {
       
       // Enable

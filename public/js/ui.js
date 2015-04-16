@@ -72,9 +72,11 @@ UI.setGame = function(gamename){
 
     // Reset map
     if (game_maps && game_maps[0]){
-      UI.setMap(game_maps[0].name);  
+
+        UI.setMap(game_maps[0].name);  
     } else {
-      UI.error("Unable to load Map Data");
+      
+        UI.error("Unable to load Map Data");
     }
     
     // Clear List
@@ -273,15 +275,32 @@ UI.players.addPlayer = function(playerID){
     return memo + '<label class="radio"><input type="radio" name="group1" value="' + color + '" checked><i class="fa fa-square" style="color: ' + color + '"></i></label>';
   }, "");
 
+  var message = '<div class="color-select">' + color_radio_buttons + '</div>';
+
   bootbox.dialog({
-    message: '<div class="color-select">' + color_radio_buttons + '</div>',
+    message: message,
     title: "Select Color for Player " + playerID,
     
     buttons: {
       success: {
-        label: "Cancel",
+        label: 'Cancel',
         className: "btn-default",
         callback: function() {}
+      },
+      danger: {
+        label: '<i class="fa fa-code"></i> Preview Data',
+        className: "btn-default",
+        callback: function() {
+
+            var msg = "You are about to load and preview" + 
+                "the raw data for player" + playerID + ". This " + 
+                "will show the data for all actions and " +
+                "positions of the selected player. Would you " +
+                "like to limit the data to ignore positions, " +
+                "and only show action/event data points?";
+
+            UI.showPlayerData(playerID, confirm(msg))
+        }
       },
       main: {
         label: "Add Player",
@@ -395,8 +414,8 @@ UI.getListOfAvailablePlayerIDs = function(callback){
           // Create table row with player data
           var tr = ""
 
-          tr += '<td>' + '<a onclick="UI.showPlayerData(' + p + ')"><i class="fa fa-code"></i></a>' + '</td>';
-          tr += '<td>' + '<a onclick="UI.showPlayerData(' + p + ', true)"><i class="fa fa-bolt"></i></a>' + '</td>';
+          // tr += '<td>' + '<a onclick="UI.showPlayerData(' + p + ')"><i class="fa fa-code"></i></a>' + '</td>';
+          // tr += '<td>' + '<a onclick="UI.showPlayerData(' + p + ', true)"><i class="fa fa-bolt"></i></a>' + '</td>';
           tr += '<td onclick="UI.players.addPlayer(' + p + ')">' + "Player <b>" + p + '</b></td>';
           tr += '<td onclick="UI.players.addPlayer(' + p + ')">'
           tr += '<i class="fa fa-sign-in"></i></td>';
