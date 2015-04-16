@@ -17,7 +17,6 @@ Created:
 March 29, 2015
 */
 
-
 /************************************
          Game Functions
 ************************************/
@@ -508,7 +507,7 @@ UI.loadOptions = function(next){
 
         },
         two: function(callback){
-          
+
           // Get list of Game Maps
           $.get(Visualizer.API_url + "maps", function(maps){
             
