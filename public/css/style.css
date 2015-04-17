@@ -3,8 +3,35 @@
  ************************/
 
 body {
-    font-family: Raleway, sans-serif;
+    font-family: Raleway, sans-serif !important;
 }
+
+#loading {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,.5);
+    z-index: 9999;
+    opacity: 0;
+    display: none;
+    -webkit-transition: opacity 0.35s;
+    transition: opacity 0.35s;
+    -webkit-backface-visibility: hidden; /* Fix for Chrome 37.0.2062.120 (Mac) */
+}
+
+#loading.active {
+    opacity: 1;
+    display: block;
+}
+
+#loading .fa {
+    color: #eee;
+    top: 40%;
+    left: 45%;    
+    font-size: 150px;
+    position: fixed;
+}
+
 .leaflet-container {
     background-color: rgba(255,0,0,0.0);
 }
@@ -156,6 +183,10 @@ ul.messenger-theme-air .messenger-message {
     width: 50px;
     text-align: center;
 } 
+
+.sidebar-nav .active {
+    background-color: #ddd;
+}
 
 .sidebar-nav .panel {
     margin-bottom: 0px;
@@ -319,7 +350,16 @@ table#available-players {
 }
 
 table#available-players td {
-    padding: 10px 0px;
+    padding: 10px 18px 6px;
+}
+
+table#available-players td .fa {
+    margin-left: 10px;
+    width: 10px;
+}
+
+table#available-players td .fa-sign-in {
+    margin-right: 20px;
 }
 
 table#available-players button {
@@ -357,6 +397,29 @@ table#available-players button i.fa{
 
 .filter-by-action {
     padding: 17px;
+}
+
+body.admin {
+
+}
+
+body.admin td p {
+  max-width: 350px;
+  overflow: scroll;
+  word-wrap: break-word;
+}
+
+#popup-menu {
+    display: none;
+}
+
+#save-map {
+    display: block;
+}
+
+#save-map .btn {
+    margin: 10px 0;
+    display: block;
 }
 
 @media(min-width:768px) {

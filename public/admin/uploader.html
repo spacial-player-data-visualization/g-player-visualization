@@ -34,15 +34,18 @@ Alex Johnson @alexjohnson505
   <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/css/select2.min.css" />
 
   <!-- Internal CSS -->
-  <link href="css/style.css" rel="stylesheet" />
+  <link href="../css/style.css" rel="stylesheet" />
 
 </head>
-<body class="uploader" onload="loader();">
+<body class="uploader admin">
 
   <!-- Left Options Sidebar -->
   <div id="sidebar-wrapper">
     <ul class="sidebar-nav">
-      <li><a href="index.html"><i class="fa fa-arrow-left"></i> Back to Map</a></li>
+      <li><a href="../index.html"><i class="fa fa-arrow-left"></i> Back to Map</a></li>
+      <li><a href="uploader.html" class="active"><i class="fa fa-database"></i>Upload Data</a></li>
+      <li><a href="map.html"><i class="fa fa-leanpub"></i>Edit Maps</a></li>
+      <li><a href="key.html"><i class="fa fa-sitemap"></i>Edit Key Mappings</a></li>
     </ul>
   </div>
 
@@ -56,11 +59,7 @@ Alex Johnson @alexjohnson505
             <div class="col-sm-3">
               <form class="form">
                 <label>Select Game</label>
-                <select class="form-control" id="gameSelect">
-                  <!-- <option>Fallout New Vegas</option>
-                  <option>Gaze</option>
-                 -->
-                 </select><br>
+                <select class="form-control" id="gameSelect"></select><br>
               </form>
             </div>
 
@@ -92,14 +91,31 @@ Alex Johnson @alexjohnson505
     <script src="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/js/messenger.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/js/messenger-theme-future.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/js/select2.min.js"></script>
-    
-    <!-- Settings -->
-    <script src="config/settings.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/async/0.9.0/async.js"></script>
 
     <!-- Libraries Hosted Locally --> 
-    <script src="lib/papaparse.min.js"></script>
-    <script src="js/visualizer.js"></script>
-    <script src="js/ui.js"></script>
-    <script src="js/uploader.js"></script>
+    <script src="../lib/papaparse.min.js"></script>
+    <script src="../js/visualizer.js"></script>
+    <script src="../js/ui.js"></script>
+    <script src="../js/uploader.js"></script>
+    <script>
+      
+    // When document is loaded
+    $(document).ready(function(){
+
+      // Load the options (key mappings & games)
+      // from the API
+      UI.loadOptions(function(resp){
+        
+        // Save to global options object
+        options = resp;
+        
+        // Then initialize the page
+        loader();  
+
+      });
+    })
+    
+    </script>
   </body>
   </html>

@@ -11,6 +11,7 @@ Alex Johnson @alexjohnson505
 
 Created: March 29, 2015
 */
+
 var Heatmap = {};
 
 // credit: http://www.patrick-wied.at/static/heatmapjs/

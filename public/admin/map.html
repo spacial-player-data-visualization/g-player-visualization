@@ -1,29 +1,36 @@
 <html>
-<body>
-
-  <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.1/js/bootstrap-datepicker.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular-route.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular-resource.min.js"></script>
+<body class="admin">
+  <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.1/js/bootstrap-datepicker.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular-route.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular-resource.min.js"></script>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.3.0/bootbox.min.js"></script>
-  <script src="js/map.js"></script>
+  <script src="controllers/map.js"></script>
   
   <!-- Style Sheets -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-  <link href="css/style.css" rel="stylesheet" />
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/css/messenger.css" />
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/css/messenger-theme-air.css" />
+  <link href="../css/style.css" rel="stylesheet" />
 
   <!-- Left Options Sidebar -->
   <div id="sidebar-wrapper">
     <ul class="sidebar-nav">
-      <li><a href="index.html"><i class="fa fa-arrow-left"></i> Back to Map</a></li>
+      <li><a href="../index.html"><i class="fa fa-arrow-left"></i> Back to Map</a></li>
+      <li><a href="uploader.html"><i class="fa fa-database"></i>Upload Data</a></li>
+      <li><a href="map.html" class="active"><i class="fa fa-leanpub"></i>Edit Maps</a></li>
+      <li><a href="key.html"><i class="fa fa-sitemap"></i>Edit Key Mappings</a></li>
     </ul>
   </div>
 
   <div class="container" ng-app="Maps" ng-controller="MapsController" style="margin-left: 220px; padding-top: 20px; max-width: 900px;">
-    <h2>Maps Created</h2><hr>
+    <h2>Maps Created</h2>
+    <p>Maps are images and dimensions that represent how we load background images into the visualizer</p>
+    <hr>
+
 
     <table class="table table-striped">
     <thead>

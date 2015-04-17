@@ -11,7 +11,12 @@ G-Player Data Visualization
 
 Created: February 23, 2015
 Authors:
-Alex Johnson @alexjohnson505
+
+  Alex Johnson @alexjohnson505
+  Tommy Hu @tomxhu
+  Pragathi Sanshi @pragsanshi
+  Alex Jacks @alexjacks92
+  Alex Gimmi @iBroadband
 
 -->
 
@@ -21,8 +26,6 @@ Alex Johnson @alexjohnson505
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- <link rel="icon" href="../../favicon.ico"> -->
-
   <title>G-Player Data Visualization | Visualize Data</title>
 
   <!-- External Style Sheets -->
@@ -42,21 +45,25 @@ Alex Johnson @alexjohnson505
 
 </head>
 <body>
-  <i id="loading" class="fa fa-cog fa-spin" style="display: none;"></i>
+  
+  <!-- Loading Indicator -->
+  <div id="loading"><i class="fa fa-cog fa-spin"></i></div>
 
   <!-- Page Content -->
   <div id="wrapper">
 
     <!-- Left Options Sidebar -->
     <div id="sidebar-wrapper"></div>
+ 
+    <!-- Leaflet.js Map -->
+    <div id="map"></div>
 
-   <!-- Leaflet.js Map -->
-   <div id="map"></div>
+    <!-- Map Information -->
+    <div id="legend"></div>
 
-   <!-- Map Information -->
-   <div id="legend"></div>
-   
- </div><!-- /#wrapper -->
+   <!-- Popup Menu -->
+   <div id="popup-menu"></div>
+ </div>
 
  <!-- External Javascript Dependencies -->
  <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
@@ -67,14 +74,12 @@ Alex Johnson @alexjohnson505
  <script src="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/js/messenger-theme-future.js"></script>
  <script src="http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/js/select2.min.js"></script>
  <script src="http://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.3.0/bootbox.min.js"></script>
-
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/async/0.9.0/async.js"></script>
+ 
  <!-- Libraries Hosted Locally --> 
  <script src="lib/heatmap.min.js"></script>
  <script src="lib/leaflet-heatmap.js"></script>
  <script src="lib/leaflet.label.js"></script>
-
- <!-- Load Settings -->
- <script src="config/settings.js"></script>
 
  <!-- App Functionality -->
  <script src="js/visualizer.js"></script>
@@ -84,25 +89,60 @@ Alex Johnson @alexjohnson505
 
  <!-- Page-Specific Javascript -->
  <script>
+    
+  /*************************
+         Setup MAP
+   *************************/
 
+  // Initialize Map's Size
+  $("#map").css("width", $(document).width());
+  $("#map").css("height", $(document).height());
+
+  // Define Map Parameters
+  var map = L.map('map', { minZoom: 2, maxZoom: 8 });
+
+  var options = {};
+  
   /*************************
        Load Tempalates
    *************************/
 
-  $("#sidebar-wrapper").load('templates/menu-left.html', function(result){
-      
-      // Default Settings
-      UI.setGame("Fallout New Vegas");
-      
-      // Initialize side nav
-      UI.addToggleAbleSideNavigation();
-  });
+  // Load templates & initial options from API
+  async.parallel([
+      function(callback){
+          $("#popup-menu").load('templates/menu-popup.html', function(result){
+            callback(null, 'menu');
+          })
+      },
+      function(callback){
+          $("#sidebar-wrapper").load('templates/menu-left.html', function(result){
+            callback(null, 'left');
+          });
+      }, 
+      function(callback){
+        $("#legend").load('templates/menu-right.html', function(result){
+          callback(null, 'right');
 
-  // Load side options template
-  $("#legend").load('templates/menu-right.html', function(result){
-    
-    // Available Actions
-    UI.filters.create();
+        });
+      }, 
+      function(callback){
+
+        // Load options from API
+        UI.loadOptions(function(resp){
+          options = resp;
+          callback(null, 'data');
+        });
+      }
+  ], 
+
+  // Initialize Data once templates are loaded
+  function(err, results){ initialize(); });
+  
+  // Initialize the page
+  function initialize(){
+
+    // Default Settings
+    UI.setGame("Fallout New Vegas");
     
     // Initialize Multiselect
     $(".action-select").select2();
@@ -111,7 +151,7 @@ Alex Johnson @alexjohnson505
          Watch form Values
     ****************************/
 
-    // Watcher
+    // WATCH for ACTIONS change
     $(".action-select").on("change", function (e) { 
       
       // Get list of selected actions
@@ -124,12 +164,19 @@ Alex Johnson @alexjohnson505
 
     });
 
+    // WATCH for GAME change
     $('#select-game').on('change', function(){
+        
+      // Status of checkbox
       var selected = $(this).find("option:selected").val();
+      
       UI.setGame(selected);
     });
 
+    // WATCH for MAP change
     $('#select-map').on('change', function(){
+      
+      // Status of checkbox
       var selected = $(this).find("option:selected").val();
       
       settings.data = null;
@@ -140,7 +187,7 @@ Alex Johnson @alexjohnson505
       UI.setMap(selected);
     });
 
-    // Show/Hide Heatmap
+    // WATCH for HEATMAP change
     $('#toggle_heatmap').change(function(e) {
       
       // Enable
@@ -152,28 +199,8 @@ Alex Johnson @alexjohnson505
         map.removeLayer(Heatmap.heatmapLayer)
       }
     });
-    
-  });
 
-  /*************************
-         Setup MAP
-   *************************/
-
-  // Initialize Map's Size
-  $("#map").css("width", $(document).width());
-  $("#map").css("height", $(document).height());
-
-  // Define Map Parameters
-  var map = L.map('map', { minZoom: 2, maxZoom: 8 });
-
-  map.on('click', function(e) {
-
-    console.log(Visualizer.unformatData({ 
-      latitude : e.latlng.lat,
-      longitude : e.latlng.lng,
-    }));
-    
-  });
+  };
   
 </script>
 </body>

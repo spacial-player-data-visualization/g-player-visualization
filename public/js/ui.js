@@ -18,74 +18,11 @@ March 29, 2015
 */
 
 /************************************
-         UI Functions
+         Game Functions
 ************************************/
 
 // Provide user feedback with the interface
-var UI = {
-
-	// Store reference to loading indicator
-	loader : {},
-
-};
-
-/* 
-name: menu
-author: Alex Johnson
-created: March 29, 2015
-purpose: retrieves the html for the menu
-*/
-UI.optionsMenu = function(){
-  $.get('templates/menu-popup.html', function(result){
-    bootbox.alert(result);
-  });
-}
-
-/************************************
-      Setup UI / Side Options
-************************************/
-
-/* 
-name: addToggleAbleSideNavigation
-author: Alex Johnson
-created: March 29, 2015
-purpose: initialize toggle-able side nav
-*/
-UI.addToggleAbleSideNavigation = function(){
-
-    var SideOptionsToggle = L.Control.extend({
-      
-      options: { position: 'topleft' },
-
-      // Create a button for toggling left nav
-      onAdd: function (map) {
-        
-        // create the control container with a particular class name
-        var button = L.DomUtil.create('div', 
-          'toggle-side-options leaflet-control leaflet-bar');
-        var icon = L.DomUtil.create('i', 'fa fa-bars', button);
-
-        // Add Listener
-        L.DomEvent.addListener(button, 'click', function(){
-            $("#wrapper").toggleClass("toggled");
-        });
-
-        return button;
-      }
-    });
-
-    map.addControl(new SideOptionsToggle());
-
-    // Toggle Side Options Meny
-    $("#toggle-menu").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
-}
-
-/************************************
-         Game Functions
-************************************/
+var UI = {};
 
 /* 
 name: setGame
@@ -96,6 +33,7 @@ argument: gamename is the game (ex: Fallout or Game Gaze)
 */
 UI.setGame = function(gamename){
 
+  
     // Save game name
     settings.game = gamename;
 
@@ -124,8 +62,14 @@ UI.setGame = function(gamename){
     Visualizer.clear();
 
     // Reset map
-    UI.setMap(game_maps[0].name);
+    if (game_maps && game_maps[0]){
 
+        UI.setMap(game_maps[0].name);  
+    } else {
+      
+        UI.error("Unable to load Map Data");
+    }
+    
     // Clear List
     $("#select-map").children().remove();
 
@@ -202,6 +146,29 @@ UI.setMap = function(mapname, callback){
   (callback) ? callback() : Visualizer.loadData();
 }
 
+// Save the edited map to the database
+UI.saveMap = function(){
+
+    var map = settings.map;
+
+    // Update current map in API
+    $.ajax({
+      url: Visualizer.API_url + "maps/" + map._id,
+      type: 'PUT',
+      success: success,
+      data: map,
+    });
+
+    function success(resp){
+        if (!resp) UI.error("Error saving map")
+              
+        $('#save-map').hide();
+
+        alert("Map changes have been saved. Your changes will now " +
+              "persists when you reload or return to this website.");        
+    }
+}
+
 /* 
 name: moveMap
 author: Alex Johnson
@@ -211,6 +178,8 @@ arguments: xOffset is the left to right offset of coordinates
 yoffset is the bottom to top offset of coordinates
 */
 UI.moveMap = function(xOffset, yOffset){
+
+  $('#save-map').show();
   
   // Get map data from settings
   var m = _.findWhere(options.maps, { name : settings.map.name });
@@ -235,6 +204,8 @@ purpose: handles manipulating map using expand or contract selections
 arguments: scale is the factor of scaling
 */
 UI.scaleMap = function(scale){
+
+  $('#save-map').show();
 
   // Get map data from settings
   var m = _.findWhere(options.maps, { name : settings.map.name });
@@ -322,20 +293,47 @@ UI.players.addPlayer = function(playerID){
     return memo + '<label class="radio"><input type="radio" name="group1" value="' + color + '" checked><i class="fa fa-square" style="color: ' + color + '"></i></label>';
   }, "");
 
+  var message = '<div class="color-select">' + color_radio_buttons + '</div>';
+
   bootbox.dialog({
-    message: '<div class="color-select">' + color_radio_buttons + '</div>',
+    message: message,
     title: "Select Color for Player " + playerID,
     
+    // Options available to the user
     buttons: {
+      
+      // Hide the modal
       success: {
-        label: "Cancel",
+        label: 'Cancel',
         className: "btn-default",
         callback: function() {}
       },
+
+      // Preview Data
+      danger: {
+        label: '<i class="fa fa-code"></i> Preview Data',
+        className: "btn-default",
+        callback: function() {
+
+            var msg = "You are about to load and preview" + 
+                "the raw data for player" + playerID + ". This " + 
+                "will show the data for all actions and " +
+                "positions of the selected player. Would you " +
+                "like to limit the data to ignore positions, " +
+                "and only show action/event data points?";
+
+            // Load player data. 
+            // should we limit the data to actions?
+            UI.showPlayerData(playerID, confirm(msg))
+        }
+      },
+
+      // Add player to the map
       main: {
         label: "Add Player",
         className: "btn-primary",
         callback: function() {
+          
           var color =  $('.color-select input[type=radio]:checked').val();
           if (!color) { color : "#000" };
 
@@ -349,16 +347,15 @@ UI.players.addPlayer = function(playerID){
 // Add multiple players at once. 
 UI.players.addPlayers = function(){
 
+  // Confirm that user wants to load a large data set
+  if (!confirm('Warning! Loading all players in the current list may load a considerable amount of data. This request could take time to process, and may cause your map to become slow or unresponsive. If you haven\'t already, we recommend selecting a lower "fidelity" from the left menu in order to reduce the amount of positions per second being returned. Are you sure you want to continue?')) return;
+
   UI.getListOfAvailablePlayerIDs(function(playerIDs){
 
     _.each(playerIDs, function(playerID){
 
         // Add to list
-        settings.players.push({ 
-          playerID : playerID, 
-          color : "#000" 
-        });
-
+        settings.players.push({ playerID : playerID, color : "#000"});
     })
 
     UI.players.refreshMap();
@@ -369,11 +366,9 @@ UI.players.addPlayers = function(){
 UI.players.add = function(playerID, color){
   
     // Add to list
-    settings.players.push({ 
-      playerID : playerID, 
-      color : color 
-    });
-
+    settings.players.push({ playerID : playerID, color : color });
+    
+    // Update map
     UI.players.refreshMap();    
 }
 
@@ -384,17 +379,25 @@ UI.players.remove = function(playerID){
     return player.playerID != playerID;
   });
 
+  // Remove all data
   Visualizer.clear();
+
+  // Re-plot map
   UI.players.refreshMap();
 
 }
 
 // Return list of player IDs
 UI.players.listIDs = function(){
+  
+  // Create list of IDs
   var ids = _.pluck(settings.players, 'playerID');
+  
+  // Handle empty case
   if (!ids) { ids = []; } 
-  return ids;
 
+  // Return IDs
+  return ids;
 };
 
 /* 
@@ -442,14 +445,12 @@ UI.getListOfAvailablePlayerIDs = function(callback){
         _.each(players, function(p){
 
           // Create table row with player data
-          var tr = ""
+          var tr = '<tr><td onclick="UI.players.addPlayer(' + p + ')">' + 
+                   "Player <b>" + p + '</b></td>' +
+                  '<td onclick="UI.players.addPlayer(' + p + ')">' +
+                   '<i class="fa fa-sign-in"></i></td></tr>';
 
-          tr += '<td>' + '<a onclick="UI.showPlayerData(' + p + ')"><i class="fa fa-code"></i></a>' + '</td>';
-          tr += '<td onclick="UI.players.addPlayer(' + p + ')">' + "Player <b>" + p + '</b></td>';
-          tr += '<td onclick="UI.players.addPlayer(' + p + ')">'
-          tr += '<i class="fa fa-sign-in"></i></td>';
-
-          $('#available-players').append("<tr>" + tr + "</tr>");
+          $('#available-players').append(tr);
         })
 
         if (callback) callback(data);
@@ -462,32 +463,152 @@ name: showPlayerData
 author: Alex Johnson
 created: March 29, 2015
 purpose: pops up complete view of selected playerID's data
-argument: playerID is current player
+argument: playerID is current player, actionsOnly is a boolean
+     representing if we should filter out positions
 */
-UI.showPlayerData = function(playerID){
+UI.showPlayerData = function(playerID, actionsOnly){
+
+  UI.loading(true);
 
   var opts = Visualizer.getContext();
 
   // Get specific player
-  opts.players = [playerID];
+  opts.playerIDs = [playerID];
 
   // Data from API
   $.get(Visualizer.API_url + "entries", opts, function(data){
 
     // Show to developers
     console.log(data);
+
+    // Only show actions
+    if (actionsOnly) {
+      data = _.filter(data, function(p){
+        return p.action;
+      })
+    }
+
+    data = _.sortBy(data, 'timestamp');
     
-    var data = _.map(data, function(d){
+    var output = _.map(data, function(d){
       return convertJSONtoHTML(d);
     })
     
-    var data = _.reduce(data, function(memo, num){ 
+    output = _.reduce(output, function(memo, num){ 
       return memo + num + "<hr>"; 
     }, 0);
 
+    UI.loading(false);
+
+    var selectedData = (actionsOnly) ? "Actions" : "Data Points";
+    UI.alert("Showing " + data.length + " " + selectedData);
+    
     // Show as massive string
-    bootbox.alert(data);
+    bootbox.alert(output);
+
+    
   });
+}
+
+// Load available key mappings and maps from API
+// KEYS, KEY MAPPINGS, and GAME
+UI.loadOptions = function(next){
+
+    // Available options
+    var opts = {
+      games : [],
+      mappings : [],
+      maps : [],
+    }
+
+    // Load Key Mapping and Available Maps
+    async.parallel({
+        one: function(callback){
+
+          // Get list of Key Mappings
+          $.get(Visualizer.API_url + "keys", function(mappings){
+            opts.mappings = mappings;
+            callback(null, 'keys');
+          })
+                
+
+        },
+        two: function(callback){
+
+          // Get list of Game Maps
+          $.get(Visualizer.API_url + "maps", function(maps){
+            
+            opts.maps = maps;
+
+            // Generate list of games from the key mappings
+            opts.games = getListOfGames(maps);
+            callback(null, 'maps');
+          })
+        }
+    },
+    function(err, results) {
+
+      // Throw errors in the case that the API
+      // didn't return entries for any key
+
+      if (opts.games.length < 1) {
+        UI.error("Warning: App was unable to get list of games from the Key Mappings");
+      }
+
+      if (opts.mappings.length < 1) {
+        UI.error("Warning: No key mappings were returned from the database");
+      }
+
+      if (opts.maps.length < 1) {
+        UI.error("Warning: No game Maps were returned from the database");
+      }
+
+      console.log(opts);
+
+      if (next) next(opts);
+
+    });
+}
+
+/************************************
+      Setup UI / Side Options
+************************************/
+
+/* 
+name: addToggleAbleSideNavigation
+author: Alex Johnson
+created: March 29, 2015
+purpose: initialize toggle-able side nav
+*/
+UI.addToggleAbleSideNavigation = function(){
+
+    var SideOptionsToggle = L.Control.extend({
+      
+      options: { position: 'topleft' },
+
+      // Create a button for toggling left nav
+      onAdd: function (map) {
+        
+        // create the control container with a particular class name
+        var button = L.DomUtil.create('div', 'toggle-side-options leaflet-control leaflet-bar');
+        var icon   = L.DomUtil.create('i', 'fa fa-bars', button);
+
+        // Add Listener
+        L.DomEvent.addListener(button, 'click', function(){
+            $("#wrapper").toggleClass("toggled");
+        });
+
+        return button;
+      }
+    });
+
+    map.addControl(new SideOptionsToggle());
+
+    // Toggle Side Options Meny
+    $("#toggle-menu").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
 }
 
 /************************************
@@ -512,7 +633,7 @@ UI.filters.create = function(){
 
   _.each(mappings, function(mapping){
 
-      var html = UI.filters.addFilter(mapping);
+      var html = UI.filters.generateCheckbox(mapping);
       $("#filters").append(html);
 
   })
@@ -521,7 +642,7 @@ UI.filters.create = function(){
 }
 
 // Create a new checkbox
-UI.filters.addFilter = function(mapping){
+UI.filters.generateCheckbox = function(mapping){
 
   var a = '<div class="checkbox"><label>';
   var b = '<input type="checkbox" id="toggle_paths" value="' + mapping.type + '" checked>' + mapping.type;
@@ -609,11 +730,16 @@ UI.success = function(msg){
   });
 }
 
+// Store reference to loading indicator
+UI.loader = {};
+
 // purpose: show/hide a loading indicator
 UI.loading = function(boolean, msg){
   
   // Show loading box
   if (boolean){
+    $("#loading").addClass('active');
+    
     UI.loader = Messenger().post({
       type: "type-loading",
       message : (msg) ? msg : "Loading...",
@@ -627,6 +753,8 @@ UI.loading = function(boolean, msg){
 
     // Hide loading box. 
     UI.loader.hide();
+
+    $("#loading").removeClass('active');
     
     // Add success message.
     return Messenger().post({
@@ -645,4 +773,10 @@ UI.loading = function(boolean, msg){
 Messenger.options = {
   extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right',
   theme: 'air'
+}
+
+function getListOfGames(mappings){
+  var games = _.uniq(mappings, function(mapping){ return mapping.game });
+  games = _.map(games, function(g){ return g.game });
+  return games;
 }
