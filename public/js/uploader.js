@@ -237,7 +237,7 @@ Uploader.populateTable = function(bucket, eventName){
   '<span class="status key-mapping">Key Mapping Found</span>' :
   '<span class="status no-key-mapping">No Key Mapping Found</span>' ;
 
-  var tableID = "preview" + type.toString().replace(/\s/g, '');
+  var tableID = "preview" + eventName.toString().replace(/\s/g, '');
   
   // Calculate number of columns
   var tableSize = maxEntrySize(dataset);
@@ -673,8 +673,11 @@ var getKeyMapping = function(game, eventName){
       return mappings[index];
     }
   }
+
+  var msg = "Unable to find key mapping for: " + eventName;
   
-  console.error("Unable to find key mapping for: " + eventName);
+  console.error(msg);
+  UI.error(msg);
 
   return;
 }

@@ -16,7 +16,7 @@ var Heatmap = {};
 
 // credit: http://www.patrick-wied.at/static/heatmapjs/
 Heatmap.heatmapLayer = new HeatmapOverlay({
-  "radius": .5,
+  "radius": .3,
   "maxOpacity": .8,
   "scaleRadius": true, 
   "useLocalExtrema": false,
