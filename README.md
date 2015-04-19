@@ -97,9 +97,9 @@ left: -616
 right : 3072
 ```
 
-> Note: All coordinates are in terms of PLAYER location. 
+> Note: All coordinates are in terms of PLAYER location. We plot the map by placing the bottom-left corner, and top-left corner then stretching the map to fit. When editing this data, it may be helpful to think "if the player was standing on the top, right corner of this image, what would their coordinates be?"
 
-> Tip: size
+> Tip: We've provided button on the visualizer for visually moving and scaling the map image to align with the data. When adding a new map, we recommend setting the bottom/left values to 0, and the top/right values to the corresponding height/width of the map image (in pixels), then using the GUI tools to fit the map. This ensures that the proportions of the original image remain correct.
 
 # Development
 
@@ -130,22 +130,24 @@ $ npm install
 
 ### Starting Local Server
 
-> Start Database & Server
+> Note: Each command runs a process, and may require independent terminal windows.
 
 ```sh
+# Start the MongoDB 
 $ sudo mongod
+
+# Start the Node.js server
 $ node index.js
 
 ```
 
-Note: Each command runs a process, and may require independent terminals.
-
-Pro Tip: Use nodemon on index.js to automatically restart the API on file change.
-
 Your app should now be running on [localhost:5000](http://localhost:5000/) with the API at [localhost:5000/api](http://localhost:5000/api).
 
-### Deployment to Server (Heroku)
-> Log into [heroku.com](http://heroku.com) and deploy from the GitHub repo.
+Pro Tip: While developing, use ``` $ nodemon index.js ``` to automatically restart the API on file change.
+
+### Deployment to Heroku
+
+To deploy to the staing server, log into [heroku.com](http://heroku.com) with the service account and use ther Graphic User Interface to deploy the most recent code from the GitHub repository.
 
 ### Testing
 
