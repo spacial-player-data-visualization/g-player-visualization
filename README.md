@@ -12,6 +12,7 @@ Available at: [g-player.herokuapp.com](g-player.herokuapp.com)
 
 > Note: We're currently using the hosting provider Heroku.com as our staging server. All visitors to the site share access to the same database - thus uploaded data, key mappings, and maps are shared amongst users. We strongly recommend a scheduled backup of the database. In addition, due to limitations of their development plan, the database is limited to 100mb. This storage about is quickly exceeded, so we recommend either upgrading the hosting platform, or running the app on a local server.
 
+
 # Visualizer
 
 The goal of this section is to describe the features and functionality of the G-Player Data Visualizer. Available at /index.html, the Visualizer tool allows users to plot player data on a map, and adjust what data is being represented. The Visualizer tool contains the following panels:
@@ -57,6 +58,7 @@ The "Add Layer" panel adds support for creating, and removing heatmaps. Heatmaps
 The "Filter Data" panel allows the user to adjust what data they wish to see. The "Filter Data" panel currently only supports games for which we have multiple key-mappings (See: Key Mappings below). The "Filter Data" panel uses the **type** key on the Key Mapping, otherwise known as the category of action. If you wish to filter by a *specific* action, we recommend creating a unique category/key-mapping for that action. 
 
 Upon selecting ```Update``` the filters on actions will be applied to the currently active set of players, and update which actions of theirs are represented on the visualizer's map.
+
 
 
 # Admin Tools
@@ -143,6 +145,7 @@ right : 3072
 
 > Tip: We've provided button on the visualizer for visually moving and scaling the map image to align with the data. When adding a new map, we recommend setting the bottom/left values to 0, and the top/right values to the corresponding height/width of the map image (in pixels), then using the GUI tools to fit the map. This ensures that the proportions of the original image remain correct.
 
+
 # Development
 
 ### Running Locally
@@ -195,6 +198,7 @@ We've included a few basic unit tests for the API using Mocha. Tests can be run 
 $ mocha
 
 ```
+
 
 # Contributors
 
