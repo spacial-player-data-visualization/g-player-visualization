@@ -206,7 +206,8 @@ Uploader.populateTables = function(data){
 
   })
   } else {
-    Uploader.populateTable(data, settings.game);
+     // settings.game -> eventName
+    Uploader.populateTable(data, data[0][0]);
   }
   
 
@@ -222,21 +223,21 @@ argument: bucket is the action subtable it falls to
           and type is key mapping type 
 contributions by: Alex Jacks
 */
-Uploader.populateTable = function(bucket, type){
+Uploader.populateTable = function(bucket, eventName){
 
   var entryCount = bucket.length;
 
   // Sample data for previewing
   dataset = bucket.slice(0, 10);
   
-  var keyMappingExists = getKeyMapping(settings.game, type) ? true : false;
+  var keyMappingExists = getKeyMapping(settings.game, eventName) ? true : false;
 
   // Create status <span>.
   var status = (keyMappingExists) ? 
   '<span class="status key-mapping">Key Mapping Found</span>' :
   '<span class="status no-key-mapping">No Key Mapping Found</span>' ;
 
-  var tableID = "preview" + type.replace(/\s/g, '');
+  var tableID = "preview" + eventName.replace(/\s/g, '');
   
   // Calculate number of columns
   var tableSize = maxEntrySize(dataset);
@@ -245,7 +246,7 @@ Uploader.populateTable = function(bucket, type){
 
   var tableStart = '<div class="panel-heading">' +
   '<button type="button" class="btn btn-default button"' +
-  'onclick="toggleHide(\'' + tableID + '\')">Toggle \"' + type + '\" Table</button>' + entryCount + " Entries"  + 
+  'onclick="toggleHide(\'' + tableID + '\')">Toggle \"' + eventName + '\" Table</button>' + entryCount + " Entries"  + 
   status + '</div>';
 
   // Hide table if we have a key mapping
@@ -256,7 +257,7 @@ Uploader.populateTable = function(bucket, type){
   var tableEnd = "<table/>";
   
   if (keyMappingExists) {
-    var columns = getKeyMapping(settings.game, type).columns;
+    var columns = getKeyMapping(settings.game, eventName).columns;
     var tr = "<tr>";
     for (var column in columns) {
       var th = "<th>";
@@ -458,7 +459,7 @@ Uploader.formatData = function(data, flag){
     });
   } else {
     
-      var keyMapping = getKeyMapping(settings.game, settings.game);
+      var keyMapping = getKeyMapping(settings.game, data[0][0]);
       _.each(data, function(current) {
         
         if (keyMapping) {
@@ -661,9 +662,15 @@ function numberOfGameMappings(gameSelected) {
 // ex: getKeyMapping("Fallout New Vegas", "Attacked")
 var getKeyMapping = function(game, eventName){
 
-  for (index in options.mappings) {
-    if (_.contains(options.mappings[index].actions, eventName)) {
-      return options.mappings[index];
+  var mappings = _.where(options.mappings, { "game" : game });
+
+  for (index in mappings) {
+
+    var actionList = mappings[index].actions;
+    var eventName = eventName;
+
+    if (_.contains(actionList, eventName)) {
+      return mappings[index];
     }
   }
   

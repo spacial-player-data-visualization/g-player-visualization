@@ -80,6 +80,7 @@ G-Player supports uploading .csv files of player data. There are a number of **r
 5. **Each entry must contain an 'posX' position, 'posY' position, 'timestamp' and 'area' key**.
 6. ** Actions must contain an 'action' key**
 7. If no 'playerID' is provided, the software will prompt the user.
+8. Data coordinates should be under +/- 50,000 to prevent warping the data representation.
 
 ### Key Mappings
 
