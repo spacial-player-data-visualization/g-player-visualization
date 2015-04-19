@@ -146,7 +146,7 @@ Uploader.sortByEntryType = function(data){
   for (var i in uniques) {
 
     var dataset = _.filter(data, function(object) {
-      return object[0].localeCompare(uniques[i]) === 0;
+      return object[0].toString().localeCompare(uniques[i]) === 0;
     });
 
     buckets.push(dataset);
@@ -158,7 +158,7 @@ Uploader.sortByEntryType = function(data){
 // Sort data by values in the provided column id
 Uploader.sortByColumn = function(data, column){
   return data.sort(function(a,b) { 
-    var toReturn = a[column].localeCompare(b[column]);
+    var toReturn = a[column].toString().localeCompare(b[column].toString());
     return toReturn;
   });
 };
@@ -237,7 +237,7 @@ Uploader.populateTable = function(bucket, eventName){
   '<span class="status key-mapping">Key Mapping Found</span>' :
   '<span class="status no-key-mapping">No Key Mapping Found</span>' ;
 
-  var tableID = "preview" + eventName.replace(/\s/g, '');
+  var tableID = "preview" + type.toString().replace(/\s/g, '');
   
   // Calculate number of columns
   var tableSize = maxEntrySize(dataset);
