@@ -12,13 +12,54 @@ Available at: [g-player.herokuapp.com](g-player.herokuapp.com)
 
 > Note: We're currently using the hosting provider Heroku.com as our staging server. All visitors to the site share access to the same database - thus uploaded data, key mappings, and maps are shared amongst users. We strongly recommend a scheduled backup of the database. In addition, due to limitations of their development plan, the database is limited to 100mb. This storage about is quickly exceeded, so we recommend either upgrading the hosting platform, or running the app on a local server.
 
-# Application Features
+# Visualizer
 
-### Visualizer
+The goal of this section is to describe the features and functionality of the G-Player Data Visualizer. Available at /index.html, the Visualizer tool allows users to plot player data on a map, and adjust what data is being represented. The Visualizer tool contains the following panels:
 
-### Admin Tools
+#### Menu
 
-# Application Design
+The menu opens an additional set of menu options. Included in this panel are links to the various admin tools for uploading data, adding key mappings, and managing maps. You may also **Export .CSV from Current Data Set**, which takes the data that you currently have shown on the map, and downloads the corresponding .csv data file.
+
+#### Select Map
+
+Select Map offers the ability to change the 'context' of the map. Selecting the 'game', and selecting the 'map' change which set of users is available to the player, and which map the tool should load.
+
+The "Select Fidelity" field offers a setting for improving the performance of the tool. Often, when loading multiple sets of player data, or large data sets, the tool will slow down due to the size of the data. The "Select Fidelity" pulldown allows the user to reduce the amount of points per second that the API returns. This drastically reduces the amount of data and compution required.
+
+#### Select Data
+
+The "Select Data" panel allows users to select which players they wish to visualize on the map. Upon selecting a player, the user is prompted for a color. After selecting a color and selecting ```Add Player```, that player's data will load, and they will be visible as part of the active data set. The user may also choose to select ```Preview Data```, which loads the raw JSON format from the database. This is useful for providing the granular data for debugging.
+
+Users may also select *actions* for ```Filter Users Who:```. This reduces the list on the left to only show players that have performed the selected actions during their lifetime. 
+
+> Note: The "Select Data" player list will only show players whose data has been uploaded to the database. For more on uploading data, see the section below.
+
+The ```Load All``` button on the bottom provides an option to take the current viewed list of players, and add them all to the map.
+
+> Note: The ```Load All``` button may instigate significant load times if enough players are active. I'd highly suggested to lower the "Data Fidelity" before usinf the ```Load All``` button.
+
+#### Position Map
+
+The "Position Map" panel in the top right of the visualizer tool offers a graphical way of moving and scaling the background map. Since the provided background maps are only raster images, it's requires for users to manually fit and save the map position in relation to the player positions.
+
+#### Players
+
+The "Players" panel shows the users that are currently 'active' and set to display on the map. The user may choose to remove players from the map using this panel.
+
+#### Add Layer
+
+The "Add Layer" panel adds support for creating, and removing heatmaps. Heatmaps are generated using the currently active set of players (See: Players Panel), as well as the currently selected Data Filters (See: Filter Data below). 
+
+> For Example: It is a frequent use case that users may want to create a heatmap for different filters then actions that are plotted on the map. FOR EXAMPLE: Let's say we wanted to compare a **heatmap of locations where users sneaked vs. the line graph of how players moved around the map**. To do this, we would execute the following steps: First, we would select players from the left-menu. These players would appear on the map. Now we would adjust the filters to limit the map to only show position lines (See: Filter Data below). Choose the ```None``` button in the Filters panel, followed by selecting the "position" checkbox in the Filters panel. Upon selecting ```Update``` the visualizer would now show *ONLY* the position paths of players. Now to add a heatmap of sneaking actions. *Unselect* "position" in the Filters Panel, and *SELECT* "sneaking" (**DO NOT SELECT UPDATE, AS WE DON'T WANT TO APPLY THESE FILTERS TO THE MAP YET**). Instead, select ```Add Heatmap from Currently Selected Filters``` from the "Add Layer" panel, and it adds a new Heatmap showing ONLY the sneaking actions. 
+
+#### Filter Data
+
+The "Filter Data" panel allows the user to adjust what data they wish to see. The "Filter Data" panel currently only supports games for which we have multiple key-mappings (See: Key Mappings below). The "Filter Data" panel uses the **type** key on the Key Mapping, otherwise known as the category of action. If you wish to filter by a *specific* action, we recommend creating a unique category/key-mapping for that action. 
+
+Upon selecting ```Update``` the filters on actions will be applied to the currently active set of players, and update which actions of theirs are represented on the visualizer's map.
+
+
+# Admin Tools
 
 As part of the hand-off process, we wanted to provide a description of how we designed the app - in the hopes that users or future developers of this platform can quickly understand the underlying workings. One of the core requirements requested by our clients was "arbitrary game support". The goal was to develop a peice of game data visualization software that *in theory* could be used to visualize any future data. This proved to be more challenging that initially believed. 
 
@@ -82,7 +123,7 @@ Map data helps the software position a background image to the position of playe
 Name : Position_Introhouse
 
 // A URL where the background image can be loaded
-imageURL : http://i.imgur.com/8zDo1iB.jpg
+imageURL : 'http://i.imgur.com/8zDo1iB.jpg'
 
 // The top of the map
 top: 2174.
