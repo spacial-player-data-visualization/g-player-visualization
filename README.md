@@ -25,7 +25,7 @@ The menu opens an additional set of menu options. Included in this panel are lin
 
 Select Map offers the ability to change the 'context' of the map. Selecting the 'game', and selecting the 'map' change which set of users is available to the player, and which map the tool should load.
 
-The "Select Fidelity" field offers a setting for improving the performance of the tool. Often, when loading multiple sets of player data, or large data sets, the tool will slow down due to the size of the data. The "Select Fidelity" pulldown allows the user to reduce the amount of points per second that the API returns. This drastically reduces the amount of data and compution required.
+The "Select Fidelity" field offers a setting for improving the performance of the tool. Often, when loading multiple sets of player data, or large data sets, the tool will slow down due to the size of the data. The "Select Fidelity" pulldown allows the user to reduce the amount of points per second that the API returns. This drastically reduces the amount of data and computation required.
 
 #### Select Data
 
@@ -63,7 +63,7 @@ Upon selecting ```Update``` the filters on actions will be applied to the curren
 
 # Admin Tools
 
-As part of the hand-off process, we wanted to provide a description of how we designed the app - in the hopes that users or future developers of this platform can quickly understand the underlying workings. One of the core requirements requested by our clients was "arbitrary game support". The goal was to develop a peice of game data visualization software that *in theory* could be used to visualize any future data. This proved to be more challenging that initially believed. 
+As part of the hand-off process, we wanted to provide a description of how we designed the app - in the hopes that users or future developers of this platform can quickly understand the underlying workings. One of the core requirements requested by our clients was "arbitrary game support". The goal was to develop a piece of game data visualization software that *in theory* could be used to visualize any future data. This proved to be more challenging than initially believed. 
 
 > This section hopes to explain the types of data that we support, as well as the information users are required to provide in order to support their intended game data.
 
