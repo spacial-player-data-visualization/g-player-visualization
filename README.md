@@ -4,9 +4,7 @@
 
 # Overview
 
-A data visualization system for viewing and manipulating multiplayer game data. Software will allow researchers to analyze data sets of user activity to understand actions and trends. The system will provide a visual representation of the recorded spatial-temporal behavior of all players and allow researchers to query data based on metrics such as trajectories of events, frequency of events, and others.
-
-Created in association with Truong-Huy D. Nguyen, Game Development Researcher and Alessandro Canossa, Associate Professor of the collge Arts, Media & Design at Northeastern University. 
+G-Player is a data visualization web-app for uploading and viewing **spatial-temporal data of player activity** in video games. The project was developed in the context of visualizing a player's data as they played a custom mode within the game Fallout: New Vegas. This software attempts to provide the visual tools to enable game researchers to analyze player activity within video games. Our goal was to provide a user interface for exploring player data in order to understand actions, correlations, and trends. G-Player was created as a team project in *CS4500 Software Development* - in association with Truong-Huy D. Nguyen, Game Development Researcher and Alessandro Canossa, Associate Professor of the collge Arts, Media & Design at Northeastern University. 
 
 ### Demo
 
@@ -26,8 +24,11 @@ After downloading the repository, create a directory for the database
 Use [Brew](http://brew.sh/) to install Mongo Database. 
 
 ```sh
-$ sudo mkdir /data/db // Create a directoy for the database
-$ brew install mongo  // Install MongoDB's database software
+# Create a directoy for the database
+$ sudo mkdir /data/db  
+
+# Install MongoDB's database software
+$ brew install mongo   
 ```
 
 > Installing the Node Server
@@ -54,19 +55,19 @@ Pro Tip: Use nodemon on index.js to automatically restart the API on file change
 
 Your app should now be running on [localhost:5000](http://localhost:5000/) with the API at [localhost:5000/api](http://localhost:5000/api).
 
+### Deployment to Server (Heroku)
+> Log into [heroku.com](http://heroku.com) and deploy from the GitHub repo.
+
 ### Testing
 
-> Run Mocha to test
+We've included a few basic unit tests for the API using Mocha. Tests can be run with the following command:
+
+> Note: Make sure this is only run locally, as the tests clear out the database beforehand.
 
 ```sh
 $ mocha
 
 ```
-
-Note: Make sure this is only run locally, as the tests clear out the database beforehand.
-
-## Deployment to Server (Heroku)
-> Log into [heroku.com](http://heroku.com) and deploy from the GitHub repo.
 
 # Contributors
 
