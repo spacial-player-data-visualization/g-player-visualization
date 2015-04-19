@@ -195,8 +195,10 @@ app.controller('MapsController', function($scope, $http, $filter, maps) {
 
     // purpose: calls backend to add map
     $scope.add = function(map) {
-        maps.post(map, function(maps) {
-            $scope.maps = maps;
+        maps.post(map, function() {
+            maps.get(function(maps) {
+                $scope.maps = maps;
+            });
         });
     }
 
