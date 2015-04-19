@@ -95,11 +95,11 @@ Here's an example key mapping for this data entry:
 
 ```javascript
 // Name of the game
-game : Fallout New Vegas,
+game : 'Fallout New Vegas'
 
 // The category of action. Multiple actions might share the 
 // same key-mapping, so we make sure to allow them to be 'grouped'
-type : position
+type : 'position'
 
 // List of actions that use this key mapping. These actions represent the data
 // in the FIRST column of each entry. Notice how all these position actions share
