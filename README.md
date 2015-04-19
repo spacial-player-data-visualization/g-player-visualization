@@ -2,15 +2,26 @@
 
 > Visualization and Data Management for Player Activity in Games
 
-# Overview
+### Overview
 
-G-Player is a data visualization web-app for uploading and viewing **spatial-temporal data of player activity** in video games. The project was developed in the context of visualizing a player's data as they played a custom mode within the game Fallout: New Vegas. This software attempts to provide the visual tools to enable game researchers to analyze player activity within video games. Our goal was to provide a user interface for exploring player data in order to understand actions, correlations, and trends. G-Player was created as a team project in *CS4500 Software Development* - in association with Truong-Huy D. Nguyen, Game Development Researcher and Alessandro Canossa, Associate Professor of the collge Arts, Media & Design at Northeastern University. 
+G-Player is a data visualization web-app for uploading and viewing **spatial-temporal player activity data** in video games. The project was developed in the context of visualizing a player's data as they played a custom mode within the game Fallout: New Vegas. This software attempts to provide the visual tools to enable game researchers to analyze player activity within video games. Our goal was to provide a user interface for exploring player data in order to understand actions, correlations, and trends. G-Player was created as a team project in *CS4500 Software Development* - in association with Truong-Huy D. Nguyen, Game Development Researcher and Alessandro Canossa, Associate Professor of the collge Arts, Media & Design at Northeastern University. 
 
-### Demo
-
-> Preview the project online
+### Available Online:
 
 Available at: [g-player.herokuapp.com](g-player.herokuapp.com)
+
+> Note: We're currently using the hosting provider Heroku.com as our staging server. All visitors to the site share access to the same database - thus uploaded data, key mappings, and maps are shared amongst users. We strongly recommend a scheduled backup of the database. In addition, due to limitations of their development plan, the database is limited to 100mb. This storage about is quickly exceeded, so we recommend either upgrading the hosting platform, or running the app on a local server.
+
+# Application 
+
+As part of the hand-off process, we wanted to provide a description of how we designed the app - in the hopes that users or future developers of this platform can quickly understand the underlying workings. One of the core requirements requested by our clients was "arbitrary game support". The goal was to develop a peice of game data visualization software that *in theory* could be used to visualize any future data. This proved to be more challenging that initially believed. This section hopes to explain the types of data that we support, as well as the information users are required to provide in order to support their intended game data.
+
+### Data
+
+### Key Mappings
+
+### Maps
+
 
 # Development
 
