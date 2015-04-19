@@ -2,19 +2,21 @@
 
 > Visualization and Data Management for Player Activity in Games
 
-## Overview
+# Overview
 
 A data visualization system for viewing and manipulating multiplayer game data. Software will allow researchers to analyze data sets of user activity to understand actions and trends. The system will provide a visual representation of the recorded spatial-temporal behavior of all players and allow researchers to query data based on metrics such as trajectories of events, frequency of events, and others.
 
-Created in association with Truong-Huy D. Nguyen, Game Development Researcher at Northeastern University. 
+Created in association with Truong-Huy D. Nguyen, Game Development Researcher and Alessandro Canossa, Associate Professor of the collge Arts, Media & Design at Northeastern University. 
 
-## Demo
+### Demo
 
 > Preview the project online
 
 Available at: [g-player.herokuapp.com](g-player.herokuapp.com)
 
-## Getting Started
+# Development
+
+### Running Locally
 
 Download from our [GitHub](https://github.com/spacial-player-data-visualization/g-player-visualization)
 
@@ -24,8 +26,8 @@ After downloading the repository, create a directory for the database
 Use [Brew](http://brew.sh/) to install Mongo Database. 
 
 ```sh
-$ sudo mkdir /data/db
-$ brew install mongo
+$ sudo mkdir /data/db // Create a directoy for the database
+$ brew install mongo  // Install MongoDB's database software
 ```
 
 > Installing the Node Server
@@ -36,7 +38,7 @@ Make sure you have [Node.js](http://nodejs.org/) installed.
 $ npm install
 ```
 
-## Starting Local Server
+### Starting Local Server
 
 > Start Database & Server
 
@@ -50,11 +52,9 @@ Note: Each command runs a process, and may require independent terminals.
 
 Pro Tip: Use nodemon on index.js to automatically restart the API on file change.
 
-Your app should now be running on [localhost:5000](http://localhost:5000/).
+Your app should now be running on [localhost:5000](http://localhost:5000/) with the API at [localhost:5000/api](http://localhost:5000/api).
 
-The api is available at [localhost:5000/api](http://localhost:5000/api).
-
-## Testing
+### Testing
 
 > Run Mocha to test
 
@@ -68,17 +68,21 @@ Note: Make sure this is only run locally, as the tests clear out the database be
 ## Deployment to Server (Heroku)
 > Log into [heroku.com](http://heroku.com) and deploy from the GitHub repo.
 
-## Authors
+# Contributors
 
-- [Pragathi Sanshi](https://github.com/pragsanshi)
-- [Tommy Hu](https://github.com/tomxhu)
-- [Alex Gimmi](https://github.com/iBroadband)
 - [Alex Johnson](https://github.com/alexjohnson505)
+- [Tommy Hu](https://github.com/tomxhu)
+- [Pragathi Sanshi](https://github.com/pragsanshi)
 - [Alex Jacks](https://github.com/alexjacks92)
+- [Alex Gimmi](https://github.com/iBroadband)
 
-## Special Thanks
+### Special Thanks
 
-> Tutorials, Resources, and Dependencies. 
+A special thanks to the guidance and feedback from Truong-Huy D. Nguyen and Alessandro Canossa of Northeastern University.
+
+### Resources
+
+> Front-End Resources, and Tutorials. 
 
 - [Leaflet.js - Open Source Library for Interactive Maps](leafletjs.com)
 - [Patrick Wied's Heatmap Library](http://www.patrick-wied.at/static/heatmapjs/)
