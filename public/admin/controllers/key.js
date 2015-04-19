@@ -205,8 +205,10 @@ app.controller('KeysController', function($scope, $http, $filter, keys) {
 
     // purpose: calls backend to add key mapping
     $scope.add = function(key) {
-        keys.post(key, function(keys) {
+        keys.post(key, function() {
+            keys.get(function(keys) {
             $scope.keys = keys;
+        });
         });
     }
 
