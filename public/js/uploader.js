@@ -77,19 +77,13 @@ Uploader.parseFile = function(event) {
     // Parser Callback
     complete: function(results) {
 
-      console.log(results.errors);
-
       // error checking. Display errors to user.
       if (results.errors.length != 0) {
         Uploader.parserErrors(results.errors);
       }
 
       UI.alert(results.data.length + " results loaded. ");
-      
-      if (results.errors.length > 0){
-        UI.error(results.errors.length + " Errors.");  
-      }
-      
+        
       // @TODO: Test Errors, provide user feedback
       // var errors = results.errors;
 
@@ -121,10 +115,13 @@ purpose: take a list of errors from papaparse and
 argument: errors is an array of papaparse error objects.
 */
 Uploader.parserErrors = function(errors) {
+  var toDisplay = "The following errors occured while trying to parse your file.\n";
   for (index in errors) {
-    UI.error("Parsing encountered an error on row " + errors[index].row);
-    UI.error("Error: " + errors[index].message);
+    toDisplay = toDisplay.concat("Error on row " + errors[index].row + " was ");
+    toDisplay = toDisplay.concat('"' + errors[index].message + '"' + '\n');
+    //toDisplay = toDisplay.concat("Error: " + errors[index].message + "\nOn row:" errors[index].row + "\n");
   }
+  alert(toDisplay);
 }
 
 /* 
