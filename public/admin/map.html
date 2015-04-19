@@ -28,7 +28,8 @@
 
   <div class="container" ng-app="Maps" ng-controller="MapsController" style="margin-left: 220px; padding-top: 20px; max-width: 900px;">
     <h2>Maps Created</h2>
-    <p>Maps are images and dimensions that represent how we load background images into the visualizer</p>
+    <p>Maps are images and dimensions that represent how we load background images into the visualizer. Buttons are provided on the visualizer for moving and scaling the map image directly to align with the data. When adding a new map, it's recommended that you set the bottom/left values to 0, and the top/right values to the corresponding height/width of the map image (in pixels), then using the GUI tools to fit the map. This ensures that the proportions of the original image remain correct.</p>
+    <p> Note: All coordinates are in terms of PLAYER location. The map is plotted by placing the bottom-left corner, and top-left corner then stretching the map to fit. When editing this data, it may be helpful to think "if the player was standing on the top, right corner of this image, what would their coordinates be?"</p>
     <hr>
 
 
