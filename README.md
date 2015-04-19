@@ -155,7 +155,7 @@ Download from our [GitHub](https://github.com/spacial-player-data-visualization/
 > Setting Up the Database & API
 
 After downloading the repository, create a directory for the database
-Use [Brew](http://brew.sh/) to install Mongo Database. 
+Use [Brew](http://brew.sh/) to install Mongo Database on your Mac OSX. 
 
 ```sh
 # Create a directoy for the database
