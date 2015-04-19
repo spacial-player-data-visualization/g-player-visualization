@@ -4,13 +4,13 @@
 
 ### Overview
 
-G-Player is a data visualization web-app for uploading and viewing **spatial-temporal player activity data** in video games. The project was developed in the context of visualizing a player's data as they played a custom mode within the game Fallout: New Vegas. This software attempts to provide the visual tools to enable game researchers to analyze player activity within video games. Our goal was to provide a user interface for exploring player data in order to understand actions, correlations, and trends. G-Player was created as a team project in *CS4500 Software Development* - in association with Truong-Huy D. Nguyen, Game Development Researcher and Alessandro Canossa, Associate Professor of the collge Arts, Media & Design at Northeastern University. 
+G-Player is a data visualization web-app for uploading and viewing **spatial-temporal player activity data** in video games. The project was developed in the context of visualizing a player's data as they played a custom mod within the game Fallout: New Vegas. This software attempts to provide the visual tools to enable game researchers to analyze player activity within video games. Our goal was to provide a user interface for exploring player data in order to understand actions, correlations, and trends. G-Player was created as a team project in *CS4500 Software Development* - in association with Truong-Huy D. Nguyen, Game Development Researcher and Alessandro Canossa, Associate Professor of the College of Arts, Media & Design at Northeastern University. 
 
 ### Available Online:
 
 Available at: [g-player.herokuapp.com](g-player.herokuapp.com)
 
-> Note: We're currently using the hosting provider Heroku.com as our staging server. All visitors to the site share access to the same database - thus uploaded data, key mappings, and maps are shared amongst users. We strongly recommend a scheduled backup of the database. In addition, due to limitations of their development plan, the database is limited to 100mb. This storage about is quickly exceeded, so we recommend either upgrading the hosting platform, or running the app on a local server.
+> Note: We're currently using the hosting provider Heroku.com as our staging server. All visitors to the site share access to the same database - thus uploaded data, key mappings, and maps are shared amongst users. We strongly recommend a scheduled backup of the database. In addition, due to limitations of their development plan, the database is limited to 100mb. This storage amount is quickly exceeded, so we recommend either upgrading the hosting platform, or running the app on a local server.
 
 
 # Visualizer
@@ -19,17 +19,17 @@ The goal of this section is to describe the features and functionality of the G-
 
 #### Menu
 
-The menu opens an additional set of menu options. Included in this panel are links to the various admin tools for uploading data, adding key mappings, and managing maps. You may also **Export .CSV from Current Data Set**, which takes the data that you currently have shown on the map, and downloads the corresponding .csv data file.
+The menu opens up an additional set of menu options. Included in this panel are links to the various admin tools for uploading data, adding key mappings, and managing maps. You may also **Export .CSV from Current Data Set**, which takes the data that you currently have shown on the map, and downloads the corresponding .csv data file.
 
 #### Select Map
 
 Select Map offers the ability to change the 'context' of the map. Selecting the 'game', and selecting the 'map' change which set of users is available to the player, and which map the tool should load.
 
-The "Select Fidelity" field offers a setting for improving the performance of the tool. Often, when loading multiple sets of player data, or large data sets, the tool will slow down due to the size of the data. The "Select Fidelity" pulldown allows the user to reduce the amount of points per second that the API returns. This drastically reduces the amount of data and computation required.
+The "Select Fidelity" field offers a setting for improving the performance of the tool. Often, when loading multiple sets of player data, or large data sets, the tool will slow down due to the size of the data. The "Select Fidelity" pulldown allows the user to reduce the amount of points per second that the API returns. This drastically reduces the amount of data and compution required.
 
 #### Select Data
 
-The "Select Data" panel allows users to select which players they wish to visualize on the map. Upon selecting a player, the user is prompted for a color. After selecting a color and selecting ```Add Player```, that player's data will load, and they will be visible as part of the active data set. The user may also choose to select ```Preview Data```, which loads the raw JSON format from the database. This is useful for providing the granular data for debugging.
+The "Select Data" panel allows users to select which players they wish to visualize on the map. Upon selecting a player, the user is prompted to choose a color. After selecting a color and selecting ```Add Player```, that player's data will load, and they will be visible as part of the active data set. The user may also choose to select ```Preview Data```, which loads the raw JSON format from the database. This is useful for providing the granular data for debugging.
 
 Users may also select *actions* for ```Filter Users Who:```. This reduces the list on the left to only show players that have performed the selected actions during their lifetime. 
 
@@ -37,11 +37,11 @@ Users may also select *actions* for ```Filter Users Who:```. This reduces the li
 
 The ```Load All``` button on the bottom provides an option to take the current viewed list of players, and add them all to the map.
 
-> Note: The ```Load All``` button may instigate significant load times if enough players are active. I'd highly suggested to lower the "Data Fidelity" before usinf the ```Load All``` button.
+> Note: The ```Load All``` button may instigate significant load times if enough players are active. I'd highly suggest lowering the "Data Fidelity" before using the ```Load All``` button.
 
 #### Position Map
 
-The "Position Map" panel in the top right of the visualizer tool offers a graphical way of moving and scaling the background map. Since the provided background maps are only raster images, it's requires for users to manually fit and save the map position in relation to the player positions.
+The "Position Map" panel in the top right of the visualizer tool offers a graphical way of moving and scaling the background map. Since the provided background maps are only raster images, it's required for users to manually fit and save the map position in relation to the player positions.
 
 #### Players
 
@@ -63,7 +63,7 @@ Upon selecting ```Update``` the filters on actions will be applied to the curren
 
 # Admin Tools
 
-As part of the hand-off process, we wanted to provide a description of how we designed the app - in the hopes that users or future developers of this platform can quickly understand the underlying workings. One of the core requirements requested by our clients was "arbitrary game support". The goal was to develop a piece of game data visualization software that *in theory* could be used to visualize any future data. This proved to be more challenging than initially believed. 
+As part of the hand-off process, we wanted to provide a description of how we designed the app - in the hopes that users or future developers of this platform can quickly understand the underlying workings. One of the core requirements requested by our clients was "arbitrary game support". The goal was to develop a piece of game data visualization software that *in theory* could be used to visualize any future data. This proved to be more challenging that initially believed. 
 
 > This section hopes to explain the types of data that we support, as well as the information users are required to provide in order to support their intended game data.
 
@@ -143,7 +143,7 @@ right : 3072
 > Note: All coordinates are in terms of PLAYER location. We plot the map by placing the bottom-left corner, and top-left corner then stretching the map to fit. When editing this data, it may be helpful to think "if the player was standing on the top, right corner of this image, what would their coordinates be?"
 
 
-> Tip: We've provided button on the visualizer for visually moving and scaling the map image to align with the data. When adding a new map, we recommend setting the bottom/left values to 0, and the top/right values to the corresponding height/width of the map image (in pixels), then using the GUI tools to fit the map. This ensures that the proportions of the original image remain correct.
+> Tip: We've provided buttons on the visualizer for visually moving and scaling the map image to align with the data. When adding a new map, we recommend setting the bottom/left values to 0, and the top/right values to the corresponding height/width of the map image (in pixels), then using the GUI tools to fit the map. This ensures that the proportions of the original image remain correct.
 
 
 # Development
