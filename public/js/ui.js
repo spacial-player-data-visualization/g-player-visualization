@@ -311,7 +311,7 @@ UI.players.addPlayer = function(playerID){
 
       // Preview Data
       danger: {
-        label: '<i class="fa fa-code"></i> Preview Data',
+        label: '<i class="fa fa-table"></i> Preview Data',
         className: "btn-default",
         callback: function() {
 

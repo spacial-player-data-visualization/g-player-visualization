@@ -77,8 +77,9 @@ G-Player supports uploading .csv files of player data. There are a number of **r
 2. If there are multiple types of 'actions', the first column must be the action name.
 3. Each action must have a key-mapping (explained below)
 4. If a game contains only a single key-mapping, we assume that every line in the .csv file is only a position of the player.
-5. Each entry must contain an 'posX' position, 'posY' position, 'timestamp', and 'area' name.
-6. If no 'playerID' is provided, the software will prompt the user.
+5. **Each entry must contain an 'posX' position, 'posY' position, 'timestamp' and 'area' key**.
+6. ** Actions must contain an 'action' key**
+7. If no 'playerID' is provided, the software will prompt the user.
 
 ### Key Mappings
 

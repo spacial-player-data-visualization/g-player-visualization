@@ -24,6 +24,7 @@ created: March 18, 2015
 purpose: saves the data entry to the Mongo DB 
 argument: data is the active dataset
 */
+
 var saveEntry = function(data) {
     var deferred = Q.defer();
     var tempObj = {
