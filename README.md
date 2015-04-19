@@ -120,8 +120,7 @@ Map data helps the software position a background image to the position of playe
 
 ```javascript
 // Name of the map. MUST match the 'area' column
-// in the key mappings. For games that only have a
-// single map, please use the value 'default'
+// in the key mappings. 
 Name : Position_Introhouse
 
 // A URL where the background image can be loaded
