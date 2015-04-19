@@ -99,6 +99,7 @@ right : 3072
 
 > Note: All coordinates are in terms of PLAYER location. We plot the map by placing the bottom-left corner, and top-left corner then stretching the map to fit. When editing this data, it may be helpful to think "if the player was standing on the top, right corner of this image, what would their coordinates be?"
 
+
 > Tip: We've provided button on the visualizer for visually moving and scaling the map image to align with the data. When adding a new map, we recommend setting the bottom/left values to 0, and the top/right values to the corresponding height/width of the map image (in pixels), then using the GUI tools to fit the map. This ensures that the proportions of the original image remain correct.
 
 # Development
@@ -107,7 +108,7 @@ right : 3072
 
 Download from our [GitHub](https://github.com/spacial-player-data-visualization/g-player-visualization)
 
-> Installing Database
+> Setting Up the Database & API
 
 After downloading the repository, create a directory for the database
 Use [Brew](http://brew.sh/) to install Mongo Database. 
@@ -118,13 +119,9 @@ $ sudo mkdir /data/db
 
 # Install MongoDB's database software
 $ brew install mongo   
-```
 
-> Installing the Node Server
-
-Make sure you have [Node.js](http://nodejs.org/) installed.
-
-```sh
+# After installing Node.js (nodejs.org), use
+# node package manager to download backend dependencies
 $ npm install
 ```
 
@@ -143,17 +140,15 @@ $ node index.js
 
 Your app should now be running on [localhost:5000](http://localhost:5000/) with the API at [localhost:5000/api](http://localhost:5000/api).
 
-Pro Tip: While developing, use ``` $ nodemon index.js ``` to automatically restart the API on file change.
+> Pro Tip: While developing, use ``` $ nodemon index.js ``` to automatically restart the API on file change.
 
-### Deployment to Heroku
+### Deploying to Heroku
 
 To deploy to the staing server, log into [heroku.com](http://heroku.com) with the service account and use ther Graphic User Interface to deploy the most recent code from the GitHub repository.
 
 ### Testing
 
-We've included a few basic unit tests for the API using Mocha. Tests can be run with the following command:
-
-> Note: Make sure this is only run locally, as the tests clear out the database beforehand.
+We've included a few basic unit tests for the API using Mocha. Tests can be run with the following command. Make sure this is only run locally, as the tests clear out the database beforehand.
 
 ```sh
 $ mocha
@@ -172,9 +167,7 @@ $ mocha
 
 A special thanks to the guidance and feedback from Truong-Huy D. Nguyen and Alessandro Canossa of Northeastern University.
 
-### Resources
-
-> Front-End Resources, and Tutorials. 
+### Front-End Resources, and Tutorials. 
 
 - [Leaflet.js - Open Source Library for Interactive Maps](leafletjs.com)
 - [Patrick Wied's Heatmap Library](http://www.patrick-wied.at/static/heatmapjs/)
@@ -184,7 +177,7 @@ A special thanks to the guidance and feedback from Truong-Huy D. Nguyen and Ales
 - [Bootstrap](http://getbootstrap.com/)
 - [Underscore.js](http://underscorejs.org/)
 
-> Backend Resources
+### Backend Resources
 
 For more information about using Node.js on Heroku, see these Dev Center articles:
 
