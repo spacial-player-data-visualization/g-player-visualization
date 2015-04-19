@@ -24,7 +24,9 @@
 
   <div class="container" ng-app="Keys" ng-controller="KeysController" style="margin-left: 220px; padding-top: 20px; max-width: 900px;">
     <h2>Key Mappings</h2>
-    <p>Key Mappings are sets of data that represent how the uploader interprets .CSV files.</p>
+    <p>Key Mappings are sets of data that represent how the uploader interprets .CSV files. The structure is the following: "game" is the game that this mapping applies to.
+     "Type" is a broad category of actions that this mapping encompasses - ie, all positional data may be the same format, even if they're labelled differently. "Actions" is
+     the explicit list of actions that the type is describing. "Columns" describes what each entry in a .CSV row represents - for instance, the first entry may represent x position data.</p>
 <hr>
 
 <table class="table table-striped">
