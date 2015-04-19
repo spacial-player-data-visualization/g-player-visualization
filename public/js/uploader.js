@@ -255,6 +255,19 @@ Uploader.populateTable = function(bucket, type){
   tableStart += "<table id=" + tableID + ' class="table table-striped" style="display: ' + display + ';">';
   var tableEnd = "<table/>";
   
+  if (keyMappingExists) {
+    var columns = getKeyMapping(settings.game, type).columns;
+    var tr = "<tr>";
+    for (var column in columns) {
+      var th = "<th>";
+      th += columns[column];
+      th += "</th>";
+      tr += th;
+    }
+    tr = tr + "</tr>";
+    tableStart += tr;
+  }
+
   for (var i in dataset) {
     var current = dataset[i];
     var tr = "";
