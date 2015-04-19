@@ -117,9 +117,6 @@ argument: errors is an array of papaparse error objects.
 Uploader.parserErrors = function(errors) {
   var toDisplay = "The following errors occured while trying to parse your file.\n";
   for (index in errors) {
-    console.log(errors[index].message);
-    console.log(toDisplay);
-    console.log(errors[index].row);
     toDisplay = toDisplay.concat("Error on row " + errors[index].row + " was ");
     toDisplay = toDisplay.concat('"' + errors[index].message + '"' + '\n');
     //toDisplay = toDisplay.concat("Error: " + errors[index].message + "\nOn row:" errors[index].row + "\n");
