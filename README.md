@@ -10,6 +10,8 @@ G-Player is a data visualization web-app for uploading and viewing **spatial-tem
 
 Available at: [g-player.herokuapp.com](g-player.herokuapp.com)
 
+Please refer to the [Instructional Video] (https://www.youtube.com/watch?v=CYfAdonw6HM) for more information.
+
 > Note: We're currently using the hosting provider Heroku.com as our staging server. All visitors to the site share access to the same database - thus uploaded data, key mappings, and maps are shared amongst users. We strongly recommend a scheduled backup of the database. In addition, due to limitations of their development plan, the database is limited to 100mb. This storage amount is quickly exceeded, so we recommend either upgrading the hosting platform, or running the app on a local server.
 
 
