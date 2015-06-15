@@ -612,6 +612,56 @@ UI.addToggleAbleSideNavigation = function(){
 }
 
 /************************************
+         Heatmaps
+************************************/
+UI.heatmaps = {}
+
+// Create a new button for adding a heatmap to a boolean operation
+UI.heatmaps.generateBoolBtn = function(heatmap_index) {
+  var a = '<div class="btn btn-primary btn-xs" onclick="UI.heatmaps.addBoolMap(' + heatmap_index + ');">';
+  var b = '<span class="glyphicon glyphicon-share">'
+  var c = '</span></div>';
+  
+  return a + b;
+}
+
+// Create a new checkbox for each
+UI.heatmaps.generateBoolCheckbox = function(heatmap_index) {
+  var hmapLabel = $('#heatmap' + heatmap_index + 'Label').text();
+
+  var a = '<div class="checkbox"><label>';
+  var b = '<input type="checkbox" value="' + heatmap_index + '" checked>' + hmapLabel;
+  var c = '</label></div>';
+
+  return a + b + c
+}
+
+// Create a new radio button
+UI.heatmaps.generateRadio = function(heatmap_index) {
+  var enabledCategories = UI.filters.categories();
+
+  var a = '<div class="radio"><label id="heatmap' + heatmap_index + 'Label">';
+  var b = '<input type="radio" name="heatmap-opts" value="' + heatmap_index + '" checked onclick="UI.heatmaps.select(' + heatmap_index + ')">';
+  var c = enabledCategories.toString() + '</label></div>';
+
+  return a + b + c
+}
+
+// Helper for setting the active Heatmap to a given index
+UI.heatmaps.select = function(heatmap_index) {
+  hideHeatmap(settings.activeHeatmap);
+  settings.activeHeatmap = heatmap_index;
+  Visualizer.updateHeatmap();
+}
+
+// Add a heatmap to the boolean ops table
+UI.heatmaps.addBoolMap = function(heatmap_index) {
+  var checkbox = UI.heatmaps.generateBoolCheckbox(heatmap_index);
+  $('#boolean-heatmaps').append(checkbox);
+  console.log("Heatmap " + heatmap_index + " added for boolean operation.");
+}
+
+/************************************
          Filters
 ************************************/
 

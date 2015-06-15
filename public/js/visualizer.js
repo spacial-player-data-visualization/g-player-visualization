@@ -39,11 +39,17 @@ var settings = {
   // Current overlay
   overlay : null,
 
+  // Position of active heatmap
+  activeHeatmap : 0,
+
   // Current players
   players : [],
 
   // Currently selected actions
   actions : [],
+
+  // Current heatmaps
+  heatmaps : [],
 
 };
 
@@ -94,8 +100,25 @@ Visualizer.update = function(){
       Visualizer.draw(player, thisPlayer.color, count++);
   });
 
+  /********************************
+           HEATMAPS
+   ********************************/
+
+   Visualizer.updateHeatmap();
+
   // Loading complete
   UI.loading(false, "Success. " + settings.data.length + " points loaded.");
+}
+
+// Updates the active heatmap on the map
+Visualizer.updateHeatmap = function(){
+  // Display the active Heatmap
+   if(settings.heatmaps.length > 0) {
+     var hmaps = new L.FeatureGroup();
+     hmaps.addLayer(settings.heatmaps[settings.activeHeatmap].heatmapLayer);
+     addFeatureGroup(hmaps);
+     console.log("ActiveHeatmap: " + settings.activeHeatmap + " being displayed.");
+   }
 }
 
 /* 
@@ -184,7 +207,6 @@ Visualizer.draw = function(entries, color, index){
     });
 
     addFeatureGroup(markers);
-
 }
 
 // Given a dataset, seperate the data into positions
@@ -238,8 +260,12 @@ Visualizer.clear = function(){
     // Clear active data sets
     _.each(Visualizer.layers, function(layer){
         
-        // Remove each active layer
-        map.removeLayer(layer);
+        // Remove each active layer (heatmap layers can't be removed this way so try)
+        try {
+          map.removeLayer(layer);
+        } catch (e) {
+          console.log("Problem with removing layer " + layer + "\nMore info: " + e.message); 
+        }
     })
 }
 
