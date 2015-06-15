@@ -16,7 +16,7 @@ Authors:
   Tommy Hu @tomxhu
   Pragathi Sanshi @pragsanshi
   Alex Jacks @alexjacks92
-  Alex Gimmi @iBroadband
+  Alex Gimmi @ibroadband
 
 -->
 
@@ -186,20 +186,6 @@ Authors:
       
       UI.setMap(selected);
     });
-
-    // WATCH for HEATMAP change
-    $('#toggle_heatmap').change(function(e) {
-      
-      // Enable
-      if ($('#toggle_heatmap').is(':checked')) {
-        Heatmap.addHeatmap(settings.data);
-      
-      //  Disable
-      } else {
-        map.removeLayer(Heatmap.heatmapLayer)
-      }
-    });
-
   };
   
 </script>
