@@ -8,21 +8,10 @@ G-Player Data Visualization
 
 Authors:
 Alex Johnson @alexjohnson505
+Alex Gimmi   @ibroadband
 
 Created: March 29, 2015
 */
-
-var Heatmap = {};
-
-// credit: http://www.patrick-wied.at/static/heatmapjs/
-Heatmap.heatmapLayer = new HeatmapOverlay({
-  "radius": .3,
-  "maxOpacity": .8,
-  "scaleRadius": true, 
-  "useLocalExtrema": false,
-  latField: 'latitude',
-  lngField: 'longitude',
-});
 
 /* 
 author: Alex Johnson
@@ -30,7 +19,28 @@ created: March 29, 2015
 purpose: uses heatmapLayer configurations from above to add heatmap layer
 argument: data is the current active dataset
 */
-Heatmap.addHeatmap = function(data){
+addHeatmap = function(data){
+
+  var Heatmap = {};
+
+  // credit: http://www.patrick-wied.at/static/heatmapjs/
+  Heatmap.heatmapLayer = new HeatmapOverlay({
+    "radius": .3,
+    "maxOpacity": .8,
+    "scaleRadius": true, 
+    "useLocalExtrema": false,
+    latField: 'latitude',
+    lngField: 'longitude',
+  });
+
+  // Add new instance of Heatmap to settings object
+  settings.heatmaps.push(Heatmap);
+
+  // Hide the previously active Heatmap
+  hideHeatmap(settings.activeHeatmap);
+
+  // Make the newest Heatmap active
+  settings.activeHeatmap = settings.heatmaps.length - 1;
 
   // Filter data by the positions and
   // actions that are currently selected
@@ -44,11 +54,25 @@ Heatmap.addHeatmap = function(data){
 
   // Initialize heatmap
   var heatmapData = { 
-      max: 1,  
-      data: data,
+    max: 1,  
+    data: data,
   };
 
   // Add heatmap
-  map.addLayer(Heatmap.heatmapLayer)
-  Heatmap.heatmapLayer.setData(heatmapData);
+  var featureGroup = new L.FeatureGroup().addLayer(settings.heatmaps[settings.activeHeatmap].heatmapLayer);
+  addFeatureGroup(featureGroup);
+  settings.heatmaps[settings.activeHeatmap].heatmapLayer.setData(heatmapData);
+
+  var bool_btn = UI.heatmaps.generateBoolBtn(settings.activeHeatmap);
+  var radio_btn = UI.heatmaps.generateRadio(settings.activeHeatmap);
+  $('#available-heatmaps').append('<div>').append(bool_btn).append(radio_btn).append('</div>');
+}
+
+hideHeatmap = function(heatmap_index) {
+  map.removeLayer(settings.heatmaps[heatmap_index].heatmapLayer);
+  console.log("Removed heatmap " + heatmap_index + " from the map.");
+}
+
+removeHeatmap = function(heatmap_index) {
+  // TODO: Remove the active heatmap... (from the map or from the list entirely?)
 }
