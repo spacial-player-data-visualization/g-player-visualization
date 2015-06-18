@@ -76,6 +76,8 @@ hideHeatmap = function(heatmap_index) {
 }
 
 // Note: This function does not delete the heatmap from memory to avoid id issues
+// TODO: There is a minor bug where if you delete and add several heatmaps, it will
+// no long auto-update the map because the heatmap_indices are not concurrent anymore
 removeHeatmap = function(heatmap_index) {
   console.log("Begin removing heatmap " + heatmap_index);
 
