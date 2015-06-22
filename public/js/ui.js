@@ -626,10 +626,24 @@ argument: heatmap_index is the index of the currently selected heatmap
 UI.heatmaps.generateRadio = function(heatmap_index) {
   var enabledCategories = UI.filters.categories();
 
-  var a = '<div class="radio col-md-10" style="margin-top: 10px"><label id="heatmap' + heatmap_index + 'Label">';
+  var a = '<div class="radio col-md-10" style="margin-top: 10px"><label id="heatmap' + heatmap_index + 'Label" for="heatmap' + heatmap_index + 'Radio">';
   var b = '<input type="radio" name="heatmap-opts" id="heatmap' + heatmap_index + 'Radio" value="' + heatmap_index + '" checked onclick="UI.heatmaps.select(' + heatmap_index + ')">';
   var c = enabledCategories.toString() + '</label></div>';
 
+  return a + b + c;
+}
+
+/* 
+author: Alex Gimmi
+created: June 15, 2015
+purpose: creates a new button for adding a heatmap to the Boolean operation tab
+argument: heatmap_index is the index of the currently selected heatmap
+*/
+UI.heatmaps.generateBoolBtn = function(heatmap_index) {
+  var a = '<div class="btn btn-primary btn-xs col-md-2" style="margin-top: 10px" onclick="UI.heatmaps.addBoolMap(' + heatmap_index + ');">';
+  var b = '<span class="glyphicon glyphicon-share">'
+  var c = '</span></div>';
+  
   return a + b + c;
 }
 
@@ -655,20 +669,6 @@ UI.heatmaps.addBoolMap = function(heatmap_index) {
   var checkbox = UI.heatmaps.generateBoolCheckbox(heatmap_index);
   $('#boolean-heatmaps').append(checkbox);
   console.log("Heatmap " + heatmap_index + " added for boolean operation.");
-}
-
-/* 
-author: Alex Gimmi
-created: June 15, 2015
-purpose: creates a new button for adding a heatmap to the Boolean operation tab
-argument: heatmap_index is the index of the currently selected heatmap
-*/
-UI.heatmaps.generateBoolBtn = function(heatmap_index) {
-  var a = '<div class="btn btn-primary btn-xs col-md-2" style="margin-top: 10px" onclick="UI.heatmaps.addBoolMap(' + heatmap_index + ');">';
-  var b = '<span class="glyphicon glyphicon-share">'
-  var c = '</span></div>';
-  
-  return a + b + c;
 }
 
 /* 

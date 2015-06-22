@@ -117,5 +117,6 @@ Heatmap.remove = function(heatmap_index) {
   var div = $(id);
   div.remove();
   settings.heatmapCount--;
-  console.log("Heatmap " + heatmap_index + " removed from the Heatmaps tab.");
+
+  console.log("Heatmap " + heatmap_index + " removed from the Heatmaps tab and from memory.");
 }
