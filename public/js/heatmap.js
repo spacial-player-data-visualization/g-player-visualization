@@ -13,15 +13,14 @@ Alex Gimmi   @ibroadband
 Created: March 29, 2015
 */
 
-/* 
-author: Alex Johnson
-created: March 29, 2015
-purpose: uses heatmapLayer configurations from above to add heatmap layer
-argument: data is the current active dataset
-*/
-
 var Heatmap = {};
 
+/* 
+author: Alex Johnson, Alex Gimmi
+created: March 29, 2015
+purpose: creates new heatmapLayer to model data
+argument: data is the current active dataset
+*/
 Heatmap.add = function(data){
 
   var hmap = {};
@@ -74,14 +73,27 @@ Heatmap.add = function(data){
   console.log("Add heatmap div: " + hmap_div);
 }
 
+/* 
+author: Alex Gimmi
+created: June 15, 2015
+purpose: hides the active heatmap from the map
+argument: heatmap_index is the index of the currently selected heatmap
+*/
 Heatmap.hide = function(heatmap_index) {
   map.removeLayer(settings.heatmaps[heatmap_index].heatmapLayer);
   console.log("Hid heatmap " + heatmap_index + " from the map.");
 }
 
-// Note: This function does not delete the heatmap from memory to avoid id issues
-// TODO: There is a minor bug where if you delete and add several heatmaps, it will
-// no longer auto-update the map because the heatmap_indices are not concurrent anymore
+/* 
+author: Alex Gimmi
+created: June 15, 2015
+purpose: removes the active heatmap from the map, heatmaps tab, and memory
+argument: heatmap_index is the index of the currently selected heatmap
+
+Note: This function does not delete the heatmap from memory to avoid id issues
+TODO: There is a minor bug where if you delete and add several heatmaps, it will
+no longer auto-update the map because the heatmap_indices are not concurrent anymore
+*/
 Heatmap.remove = function(heatmap_index) {
   console.log("Begin removing heatmap " + heatmap_index);
 

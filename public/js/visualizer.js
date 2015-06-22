@@ -25,9 +25,6 @@ var settings = {
   // Save data
   data : null,
 
-  // enable heatmap
-  heatmap : true,
-
   // enable player paths
   paths : true,
 
@@ -116,7 +113,11 @@ Visualizer.update = function(){
            HEATMAPS
    ********************************/
 
-// Updates the active heatmap on the map
+/* 
+author: Alex Gimmi
+created: June 15, 2015
+purpose: redraws the currently selected heatmap on the map
+*/
 Visualizer.updateHeatmap = function(){
   // Display the active Heatmap
    if(settings.heatmapCount) {
