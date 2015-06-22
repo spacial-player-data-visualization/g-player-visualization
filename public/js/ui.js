@@ -12,6 +12,7 @@ G-Player Data Visualization
 
 Authors:
 Alex Johnson @alexjohnson505
+Alex Gimmi @ibroadband
 
 Created: 
 March 29, 2015

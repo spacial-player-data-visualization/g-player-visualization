@@ -9,6 +9,7 @@ Created: March 29, 2015
 Authors:
 Alex Johnson @alexjohnson505
 Alex Jacks @alexjacks92
+Alex Gimmi @ibroadband 
 
 */
 
@@ -41,6 +42,9 @@ var settings = {
 
   // Position of active heatmap
   activeHeatmap : 0,
+
+  // Number of useable heatmaps in memory
+  heatmapCount : 0,
 
   // Current players
   players : [],
@@ -113,7 +117,7 @@ Visualizer.update = function(){
 // Updates the active heatmap on the map
 Visualizer.updateHeatmap = function(){
   // Display the active Heatmap
-   if(settings.heatmaps.length > 0) {
+   if(settings.heatmapCount) {
      var hmaps = new L.FeatureGroup();
      hmaps.addLayer(settings.heatmaps[settings.activeHeatmap].heatmapLayer);
      addFeatureGroup(hmaps);

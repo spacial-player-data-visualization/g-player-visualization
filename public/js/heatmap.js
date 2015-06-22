@@ -67,12 +67,13 @@ addHeatmap = function(data){
   var radio_btn = UI.heatmaps.generateRadio(settings.activeHeatmap);
   var hmap_div = '<div id="heatmap' + settings.activeHeatmap + 'Btns">' + bool_btn + radio_btn + '</div>';
   $('#available-heatmaps').append(hmap_div);
+  settings.heatmapCount++;
   console.log("Add heatmap div: " + hmap_div);
 }
 
 hideHeatmap = function(heatmap_index) {
   map.removeLayer(settings.heatmaps[heatmap_index].heatmapLayer);
-  console.log("Removed heatmap " + heatmap_index + " from the map.");
+  console.log("Hid heatmap " + heatmap_index + " from the map.");
 }
 
 // Note: This function does not delete the heatmap from memory to avoid id issues
@@ -83,17 +84,23 @@ removeHeatmap = function(heatmap_index) {
 
   // Set the new active heatmap
   var show = 0;
-  if (heatmap_index < settings.heatmaps.length - 1) {
+  if (settings.heatmapCount == 1) {
+    hideHeatmap(settings.activeHeatmap);
+    show = -1;
+  } else if (heatmap_index < settings.heatmaps.length - 1) {
     show = heatmap_index + 1;
   } else {
     show = heatmap_index - 1;
   }
 
-  $('#heatmap' + show + 'Radio').click();
+  if (show >= 0) {
+    $('#heatmap' + show + 'Radio').click();
+  }
 
   // Remove the div from the Heatmaps tab
   var id = '#heatmap' + heatmap_index + 'Btns';
   var div = $(id);
   div.remove();
+  settings.heatmapCount--;
   console.log("Heatmap " + heatmap_index + " removed from the Heatmaps tab.");
 }
