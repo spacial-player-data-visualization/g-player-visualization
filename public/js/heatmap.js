@@ -14,6 +14,7 @@ Created: March 29, 2015
 */
 
 var Heatmap = {};
+var id = 0;
 
 /* 
 author: Alex Johnson, Alex Gimmi
@@ -35,14 +36,20 @@ Heatmap.add = function(data){
     lngField: 'longitude',
   });
 
-  // Add new instance of Heatmap to settings object
-  settings.heatmaps.push(hmap);
-
-  // Hide the previously active Heatmap
+  // Hide the previously active heatmap
   Heatmap.hide(settings.activeHeatmap);
 
-  // Make the newest Heatmap active
-  settings.activeHeatmap = settings.heatmaps.length - 1;
+  // Make the newest heatmap active
+  settings.activeHeatmap = Heatmap.nextId();
+
+  // Add new instance of heatmap to settings object
+  settings.heatmaps.push(hmap);
+
+  // Add newest id to settings object
+  settings.heatmapIds.push(settings.activeHeatmap);
+
+  // Index of the newest heatmap
+  var index = settings.heatmaps.length - 1;
 
   // Filter data by the positions and
   // actions that are currently selected
@@ -51,7 +58,7 @@ Heatmap.add = function(data){
   // Join selected data sets
   data = data.positions.concat(data.actions);
 
-  console.log("\nData to be Heatmapped");
+  console.log("Data to be Heatmapped");
   console.log(data);
 
   // Initialize heatmap
@@ -61,62 +68,77 @@ Heatmap.add = function(data){
   };
 
   // Add heatmap
-  var featureGroup = new L.FeatureGroup().addLayer(settings.heatmaps[settings.activeHeatmap].heatmapLayer);
+  var featureGroup = new L.FeatureGroup().addLayer(settings.heatmaps[index].heatmapLayer);
   addFeatureGroup(featureGroup);
-  settings.heatmaps[settings.activeHeatmap].heatmapLayer.setData(heatmapData);
+  settings.heatmaps[index].heatmapLayer.setData(heatmapData);
 
   var bool_btn = UI.heatmaps.generateBoolBtn(settings.activeHeatmap);
   var radio_btn = UI.heatmaps.generateRadio(settings.activeHeatmap);
-  var hmap_div = '<div id="heatmap' + settings.activeHeatmap + 'Btns">' + bool_btn + radio_btn + '</div>';
+  var hmap_div = '<div id="heatmap' + settings.activeHeatmap + 'Div">' + bool_btn + radio_btn + '</div>';
   $('#available-heatmaps').append(hmap_div);
-  settings.heatmapCount++;
-  console.log("Add heatmap div: " + hmap_div);
+  console.log("New heatmap added at index " + index + " with id " + settings.activeHeatmap);
 }
 
 /* 
 author: Alex Gimmi
 created: June 15, 2015
 purpose: hides the active heatmap from the map
-argument: heatmap_index is the index of the currently selected heatmap
+argument: heatmap_id is the id of the currently selected heatmap
 */
-Heatmap.hide = function(heatmap_index) {
-  map.removeLayer(settings.heatmaps[heatmap_index].heatmapLayer);
-  console.log("Hid heatmap " + heatmap_index + " from the map.");
+Heatmap.hide = function(heatmap_id) {
+  if (settings.heatmaps.length > 0) {
+    var index = Heatmap.getIndexFromId(heatmap_id);
+    map.removeLayer(settings.heatmaps[index].heatmapLayer);
+    console.log("Hid heatmap at index " + index + " with id " + heatmap_id + " from the map.");
+  }
 }
 
 /* 
 author: Alex Gimmi
 created: June 15, 2015
 purpose: removes the active heatmap from the map, heatmaps tab, and memory
-argument: heatmap_index is the index of the currently selected heatmap
+argument: heatmap_id is the id of the currently selected heatmap
 
 Note: This function does not delete the heatmap from memory to avoid id issues
 TODO: There is a minor bug where if you delete and add several heatmaps, it will
 no longer auto-update the map because the heatmap_indices are not concurrent anymore
 */
-Heatmap.remove = function(heatmap_index) {
-  console.log("Begin removing heatmap " + heatmap_index);
+Heatmap.remove = function(heatmap_id) {
+  var index = Heatmap.getIndexFromId(heatmap_id);
+  console.log("Begin removing heatmap at index " + index);
 
   // Set the new active heatmap
   var show = 0;
-  if (settings.heatmapCount == 1) {
-    Heatmap.hide(settings.activeHeatmap);
+  if (settings.heatmaps.length == 1) {
     show = -1;
-  } else if (heatmap_index < settings.heatmaps.length - 1) {
-    show = heatmap_index + 1;
+  } else if (index < settings.heatmaps.length - 1) {
+    show = index + 1;
   } else {
-    show = heatmap_index - 1;
+    show = index - 1;
   }
 
   if (show >= 0) {
     $('#heatmap' + show + 'Radio').click();
+  } else {
+    Heatmap.hide(index);
   }
 
   // Remove the div from the Heatmaps tab
-  var id = '#heatmap' + heatmap_index + 'Btns';
+  var id = '#heatmap' + heatmap_id + 'Div';
   var div = $(id);
   div.remove();
-  settings.heatmapCount--;
 
-  console.log("Heatmap " + heatmap_index + " removed from the Heatmaps tab and from memory.");
+  // Remove the heatmap from memory
+  console.log("TRYING TO REMOVE HEATMAP AT INDEX " + index + " FROM MEMORY WITH ID " + heatmap_id);
+
+  console.log("Heatmap at index " + index + " with id " + heatmap_id + " removed from the Heatmaps tab and from memory.");
+}
+
+Heatmap.getIndexFromId = function(heatmap_id) {
+  return _.find(settings.heatmapIds, function(id){ return id == heatmap_id; });
+}
+
+// Generates ids for heatmaps starting from 0
+Heatmap.nextId = function() {
+  return id++;
 }

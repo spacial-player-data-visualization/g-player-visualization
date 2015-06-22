@@ -621,13 +621,13 @@ UI.heatmaps = {}
 author: Alex Gimmi
 created: June 15, 2015
 purpose: creates a new radio button in the heatmaps tab to determine which is visible
-argument: heatmap_index is the index of the currently selected heatmap
+argument: heatmap_id is the id of the currently selected heatmap
 */
-UI.heatmaps.generateRadio = function(heatmap_index) {
+UI.heatmaps.generateRadio = function(heatmap_id) {
   var enabledCategories = UI.filters.categories();
 
-  var a = '<div class="radio col-md-10" style="margin-top: 10px"><label id="heatmap' + heatmap_index + 'Label" for="heatmap' + heatmap_index + 'Radio">';
-  var b = '<input type="radio" name="heatmap-opts" id="heatmap' + heatmap_index + 'Radio" value="' + heatmap_index + '" checked onclick="UI.heatmaps.select(' + heatmap_index + ')">';
+  var a = '<div class="radio col-md-10" style="margin-top: 10px"><label id="heatmap' + heatmap_id + 'Label" for="heatmap' + heatmap_id + 'Radio">';
+  var b = '<input type="radio" name="heatmap-opts" id="heatmap' + heatmap_id + 'Radio" value="' + heatmap_id + '" checked onclick="UI.heatmaps.select(' + heatmap_id + ')">';
   var c = enabledCategories.toString() + '</label></div>';
 
   return a + b + c;
@@ -637,10 +637,10 @@ UI.heatmaps.generateRadio = function(heatmap_index) {
 author: Alex Gimmi
 created: June 15, 2015
 purpose: creates a new button for adding a heatmap to the Boolean operation tab
-argument: heatmap_index is the index of the currently selected heatmap
+argument: heatmap_id is the id of the currently selected heatmap
 */
-UI.heatmaps.generateBoolBtn = function(heatmap_index) {
-  var a = '<div class="btn btn-primary btn-xs col-md-2" style="margin-top: 10px" onclick="UI.heatmaps.addBoolMap(' + heatmap_index + ');">';
+UI.heatmaps.generateBoolBtn = function(heatmap_id) {
+  var a = '<div class="btn btn-primary btn-xs col-md-2" style="margin-top: 10px" onclick="UI.heatmaps.addBoolMap(' + heatmap_id + ');">';
   var b = '<span class="glyphicon glyphicon-share">'
   var c = '</span></div>';
   
@@ -651,11 +651,11 @@ UI.heatmaps.generateBoolBtn = function(heatmap_index) {
 author: Alex Gimmi
 created: June 15, 2015
 purpose: hides the previous map and displays the newly selected map
-argument: heatmap_index is the index of the newly selected heatmap
+argument: heatmap_id is the id of the newly selected heatmap
 */
-UI.heatmaps.select = function(heatmap_index) {
+UI.heatmaps.select = function(heatmap_id) {
   Heatmap.hide(settings.activeHeatmap);
-  settings.activeHeatmap = heatmap_index;
+  settings.activeHeatmap = heatmap_id;
   Visualizer.updateHeatmap();
 }
 
@@ -663,25 +663,25 @@ UI.heatmaps.select = function(heatmap_index) {
 author: Alex Gimmi
 created: June 15, 2015
 purpose: adds the currently selected map to the Boolean operation tab
-argument: heatmap_index is the index of the currently selected heatmap
+argument: heatmap_id is the id of the currently selected heatmap
 */
-UI.heatmaps.addBoolMap = function(heatmap_index) {
-  var checkbox = UI.heatmaps.generateBoolCheckbox(heatmap_index);
+UI.heatmaps.addBoolMap = function(heatmap_id) {
+  var checkbox = UI.heatmaps.generateBoolCheckbox(heatmap_id);
   $('#boolean-heatmaps').append(checkbox);
-  console.log("Heatmap " + heatmap_index + " added for boolean operation.");
+  console.log("Heatmap with id " + heatmap_id + " added for boolean operation.");
 }
 
 /* 
 author: Alex Gimmi
 created: June 15, 2015
 purpose: creates a new checkbox for the Boolean operation tab
-argument: heatmap_index is the index of the currently selected heatmap
+argument: heatmap_id is the id of the currently selected heatmap
 */
-UI.heatmaps.generateBoolCheckbox = function(heatmap_index) {
-  var hmapLabel = $('#heatmap' + heatmap_index + 'Label').text();
+UI.heatmaps.generateBoolCheckbox = function(heatmap_id) {
+  var hmapLabel = $('#heatmap' + heatmap_id + 'Label').text();
 
   var a = '<div class="checkbox"><label>';
-  var b = '<input type="checkbox" value="' + heatmap_index + '" checked>' + hmapLabel;
+  var b = '<input type="checkbox" value="' + heatmap_id + '" checked>' + hmapLabel;
   var c = '</label></div>';
 
   return a + b + c;

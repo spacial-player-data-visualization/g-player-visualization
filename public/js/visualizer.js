@@ -40,11 +40,6 @@ var settings = {
   // Position of active heatmap
   activeHeatmap : 0,
 
-  // Number of useable heatmaps in memory
-  // TODO: This is an uneccessary setting if we find a way to safely delete
-  // heatmaps from settings.heatmaps in the heatmap .remove function
-  heatmapCount : 0,
-
   // Current players
   players : [],
 
@@ -53,6 +48,9 @@ var settings = {
 
   // Current heatmaps
   heatmaps : [],
+
+  // Current heatmap ids
+  heatmapIds : [],
 
 };
 
@@ -120,11 +118,12 @@ purpose: redraws the currently selected heatmap on the map
 */
 Visualizer.updateHeatmap = function(){
   // Display the active Heatmap
-   if(settings.heatmapCount) {
+   if(settings.heatmaps.length > 0) {
      var hmaps = new L.FeatureGroup();
-     hmaps.addLayer(settings.heatmaps[settings.activeHeatmap].heatmapLayer);
+     var index = Heatmap.getIndexFromId(settings.activeHeatmap);
+     hmaps.addLayer(settings.heatmaps[index].heatmapLayer);
      addFeatureGroup(hmaps);
-     console.log("ActiveHeatmap: " + settings.activeHeatmap + " being displayed.");
+     console.log("Heatmap at index " + index + " with id " + settings.activeHeatmap + " being displayed.");
    }
 }
 
@@ -366,6 +365,12 @@ Visualizer.getContext = function(callback){
 
     // Select players IDs
     playerIDs : UI.players.listIDs(),
+
+    // List of current heatmaps
+    heatmaps : settings.heatmaps,
+
+    // Currently active heatmap
+    activeHeatmap : settings.activeHeatmap,
     
     // List of filtered actions
     actions : settings.actions,
