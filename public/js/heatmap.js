@@ -19,12 +19,15 @@ created: March 29, 2015
 purpose: uses heatmapLayer configurations from above to add heatmap layer
 argument: data is the current active dataset
 */
-addHeatmap = function(data){
 
-  var Heatmap = {};
+var Heatmap = {};
+
+Heatmap.add = function(data){
+
+  var hmap = {};
 
   // credit: http://www.patrick-wied.at/static/heatmapjs/
-  Heatmap.heatmapLayer = new HeatmapOverlay({
+  hmap.heatmapLayer = new HeatmapOverlay({
     "radius": .3,
     "maxOpacity": .8,
     "scaleRadius": true, 
@@ -34,10 +37,10 @@ addHeatmap = function(data){
   });
 
   // Add new instance of Heatmap to settings object
-  settings.heatmaps.push(Heatmap);
+  settings.heatmaps.push(hmap);
 
   // Hide the previously active Heatmap
-  hideHeatmap(settings.activeHeatmap);
+  Heatmap.hide(settings.activeHeatmap);
 
   // Make the newest Heatmap active
   settings.activeHeatmap = settings.heatmaps.length - 1;
@@ -71,21 +74,21 @@ addHeatmap = function(data){
   console.log("Add heatmap div: " + hmap_div);
 }
 
-hideHeatmap = function(heatmap_index) {
+Heatmap.hide = function(heatmap_index) {
   map.removeLayer(settings.heatmaps[heatmap_index].heatmapLayer);
   console.log("Hid heatmap " + heatmap_index + " from the map.");
 }
 
 // Note: This function does not delete the heatmap from memory to avoid id issues
 // TODO: There is a minor bug where if you delete and add several heatmaps, it will
-// no long auto-update the map because the heatmap_indices are not concurrent anymore
-removeHeatmap = function(heatmap_index) {
+// no longer auto-update the map because the heatmap_indices are not concurrent anymore
+Heatmap.remove = function(heatmap_index) {
   console.log("Begin removing heatmap " + heatmap_index);
 
   // Set the new active heatmap
   var show = 0;
   if (settings.heatmapCount == 1) {
-    hideHeatmap(settings.activeHeatmap);
+    Heatmap.hide(settings.activeHeatmap);
     show = -1;
   } else if (heatmap_index < settings.heatmaps.length - 1) {
     show = heatmap_index + 1;

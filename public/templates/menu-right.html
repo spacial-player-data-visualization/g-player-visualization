@@ -68,13 +68,13 @@ Alex Gimmi @ibroadband
     </h4>
   </div>
   <div class="panel-body">
-    <div class="btn btn-success col-md-4" onclick="addHeatmap(settings.data);">
+    <div class="btn btn-success col-md-4" onclick="Heatmap.add(settings.data);">
      <span class="glyphicon glyphicon-plus"></span>
     </div>
-    <div class="btn btn-warning col-md-4" onclick="hideHeatmap(settings.activeHeatmap);">
+    <div class="btn btn-warning col-md-4" onclick="Heatmap.hide(settings.activeHeatmap);">
       <span class="glyphicon glyphicon-eye-close"></span>
     </div>
-    <div class="btn btn-danger col-md-4" onclick="removeHeatmap(settings.activeHeatmap);">
+    <div class="btn btn-danger col-md-4" onclick="Heatmap.remove(settings.activeHeatmap);">
       <span class="glyphicon glyphicon-remove"></span>
     </div>
     <div id="available-heatmaps" style="margin-top: 10px"></div>

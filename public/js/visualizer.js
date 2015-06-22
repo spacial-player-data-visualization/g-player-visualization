@@ -44,6 +44,8 @@ var settings = {
   activeHeatmap : 0,
 
   // Number of useable heatmaps in memory
+  // TODO: This is an uneccessary setting if we find a way to safely delete
+  // heatmaps from settings.heatmaps in the heatmap .remove function
   heatmapCount : 0,
 
   // Current players
@@ -104,15 +106,15 @@ Visualizer.update = function(){
       Visualizer.draw(player, thisPlayer.color, count++);
   });
 
-  /********************************
-           HEATMAPS
-   ********************************/
-
    Visualizer.updateHeatmap();
 
   // Loading complete
   UI.loading(false, "Success. " + settings.data.length + " points loaded.");
 }
+
+ /********************************
+           HEATMAPS
+   ********************************/
 
 // Updates the active heatmap on the map
 Visualizer.updateHeatmap = function(){

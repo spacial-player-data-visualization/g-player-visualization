@@ -650,7 +650,7 @@ UI.heatmaps.generateRadio = function(heatmap_index) {
 
 // Helper for setting the active Heatmap to a given index
 UI.heatmaps.select = function(heatmap_index) {
-  hideHeatmap(settings.activeHeatmap);
+  Heatmap.hide(settings.activeHeatmap);
   settings.activeHeatmap = heatmap_index;
   Visualizer.updateHeatmap();
 }
