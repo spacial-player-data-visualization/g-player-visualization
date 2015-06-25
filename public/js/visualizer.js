@@ -52,6 +52,9 @@ var settings = {
   // Current heatmap ids
   heatmapIds : [],
 
+  // Save heatmaps' data
+  heatmapData : [],
+
 };
 
 /************************************

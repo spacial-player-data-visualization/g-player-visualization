@@ -698,7 +698,14 @@ UI.boolops = {};
 UI.boolops.add = function(checked) {
   var addData = [];
 
-  //settings.heatmaps[x].heatmapLayer._data;
+  _.each(checked, function(heatmap_id) {
+    var index = Heatmap.getIndexFromId(heatmap_id);
+    var hmap = settings.heatmaps[index];
+    var data = settings.heatmapData[index];
+    addData = _.union(addData, data);
+  })
+
+  Heatmap.add(addData);
 }
 
 // June 25

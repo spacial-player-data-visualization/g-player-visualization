@@ -51,12 +51,12 @@ Heatmap.add = function(data){
   // Index of the newest heatmap
   var index = settings.heatmaps.length - 1;
 
-  // Filter data by the positions and
-  // actions that are currently selected
-  var data = Visualizer.activeData(data);
-
-  // Join selected data sets
-  data = data.positions.concat(data.actions);
+  // Try to join selected data sets (new heatmap creation)
+  try {
+    data = data.positions.concat(data.actions);
+  } catch (e) {
+    console.log("Attempting to create a new heatmap with the data as is, likely a Boolean operation.");
+  }
 
   console.log("Data to be Heatmapped");
   console.log(data);
@@ -66,6 +66,9 @@ Heatmap.add = function(data){
     max: 1,  
     data: data,
   };
+
+  // Save heatmap data
+  settings.heatmapData.push(data);
 
   // Add heatmap
   var featureGroup = new L.FeatureGroup().addLayer(settings.heatmaps[index].heatmapLayer);
@@ -127,6 +130,7 @@ Heatmap.remove = function(heatmap_id) {
   // Remove the heatmap from memory
   // TODO: REMOVE THE HEATMAP FROM MEMORY USING THE HEATMAP ID
   // NOTE: DO NOT FORGET TO REMOVE THE ID FROM settings.heatmapIds as well
+  // NOTE: DO NOT FORGET TO REMOVE THE DATA FROM settings.heatmapData as well
   console.log("TRYING TO REMOVE HEATMAP AT INDEX " + index + " FROM MEMORY WITH ID " + heatmap_id);
 
   console.log("Heatmap at index " + index + " with id " + heatmap_id + " removed from the Heatmaps tab and from memory.");
