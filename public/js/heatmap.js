@@ -98,10 +98,6 @@ author: Alex Gimmi
 created: June 15, 2015
 purpose: removes the active heatmap from the map, heatmaps tab, and memory
 argument: heatmap_id is the id of the currently selected heatmap
-
-Note: This function does not delete the heatmap from memory to avoid id issues
-TODO: There is a minor bug where if you delete and add several heatmaps, it will
-no longer auto-update the map because the heatmap_indices are not concurrent anymore
 */
 Heatmap.remove = function(heatmap_id) {
   var index = Heatmap.getIndexFromId(heatmap_id);
@@ -129,6 +125,8 @@ Heatmap.remove = function(heatmap_id) {
   div.remove();
 
   // Remove the heatmap from memory
+  // TODO: REMOVE THE HEATMAP FROM MEMORY USING THE HEATMAP ID
+  // NOTE: DO NOT FORGET TO REMOVE THE ID FROM settings.heatmapIds as well
   console.log("TRYING TO REMOVE HEATMAP AT INDEX " + index + " FROM MEMORY WITH ID " + heatmap_id);
 
   console.log("Heatmap at index " + index + " with id " + heatmap_id + " removed from the Heatmaps tab and from memory.");

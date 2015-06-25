@@ -681,10 +681,50 @@ UI.heatmaps.generateBoolCheckbox = function(heatmap_id) {
   var hmapLabel = $('#heatmap' + heatmap_id + 'Label').text();
 
   var a = '<div class="checkbox"><label>';
-  var b = '<input type="checkbox" value="' + heatmap_id + '" checked>' + hmapLabel;
+  var b = '<input type="checkbox" id="bool' + heatmap_id + 'Checkbox" value="' + heatmap_id + '" checked>' + hmapLabel;
   var c = '</label></div>';
 
   return a + b + c;
+}
+
+/************************************
+         Boolean Operation
+************************************/
+UI.boolops = {};
+// TODO: alter comments
+
+// June 25
+// data -> array of selected hmap ids
+UI.boolops.add = function(checked) {
+  var addData = [];
+
+  //settings.heatmaps[x].heatmapLayer._data;
+}
+
+// June 25
+// data -> array of selected hmap ids
+UI.boolops.intersect = function(checked) {
+  // TODO: intersect
+}
+
+// June 25
+// data -> array of selected hmap ids
+UI.boolops.subtract = function(checked) {
+  // TODO: subtract. (this may work completely differently from the other two)
+}
+
+// June 25
+// Return list of selected hmap ids
+UI.boolops.selectedHeatmaps = function(){
+    
+    // List of actions
+  var selectedIds = [];
+
+  // Enabled check boxes (heatmap ids)
+  $('#boolean-heatmaps input:checkbox:checked').each(function(index, checkbox){
+    selectedIds.push(checkbox["value"]);
+  })
+  return selectedIds;
 }
 
 /************************************
