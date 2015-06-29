@@ -365,7 +365,7 @@ UI.players.addPlayers = function(){
 
 // Add a new player ID to the map.
 UI.players.add = function(playerID, color){
-  
+
     // Add to list
     settings.players.push({ playerID : playerID, color : color });
     
@@ -623,12 +623,10 @@ created: June 15, 2015
 purpose: creates a new radio button in the heatmaps tab to determine which is visible
 argument: heatmap_id is the id of the currently selected heatmap
 */
-UI.heatmaps.generateRadio = function(heatmap_id) {
-  var enabledCategories = UI.filters.categories();
-
+UI.heatmaps.generateRadio = function(heatmap_id, heatmap_name) {
   var a = '<div class="radio col-md-10" style="margin-top: 10px"><label id="heatmap' + heatmap_id + 'Label" for="heatmap' + heatmap_id + 'Radio">';
   var b = '<input type="radio" name="heatmap-opts" id="heatmap' + heatmap_id + 'Radio" value="' + heatmap_id + '" checked onclick="UI.heatmaps.select(' + heatmap_id + ')">';
-  var c = enabledCategories.toString() + '</label></div>';
+  var c = heatmap_name + '</label></div>';
 
   return a + b + c;
 }
@@ -680,9 +678,9 @@ argument: heatmap_id is the id of the currently selected heatmap
 UI.heatmaps.generateBoolCheckbox = function(heatmap_id) {
   var hmapLabel = $('#heatmap' + heatmap_id + 'Label').text();
 
-  var a = '<div class="checkbox"><label>';
-  var b = '<input type="checkbox" id="bool' + heatmap_id + 'Checkbox" value="' + heatmap_id + '" checked>' + hmapLabel;
-  var c = '</label></div>';
+  var a = '<div class="checkbox"><label id="bool' + heatmap_id + 'Label">';
+  var b = '<input type="checkbox" id="bool' + heatmap_id + 'Checkbox" value="' + heatmap_id + '" checked>';
+  var c = hmapLabel + '</label></div>';
 
   return a + b + c;
 }
@@ -691,10 +689,13 @@ UI.heatmaps.generateBoolCheckbox = function(heatmap_id) {
          Boolean Operation
 ************************************/
 UI.boolops = {};
-// TODO: alter comments
 
-// June 25
-// data -> array of selected hmap ids
+/* 
+author: Alex Gimmi
+created: June 25, 2015
+purpose: Add a new heatmap which is the union of other selected heatmaps
+argument: checked is a list of the checked off heatmaps
+*/
 UI.boolops.add = function(checked) {
   var addData = [];
 
@@ -705,11 +706,15 @@ UI.boolops.add = function(checked) {
     addData = _.union(addData, data);
   })
 
-  Heatmap.add(addData);
+  Heatmap.add(addData, UI.boolops.selectedHeatmapNames());
 }
 
-// June 25
-// data -> array of selected hmap ids
+/* 
+author: Alex Gimmi
+created: June 25, 2015
+purpose: Add a new heatmap which is the intersection of other selected heatmaps
+argument: checked is a list of the checked off heatmaps
+*/
 UI.boolops.intersect = function(checked) {
   // TODO: intersect
 }
@@ -720,11 +725,14 @@ UI.boolops.subtract = function(checked) {
   // TODO: subtract. (this may work completely differently from the other two)
 }
 
-// June 25
-// Return list of selected hmap ids
-UI.boolops.selectedHeatmaps = function(){
+/* 
+author: Alex Gimmi
+created: June 25, 2015
+purpose: Returns a list of selected heatmap ids in the Boolean Operation tab
+*/
+UI.boolops.selectedHeatmapIds = function() {
     
-    // List of actions
+  // List of actions
   var selectedIds = [];
 
   // Enabled check boxes (heatmap ids)
@@ -732,6 +740,24 @@ UI.boolops.selectedHeatmaps = function(){
     selectedIds.push(checkbox["value"]);
   })
   return selectedIds;
+}
+
+/*
+author: Alex Gimmi
+created: June 29, 2015
+purpose: Returns a list of selected heatmap names in the Boolean Operation tab
+*/
+UI.boolops.selectedHeatmapNames = function() {
+  // List of labels (as text)
+  var selectedLabels = [];
+
+  // Enabled check boxes (heatmap ids)
+  $('#boolean-heatmaps input:checkbox:checked').each(function(index, checkbox){
+    var hmap_id = checkbox["value"];
+    var label = $('#heatmap' + hmap_id + "Label");
+    selectedLabels.push(label.text());
+  })
+  return selectedLabels; 
 }
 
 /************************************

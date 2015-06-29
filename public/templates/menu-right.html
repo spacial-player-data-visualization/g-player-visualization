@@ -68,7 +68,7 @@ Alex Gimmi @ibroadband
     </h4>
   </div>
   <div class="panel-body">
-    <div class="btn btn-success col-md-4" onclick="Heatmap.add(Visualizer.activeData(settings.data));">
+    <div class="btn btn-success col-md-4" onclick="Heatmap.add(Visualizer.activeData(settings.data), UI.filters.categories().toString());">
      <span class="glyphicon glyphicon-plus"></span>
     </div>
     <div class="btn btn-warning col-md-4" onclick="Heatmap.hide(settings.activeHeatmap);">
@@ -88,13 +88,13 @@ Alex Gimmi @ibroadband
     </h4>
   </div>
   <div class="panel-body">
-    <div class="btn btn-primary col-md-4" onclick="UI.boolops.add(UI.boolops.selectedHeatmaps())">
+    <div class="btn btn-primary col-md-4" onclick="UI.boolops.add(UI.boolops.selectedHeatmapIds())">
      <span class="glyphicon glyphicon-plus"></span>
     </div>
-    <div class="btn btn-primary col-md-4" onclick="UI.boolops.add(UI.boolops.selectedHeatmaps())">
+    <div class="btn btn-primary col-md-4" onclick="UI.boolops.add(UI.boolops.selectedHeatmapIds())">
       <span class="glyphicon glyphicon-random"></span>
     </div>
-    <div class="btn btn-primary col-md-4" onclick="UI.boolops.add(UI.boolops.selectedHeatmaps())">
+    <div class="btn btn-primary col-md-4" onclick="UI.boolops.add(UI.boolops.selectedHeatmapIds())">
       <span class="glyphicon glyphicon-minus"></span>
     </div>
     <div id="boolean-heatmaps"></div>

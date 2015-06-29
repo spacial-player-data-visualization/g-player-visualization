@@ -22,7 +22,7 @@ created: March 29, 2015
 purpose: creates new heatmapLayer to model data
 argument: data is the current active dataset
 */
-Heatmap.add = function(data){
+Heatmap.add = function(data, heatmap_name){
 
   var hmap = {};
 
@@ -62,7 +62,7 @@ Heatmap.add = function(data){
   console.log(data);
 
   // Initialize heatmap
-  var heatmapData = { 
+  var hmapData = { 
     max: 1,  
     data: data,
   };
@@ -73,10 +73,10 @@ Heatmap.add = function(data){
   // Add heatmap
   var featureGroup = new L.FeatureGroup().addLayer(settings.heatmaps[index].heatmapLayer);
   addFeatureGroup(featureGroup);
-  settings.heatmaps[index].heatmapLayer.setData(heatmapData);
+  settings.heatmaps[index].heatmapLayer.setData(hmapData);
 
   var bool_btn = UI.heatmaps.generateBoolBtn(settings.activeHeatmap);
-  var radio_btn = UI.heatmaps.generateRadio(settings.activeHeatmap);
+  var radio_btn = UI.heatmaps.generateRadio(settings.activeHeatmap, heatmap_name);
   var hmap_div = '<div id="heatmap' + settings.activeHeatmap + 'Div">' + bool_btn + radio_btn + '</div>';
   $('#available-heatmaps').append(hmap_div);
   console.log("New heatmap added at index " + index + " with id " + settings.activeHeatmap);

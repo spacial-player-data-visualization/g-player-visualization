@@ -263,9 +263,6 @@ Visualizer.activeData = function(dataset){
 // Clears the active data set. Resets map
 Visualizer.clear = function(){
     
-    // Clear action select
-    $(".action-select").val(null).trigger('change')
-    
     // Clear active data sets
     _.each(Visualizer.layers, function(layer){
         
