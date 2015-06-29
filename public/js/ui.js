@@ -716,7 +716,8 @@ purpose: Add a new heatmap which is the intersection of other selected heatmaps
 argument: checked is a list of the checked off heatmaps
 */
 UI.boolops.intersect = function(checked) {
-  var intersectData = [];
+  // Set the intersection to start with the data from the first heatmap
+  var intersectData = settings.heatmapData[Heatmap.getIndexFromId(checked[0])];
 
   // TODO: FIX INTERSECTION TO BE MORE FORGIVING TO POSITION
   _.each(checked, function(heatmap_id) {
