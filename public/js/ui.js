@@ -706,7 +706,7 @@ UI.boolops.add = function(checked) {
     addData = _.union(addData, data);
   })
 
-  Heatmap.add(addData, UI.boolops.selectedHeatmapNames());
+  Heatmap.add(addData, UI.boolops.selectedHeatmapNames(" ∪ "));
 }
 
 /* 
@@ -716,7 +716,17 @@ purpose: Add a new heatmap which is the intersection of other selected heatmaps
 argument: checked is a list of the checked off heatmaps
 */
 UI.boolops.intersect = function(checked) {
-  // TODO: intersect
+  var intersectData = [];
+
+  // TODO: FIX INTERSECTION TO BE MORE FORGIVING TO POSITION
+  _.each(checked, function(heatmap_id) {
+    var index = Heatmap.getIndexFromId(heatmap_id);
+    var hmap = settings.heatmaps[index];
+    var data = settings.heatmapData[index];
+    intersectData = _.intersection(intersectData, data);
+  })
+
+  Heatmap.add(intersectData, UI.boolops.selectedHeatmapNames(" ∩ ") + " (WORK IN PROGRESS)");
 }
 
 // June 25
@@ -746,18 +756,23 @@ UI.boolops.selectedHeatmapIds = function() {
 author: Alex Gimmi
 created: June 29, 2015
 purpose: Returns a list of selected heatmap names in the Boolean Operation tab
+paramater: delimiter determines what symbol to put in between each name
 */
-UI.boolops.selectedHeatmapNames = function() {
-  // List of labels (as text)
-  var selectedLabels = [];
+UI.boolops.selectedHeatmapNames = function(delimiter) {
+  // A String representation of the selected heatmaps' names
+  var selectedNames = "";
 
   // Enabled check boxes (heatmap ids)
   $('#boolean-heatmaps input:checkbox:checked').each(function(index, checkbox){
     var hmap_id = checkbox["value"];
     var label = $('#heatmap' + hmap_id + "Label");
-    selectedLabels.push(label.text());
+    if (selectedNames === "") {
+      selectedNames += label.text();
+    } else {
+      selectedNames += delimiter + label.text();
+    }
   })
-  return selectedLabels; 
+  return selectedNames; 
 }
 
 /************************************
