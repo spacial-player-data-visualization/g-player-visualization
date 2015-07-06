@@ -701,7 +701,6 @@ UI.boolops.add = function(checked) {
 
   _.each(checked, function(heatmap_id) {
     var index = Heatmap.getIndexFromId(heatmap_id);
-    var hmap = settings.heatmaps[index];
     var data = settings.heatmapData[index];
     addData = _.union(addData, data);
   })
@@ -716,18 +715,46 @@ purpose: Add a new heatmap which is the intersection of other selected heatmaps
 argument: checked is a list of the checked off heatmaps
 */
 UI.boolops.intersect = function(checked) {
-  // Set the intersection to start with the data from the first heatmap
-  var intersectData = settings.heatmapData[Heatmap.getIndexFromId(checked[0])];
+  // The accumulated data of intersecting points among maps
+  var intersectData = [];
 
-  // TODO: FIX INTERSECTION TO BE MORE FORGIVING TO POSITION
-  _.each(checked, function(heatmap_id) {
-    var index = Heatmap.getIndexFromId(heatmap_id);
-    var hmap = settings.heatmaps[index];
-    var data = settings.heatmapData[index];
-    intersectData = _.intersection(intersectData, data);
+  // Set the intersection to start with the data from the first heatmap
+  var intersectStart = settings.heatmapData[Heatmap.getIndexFromId(checked[0])];
+
+  // Percentage threshold for positions to be considered equal.
+  var mapBounds = map.getBounds();
+  var latMin = mapBounds._southWest.lat;
+  var latMax = mapBounds._northEast.lat;
+  var lngMin = mapBounds._southWest.lng;
+  var lngMax = mapBounds._northEast.lat;
+  console.log("latMin: " + latMin);
+  console.log("latMax: " + latMax);
+  console.log("lngMin: " + lngMin);
+  console.log("lngMax: " + lngMax); 
+
+  // TODO: calculate percentage threshold here
+
+  // Loop through the values of the first heatmap
+  _.each(intersectStart, function(latLng) {
+
+    // Loop through remaining heatmaps (first is already included)
+    _.each(_.rest(checked), function(heatmap_id) {
+      var index = Heatmap.getIndexFromId(heatmap_id);
+      var data = settings.heatmapData[index];
+
+      // Compare this heatmap to previous intersections
+      _.each(data, function(d) {
+        // TODO: use threshold here!
+        var hasCloseLat = latLng['latitude'] == d['latitude'];
+        var hasCloseLng = latLng['longitude'] == d['longitude'];
+        if (hasCloseLat && hasCloseLng) {
+          intersectData.push(latLng);
+        }
+      })
+    })
   })
 
-  Heatmap.add(intersectData, UI.boolops.selectedHeatmapNames(" ∩ ") + " (WORK IN PROGRESS)");
+  Heatmap.add(intersectData, UI.boolops.selectedHeatmapNames(" ∩ ") + " PUT THRESHOLD HERE");
 }
 
 // June 25

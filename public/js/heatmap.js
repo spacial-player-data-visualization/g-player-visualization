@@ -67,8 +67,13 @@ Heatmap.add = function(data, heatmap_name){
     data: data,
   };
 
-  // Save heatmap data
-  settings.heatmapData.push(data);
+  // Save heatmap data as LatLngs
+  var saveData = [];
+  _.each(data, function(d) {
+    var latLng = {'latitude': d['latitude'], 'longitude': d['longitude']};
+    saveData.push(latLng);
+  })
+  settings.heatmapData.push(saveData);
 
   // Add heatmap
   var featureGroup = new L.FeatureGroup().addLayer(settings.heatmaps[index].heatmapLayer);
