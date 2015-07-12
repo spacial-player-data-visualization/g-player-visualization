@@ -112,8 +112,9 @@ UI.setMap = function(mapname, callback){
   // Find chosen map data
   settings.map = _.findWhere(options.maps, { name : mapname });
 
+
   // Temp representing map
-  var m = settings.map
+  var m = settings.map;
 
   // Alert user if no suitable map found
   if (!settings.map){ alert("Unable to Find Suitable Map Data"); }
@@ -140,7 +141,8 @@ UI.setMap = function(mapname, callback){
 
   settings.overlay.addTo(map);
 
-  map.fitBounds(imageBounds);
+  // TODO: possibly try altering the bounds to find the correct scale (for scale control)
+  map.fitBounds(imageBounds); 
 
   // Default callback is to load the data set.
   // Execute provided callback otherwise
@@ -702,37 +704,71 @@ UI.boolops.add = function(checked) {
   _.each(checked, function(heatmap_id) {
     var index = Heatmap.getIndexFromId(heatmap_id);
     var data = settings.heatmapData[index];
+    console.log("id: " + heatmap_id);
+    console.log("index: " + index);
+    console.log("settings.heatmapIds: " + settings.heatmapIds);
+    console.log("data: " + data);
+    console.log("checked: " + checked);
     addData = _.union(addData, data);
   })
 
   Heatmap.add(addData, UI.boolops.selectedHeatmapNames(" ∪ "));
 }
 
+/*
+author: Alex Gimmi
+created: July 8, 2015
+purpose: Display the dialog box for intersection user input
+argument: checked is a list of the checked off heatmaps in the boolops tab
+*/
+UI.boolops.loadIntersect = function(checked) {
+  var message = '<input id="intersectThresholdText" class="form-control bfh-number" type="text" name="threshold" ' +
+               'title="Enter Threshold" ' +
+               'placeholder="threshold of intersection"/>';
+
+  bootbox.dialog({
+    message: message,
+    title: "Select Threshold For Intersection",
+    
+    // Options available to the user
+    buttons: {
+      
+      // Hide the modal
+      success: {
+        label: 'Cancel',
+        className: "btn-default",
+        callback: function() {}
+      },
+
+      // Add player to the map
+      main: {
+        label: "OK",
+        className: "btn-primary",
+        callback: function() {
+          var threshold = $('#intersectThresholdText').val();
+          console.log("Checked " + checked.toString());
+          console.log("Threshold " + threshold);
+          UI.boolops.intersect(checked, threshold);
+        }
+      }
+    }
+  });
+}
+
 /* 
 author: Alex Gimmi
 created: June 25, 2015
 purpose: Add a new heatmap which is the intersection of other selected heatmaps
-argument: checked is a list of the checked off heatmaps
+argument: checked is a list of the checked off heatmaps in the boolops tab
+argument: threshold is the user entered value from loadIntersectOpts dialog box
 */
-UI.boolops.intersect = function(checked) {
+UI.boolops.intersect = function(checked, threshold) {
   // The accumulated data of intersecting points among maps
   var intersectData = [];
 
   // Set the intersection to start with the data from the first heatmap
   var intersectStart = settings.heatmapData[Heatmap.getIndexFromId(checked[0])];
-
-  // Percentage threshold for positions to be considered equal.
-  var mapBounds = map.getBounds();
-  var latMin = mapBounds._southWest.lat;
-  var latMax = mapBounds._northEast.lat;
-  var lngMin = mapBounds._southWest.lng;
-  var lngMax = mapBounds._northEast.lat;
-  console.log("latMin: " + latMin);
-  console.log("latMax: " + latMax);
-  console.log("lngMin: " + lngMin);
-  console.log("lngMax: " + lngMax); 
-
-  // TODO: calculate percentage threshold here
+  console.log("Intersect Start: " + intersectStart);
 
   // Loop through the values of the first heatmap
   _.each(intersectStart, function(latLng) {
@@ -744,9 +780,8 @@ UI.boolops.intersect = function(checked) {
 
       // Compare this heatmap to previous intersections
       _.each(data, function(d) {
-        // TODO: use threshold here!
-        var hasCloseLat = latLng['latitude'] == d['latitude'];
-        var hasCloseLng = latLng['longitude'] == d['longitude'];
+        var hasCloseLat = Math.abs(latLng['latitude'] - d['latitude']) <= threshold;
+        var hasCloseLng = Math.abs(latLng['longitude'] - d['longitude']) <= threshold;
         if (hasCloseLat && hasCloseLng) {
           intersectData.push(latLng);
         }
@@ -754,13 +789,75 @@ UI.boolops.intersect = function(checked) {
     })
   })
 
-  Heatmap.add(intersectData, UI.boolops.selectedHeatmapNames(" ∩ ") + " PUT THRESHOLD HERE");
+  Heatmap.add(intersectData, UI.boolops.selectedHeatmapNames(" ∩ ") + " Threshold: " + threshold);
+}
+
+UI.boolops.loadSubtract = function(checked) {
+  var message = '<input id="subtractThresholdText" class="form-control bfh-number" type="text" name="threshold" ' +
+               'title="Enter Threshold" ' +
+               'placeholder="threshold of subtraction"/>';
+
+  bootbox.dialog({
+    message: message,
+    title: "Select Threshold For Subtraction",
+    
+    // Options available to the user
+    buttons: {
+      
+      // Hide the modal
+      success: {
+        label: 'Cancel',
+        className: "btn-default",
+        callback: function() {}
+      },
+
+      // Add player to the map
+      main: {
+        label: "OK",
+        className: "btn-primary",
+        callback: function() {
+          var threshold = $('#subtractThresholdText').val();
+          console.log("Checked " + checked.toString());
+          console.log("Threshold " + threshold);
+          UI.boolops.subtract(checked, threshold);
+        }
+      }
+    }
+  });
 }
 
 // June 25
 // data -> array of selected hmap ids
-UI.boolops.subtract = function(checked) {
-  // TODO: subtract. (this may work completely differently from the other two)
+UI.boolops.subtract = function(checked, threshold) {
+  // The accumulated data of intersecting points among maps
+  var subtractData = [];
+
+  // Set the intersection to start with the data from the first heatmap
+  var subtractStart = settings.heatmapData[Heatmap.getIndexFromId(checked[0])];
+  console.log("Subtract Start: " + subtractStart);
+
+  // Loop through the values of the first heatmap
+  _.each(subtractStart, function(latLng) {
+
+    // Loop through remaining heatmaps (first is already included)
+    _.each(_.rest(checked), function(heatmap_id) {
+      var index = Heatmap.getIndexFromId(heatmap_id);
+      var data = settings.heatmapData[index];
+
+      // Compare this heatmap to previous intersections
+      _.each(data, function(d) {
+        var hasCloseLat = Math.abs(latLng['latitude'] - d['latitude']) <= threshold;
+        var hasCloseLng = Math.abs(latLng['longitude'] - d['longitude']) <= threshold;
+        
+        // Make sure the current point isn't in the first set
+        if (!(hasCloseLat && hasCloseLng)) {
+          subtractData.push(latLng);
+        }
+      })
+    })
+  })
+
+  Heatmap.add(subtractData, UI.boolops.selectedHeatmapNames(" - ") + " Threshold: " + threshold);
 }
 
 /* 

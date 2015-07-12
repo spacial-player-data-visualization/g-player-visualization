@@ -312,7 +312,6 @@ Visualizer.loadData = function(){
 
     // Update our map with new data.
     Visualizer.update();
-
   })
 };
 

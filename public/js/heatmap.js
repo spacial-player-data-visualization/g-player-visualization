@@ -94,7 +94,7 @@ purpose: hides the active heatmap from the map
 argument: heatmap_id is the id of the currently selected heatmap
 */
 Heatmap.hide = function(heatmap_id) {
-  if (settings.heatmaps.length > 0) {
+  if (_.contains(settings.heatmapIds, heatmap_id)) {
     var index = Heatmap.getIndexFromId(heatmap_id);
     map.removeLayer(settings.heatmaps[index].heatmapLayer);
     console.log("Hid heatmap at index " + index + " with id " + heatmap_id + " from the map.");
@@ -133,16 +133,15 @@ Heatmap.remove = function(heatmap_id) {
   div.remove();
 
   // Remove the heatmap from memory
-  // TODO: REMOVE THE HEATMAP FROM MEMORY USING THE HEATMAP ID
-  // NOTE: DO NOT FORGET TO REMOVE THE ID FROM settings.heatmapIds as well
-  // NOTE: DO NOT FORGET TO REMOVE THE DATA FROM settings.heatmapData as well
-  console.log("TRYING TO REMOVE HEATMAP AT INDEX " + index + " FROM MEMORY WITH ID " + heatmap_id);
+  settings.heatmaps.splice(index, 1);
+  settings.heatmapIds.splice(index, 1);
+  settings.heatmapData.splice(index, 1);
 
   console.log("Heatmap at index " + index + " with id " + heatmap_id + " removed from the Heatmaps tab and from memory.");
 }
 
 Heatmap.getIndexFromId = function(heatmap_id) {
-  return _.find(settings.heatmapIds, function(id){ return id == heatmap_id; });
+  return _.indexOf(settings.heatmapIds, parseInt(heatmap_id));
 }
 
 // Generates ids for heatmaps starting from 0
