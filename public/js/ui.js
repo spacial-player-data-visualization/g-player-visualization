@@ -141,8 +141,7 @@ UI.setMap = function(mapname, callback){
 
   settings.overlay.addTo(map);
 
-  // TODO: possibly try altering the bounds to find the correct scale (for scale control)
-  map.fitBounds(imageBounds); 
+  map.fitBounds(imageBounds);
 
   // Default callback is to load the data set.
   // Execute provided callback otherwise
@@ -704,11 +703,6 @@ UI.boolops.add = function(checked) {
   _.each(checked, function(heatmap_id) {
     var index = Heatmap.getIndexFromId(heatmap_id);
     var data = settings.heatmapData[index];
-    console.log("id: " + heatmap_id);
-    console.log("index: " + index);
-    console.log("settings.heatmapIds: " + settings.heatmapIds);
-    console.log("data: " + data);
-    console.log("checked: " + checked);
     addData = _.union(addData, data);
   })
 
@@ -722,13 +716,17 @@ purpose: Display the dialog box for intersection user input
 argument: checked is a list of the checked off heatmaps in the boolops tab
 */
 UI.boolops.loadIntersect = function(checked) {
-  var message = '<input id="intersectThresholdText" class="form-control bfh-number" type="text" name="threshold" ' +
-               'title="Enter Threshold" ' +
-               'placeholder="threshold of intersection"/>';
+  var distThresholdHTML = '<input id="intersectDistThresholdText" class="form-control bfh-number" type="text" name="distThreshold" ' +
+              'title="Enter Distance Threshold" ' +
+              'placeholder="threshold in meters"/>';
+  var timeThresholdHTML = '<input id="intersectTimeThresholdText" class="form-control bfh-number" type="text" name="timeThreshold" ' +
+              'title="Enter Time Threshold" ' +
+              'placeholder="threshold in seconds"/>';
+  var message = distThresholdHTML + timeThresholdHTML;
 
   bootbox.dialog({
     message: message,
-    title: "Select Threshold For Intersection",
+    title: "Select Thresholds For Intersection",
     
     // Options available to the user
     buttons: {
@@ -745,10 +743,12 @@ UI.boolops.loadIntersect = function(checked) {
         label: "OK",
         className: "btn-primary",
         callback: function() {
-          var threshold = $('#intersectThresholdText').val();
-          console.log("Checked " + checked.toString());
-          console.log("Threshold " + threshold);
-          UI.boolops.intersect(checked, threshold);
+          var distThreshold = $('#intersectDistThresholdText').val();
+          var timeThreshold = $('#intersectTimeThresholdText').val();
+          console.log("Checked: " + checked.toString());
+          console.log("Distance Threshold: " + distThreshold);
+          console.log("Time Threshold: " + timeThreshold);
+          UI.boolops.intersect(checked, distThreshold, timeThreshold);
         }
       }
     }
@@ -760,15 +760,15 @@ author: Alex Gimmi
 created: June 25, 2015
 purpose: Add a new heatmap which is the intersection of other selected heatmaps
 argument: checked is a list of the checked off heatmaps in the boolops tab
-argument: threshold is the user entered value from loadIntersectOpts dialog box
+argument: distThreshold is the user entered value from loadIntersectOpts dialog box
+argument: timeThreshold is the user entered value from loadIntersectOpts dialog box
 */
-UI.boolops.intersect = function(checked, threshold) {
+UI.boolops.intersect = function(checked, distThreshold, timeThreshold) {
   // The accumulated data of intersecting points among maps
   var intersectData = [];
 
   // Set the intersection to start with the data from the first heatmap
   var intersectStart = settings.heatmapData[Heatmap.getIndexFromId(checked[0])];
-  console.log("Intersect Start: " + intersectStart);
 
   // Loop through the values of the first heatmap
   _.each(intersectStart, function(latLng) {
@@ -780,22 +780,37 @@ UI.boolops.intersect = function(checked, threshold) {
 
       // Compare this heatmap to previous intersections
       _.each(data, function(d) {
-        var hasCloseLat = Math.abs(latLng['latitude'] - d['latitude']) <= threshold;
-        var hasCloseLng = Math.abs(latLng['longitude'] - d['longitude']) <= threshold;
-        if (hasCloseLat && hasCloseLng) {
+        // If a threshold is blank, we want to ignore it by assuming there is an overlap
+        var hasCloseLat = (distThreshold == "") ? true : Math.abs(latLng['latitude'] - d['latitude']) <= distThreshold;
+        var hasCloseLng = (distThreshold == "") ? true : Math.abs(latLng['longitude'] - d['longitude']) <= distThreshold;
+        var hasCloseTimestamp = (timeThreshold == "") ? true : Math.abs(latLng['timestamp'] - d['timestamp']) <= timeThreshold;
+
+        if (hasCloseLat && hasCloseLng && hasCloseTimestamp) {
           intersectData.push(latLng);
         }
       })
     })
   })
 
-  Heatmap.add(intersectData, UI.boolops.selectedHeatmapNames(" ∩ ") + " Threshold: " + threshold);
+  Heatmap.add(intersectData, UI.boolops.selectedHeatmapNames(" ∩ ") + 
+    "\nDist (m): " + distThreshold +
+    "\nTime (s): " + timeThreshold);
 }
 
+/*
+author: Alex Gimmi
+created: July 8, 2015
+purpose: Display the dialog box for subtraction user input
+argument: checked is a list of the checked off heatmaps in the boolops tab
+*/
 UI.boolops.loadSubtract = function(checked) {
-  var message = '<input id="subtractThresholdText" class="form-control bfh-number" type="text" name="threshold" ' +
-               'title="Enter Threshold" ' +
-               'placeholder="threshold of subtraction"/>';
+  var distThresholdHTML = '<input id="subtractDistThresholdText" class="form-control bfh-number" type="text" name="distThreshold" ' +
+               'title="Enter Distance Threshold" ' +
+               'placeholder="threshold in meters"/>';
+  var timeThresholdHTML = '<input id="subtractTimeThresholdText" class="form-control bfh-number" type="text" name="timeThreshold" ' +
+              'title="Enter Time Threshold" ' +
+              'placeholder="threshold in seconds"/>';
+  var message = distThresholdHTML + timeThresholdHTML;
 
   bootbox.dialog({
     message: message,
@@ -816,25 +831,32 @@ UI.boolops.loadSubtract = function(checked) {
         label: "OK",
         className: "btn-primary",
         callback: function() {
-          var threshold = $('#subtractThresholdText').val();
-          console.log("Checked " + checked.toString());
-          console.log("Threshold " + threshold);
-          UI.boolops.subtract(checked, threshold);
+          var distThreshold = $('#subtractDistThresholdText').val();
+          var timeThreshold = $('#subtractTimeThresholdText').val();
+          console.log("Checked: " + checked.toString());
+          console.log("Distance Threshold: " + distThreshold);
+          console.log("Time Threshold: " + timeThreshold);
+          UI.boolops.subtract(checked, distThreshold, timeThreshold);
         }
       }
     }
   });
 }
 
-// June 25
-// data -> array of selected hmap ids
-UI.boolops.subtract = function(checked, threshold) {
+/* 
+author: Alex Gimmi
+created: July 8, 2015
+purpose: Add a new heatmap which is the subtraction of all heatmaps from the first
+argument: checked is a list of the checked off heatmaps in the boolops tab
+argument: distThreshold is the user entered value from loadSubtractOpts dialog box
+argument: timeThreshold is the user entered value from loadSubtractOpts dialog box
+*/
+UI.boolops.subtract = function(checked, distThreshold, timeThreshold) {
   // The accumulated data of intersecting points among maps
   var subtractData = [];
 
   // Set the intersection to start with the data from the first heatmap
   var subtractStart = settings.heatmapData[Heatmap.getIndexFromId(checked[0])];
-  console.log("Subtract Start: " + subtractStart);
 
   // Loop through the values of the first heatmap
   _.each(subtractStart, function(latLng) {
@@ -846,18 +868,22 @@ UI.boolops.subtract = function(checked, threshold) {
 
       // Compare this heatmap to previous intersections
       _.each(data, function(d) {
-        var hasCloseLat = Math.abs(latLng['latitude'] - d['latitude']) <= threshold;
-        var hasCloseLng = Math.abs(latLng['longitude'] - d['longitude']) <= threshold;
+        // If a threshold is blank, we want to ignore it by assuming there is an overlap
+        var hasCloseLat = (distThreshold == "") ? true : Math.abs(latLng['latitude'] - d['latitude']) <= distThreshold;
+        var hasCloseLng = (distThreshold == "") ? true : Math.abs(latLng['longitude'] - d['longitude']) <= distThreshold;
+        var hasCloseTimestamp = (timeThreshold == "") ? true : Math.abs(latLng['timestamp'] - d['timestamp']) <= timeThreshold;
         
         // Make sure the current point isn't in the first set
-        if (!(hasCloseLat && hasCloseLng)) {
+        if (!(hasCloseLat && hasCloseLng && hasCloseTimestamp)) {
           subtractData.push(latLng);
         }
       })
     })
   })
 
-  Heatmap.add(subtractData, UI.boolops.selectedHeatmapNames(" - ") + " Threshold: " + threshold);
+  Heatmap.add(subtractData, UI.boolops.selectedHeatmapNames(" - ") + 
+    "\nDist (m): " + distThreshold +
+    "\nTime (s): " + timeThreshold);
 }
 
 /* 

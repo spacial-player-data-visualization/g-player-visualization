@@ -70,7 +70,7 @@ Heatmap.add = function(data, heatmap_name){
   // Save heatmap data as LatLngs
   var saveData = [];
   _.each(data, function(d) {
-    var latLng = {'latitude': d['latitude'], 'longitude': d['longitude']};
+    var latLng = {'latitude': d['latitude'], 'longitude': d['longitude'], 'timestamp': d['timestamp']};
     saveData.push(latLng);
   })
   settings.heatmapData.push(saveData);
