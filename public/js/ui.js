@@ -665,31 +665,67 @@ purpose: adds the currently selected map to the Boolean operation tab
 argument: heatmap_id is the id of the currently selected heatmap
 */
 UI.heatmaps.addBoolMap = function(heatmap_id) {
-  var checkbox = UI.heatmaps.generateBoolCheckbox(heatmap_id);
-  $('#boolean-heatmaps').append(checkbox);
+  var div = UI.heatmaps.generateBoolHTML(heatmap_id);
+  $('#boolean-heatmaps').append(div);
   console.log("Heatmap with id " + heatmap_id + " added for boolean operation.");
 }
 
-/* 
+/*
 author: Alex Gimmi
-created: June 15, 2015
-purpose: creates a new checkbox for the Boolean operation tab
+created: July 20, 2015
+purpose: creates a new entry for a heatmap in the Boolean operation tab
 argument: heatmap_id is the id of the currently selected heatmap
 */
-UI.heatmaps.generateBoolCheckbox = function(heatmap_id) {
+UI.heatmaps.generateBoolHTML = function(heatmap_id) {
   var hmapLabel = $('#heatmap' + heatmap_id + 'Label').text();
 
-  var a = '<div class="checkbox"><label id="bool' + heatmap_id + 'Label">';
-  var b = '<input type="checkbox" id="bool' + heatmap_id + 'Checkbox" value="' + heatmap_id + '" checked>';
-  var c = hmapLabel + '</label></div>';
+  var upBtn = '<div class="btn btn-primary btn-xs short-div" onclick="UI.boolops.move(' + heatmap_id + ', 1);">'
+    + '<i class="fa fa-caret-square-o-up"></i></div>';
 
-  return a + b + c;
+  var downBtn = '<div class="btn btn-primary btn-xs short-div" onclick="UI.boolops.move(' + heatmap_id + ', -1);">'
+    + '<i class="fa fa-caret-square-o-down"></i></div>';
+
+  var moveBtns = '<div class="col-md-2">' + upBtn + downBtn + '</div>';
+
+  var checkbox = '<div class="checkbox col-md-8"><label id="bool' + heatmap_id + 'Label">'
+    + '<input type="checkbox" id="bool' + heatmap_id + 'Checkbox" value="' + heatmap_id + '" checked>'
+    + hmapLabel + '</label></div>';
+
+  var remove = '<div class="btn btn-danger btn-xs" onclick="UI.boolops.remove(' + heatmap_id + ');">'
+    + '<span class="glyphicon glyphicon-remove"></span></div>';
+
+  var boolHTML = '<div id="bool' + heatmap_id + 'Div" class="row">' + moveBtns + checkbox + remove + '</div>';
+
+  return boolHTML;
 }
 
 /************************************
          Boolean Operation
 ************************************/
 UI.boolops = {};
+
+
+/*
+author: Alex Gimmi
+created: July 20, 2015
+purpose: removes a heatmap from the Boolean operation tab
+argument: heatmap_id is the id of the heatmap that is being removed
+*/
+UI.boolops.remove = function(heatmap_id) {
+  $('#bool' + heatmap_id + 'Div').remove();
+}
+
+/*
+author: Alex Gimmi
+created: July 20, 2015
+purpose: Move a heatmap up or down in the Boolean operation tab
+argument: heatmap_id is the id of the heatmap that is being moved
+argument: direction is either 1 or -1 indicating up and down respectively
+*/
+UI.boolops.move = function(heatmap_id, direction) {
+  // TODO: WIP
+  // TODO: FINISH
+}
 
 /* 
 author: Alex Gimmi

@@ -137,6 +137,9 @@ Heatmap.remove = function(heatmap_id) {
   settings.heatmapIds.splice(index, 1);
   settings.heatmapData.splice(index, 1);
 
+  // Remove the heatmap from the Boolean operation tab if it's there
+  UI.boolops.remove(heatmap_id);
+
   console.log("Heatmap at index " + index + " with id " + heatmap_id + " removed from the Heatmaps tab and from memory.");
 }
 
