@@ -679,10 +679,10 @@ argument: heatmap_id is the id of the currently selected heatmap
 UI.heatmaps.generateBoolHTML = function(heatmap_id) {
   var hmapLabel = $('#heatmap' + heatmap_id + 'Label').text();
 
-  var upBtn = '<div class="btn btn-primary btn-xs short-div" onclick="UI.boolops.move(' + heatmap_id + ', 1);">'
+  var upBtn = '<div class="btn btn-primary btn-xs short-div" onclick="UI.boolops.moveUp(' + heatmap_id + ');">'
     + '<i class="fa fa-caret-square-o-up"></i></div>';
 
-  var downBtn = '<div class="btn btn-primary btn-xs short-div" onclick="UI.boolops.move(' + heatmap_id + ', -1);">'
+  var downBtn = '<div class="btn btn-primary btn-xs short-div" onclick="UI.boolops.moveDown(' + heatmap_id + ');">'
     + '<i class="fa fa-caret-square-o-down"></i></div>';
 
   var moveBtns = '<div class="col-md-2">' + upBtn + downBtn + '</div>';
@@ -715,16 +715,16 @@ UI.boolops.remove = function(heatmap_id) {
   $('#bool' + heatmap_id + 'Div').remove();
 }
 
-/*
-author: Alex Gimmi
-created: July 20, 2015
-purpose: Move a heatmap up or down in the Boolean operation tab
-argument: heatmap_id is the id of the heatmap that is being moved
-argument: direction is either 1 or -1 indicating up and down respectively
-*/
-UI.boolops.move = function(heatmap_id, direction) {
-  // TODO: WIP
-  // TODO: FINISH
+// 7/27 TODO
+UI.boolops.moveUp = function(heatmap_id) {
+  var div = $("#bool" + heatmap_id + "Div");
+  div.insertBefore(div.prev());
+}
+
+// 7/27 TODO
+UI.boolops.moveDown = function(heatmap_id) {
+  var div = $("#bool" + heatmap_id + "Div");
+  div.insertAfter(div.next());
 }
 
 /* 
