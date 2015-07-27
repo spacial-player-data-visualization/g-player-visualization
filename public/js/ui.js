@@ -758,7 +758,13 @@ UI.boolops.loadIntersect = function(checked) {
   var timeThresholdHTML = '<input id="intersectTimeThresholdText" class="form-control bfh-number" type="text" name="timeThreshold" ' +
               'title="Enter Time Threshold" ' +
               'placeholder="threshold in seconds"/>';
-  var message = distThresholdHTML + timeThresholdHTML;
+  var minTimeHTML = '<input id="intersectMinTimeText" class="form-control bfh-number" type="text" name="minTime" ' +
+              'title="Enter Minimum Timestamp" ' +
+              'placeholder="min timestamp in seconds"/>';
+  var maxTimeHTML = '<input id="intersectMaxTimeText" class="form-control bfh-number" type="text" name="maxTime" ' +
+              'title="Enter Maximum Timestamp" ' +
+              'placeholder="max timestamp in seconds"/>';
+  var message = distThresholdHTML + timeThresholdHTML + minTimeHTML + maxTimeHTML;
 
   bootbox.dialog({
     message: message,
@@ -781,10 +787,14 @@ UI.boolops.loadIntersect = function(checked) {
         callback: function() {
           var distThreshold = $('#intersectDistThresholdText').val();
           var timeThreshold = $('#intersectTimeThresholdText').val();
+          var minTime = $('#intersectMinTimeText').val();
+          var maxTime = $('#intersectMaxTimeText').val();
           console.log("Checked: " + checked.toString());
           console.log("Distance Threshold: " + distThreshold);
           console.log("Time Threshold: " + timeThreshold);
-          UI.boolops.intersect(checked, distThreshold, timeThreshold);
+          console.log("Min Time: " + minTime);
+          console.log("Max Time: " + maxTime);
+          UI.boolops.intersect(checked, distThreshold, timeThreshold, minTime, maxTime);
         }
       }
     }
@@ -798,8 +808,10 @@ purpose: Add a new heatmap which is the intersection of other selected heatmaps
 argument: checked is a list of the checked off heatmaps in the boolops tab
 argument: distThreshold is the user entered value from loadIntersectOpts dialog box
 argument: timeThreshold is the user entered value from loadIntersectOpts dialog box
+argument: minTime is the user entered value from loadIntersectOpts dialog box
+argument: maxTime is the user entered value from loadIntersectOpts dialog box
 */
-UI.boolops.intersect = function(checked, distThreshold, timeThreshold) {
+UI.boolops.intersect = function(checked, distThreshold, timeThreshold, minTime, maxTime) {
   // The accumulated data of intersecting points among maps
   var intersectData = [];
 
@@ -820,8 +832,9 @@ UI.boolops.intersect = function(checked, distThreshold, timeThreshold) {
         var hasCloseLat = (distThreshold == "") ? true : Math.abs(latLng['latitude'] - d['latitude']) <= distThreshold;
         var hasCloseLng = (distThreshold == "") ? true : Math.abs(latLng['longitude'] - d['longitude']) <= distThreshold;
         var hasCloseTimestamp = (timeThreshold == "") ? true : Math.abs(latLng['timestamp'] - d['timestamp']) <= timeThreshold;
+        var isWithinTimeline = (minTime == "" || maxTime == "") ? true : (latLng['timestamp'] >= minTime && latLng['timestamp'] <= maxTime) && (d['timestamp'] >= minTime && d['timestamp'] <= maxTime);
 
-        if (hasCloseLat && hasCloseLng && hasCloseTimestamp) {
+        if (hasCloseLat && hasCloseLng && hasCloseTimestamp && isWithinTimeline) {
           intersectData.push(latLng);
         }
       })
@@ -830,7 +843,8 @@ UI.boolops.intersect = function(checked, distThreshold, timeThreshold) {
 
   Heatmap.add(intersectData, UI.boolops.selectedHeatmapNames(" ∩ ") + 
     "\nDist (m): " + distThreshold +
-    "\nTime (s): " + timeThreshold);
+    "\nTime (s): " + timeThreshold +
+    "\nBetween " + minTime + " and " + maxTime);
 }
 
 /*
@@ -846,7 +860,13 @@ UI.boolops.loadSubtract = function(checked) {
   var timeThresholdHTML = '<input id="subtractTimeThresholdText" class="form-control bfh-number" type="text" name="timeThreshold" ' +
               'title="Enter Time Threshold" ' +
               'placeholder="threshold in seconds"/>';
-  var message = distThresholdHTML + timeThresholdHTML;
+  var minTimeHTML = '<input id="subtractMinTimeText" class="form-control bfh-number" type="text" name="minTime" ' +
+              'title="Enter Minimum Timestamp" ' +
+              'placeholder="min timestamp in seconds"/>';
+  var maxTimeHTML = '<input id="subtractMaxTimeText" class="form-control bfh-number" type="text" name="maxTime" ' +
+              'title="Enter Maximum Timestamp" ' +
+              'placeholder="max timestamp in seconds"/>';
+  var message = distThresholdHTML + timeThresholdHTML + minTimeHTML + maxTimeHTML;
 
   bootbox.dialog({
     message: message,
@@ -869,10 +889,14 @@ UI.boolops.loadSubtract = function(checked) {
         callback: function() {
           var distThreshold = $('#subtractDistThresholdText').val();
           var timeThreshold = $('#subtractTimeThresholdText').val();
+          var minTime = $('#subtractMinTimeText').val();
+          var maxTime = $('#subtractMaxTimeText').val();
           console.log("Checked: " + checked.toString());
           console.log("Distance Threshold: " + distThreshold);
           console.log("Time Threshold: " + timeThreshold);
-          UI.boolops.subtract(checked, distThreshold, timeThreshold);
+          console.log("Min Time: " + minTime);
+          console.log("Max Time: " + maxTime);
+          UI.boolops.subtract(checked, distThreshold, timeThreshold, minTime, maxTime);
         }
       }
     }
@@ -886,8 +910,10 @@ purpose: Add a new heatmap which is the subtraction of all heatmaps from the fir
 argument: checked is a list of the checked off heatmaps in the boolops tab
 argument: distThreshold is the user entered value from loadSubtractOpts dialog box
 argument: timeThreshold is the user entered value from loadSubtractOpts dialog box
+argument: minTime is the user entered value from loadSubtractOpts dialog box
+argument: maxTime is the user entered value from loadSubtractOpts dialog box
 */
-UI.boolops.subtract = function(checked, distThreshold, timeThreshold) {
+UI.boolops.subtract = function(checked, distThreshold, timeThreshold, minTime, maxTime) {
   // The accumulated data of intersecting points among maps
   var subtractData = [];
 
@@ -908,9 +934,10 @@ UI.boolops.subtract = function(checked, distThreshold, timeThreshold) {
         var hasCloseLat = (distThreshold == "") ? true : Math.abs(latLng['latitude'] - d['latitude']) <= distThreshold;
         var hasCloseLng = (distThreshold == "") ? true : Math.abs(latLng['longitude'] - d['longitude']) <= distThreshold;
         var hasCloseTimestamp = (timeThreshold == "") ? true : Math.abs(latLng['timestamp'] - d['timestamp']) <= timeThreshold;
-        
+        var isWithinTimeline = (minTime == "" || maxTime == "") ? true : (latLng['timestamp'] >= minTime && latLng['timestamp'] <= maxTime) && (d['timestamp'] >= minTime && d['timestamp'] <= maxTime);
+
         // Make sure the current point isn't in the first set
-        if (!(hasCloseLat && hasCloseLng && hasCloseTimestamp)) {
+        if (!(hasCloseLat && hasCloseLng && hasCloseTimestamp && isWithinTimeline)) {
           subtractData.push(latLng);
         }
       })
@@ -919,7 +946,8 @@ UI.boolops.subtract = function(checked, distThreshold, timeThreshold) {
 
   Heatmap.add(subtractData, UI.boolops.selectedHeatmapNames(" - ") + 
     "\nDist (m): " + distThreshold +
-    "\nTime (s): " + timeThreshold);
+    "\nTime (s): " + timeThreshold +
+    "\nBetween " + minTime + " and " + maxTime);
 }
 
 /* 
