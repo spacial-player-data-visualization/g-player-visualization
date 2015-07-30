@@ -871,7 +871,7 @@ UI.boolops.intersect = function(checked, distThreshold, timeThreshold, minTime, 
   })
 
   Heatmap.add(intersectData, UI.boolops.selectedHeatmapNames(" ∩ ") + 
-    "\nDist (m): " + distThreshold +
+    "\nDist (m): " + distThresholdMeters +
     "\nTime (s): " + timeThreshold +
     "\nBetween " + minTime + " and " + maxTime);
 }
@@ -977,7 +977,7 @@ UI.boolops.subtract = function(checked, distThreshold, timeThreshold, minTime, m
   })
 
   Heatmap.add(subtractData, UI.boolops.selectedHeatmapNames(" - ") + 
-    "\nDist (m): " + distThreshold +
+    "\nDist (m): " + distThresholdMeters +
     "\nTime (s): " + timeThreshold +
     "\nBetween " + minTime + " and " + maxTime);
 }
