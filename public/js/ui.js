@@ -141,6 +141,26 @@ UI.setMap = function(mapname, callback){
 
   settings.overlay.addTo(map);
 
+  // Make sure to recalculate pixelsPerMeter and pixelsPerLatLng everytime the map is zoomed
+  map.on('zoomend', function() {
+    var scaleText = $('.leaflet-control-scale-line').text();
+    var scaleMeters = parseInt(scaleText.substring(0, scaleText.indexOf(" ")));
+    var scaleWidthPx = $('.leaflet-control-scale').width();
+
+    settings.pixelsPerMeter = scaleWidthPx / scaleMeters;
+
+    var mapWidthLatLng = settings.overlay._bounds._northEast.lat - settings.overlay._bounds._southWest.lat;
+    var mapHeightLatLng = settings.overlay._bounds._northEast.lng - settings.overlay._bounds._southWest.lng;
+    var mapDiagonalLatLng = Math.sqrt(Math.pow(mapWidthLatLng, 2) + Math.pow(mapHeightLatLng, 2));
+
+    var mapWidthPx = settings.overlay._image.width;
+    var mapHeightPx = settings.overlay._image.height;
+    var mapDiagonalPx = Math.sqrt(Math.pow(mapWidthPx, 2) + Math.pow(mapHeightPx, 2));
+
+    // Use diagonals to make this work for non-square maps (worst case: very long or very tall maps)
+    settings.pixelsPerLatLng = mapDiagonalPx / mapDiagonalLatLng;
+  });
+
   map.fitBounds(imageBounds);
 
   // Default callback is to load the data set.
@@ -715,13 +735,21 @@ UI.boolops.remove = function(heatmap_id) {
   $('#bool' + heatmap_id + 'Div').remove();
 }
 
-// 7/27 TODO
+/*
+author: Alex Gimmi
+created: July 27, 2015
+purpose: moves a heatmap from the Boolean operation tab up
+*/
 UI.boolops.moveUp = function(heatmap_id) {
   var div = $("#bool" + heatmap_id + "Div");
   div.insertBefore(div.prev());
 }
 
-// 7/27 TODO
+/*
+author: Alex Gimmi
+created: July 27, 2015
+purpose: moves a heatmap from the Boolean operation tab up
+*/
 UI.boolops.moveDown = function(heatmap_id) {
   var div = $("#bool" + heatmap_id + "Div");
   div.insertAfter(div.next());
@@ -785,7 +813,8 @@ UI.boolops.loadIntersect = function(checked) {
         label: "OK",
         className: "btn-primary",
         callback: function() {
-          var distThreshold = $('#intersectDistThresholdText').val();
+          var distThresholdMeters = $('#intersectDistThresholdText').val();
+          var distThreshold = (distThresholdMeters * settings.pixelsPerMeter) / settings.pixelsPerLatLng;
           var timeThreshold = $('#intersectTimeThresholdText').val();
           var minTime = $('#intersectMinTimeText').val();
           var maxTime = $('#intersectMaxTimeText').val();
@@ -887,7 +916,10 @@ UI.boolops.loadSubtract = function(checked) {
         label: "OK",
         className: "btn-primary",
         callback: function() {
-          var distThreshold = $('#subtractDistThresholdText').val();
+          // TODO: Find a way to convert user entered meters into latLng
+
+          var distThresholdMeters = $('#subtractDistThresholdText').val();
+          var distThreshold = (distThresholdMeters * settings.pixelsPerMeter) / settings.pixelsPerLatLng;
           var timeThreshold = $('#subtractTimeThresholdText').val();
           var minTime = $('#subtractMinTimeText').val();
           var maxTime = $('#subtractMaxTimeText').val();

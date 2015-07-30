@@ -37,6 +37,12 @@ var settings = {
   // Current overlay
   overlay : null,
 
+  // Pixels per meter for the current zoom
+  pixelsPerMeter : -1,
+
+  // Pixels per LatLng for the current zoom
+  pixelsPerLatLng : -1,
+
   // Position of active heatmap
   activeHeatmap : 0,
 
