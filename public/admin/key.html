@@ -1,5 +1,20 @@
+<html>
+<head>
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="../favicon.png" type="image/png">
+  <link rel="icon" href="../favicon.png" type="image/png">
+
+  <title>G-Player Data Visualization | Edit Key Mappings</title>
+
+  <!-- External Style Sheets -->
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/css/messenger.css" />
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/css/messenger-theme-air.css" />
+  <link href="../css/style.css" rel="stylesheet" />
+
+</head>
 <body class="admin">
-<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+  <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.1/js/bootstrap-datepicker.js"></script>
@@ -8,10 +23,6 @@
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular-resource.min.js"></script>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.3.0/bootbox.min.js"></script>
   <script src="controllers/key.js"></script>
-  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/css/messenger.css" />
-  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/css/messenger-theme-air.css" />
-  <link href="../css/style.css" rel="stylesheet" />
   
   <div id="sidebar-wrapper">
     <ul class="sidebar-nav">
@@ -27,67 +38,68 @@
     <p>Key Mappings are sets of data that represent how the uploader interprets .CSV files. The structure is the following: "game" is the game that this mapping applies to.
      "Type" is a broad category of actions that this mapping encompasses - ie, all positional data may be the same format, even if they're labelled differently. "Actions" is
      the explicit list of actions that the type is describing. "Columns" describes what each entry in a .CSV row represents - for instance, the first entry may represent x position data.</p>
-<hr>
+     <hr>
 
-<table class="table table-striped">
-<thead>
-  <tr>
-    <th>Game</th>
-    <th>Type</th>
-    <th>Actions</th>
-    <th>Columns</th>
-    <th><button type="button" class="btn btn-success pull-right" ng-click="openNew()"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button></th>
-  </tr>
-</thead>
-<tbody>
-  <tr ng-repeat="key in keys track by $index">
-    <td>{{key.game}}</td>
-    <td>{{key.type}}</td>
-    <td><p>{{key.actions}}</p></td>
-    <td><p>{{key.columns}}</p></td>
-    <td>
-      <div class="btn btn-warning" ng-click="openEdit($index)"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></div>
-      <div class="btn btn-danger" ng-click="delete($index)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>
-    </td>
-  </tr>
-</tbody>
-</table>
+     <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Game</th>
+          <th>Type</th>
+          <th>Actions</th>
+          <th>Columns</th>
+          <th><button type="button" class="btn btn-success pull-right" ng-click="openNew()"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="key in keys track by $index">
+          <td>{{key.game}}</td>
+          <td>{{key.type}}</td>
+          <td><p>{{key.actions}}</p></td>
+          <td><p>{{key.columns}}</p></td>
+          <td>
+            <div class="btn btn-warning" ng-click="openEdit($index)"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></div>
+            <div class="btn btn-danger" ng-click="delete($index)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
 
-<!-- ADD/EDIT KEYS -->
-<!-- Adding & Editing Keys use the same Modal -->
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">{{ activeTitle }}</h4>
-      </div>
-      <div class="modal-body">
-        <form id="editModalForm">
-          <div class="form-group">
-            <label for="name">Game</label>
-            <input type="text" class="form-control name" ng-model="key.game" placeholder="Enter Game">
+    <!-- ADD/EDIT KEYS -->
+    <!-- Adding & Editing Keys use the same Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">{{ activeTitle }}</h4>
           </div>
-          <div class="form-group">
-            <label for="name">Type</label>
-            <input type="text" class="form-control name" ng-model="key.type" placeholder="Enter Type">
+          <div class="modal-body">
+            <form id="editModalForm">
+              <div class="form-group">
+                <label for="name">Game</label>
+                <input type="text" class="form-control name" ng-model="key.game" placeholder="Enter Game">
+              </div>
+              <div class="form-group">
+                <label for="name">Type</label>
+                <input type="text" class="form-control name" ng-model="key.type" placeholder="Enter Type">
+              </div>
+              <div class="form-group">
+                <label for="description">Actions</label>
+                <textarea ng-list type="text" class="form-control description" placeholder="Enter Actions" ng-model="key.actions"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="description">Columns</label>
+                <textarea ng-list type="text" class="form-control description" placeholder="Enter Columns" ng-model="key.columns"></textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              <button type="button" class="save btn btn-primary" ng-click="save(key)">Ok</button>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="description">Actions</label>
-            <textarea ng-list type="text" class="form-control description" placeholder="Enter Actions" ng-model="key.actions"></textarea>
-          </div>
-          <div class="form-group">
-            <label for="description">Columns</label>
-            <textarea ng-list type="text" class="form-control description" placeholder="Enter Columns" ng-model="key.columns"></textarea>
-          </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <button type="button" class="save btn btn-primary" ng-click="save(key)">Ok</button>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-  </div>
-</body>
+  </body>
+  </html>

@@ -1,4 +1,18 @@
 <html>
+<head>
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="../favicon.png" type="image/png">
+  <link rel="icon" href="../favicon.png" type="image/png">
+
+  <title>G-Player Data Visualization | Edit Maps</title>
+
+  <!-- External Style Sheets -->
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/css/messenger.css" />
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/css/messenger-theme-air.css" />
+  <link href="../css/style.css" rel="stylesheet" />
+</head>
 <body class="admin">
   <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
@@ -9,12 +23,7 @@
   <script src="http://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.3.0/bootbox.min.js"></script>
   <script src="controllers/map.js"></script>
   
-  <!-- Style Sheets -->
-  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/css/messenger.css" />
-  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/css/messenger-theme-air.css" />
-  <link href="../css/style.css" rel="stylesheet" />
+  
 
   <!-- Left Options Sidebar -->
   <div id="sidebar-wrapper">
@@ -34,85 +43,85 @@
 
 
     <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Game</th>
-        <th>Image Url</th>
-        <th>Top</th>
-        <th>Bottom</th>
-        <th>Left</th>
-        <th>Right</th>
-        <th><button type="button" class="btn btn-success pull-right" ng-click="openNew()"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="map in maps">
-        <td>{{map.name}}</td>
-        <td>{{map.game}}</td>
-        <td>{{map.imageURL}}</td>
-        <td>{{map.name}}</td>
-        <td>{{map.top}}</td>
-        <td>{{map.bottom}}</td>
-        <td>{{map.left}}</td>
-        <td>{{map.right}}</td>
-        <td>
-          <div class="btn btn-warning" ng-click="openEdit($index)"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></div>
-          <div class="btn btn-danger" ng-click="delete($index)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>
-        </td>
-      </tr>
-    </tbody>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Game</th>
+          <th>Image Url</th>
+          <th>Top</th>
+          <th>Bottom</th>
+          <th>Left</th>
+          <th>Right</th>
+          <th><button type="button" class="btn btn-success pull-right" ng-click="openNew()"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="map in maps">
+          <td>{{map.name}}</td>
+          <td>{{map.game}}</td>
+          <td>{{map.imageURL}}</td>
+          <td>{{map.name}}</td>
+          <td>{{map.top}}</td>
+          <td>{{map.bottom}}</td>
+          <td>{{map.left}}</td>
+          <td>{{map.right}}</td>
+          <td>
+            <div class="btn btn-warning" ng-click="openEdit($index)"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></div>
+            <div class="btn btn-danger" ng-click="delete($index)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>
+          </td>
+        </tr>
+      </tbody>
     </table>
 
 
-  <!-- ADD/EDIT MAPS -->
-  <!-- Adding & Editing Maps use the same Modal -->
-  <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">{{ activeTitle }}</h4>
-        </div>
-        <div class="modal-body">
-          <form id="editModalForm">
-            <div class="form-group">
-              <label for="name">Name</label>
-              <input type="text" class="form-control name" ng-model="map.name" placeholder="Enter Name">
-            </div>
-            <div class="form-group">
-              <label for="name">Game</label>
-              <input type="text" class="form-control name" ng-model="map.game" placeholder="Enter Game">
-            </div>
-            <div class="form-group">
-              <label for="name">Image URL</label>
-              <input type="text" class="form-control name" ng-model="map.imageURL" placeholder="Enter URL for image">
-            </div>
-            <div class="form-group">
-              <label for="name">Top</label>
-              <input type="text" class="form-control name" ng-model="map.top" placeholder="Enter Top Pixel">
-            </div>
-            <div class="form-group">
-              <label for="name">Bottom</label>
-              <input type="text" class="form-control name" ng-model="map.bottom" placeholder="Enter Bottom Pixel">
-            </div>
-            <div class="form-group">
-              <label for="name">Left</label>
-              <input type="text" class="form-control name" ng-model="map.left" placeholder="Enter Left Pixel">
-            </div>
-            <div class="form-group">
-              <label for="name">Right</label>
-              <input type="text" class="form-control name" ng-model="map.right" placeholder="Enter Right Pixel">
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-          <button type="button" class="save btn btn-primary" ng-click="save(map)">Ok</button>
+    <!-- ADD/EDIT MAPS -->
+    <!-- Adding & Editing Maps use the same Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">{{ activeTitle }}</h4>
+          </div>
+          <div class="modal-body">
+            <form id="editModalForm">
+              <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control name" ng-model="map.name" placeholder="Enter Name">
+              </div>
+              <div class="form-group">
+                <label for="name">Game</label>
+                <input type="text" class="form-control name" ng-model="map.game" placeholder="Enter Game">
+              </div>
+              <div class="form-group">
+                <label for="name">Image URL</label>
+                <input type="text" class="form-control name" ng-model="map.imageURL" placeholder="Enter URL for image">
+              </div>
+              <div class="form-group">
+                <label for="name">Top</label>
+                <input type="text" class="form-control name" ng-model="map.top" placeholder="Enter Top Pixel">
+              </div>
+              <div class="form-group">
+                <label for="name">Bottom</label>
+                <input type="text" class="form-control name" ng-model="map.bottom" placeholder="Enter Bottom Pixel">
+              </div>
+              <div class="form-group">
+                <label for="name">Left</label>
+                <input type="text" class="form-control name" ng-model="map.left" placeholder="Enter Left Pixel">
+              </div>
+              <div class="form-group">
+                <label for="name">Right</label>
+                <input type="text" class="form-control name" ng-model="map.right" placeholder="Enter Right Pixel">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="button" class="save btn btn-primary" ng-click="save(map)">Ok</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-    </div>
-  </body>
+</body>
 </html>
