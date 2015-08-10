@@ -146,7 +146,6 @@ argument: entries are individual entries in data
 color is the associated color for that playerID
 index is some index of the dataset
 */
-
 Visualizer.draw = function(entries, color, index){
 
     // Ensure chronological order
@@ -204,12 +203,12 @@ Visualizer.draw = function(entries, color, index){
         fillColor: "#fff",
         fillOpacity: 1,
         radius: 5,
-      })
+      });
 
       // Create a new popup object
       var popup = L.popup()
         .setLatLng(latLng)
-        .setContent(convertJSONtoHTML(p))
+        .setContent(convertJSONtoHTML(p));
 
       // Add popup to the circle
       circle.bindPopup(popup);
@@ -233,7 +232,7 @@ Visualizer.activeData = function(dataset){
     var data = {
       positions : [],
       actions : [],
-    }
+    };
 
     // Get the currently selected list of actions
     var enabledActions = UI.filters.actions();
@@ -306,12 +305,32 @@ Visualizer.loadData = function(){
     // Validate data. Ignore non-spacial data
     data = _.filter(data, function(p){
       return containsRequiredKeys(p);
-    })
+    });
 
     // Convert data points into plottable data
     data = _.map(data, function(p){
       return Visualizer.formatData(p);
-    })
+    });
+
+    // TODO: TIMELINE WIP
+    /*
+    var timeline = L.timeline(data, {
+          style: function(data){
+            return {
+              stroke: false,
+              color: 'black',
+              fillOpacity: 0.5
+            }
+          },
+          formatDate: function(date){
+            return moment(date).format("YYYY-MM-DD");
+          }
+        });
+    timeline.setPosition('topleft');
+    timeline.addTo(map);
+    console.log("adding timeline to map");
+    */
+    // TODO: END WIP
 
     // Save data for future reference
     settings.data = data;
@@ -321,8 +340,12 @@ Visualizer.loadData = function(){
   })
 };
 
-// Convert the (x,y) values from the player logs
-// into Latitude and Longitude positions on a map.
+/*
+author: Alex Gimmi
+created: August 10, 2015
+purpose: Format the data in a way that Leaflet and Leaflet.timeline can use
+argument: the unformatted data to format
+*/
 Visualizer.formatData = function(data){
   
   // Global scale factor. Helps to max points (ranging 
@@ -337,11 +360,18 @@ Visualizer.formatData = function(data){
 
   data['latitude']  = data.posY / scale;
   data['longitude'] = data.posX / scale;
+
+  //TODO: FORMAT ALL OF THE DATA TYPES NEEDED FOR LEAFLET.TIMELINE
   
   return data;
 }
 
-// Convert a lat/long to it's raw X/Y values
+/*
+author: Alex Gimmi
+created: August 10, 2015
+purpose: Unformat previously formatted data to it's raw types
+argument: the formatted data to unformat
+*/
 Visualizer.unformatData = function(latLong){
 
   var scale = Visualizer.scaleFactor;

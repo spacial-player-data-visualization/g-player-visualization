@@ -819,11 +819,12 @@ UI.boolops.loadIntersect = function(checked) {
           var minTime = $('#intersectMinTimeText').val();
           var maxTime = $('#intersectMaxTimeText').val();
           console.log("Checked: " + checked.toString());
-          console.log("Distance Threshold: " + distThreshold);
+          console.log("Distance Threshold (LatLng): " + distThreshold);
+          console.log("Distance Threshold (meters): " + distThresholdMeters);
           console.log("Time Threshold: " + timeThreshold);
           console.log("Min Time: " + minTime);
           console.log("Max Time: " + maxTime);
-          UI.boolops.intersect(checked, distThreshold, timeThreshold, minTime, maxTime);
+          UI.boolops.intersect(checked, distThreshold, distThresholdMeters, timeThreshold, minTime, maxTime);
         }
       }
     }
@@ -840,7 +841,7 @@ argument: timeThreshold is the user entered value from loadIntersectOpts dialog 
 argument: minTime is the user entered value from loadIntersectOpts dialog box
 argument: maxTime is the user entered value from loadIntersectOpts dialog box
 */
-UI.boolops.intersect = function(checked, distThreshold, timeThreshold, minTime, maxTime) {
+UI.boolops.intersect = function(checked, distThreshold, distThresholdMeters, timeThreshold, minTime, maxTime) {
   // The accumulated data of intersecting points among maps
   var intersectData = [];
 
@@ -916,19 +917,18 @@ UI.boolops.loadSubtract = function(checked) {
         label: "OK",
         className: "btn-primary",
         callback: function() {
-          // TODO: Find a way to convert user entered meters into latLng
-
           var distThresholdMeters = $('#subtractDistThresholdText').val();
           var distThreshold = (distThresholdMeters * settings.pixelsPerMeter) / settings.pixelsPerLatLng;
           var timeThreshold = $('#subtractTimeThresholdText').val();
           var minTime = $('#subtractMinTimeText').val();
           var maxTime = $('#subtractMaxTimeText').val();
           console.log("Checked: " + checked.toString());
-          console.log("Distance Threshold: " + distThreshold);
+          console.log("Distance Threshold (LatLng): " + distThreshold);
+          console.log("Distance Threshold (meters): " + distThresholdMeters);
           console.log("Time Threshold: " + timeThreshold);
           console.log("Min Time: " + minTime);
           console.log("Max Time: " + maxTime);
-          UI.boolops.subtract(checked, distThreshold, timeThreshold, minTime, maxTime);
+          UI.boolops.subtract(checked, distThreshold, distThresholdMeters, timeThreshold, minTime, maxTime);
         }
       }
     }
@@ -941,11 +941,12 @@ created: July 8, 2015
 purpose: Add a new heatmap which is the subtraction of all heatmaps from the first
 argument: checked is a list of the checked off heatmaps in the boolops tab
 argument: distThreshold is the user entered value from loadSubtractOpts dialog box
+argument: distThresholdMeters is the user entered value from loadSubtractOpts dialog box
 argument: timeThreshold is the user entered value from loadSubtractOpts dialog box
 argument: minTime is the user entered value from loadSubtractOpts dialog box
 argument: maxTime is the user entered value from loadSubtractOpts dialog box
 */
-UI.boolops.subtract = function(checked, distThreshold, timeThreshold, minTime, maxTime) {
+UI.boolops.subtract = function(checked, distThreshold, distThresholdMeters, timeThreshold, minTime, maxTime) {
   // The accumulated data of intersecting points among maps
   var subtractData = [];
 
