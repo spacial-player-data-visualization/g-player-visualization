@@ -81,6 +81,7 @@ Authors:
  <script src="lib/leaflet-heatmap.js"></script>
  <script src="lib/leaflet.label.js"></script>
  <script src="lib/leaflet.timeline.js"></script>
+ <script src="lib/moment.js"></script>
 
  <!-- App Functionality -->
  <script src="js/visualizer.js"></script>
@@ -181,7 +182,7 @@ Authors:
       // Status of checkbox
       var selected = $(this).find("option:selected").val();
       
-      settings.data = null;
+      settings.data = { positions : null, actions : null };
       
       // Remove previous data
       Visualizer.clear();

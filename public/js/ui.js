@@ -57,7 +57,7 @@ UI.setGame = function(gamename){
     var game_maps = _.where(options.maps, { game : settings.game });
     
     // Clear data
-    settings.data = null;
+    settings.data = { positions: null, actions: null };
     
     // Remove previous data
     Visualizer.clear();

@@ -23,7 +23,16 @@ Alex Gimmi @ibroadband
 var settings = {
 
   // Save data
-  data : null,
+  data : {
+    positions: [],
+    actions: [],
+  },
+
+  // Save data as GeoJSON
+  geoJsonLayer : {
+    type: "FeatureCollection",
+    features: null,
+  },
 
   // enable player paths
   paths : true,
@@ -95,8 +104,11 @@ Visualizer.refresh = function(){
 // Draw lines on the map
 Visualizer.update = function(){
 
+  // Unfiltered data
+  var unfilteredData = settings.data.positions.concat(settings.data.actions);
+
   // Group data by PlayerID
-  var players = _.groupBy(settings.data, 'playerID');
+  var players = _.groupBy(unfilteredData, 'playerID');
 
   // Store current index
   var count = 0;
@@ -113,7 +125,7 @@ Visualizer.update = function(){
    Visualizer.updateHeatmap();
 
   // Loading complete
-  UI.loading(false, "Success. " + settings.data.length + " points loaded.");
+  UI.loading(false, "Success. " + unfilteredData.length + " points loaded.");
 }
 
  /********************************
@@ -152,7 +164,7 @@ Visualizer.draw = function(entries, color, index){
     entries = sortBy(entries, "timestamp");
 
     // Get the active set of data
-    var data = Visualizer.activeData(entries);
+    var data = Visualizer.activeData(filterPositions(entries));
 
     /********************************
              POSITIONS
@@ -227,6 +239,7 @@ Visualizer.draw = function(entries, color, index){
 // and actions. In addition, remove any data type
 // that the user has disables from the UI
 Visualizer.activeData = function(dataset){
+    //dataset = dataset.positions.concat(dataset.actions);
 
     // Seperate data to positions and actions
     var data = {
@@ -245,21 +258,14 @@ Visualizer.activeData = function(dataset){
     if (shouldWePlotPositionData()) {
 
       // get list of positions
-      data.positions = _.filter(dataset, function(d){
-
-        // Do we not have an action key?
-        return !d.action;
-      });
+      data.positions = dataset.positions;
     }
 
     // Get list of actions
-    data.actions = _.filter(dataset, function(d){
-
-      // Do we have an action key?
-      var exists = (d.action) ? true : false;
+    data.actions = _.filter(dataset.actions, function(d){
 
       // Is the action enabled in the side nav?
-      return exists && (_.contains(enabledActions, d.action))
+      return (_.contains(enabledActions, d.action))
     });
 
     return data;
@@ -307,7 +313,7 @@ Visualizer.loadData = function(){
       return containsRequiredKeys(p);
     });
 
-    // Convert data points into plottable data
+    // Convert data points into GeoJSON
     data = _.map(data, function(p){
       return Visualizer.formatData(p);
     });
@@ -333,7 +339,14 @@ Visualizer.loadData = function(){
     // TODO: END WIP
 
     // Save data for future reference
-    settings.data = data;
+    if (data.length == 0) {
+      settings.data = {
+        positions : [],
+        actions : [],
+      };
+    } else {
+      settings.data = filterPositions(data);
+    }
 
     // Update our map with new data.
     Visualizer.update();
@@ -361,25 +374,23 @@ Visualizer.formatData = function(data){
   data['latitude']  = data.posY / scale;
   data['longitude'] = data.posX / scale;
 
+  // Assigns this data point a start/end based on the data's timestamp in seconds
+  // Note: for a game that has events with a start/end time a condition can be added here
+  // year, month, day, hours, minutes, seconds, milliseconds
+  data['start'] = moment({seconds: data.timestamp}).unix();
+  data['end'] = moment({seconds: data.timestamp}).unix();
+
+  // TODO: geometry for positions should be a LineString, not a Point
+  //if(data.action) {
+    data['geometry'] = {
+      type : "Point",
+      coordinates : [data.latitude, data.longitude],
+    };
+  //} else { }
+
   //TODO: FORMAT ALL OF THE DATA TYPES NEEDED FOR LEAFLET.TIMELINE
   
   return data;
-}
-
-/*
-author: Alex Gimmi
-created: August 10, 2015
-purpose: Unformat previously formatted data to it's raw types
-argument: the formatted data to unformat
-*/
-Visualizer.unformatData = function(latLong){
-
-  var scale = Visualizer.scaleFactor;
-
-  return {
-    posX : latLong['longitude'] * scale,
-    posY : latLong['latitude'] * scale,
-  }
 }
 
 // Returns a representation of the current state of the
@@ -528,4 +539,28 @@ function shouldWePlotPositionData (){
     } else {
       return false
     };
+}
+
+// Filters out the positions of a raw data array
+function filterPositions (dataset){
+  // Seperate data to positions and actions
+    var data = {
+      positions : [],
+      actions : [],
+    };
+
+    data.positions = _.filter(dataset, function(d){
+
+      // Do we not have an action key?
+      return !d.action;
+    });
+
+    // Get list of actions
+    data.actions = _.filter(dataset, function(d){
+
+      // Do we have an action key?
+      return d.action;
+    });
+
+    return data;
 }
