@@ -24,14 +24,14 @@ var settings = {
 
   // Save data
   data : {
-    positions: [],
     actions: [],
+    positions: [],
   },
 
   // Save data as GeoJSON
   geoJsonLayer : {
     type: "FeatureCollection",
-    features: null,
+    features: [],
   },
 
   // enable player paths
@@ -318,25 +318,8 @@ Visualizer.loadData = function(){
       return Visualizer.formatData(p);
     });
 
-    // TODO: TIMELINE WIP
-    /*
-    var timeline = L.timeline(data, {
-          style: function(data){
-            return {
-              stroke: false,
-              color: 'black',
-              fillOpacity: 0.5
-            }
-          },
-          formatDate: function(date){
-            return moment(date).format("YYYY-MM-DD");
-          }
-        });
-    timeline.setPosition('topleft');
-    timeline.addTo(map);
-    console.log("adding timeline to map");
-    */
-    // TODO: END WIP
+    console.log("Formatted Data: ");
+    console.log(data);
 
     // Save data for future reference
     if (data.length == 0) {
@@ -347,6 +330,26 @@ Visualizer.loadData = function(){
     } else {
       settings.data = filterPositions(data);
     }
+
+    // Create the GeoJson layer for the Leaflet.timeline
+    Visualizer.createGeoJsonLayer();
+
+    // TODO: TIMELINE WIP
+    var timeline = L.timeline(settings.geoJsonLayer, {
+          style: function(data){
+            return {
+              stroke: false,
+              color: 'black',
+              fillOpacity: 0.5
+            }
+          },
+          formatDate: function(date){
+            return moment(date).format("ss");
+          }
+        });
+    timeline.addTo(map);
+    console.log("adding timeline to map");
+    // TODO: END WIP
 
     // Update our map with new data.
     Visualizer.update();
@@ -383,7 +386,7 @@ Visualizer.formatData = function(data){
   // TODO: geometry for positions should be a LineString, not a Point
   //if(data.action) {
     data['geometry'] = {
-      type : "Point",
+      type : 'Point',
       coordinates : [data.latitude, data.longitude],
     };
   //} else { }
@@ -391,6 +394,35 @@ Visualizer.formatData = function(data){
   //TODO: FORMAT ALL OF THE DATA TYPES NEEDED FOR LEAFLET.TIMELINE
   
   return data;
+}
+
+/*
+author: Alex Gimmi
+created: September 8, 2015
+purpose: Create a GeoJson version of some formatted data
+argument: the formatted data to GeoJson-ify
+*/
+Visualizer.convertJsonToGeoJson = function(json) {
+  var geoJson = {type : 'Feature', 
+    properties: {latitude : json['latitude'],
+                 longitude : json['longitude'],
+                 start : json['start'],
+                 end : json['end']},
+    geometry: json['geometry']};
+
+    return geoJson;
+}
+
+/*
+author: Alex Gimmi
+created September 8, 2015
+purpose: Create a Feature Collection of all GeoJson data
+*/
+Visualizer.createGeoJsonLayer = function() {
+  _.each(settings.data.actions.concat(settings.data.positions), function(json){
+    var geoJson = Visualizer.convertJsonToGeoJson(json);
+    settings.geoJsonLayer.features.push(geoJson);
+  });
 }
 
 // Returns a representation of the current state of the
