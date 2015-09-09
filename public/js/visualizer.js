@@ -390,18 +390,18 @@ Visualizer.formatData = function(data){
   data['end'] = data.timestamp;//moment({seconds: data.timestamp}).unix();
 
   // TODO: geometry for positions should be a LineString, not a Point
-  if(data.action) {
+  //if(data.action) {
     data['geometry'] = {
       type: 'Point',
       coordinates: [data.longitude, data.latitude],
     };
-  } else { 
+  /*} else { 
     data['geometry'] = {
       type: 'LineString',
       // TODO: WIP Obviously need to find a way to have lines drawn properly.
       coordinates: [[data.longitude, data.latitude], [data.longitude, data.latitude]],
     }
-  }
+  }*/
 
   //TODO: FORMAT ALL OF THE DATA TYPES NEEDED FOR LEAFLET.TIMELINE
   
