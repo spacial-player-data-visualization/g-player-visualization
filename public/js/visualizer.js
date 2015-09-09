@@ -335,21 +335,23 @@ Visualizer.loadData = function(){
     Visualizer.createGeoJsonLayer();
 
     // TODO: TIMELINE WIP
+    // TODO: Buttons don't work. Multiple timelines added. Formatted time is wrong.
+    // TODO: Format is in Milliseconds for now because I stored just the timestamp instead of formatting it
     var timeline = L.timeline(settings.geoJsonLayer, {
           style: function(data){
             return {
               stroke: false,
-              color: 'black',
+              color: '#000000',
               fillOpacity: 0.5
             }
           },
           formatDate: function(date){
-            return moment(date).format("ss");
-          }
+            return moment(date).format("SSS");
+          },
+          enablePlayback: true,
+          enableKeyboardControls: true,
         });
     timeline.addTo(map);
-    console.log("adding timeline to map");
-    // TODO: END WIP
 
     // Update our map with new data.
     Visualizer.update();
@@ -374,22 +376,32 @@ Visualizer.formatData = function(data){
   // Maps the (x,y) position to a coordinate
   // on the earth. Makes plotting MUCH easier
 
-  data['latitude']  = data.posY / scale;
   data['longitude'] = data.posX / scale;
+  data['latitude']  = data.posY / scale;
 
   // Assigns this data point a start/end based on the data's timestamp in seconds
   // Note: for a game that has events with a start/end time a condition can be added here
   // year, month, day, hours, minutes, seconds, milliseconds
-  data['start'] = moment({seconds: data.timestamp}).unix();
-  data['end'] = moment({seconds: data.timestamp}).unix();
+
+
+  // TODO: using data.timestamp allows us to just use the raw time for now...
+  // Not sure what to do to have the time display exactly as we want it to.
+  data['start'] = data.timestamp;//moment({seconds: data.timestamp}).unix();
+  data['end'] = data.timestamp;//moment({seconds: data.timestamp}).unix();
 
   // TODO: geometry for positions should be a LineString, not a Point
-  //if(data.action) {
+  if(data.action) {
     data['geometry'] = {
-      type : 'Point',
-      coordinates : [data.latitude, data.longitude],
+      type: 'Point',
+      coordinates: [data.longitude, data.latitude],
     };
-  //} else { }
+  } else { 
+    data['geometry'] = {
+      type: 'LineString',
+      // TODO: WIP Obviously need to find a way to have lines drawn properly.
+      coordinates: [[data.longitude, data.latitude], [data.longitude, data.latitude]],
+    }
+  }
 
   //TODO: FORMAT ALL OF THE DATA TYPES NEEDED FOR LEAFLET.TIMELINE
   
@@ -404,13 +416,14 @@ argument: the formatted data to GeoJson-ify
 */
 Visualizer.convertJsonToGeoJson = function(json) {
   var geoJson = {type : 'Feature', 
-    properties: {latitude : json['latitude'],
-                 longitude : json['longitude'],
-                 start : json['start'],
-                 end : json['end']},
-    geometry: json['geometry']};
+    properties: {longitude: json['longitude'],
+                 latitude: json['latitude'],
+                 start: json['start'],
+                 end: json['end']},
+    geometry: json['geometry'],
+  };
 
-    return geoJson;
+  return geoJson;
 }
 
 /*
