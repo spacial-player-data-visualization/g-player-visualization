@@ -23,7 +23,28 @@ Alex Gimmi @ibroadband
 var settings = {
 
   // Save data
-  data : null,
+  data : {
+    actions: [],
+    positions: [],
+  },
+
+  // Save data as GeoJSON
+  geoJsonLayer : {
+    type: "FeatureCollection",
+    features: [],
+  },
+ 
+ //GeoJason Feature format  Layer for Playback Timeline
+   geoJsonLay :{
+    type: "Feature",
+    geometry: {
+    type: "MultiPoint",
+    coordinates: [/*array of [lng,lat] coordinates*/]
+  },
+  properties: {
+    time: [/*array of UNIX timestamps*/]
+  }
+   },
 
   // enable player paths
   paths : true,
@@ -95,8 +116,11 @@ Visualizer.refresh = function(){
 // Draw lines on the map
 Visualizer.update = function(){
 
+  // Unfiltered data
+  var unfilteredData = settings.data.positions.concat(settings.data.actions);
+
   // Group data by PlayerID
-  var players = _.groupBy(settings.data, 'playerID');
+  var players = _.groupBy(unfilteredData, 'playerID');
 
   // Store current index
   var count = 0;
@@ -113,7 +137,7 @@ Visualizer.update = function(){
    Visualizer.updateHeatmap();
 
   // Loading complete
-  UI.loading(false, "Success. " + settings.data.length + " points loaded.");
+  UI.loading(false, "Success. " + unfilteredData.length + " points loaded.");
 }
 
  /********************************
@@ -152,7 +176,7 @@ Visualizer.draw = function(entries, color, index){
     entries = sortBy(entries, "timestamp");
 
     // Get the active set of data
-    var data = Visualizer.activeData(entries);
+    var data = Visualizer.activeData(filterPositions(entries));
 
     /********************************
              POSITIONS
@@ -245,21 +269,14 @@ Visualizer.activeData = function(dataset){
     if (shouldWePlotPositionData()) {
 
       // get list of positions
-      data.positions = _.filter(dataset, function(d){
-
-        // Do we not have an action key?
-        return !d.action;
-      });
+      data.positions = dataset.positions;
     }
 
     // Get list of actions
-    data.actions = _.filter(dataset, function(d){
-
-      // Do we have an action key?
-      var exists = (d.action) ? true : false;
+    data.actions = _.filter(dataset.actions, function(d){
 
       // Is the action enabled in the side nav?
-      return exists && (_.contains(enabledActions, d.action))
+      return (_.contains(enabledActions, d.action))
     });
 
     return data;
@@ -307,10 +324,27 @@ Visualizer.loadData = function(){
       return containsRequiredKeys(p);
     });
 
-    // Convert data points into plottable data
+   // console.log("Data to be changed:"+data);
+    // Convert data points into GeoJSON
     data = _.map(data, function(p){
       return Visualizer.formatData(p);
     });
+
+    console.log("Formatted Data: ");
+    console.log(data);
+
+    // Save data for future reference
+    if (data.length == 0) {
+      settings.data = {
+        positions : [],
+        actions : [],
+      };
+    } else {
+      settings.data = filterPositions(data);
+    }
+
+    // Create the GeoJson layer for the Leaflet.timeline
+    Visualizer.createGeoJsonLayer();
 
     // TODO: TIMELINE WIP
     /*
@@ -332,9 +366,21 @@ Visualizer.loadData = function(){
     */
     // TODO: END WIP
 
-    // Save data for future reference
-    settings.data = data;
+    // =====================================================
+    // =============== Playback ============================
+    // =====================================================
+    
+    // Playback options
+   if (data.length != 0) { 
+     var playbackOptions = {
+       
 
+    };
+          var playback = new L.Playback(map, settings.geoJsonLay,null, playbackOptions);  
+
+              var control = new L.Playback.Control(playback);
+             control.addTo(map);
+        } 
     // Update our map with new data.
     Visualizer.update();
   })
@@ -358,8 +404,35 @@ Visualizer.formatData = function(data){
   // Maps the (x,y) position to a coordinate
   // on the earth. Makes plotting MUCH easier
 
-  data['latitude']  = data.posY / scale;
   data['longitude'] = data.posX / scale;
+  data['latitude']  = data.posY / scale;
+
+//data['longitude'] = data.posX ;
+ // data['latitude']  = data.posY;//
+  // Assigns this data point a start/end based on the data's timestamp in seconds
+  // Note: for a game that has events with a start/end time a condition can be added here
+  // year, month, day, hours, minutes, seconds, milliseconds
+
+  //data format for New Timeline Feature 
+   data['coord'] = [(data.longitude), (data.latitude)];
+  // TODO: using data.timestamp allows us to just use the raw time for now...
+  // Not sure what to do to have the time display exactly as we want it to.
+  data['start'] = data.timestamp*1000;//data.timestamp;//moment({seconds: data.timestamp}).unix();
+  data['end'] = data.timestamp;//moment({seconds: data.timestamp}).unix();
+
+  // TODO: geometry for positions should be a LineString, not a Point
+  //if(data.action) {
+    data['geometry'] = {
+      type: 'Point',
+      coordinates: [data.longitude, data.latitude],
+    };
+  /*} else { 
+    data['geometry'] = {
+      type: 'LineString',
+      // TODO: WIP Obviously need to find a way to have lines drawn properly.
+      coordinates: [[data.longitude, data.latitude], [data.longitude, data.latitude]],
+    }
+  }*/
 
   //TODO: FORMAT ALL OF THE DATA TYPES NEEDED FOR LEAFLET.TIMELINE
   
@@ -368,18 +441,37 @@ Visualizer.formatData = function(data){
 
 /*
 author: Alex Gimmi
-created: August 10, 2015
-purpose: Unformat previously formatted data to it's raw types
-argument: the formatted data to unformat
+created: September 8, 2015
+purpose: Create a GeoJson version of some formatted data
+argument: the formatted data to GeoJson-ify
 */
-Visualizer.unformatData = function(latLong){
+Visualizer.convertJsonToGeoJson = function(json) {
+  var geoJson = {type : 'Feature', 
+    properties: {longitude: json['longitude'],
+                 latitude: json['latitude'],
+                 start: json['start'],
+                 end: json['end']},
+    geometry: json['geometry'],
+  };
 
-  var scale = Visualizer.scaleFactor;
+  return geoJson;
+}
 
-  return {
-    posX : latLong['longitude'] * scale,
-    posY : latLong['latitude'] * scale,
-  }
+/*
+author: Alex Gimmi
+created September 8, 2015
+purpose: Create a Feature Collection of all GeoJson data
+*/
+Visualizer.createGeoJsonLayer = function() {
+  _.each(settings.data.actions.concat(settings.data.positions), function(json){
+    //console.log("DDDDDD"+JSON.stringify(json, null, 4));
+    settings.geoJsonLay.geometry.coordinates.push(json['coord']);
+    settings.geoJsonLay.properties.time.push(json['start']);
+    var geoJson = Visualizer.convertJsonToGeoJson(json);
+    
+    settings.geoJsonLayer.features.push(geoJson);
+   // console.log("DDDDDD"+settings.geoJsonLay.geometry.coordinates);
+  });
 }
 
 // Returns a representation of the current state of the
@@ -528,4 +620,28 @@ function shouldWePlotPositionData (){
     } else {
       return false
     };
+}
+
+// Filters out the positions of a raw data array
+function filterPositions (dataset){
+  // Seperate data to positions and actions
+    var data = {
+      positions : [],
+      actions : [],
+    };
+
+    data.positions = _.filter(dataset, function(d){
+
+      // Do we not have an action key?
+      return !d.action;
+    });
+
+    // Get list of actions
+    data.actions = _.filter(dataset, function(d){
+
+      // Do we have an action key?
+      return d.action;
+    });
+
+    return data;
 }
