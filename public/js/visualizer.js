@@ -280,6 +280,7 @@ Visualizer.clear = function(){
         // Remove each active layer (heatmap layers can't be removed this way so try)
         try {
           map.removeLayer(layer);
+
         } catch (e) {
           console.log("Problem with removing layer " + layer + "\nMore info: " + e.message); 
         }
@@ -295,7 +296,6 @@ Visualizer.addMarker = function(lat, long, title){
 
   // Place marker on the map
   L.marker([lat, long], {title : title}).addTo(map);
-
 }
 
 // Get Data from API
@@ -346,7 +346,7 @@ Visualizer.loadData = function(){
             }
           },
           formatDate: function(date){
-            return moment(date).format("SSS");
+            return moment(date).format("mm:ss:S"); //Kunal
           },
           enablePlayback: true,
           enableKeyboardControls: true,
@@ -386,8 +386,8 @@ Visualizer.formatData = function(data){
 
   // TODO: using data.timestamp allows us to just use the raw time for now...
   // Not sure what to do to have the time display exactly as we want it to.
-  data['start'] = data.timestamp;//moment({seconds: data.timestamp}).unix();
-  data['end'] = data.timestamp;//moment({seconds: data.timestamp}).unix();
+  data['start'] = data.timestamp * 1000;//moment({seconds: data.timestamp}).unix(); //Kunal
+  data['end'] = data.timestamp * 1000;//moment({seconds: data.timestamp}).unix(); //Kunal
 
   // TODO: geometry for positions should be a LineString, not a Point
   //if(data.action) {
@@ -418,7 +418,7 @@ Visualizer.convertJsonToGeoJson = function(json) {
   var geoJson = {type : 'Feature', 
     properties: {longitude: json['longitude'],
                  latitude: json['latitude'],
-                 start: json['start'],
+				 start: json['start'],
                  end: json['end']},
     geometry: json['geometry'],
   };

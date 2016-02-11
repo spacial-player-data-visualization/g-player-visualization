@@ -302,10 +302,19 @@ UI.players.addPlayer = function(playerID){
   // Prevent Duplicates
   var existing = _.findWhere(settings.players, { playerID : playerID })
 
+ /*
   if (existing) {
+	  onclick="UI.players.remove(' + player.playerID + ')"
     alert("Player " + playerID + " Already Selected");
     return;
   };
+ */  //kunal
+ 
+  if (existing) {
+//	UI.players.remove(playerID);
+    return;
+  };
+  
 
   // array of colors for color selection for each player 
   var colors = ["#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf", "#e0f3f8", "#abd9e9", "#74add1", "#4575b4"];
@@ -360,10 +369,13 @@ UI.players.addPlayer = function(playerID){
           if (!color) { color : "#000" };
 
           UI.players.add(playerID, color);
+		  UI.getListOfAvailablePlayerIDs();
         }
       }
     }
   });
+  
+
 }
 
 // Add multiple players at once. 
@@ -375,13 +387,21 @@ UI.players.addPlayers = function(){
   UI.getListOfAvailablePlayerIDs(function(playerIDs){
 
     _.each(playerIDs, function(playerID){
+		
+		// Prevent Duplicates
+		var existing = _.findWhere(settings.players, { playerID : playerID })
 
-        // Add to list
-        settings.players.push({ playerID : playerID, color : "#000"});
+		if (!existing) {
+			// Add to list
+			settings.players.push({ playerID : playerID, color : "#000"});
+		};
+		
     })
-
-    UI.players.refreshMap();
+	
+	UI.players.refreshMap();
+		
   })
+  UI.getListOfAvailablePlayerIDs();
 }
 
 // Add a new player ID to the map.
@@ -391,7 +411,7 @@ UI.players.add = function(playerID, color){
     settings.players.push({ playerID : playerID, color : color });
     
     // Update map
-    UI.players.refreshMap();    
+    UI.players.refreshMap();
 }
 
 // purpose: remove selected playerID from the map
@@ -406,6 +426,7 @@ UI.players.remove = function(playerID){
 
   // Re-plot map
   UI.players.refreshMap();
+  UI.getListOfAvailablePlayerIDs();
 
 }
 
@@ -430,6 +451,7 @@ purpose: helper function that refreshes map on a change
 */
 UI.players.refreshMap = function(){
   $("#active-players").html("");
+  $("#active-players-list").html('<option value="all">All</option>');
 
   _.each(settings.players, function(player){
 
@@ -437,7 +459,8 @@ UI.players.refreshMap = function(){
     var b = '<i class="fa fa-trash-o" onclick="UI.players.remove(' + player.playerID + ')"></i>';
     var c = player.playerID;
 
-    $("#active-players").append("<p>" + a + b + c + "</p>");
+    //$("#active-players").append("<p>" + a + b + c + "</p>");
+	$("#active-players-list").append('<option value="' + c + '" style="background-color:' + player.color + '">' + c+ '</option>');
   })
 
   Visualizer.loadData();
@@ -461,16 +484,30 @@ UI.getListOfAvailablePlayerIDs = function(callback){
         
         // Clear previous player list
         $('#available-players').html("");
+		var show_added = document.getElementById("show_added").checked;
 
         // Render players from database to 
         // table on left menu
-        _.each(players, function(p){
-
-          // Create table row with player data
-          var tr = '<tr><td onclick="UI.players.addPlayer(' + p + ')">' + 
-                   "Player <b>" + p + '</b></td>' +
-                  '<td onclick="UI.players.addPlayer(' + p + ')">' +
-                   '<i class="fa fa-sign-in"></i></td></tr>';
+        _.each(players, function(playerID,color){
+			
+		// check if players exists
+		var added = _.findWhere(settings.players, { playerID : playerID })
+		
+ 
+        // Create table row with player data
+		if (added) {
+			var tr = '<tr><td onclick="UI.players.remove(' + playerID + ')">' + 
+                   "Player <b>" + playerID + '</b></td>' +
+                  '<td onclick="UI.players.remove(' + playerID + ')" id="td '+ playerID +'">' +
+				  '<i class="fa fa-square" style="color:' + color + '"></i>' +
+                   '<i class="fa fa-trash"></i></td></tr>';
+		}
+		if (!added && !show_added){
+			var tr = '<tr><td onclick="UI.players.addPlayer(' + playerID + ')">' + 
+                   "Player <b>" + playerID + '</b></td>' +
+                  '<td onclick="UI.players.addPlayer(' + playerID + ')" id="td '+ playerID +'">' +
+                   '<i class="fa fa-plus"></i></td></tr>';
+		}
 
           $('#available-players').append(tr);
         })
@@ -1057,7 +1094,7 @@ UI.filters.create = function(){
 UI.filters.generateCheckbox = function(mapping){
 
   var a = '<div class="checkbox"><label>';
-  var b = '<input type="checkbox" id="toggle_paths" value="' + mapping.type + '" checked>' + mapping.type;
+  var b = '<input onclick="Visualizer.refresh();" type="checkbox" id="toggle_paths" value="' + mapping.type + '" checked>' + mapping.type;
   var c = '</label></div>';
 
   return a + b + c
