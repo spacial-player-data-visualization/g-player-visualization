@@ -302,18 +302,18 @@ UI.players.addPlayer = function(playerID){
   // Prevent Duplicates
   var existing = _.findWhere(settings.players, { playerID : playerID })
 
+
  /*
   if (existing) {
 	  onclick="UI.players.remove(' + player.playerID + ')"
     alert("Player " + playerID + " Already Selected");
     return;
   };
- */  //kunal
+ */  
  
   if (existing) {
-//	UI.players.remove(playerID);
     return;
-  };
+  }; //Asarsa
   
 
   // array of colors for color selection for each player 
@@ -385,7 +385,9 @@ UI.players.addPlayers = function(){
   if (!confirm('Warning! Loading all players in the current list may load a considerable amount of data. This request could take time to process, and may cause your map to become slow or unresponsive. If you haven\'t already, we recommend selecting a lower "fidelity" from the left menu in order to reduce the amount of positions per second being returned. Are you sure you want to continue?')) return;
 
   UI.getListOfAvailablePlayerIDs(function(playerIDs){
-
+	var colors = ["#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf", "#e0f3f8", "#abd9e9", "#74add1", "#4575b4"];
+	var clr_indx = 0;
+	
     _.each(playerIDs, function(playerID){
 		
 		// Prevent Duplicates
@@ -393,7 +395,9 @@ UI.players.addPlayers = function(){
 
 		if (!existing) {
 			// Add to list
-			settings.players.push({ playerID : playerID, color : "#000"});
+			settings.players.push({ playerID : playerID, color : colors[clr_indx++]});
+			if(clr_indx == colors.length)
+				clr_indx = 0;
 		};
 		
     })
@@ -402,7 +406,7 @@ UI.players.addPlayers = function(){
 		
   })
   UI.getListOfAvailablePlayerIDs();
-}
+} // Asarsa
 
 // Add a new player ID to the map.
 UI.players.add = function(playerID, color){
@@ -428,6 +432,20 @@ UI.players.remove = function(playerID){
   UI.players.refreshMap();
   UI.getListOfAvailablePlayerIDs();
 
+}
+
+//Asarsa
+// remove multiple players at once. 
+UI.players.removePlayers = function(){
+
+  settings.players = null;
+  
+  // Remove all data
+  Visualizer.clear();
+
+  // Re-plot map
+  UI.players.refreshMap();
+  UI.getListOfAvailablePlayerIDs();
 }
 
 // Return list of player IDs
@@ -1147,6 +1165,7 @@ UI.filters.toggleAll = function(checked){
     $('#filters input:checkbox').removeAttr('checked');
   }
   
+  Visualizer.refresh();
 }
 
 /************************************

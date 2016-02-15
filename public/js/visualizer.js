@@ -346,7 +346,7 @@ Visualizer.loadData = function(){
             }
           },
           formatDate: function(date){
-            return moment(date).format("mm:ss:S"); //Kunal
+            return moment(date).format("mm:ss:S"); //Asarsa
           },
           enablePlayback: true,
           enableKeyboardControls: true,
@@ -386,8 +386,8 @@ Visualizer.formatData = function(data){
 
   // TODO: using data.timestamp allows us to just use the raw time for now...
   // Not sure what to do to have the time display exactly as we want it to.
-  data['start'] = data.timestamp * 1000;//moment({seconds: data.timestamp}).unix(); //Kunal
-  data['end'] = data.timestamp * 1000;//moment({seconds: data.timestamp}).unix(); //Kunal
+  data['start'] = data.timestamp * 1000;//moment({seconds: data.timestamp}).unix(); //Asarsa
+  data['end'] = data.timestamp * 1000;//moment({seconds: data.timestamp}).unix(); //Asarsa
 
   // TODO: geometry for positions should be a LineString, not a Point
   //if(data.action) {
