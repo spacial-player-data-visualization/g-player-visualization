@@ -58,8 +58,8 @@ Alex Gimmi @ibroadband
   <div class="panel-body">
       <!--<div class="btn btn-primary" onclick="Visualizer.refresh();" style="margin-bottom: 10px; width: 100%;">Update</div> -->
 	  <div> Player : 
-		<select id="active-players-list">
-			<option value="all">All</option>
+		<select id="active-players-list" onchange="UI.filters.changePlayer(this.value)">
+			<option value="">Select One</option>
 		</select>
 	  </div>
 	  <div> Actions: </div>

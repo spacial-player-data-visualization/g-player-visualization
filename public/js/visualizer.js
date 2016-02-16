@@ -69,6 +69,10 @@ var settings = {
 
   // Save heatmaps' data
   heatmapData : [],
+  
+    
+  // All available types of actions (filters)
+  listOfActions : []
 
 };
 
@@ -119,7 +123,7 @@ Visualizer.update = function(){
       var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
 
       // Render each player onto the map
-      Visualizer.draw(player, thisPlayer.color, count++);
+      Visualizer.draw(player, thisPlayer.color, count++, thisPlayer.checkedActions);
   });
 
    Visualizer.updateHeatmap();
@@ -157,21 +161,22 @@ as lines, while actions are clickable points.
 argument: entries are individual entries in data
 color is the associated color for that playerID
 index is some index of the dataset
+checkedActions is list of action boxes checked for user
 */
-Visualizer.draw = function(entries, color, index){
+Visualizer.draw = function(entries, color, index, checkedActions){
 
     // Ensure chronological order
     entries = sortBy(entries, "timestamp");
 
     // Get the active set of data
-    var data = Visualizer.activeData(filterPositions(entries));
+    var data = Visualizer.activeData(filterPositions(entries), checkedActions);
 
     /********************************
              POSITIONS
      ********************************/
 
     // Should we show position data?
-    if (shouldWePlotPositionData()) {
+    if (shouldWePlotPositionData(checkedActions)) {
 
       // Create list of latLng ojects
       var positions = _.map(data.positions, function(point){
@@ -238,7 +243,7 @@ Visualizer.draw = function(entries, color, index){
 // Given a dataset, seperate the data into positions
 // and actions. In addition, remove any data type
 // that the user has disables from the UI
-Visualizer.activeData = function(dataset){
+Visualizer.activeData = function(dataset, checkedActions){
     //dataset = dataset.positions.concat(dataset.actions);
 
     // Seperate data to positions and actions
@@ -248,14 +253,14 @@ Visualizer.activeData = function(dataset){
     };
 
     // Get the currently selected list of actions
-    var enabledActions = UI.filters.actions();
+    var enabledActions = UI.filters.actions(checkedActions);
 
     // Does the user want to see position data?
     // This returns false if a.) a game has available
     // action data, and b.) the user has selected to
     // only show actions and events on the map
 
-    if (shouldWePlotPositionData()) {
+    if (shouldWePlotPositionData(checkedActions)) {
 
       // get list of positions
       data.positions = dataset.positions;
@@ -568,7 +573,7 @@ function toLatLng (point){
 };
 
 // Should we plot position data?
-function shouldWePlotPositionData (){
+function shouldWePlotPositionData (checkedActions){
 
     var gameMappings = _.where(options.mappings, {game : settings.game});
 
@@ -577,7 +582,7 @@ function shouldWePlotPositionData (){
       return true;
     
     // Is the [position] check box selected?
-    } else if (_.contains(UI.filters.categories(), 'position')){
+    } else if (_.contains(checkedActions, 'position')){
       return true
     
     // Otherwise, don't show positions

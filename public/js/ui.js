@@ -412,7 +412,7 @@ UI.players.addPlayers = function(){
 UI.players.add = function(playerID, color){
 
     // Add to list
-    settings.players.push({ playerID : playerID, color : color });
+    settings.players.push({ playerID : playerID, color : color , checkedActions : settings.listOfActions });
     
     // Update map
     UI.players.refreshMap();
@@ -469,7 +469,7 @@ purpose: helper function that refreshes map on a change
 */
 UI.players.refreshMap = function(){
   $("#active-players").html("");
-  $("#active-players-list").html('<option value="all">All</option>');
+  $("#active-players-list").html('<option value="">Select One</option>');
 
   _.each(settings.players, function(player){
 
@@ -1102,6 +1102,7 @@ UI.filters.create = function(){
 
       var html = UI.filters.generateCheckbox(mapping);
       $("#filters").append(html);
+	  settings.listOfActions.push(mapping.type);
 
   })
 
@@ -1112,7 +1113,7 @@ UI.filters.create = function(){
 UI.filters.generateCheckbox = function(mapping){
 
   var a = '<div class="checkbox"><label>';
-  var b = '<input onclick="Visualizer.refresh();" type="checkbox" id="toggle_paths" value="' + mapping.type + '" checked>' + mapping.type;
+  var b = '<input onclick="UI.filters.changeCheckbox()" type="checkbox" value="' + mapping.type + '"/>' + mapping.type;
   var c = '</label></div>';
 
   return a + b + c
@@ -1123,9 +1124,7 @@ UI.filters.generateCheckbox = function(mapping){
 // mappings. This function collects, and returns
 // an array of ALL actions that are allowed.
 
-UI.filters.actions = function(){
-
-  var categories = UI.filters.categories();
+UI.filters.actions = function(categories){
 
   // Find key mappings for current set of categories
   var enabledKeyMappings = _.filter(options.mappings, function(mapping){
@@ -1165,7 +1164,51 @@ UI.filters.toggleAll = function(checked){
     $('#filters input:checkbox').removeAttr('checked');
   }
   
-  Visualizer.refresh();
+  UI.filters.changeCheckbox();
+}
+
+/*
+name: changePLayer
+author: Asarsa
+created: Feb 15,2016
+purpose: update checkboxes for player selected from drop-down select list
+And refresh map
+*/
+UI.filters.changePlayer = function(playerID){
+	
+	$('#filters input:checkbox').removeAttr('checked');
+	if(playerID != ""){
+		//update checkboxes
+		_.each(settings.players, function(player){
+			if(player.playerID == playerID){
+				_.each(player.checkedActions,function(actn){
+				$("input:checkbox[value="+actn+"]").prop('checked', true);
+				});
+			}
+		})
+	}
+	Visualizer.refresh();
+}
+
+/*
+name: changeCheckbox
+author: Asarsa
+created: Feb 15,2016
+purpose: update checkboxes upon click on one of them
+And refresh map
+*/
+UI.filters.changeCheckbox = function(){
+	
+	var p = $("#active-players-list").val();
+	
+	_.each(settings.players, function(player){
+		if(player.playerID == p){
+			var p_ind = settings.players.indexOf(player);
+			settings.players[p_ind].checkedActions = UI.filters.categories();
+		}
+	})
+	
+	Visualizer.refresh();
 }
 
 /************************************
