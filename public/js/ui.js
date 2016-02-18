@@ -470,15 +470,16 @@ purpose: helper function that refreshes map on a change
 UI.players.refreshMap = function(){
   $("#active-players").html("");
   $("#active-players-list").html('<option value="">Select One</option>');
+  $('#filters input:checkbox').removeAttr('checked');
 
   _.each(settings.players, function(player){
 
-    var a = '<i class="fa fa-square" style="color: ' + player.color + '"></i>';
-    var b = '<i class="fa fa-trash-o" onclick="UI.players.remove(' + player.playerID + ')"></i>';
-    var c = player.playerID;
-
-    //$("#active-players").append("<p>" + a + b + c + "</p>");
-	$("#active-players-list").append('<option value="' + c + '" style="background-color:' + player.color + '">' + c+ '</option>');
+	$("#active-players-list").append('<option value="' + player.playerID + '" style="background-color:' + 
+		player.color + '">' + player.playerID + '</option>');
+  })
+  
+  _.each(settings.groups, function(group){
+	$("#active-players-list").append('<option value="' + group.groupID + '" style="background-color:#fff">' + group.groupName + '</option>');
   })
 
   Visualizer.loadData();
@@ -517,7 +518,6 @@ UI.getListOfAvailablePlayerIDs = function(callback){
 			var tr = '<tr><td onclick="UI.players.remove(' + playerID + ')">' + 
                    "Player <b>" + playerID + '</b></td>' +
                   '<td onclick="UI.players.remove(' + playerID + ')" id="td '+ playerID +'">' +
-				  '<i class="fa fa-square" style="color:' + color + '"></i>' +
                    '<i class="fa fa-trash"></i></td></tr>';
 		}
 		if (!added && !show_added){
@@ -527,7 +527,7 @@ UI.getListOfAvailablePlayerIDs = function(callback){
                    '<i class="fa fa-plus"></i></td></tr>';
 		}
 
-          $('#available-players').append(tr);
+        $('#available-players').append(tr);
         })
 
         if (callback) callback(data);
@@ -646,6 +646,98 @@ UI.loadOptions = function(next){
 
     });
 }
+
+/************************************
+          Groups
+************************************/
+
+/* 
+name: addGroup
+author: Asarsa
+created: Feb 16, 2015
+purpose: Manage the groups being represented on the visualizer
+arguments: groupID is the selected player 
+*/
+UI.groups = {};
+var groupID = 101;
+
+// purpose: plots selected groupID onto map from left menu
+UI.groups.addGroup = function(){
+
+	var listOfPlayers = UI.players.listIDs();
+	var name = $('#groupName').val();
+	
+	//check if no players added to map
+	if(listOfPlayers.length == 0){
+			
+		alert("No players added to map! Please add players to the map before you create a group.");
+			
+	}else{
+
+		// Add to list
+		settings.groups.push({ groupID : "g" + groupID, players : listOfPlayers, groupName : name, checkedActions : [] });
+		
+		//update text field with id for next group
+		$('#groupName').val("group" + ++groupID);
+		
+		// Update map
+		UI.players.refreshMap();
+		UI.getListOfAvailableGroupIDs();
+	
+	}
+}
+
+
+// purpose: remove selected groupID from the map
+UI.groups.remove = function(groupID){
+
+  settings.groups = _.filter(settings.groups, function(group){
+    return group.groupID != groupID;
+  });
+
+  // Remove all data
+  Visualizer.clear();
+
+  // Re-plot map
+  UI.players.refreshMap();
+  UI.getListOfAvailableGroupIDs();
+
+}
+
+
+/* 
+name: getListOfAvailableGroupIDs
+author: Asarsa
+created: Feb 16, 2015
+purpose: for the currently selected actions, get a list of groupIDs
+argument: callback is some call
+*/
+UI.getListOfAvailableGroupIDs = function(callback){
+        
+        // Clear previous player list
+        $('#available-groups').html("");
+
+        // Render players from database to 
+        // table on left menu
+        _.each(settings.groups, function(group){
+				
+ 
+        // Create table row with group data
+		var tr = '<tr><td><b>' + group.groupName + '</b></td>' +
+			     '<td onclick="UI.groups.remove(' + group.groupID + ')">' +
+			     '<i class="fa fa-trash"></i>'+
+			     '</td></tr>';
+
+          $('#available-groups').append(tr);
+        })
+
+        if (callback) callback();
+}
+
+//Asarsa
+
+
+
 
 /************************************
       Setup UI / Side Options
@@ -1168,25 +1260,40 @@ UI.filters.toggleAll = function(checked){
 }
 
 /*
-name: changePLayer
+name: changePlayer
 author: Asarsa
 created: Feb 15,2016
 purpose: update checkboxes for player selected from drop-down select list
 And refresh map
 */
-UI.filters.changePlayer = function(playerID){
+UI.filters.changePlayer = function(ID){
 	
 	$('#filters input:checkbox').removeAttr('checked');
-	if(playerID != ""){
+	
+	// PlayerID recieved
+	if(ID != "" && ID.toString().charAt(0) != 'g'){
 		//update checkboxes
 		_.each(settings.players, function(player){
-			if(player.playerID == playerID){
+			if(player.playerID == ID){
 				_.each(player.checkedActions,function(actn){
 				$("input:checkbox[value="+actn+"]").prop('checked', true);
 				});
 			}
 		})
 	}
+	
+	//GroupID recieved
+	if(ID != "" && ID.toString().charAt(0) == 'g'){
+		//group selected -> update checkboxes
+		_.each(settings.groups, function(group){
+			if(group.groupID == ID){
+				_.each(group.checkedActions,function(actn){
+				$("input:checkbox[value="+actn+"]").prop('checked', true);
+				});
+			}
+		})
+	}
+	
 	Visualizer.refresh();
 }
 
@@ -1199,15 +1306,25 @@ And refresh map
 */
 UI.filters.changeCheckbox = function(){
 	
-	var p = $("#active-players-list").val();
+	var ID = $("#active-players-list").val();
 	
-	_.each(settings.players, function(player){
-		if(player.playerID == p){
-			var p_ind = settings.players.indexOf(player);
-			settings.players[p_ind].checkedActions = UI.filters.categories();
-		}
-	})
+	if(ID.toString().charAt(0) != 'g')
+		_.each(settings.players, function(player){
+			if(player.playerID == ID){
+				var p_ind = settings.players.indexOf(player);
+				settings.players[p_ind].checkedActions = UI.filters.categories();
+			}
+		})
 	
+	
+	if(ID.toString().charAt(0) == 'g')
+		_.each(settings.groups, function(group){
+			if(group.groupID == ID){
+				var g_ind = settings.groups.indexOf(group);
+				settings.groups[g_ind].checkedActions = UI.filters.categories();
+			}
+		})
+		
 	Visualizer.refresh();
 }
 

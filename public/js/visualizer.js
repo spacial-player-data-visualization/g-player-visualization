@@ -69,10 +69,12 @@ var settings = {
 
   // Save heatmaps' data
   heatmapData : [],
-  
     
   // All available types of actions (filters)
-  listOfActions : []
+  listOfActions : [],
+  
+  // Current groups
+  groups : []
 
 };
 
