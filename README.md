@@ -8,7 +8,7 @@ G-Player is a data visualization web-app for uploading and viewing **spatial-tem
 
 ### Available Online:
 
-Available at: [g-player.herokuapp.com](g-player.herokuapp.com)
+Available at: [g-player.herokuapp.com](http://g-player.herokuapp.com/)
 
 Please refer to the [Instructional Video] (https://www.youtube.com/watch?v=CYfAdonw6HM) for more information.
 
