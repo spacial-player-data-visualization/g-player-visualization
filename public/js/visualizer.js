@@ -37,7 +37,7 @@ var settings = {
   // enable player paths
   paths : true,
 
-  // Default Game
+  // Current Game
   game : null,
 
   // Current Map
@@ -390,18 +390,18 @@ Visualizer.formatData = function(data){
   data['end'] = data.timestamp;//moment({seconds: data.timestamp}).unix();
 
   // TODO: geometry for positions should be a LineString, not a Point
-  //if(data.action) {
+  if(data.action) {
     data['geometry'] = {
       type: 'Point',
       coordinates: [data.longitude, data.latitude],
     };
-  /*} else { 
+  } else { 
     data['geometry'] = {
       type: 'LineString',
       // TODO: WIP Obviously need to find a way to have lines drawn properly.
       coordinates: [[data.longitude, data.latitude], [data.longitude, data.latitude]],
     }
-  }*/
+  }
 
   //TODO: FORMAT ALL OF THE DATA TYPES NEEDED FOR LEAFLET.TIMELINE
   
@@ -523,10 +523,18 @@ function convertJSONtoHTML(JSON){
 // Does the provided object contain the required keys?
 function containsRequiredKeys(obj){
   
-  // Required keys
-  var keys = ["playerID", "area", "posX", "posY", "timestamp"];
+  // Get required keys for the selected game
+  // TODO: this is WIP, need to abstract the required keys per game
+  // TODO: right now it's hard coded, need to find a way to have users upload this
+  var keys = {};
+  if (settings.game == "Fallout New Vegas") {
+    keys = ["playerID", "area", "posX", "posY", "timestamp"];
+  } else {
+    alert("No required keys found for the game " + settings.game);
+    return;
+  }
 
-  var acc = true;
+  var acc = keys.length > 0;
 
   _.each(keys, function(key){
     var containsKey = (obj && obj[key]) ? true : false;
