@@ -131,17 +131,37 @@ Visualizer.update = function(){
 
   // Store current index
   var count = 0;
-
-  // Iterate through players
-  _.each(players, function(player, playerID){
-
-      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
-
-      // Render each player onto the map
-      Visualizer.draw(player, thisPlayer.color, count++, thisPlayer.checkedActions);
+  
+  // check if group is visible (indivisual player visibility is deselected)
+  var groupvisible = false;
+  _.each(settings.groups, function(group){
+	  if(group.visibility){
+		console.log("group visible. looking at players in group...");
+		groupvisible = true;
+		// Iterate through players
+		_.each(players, function(player, playerID){
+			var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+			
+			// Render each player onto the map
+			if(group.players.indexOf(playerID) != -1)
+			Visualizer.draw(player, thisPlayer.color, count++, group.checkedActions);
+		});
+	  }
   });
+  
+  if(groupvisible == false){
+	  console.log("no group visible. looking at players...");
+	  // Iterate through players
+	  _.each(players, function(player, playerID){
+		  var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
 
-   Visualizer.updateHeatmap();
+		  // Render visible player onto the map
+		  if(thisPlayer.visibility)
+		  Visualizer.draw(player, thisPlayer.color, count++, thisPlayer.checkedActions);
+	  });
+  }
+  
+  Visualizer.updateHeatmap();
 
   // Loading complete
   UI.loading(false, "Success. " + unfilteredData.length + " points loaded.");

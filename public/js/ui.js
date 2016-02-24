@@ -89,6 +89,7 @@ UI.setGame = function(gamename){
     // Change available actions
     UI.getActions();
     UI.getListOfAvailablePlayerIDs();
+	UI.groups.createPlayers();
     UI.filters.create();
 }
 
@@ -391,11 +392,11 @@ UI.players.addPlayers = function(){
     _.each(playerIDs, function(playerID){
 		
 		// Prevent Duplicates
-		var existing = _.findWhere(settings.players, { playerID : playerID })
+		var existing = _.findWhere(settings.players, { 'playerID' : playerID })
 
 		if (!existing) {
 			// Add to list
-			settings.players.push({ playerID : playerID, color : colors[clr_indx++]});
+			settings.players.push({ playerID : playerID, color : colors[clr_indx++], checkedActions : settings.listOfActions, visibility : true});
 			if(clr_indx == colors.length)
 				clr_indx = 0;
 		};
@@ -412,7 +413,7 @@ UI.players.addPlayers = function(){
 UI.players.add = function(playerID, color){
 
     // Add to list
-    settings.players.push({ playerID : playerID, color : color , checkedActions : settings.listOfActions });
+    settings.players.push({ playerID : playerID, color : color , checkedActions : settings.listOfActions, visibility : true });
     
     // Update map
     UI.players.refreshMap();
@@ -515,16 +516,16 @@ UI.getListOfAvailablePlayerIDs = function(callback){
  
         // Create table row with player data
 		if (added) {
-			var tr = '<tr><td onclick="UI.players.remove(' + playerID + ')">' + 
-                   "Player <b>" + playerID + '</b></td>' +
-                  '<td onclick="UI.players.remove(' + playerID + ')" id="td '+ playerID +'">' +
-                   '<i class="fa fa-trash"></i></td></tr>';
+			var tr = '<tr onclick="UI.players.remove(' + playerID + ')">' +
+					 '<td>Player <b>' + playerID + '</b></td>' +
+                     '<td id="td '+ playerID +'"><i class="fa fa-trash-o"></i></td>' +
+					 '</tr>';
 		}
 		if (!added && !show_added){
-			var tr = '<tr><td onclick="UI.players.addPlayer(' + playerID + ')">' + 
-                   "Player <b>" + playerID + '</b></td>' +
-                  '<td onclick="UI.players.addPlayer(' + playerID + ')" id="td '+ playerID +'">' +
-                   '<i class="fa fa-plus"></i></td></tr>';
+			var tr = '<tr onclick="UI.players.addPlayer(' + playerID + ')">' +
+					 '<td>Player <b>' + playerID + '</b></td>' +
+					 '<td id="td '+ playerID +'"><i class="fa fa-plus"></i></td>' +
+					 '</tr>';
 		}
 
         $('#available-players').append(tr);
@@ -654,7 +655,7 @@ UI.loadOptions = function(next){
 /* 
 name: addGroup
 author: Asarsa
-created: Feb 16, 2015
+created: Feb 16, 2016
 purpose: Manage the groups being represented on the visualizer
 arguments: groupID is the selected player 
 */
@@ -664,7 +665,7 @@ var groupID = 101;
 // purpose: plots selected groupID onto map from left menu
 UI.groups.addGroup = function(){
 
-	var listOfPlayers = UI.players.listIDs();
+	var listOfPlayers = UI.groups.getSelectedPlayers();
 	var name = $('#groupName').val();
 	
 	//check if no players added to map
@@ -675,10 +676,24 @@ UI.groups.addGroup = function(){
 	}else{
 
 		// Add to list
-		settings.groups.push({ groupID : "g" + groupID, players : listOfPlayers, groupName : name, checkedActions : [] });
+		settings.groups.push({ groupID : "g" + groupID, players : listOfPlayers, groupName : name, checkedActions : [], visibility:false});
+		
+		// Add players in group to map
+		_.each(listOfPlayers,function(p){
+			console.log("player:" + p);
+			var existing = _.findWhere(settings.players, { 'playerID' : parseInt(p) })
+			console.log(existing);
+			if(existing == undefined){
+				UI.players.add(p,"#ffffff");
+				UI.getListOfAvailablePlayerIDs();	
+			}
+		})
 		
 		//update text field with id for next group
-		$('#groupName').val("group" + ++groupID);
+		$('#groupName').val("group " + ++groupID);
+		
+		//Clear selected players
+		$('#players-in-group input:checkbox').removeAttr('checked');
 		
 		// Update map
 		UI.players.refreshMap();
@@ -691,6 +706,7 @@ UI.groups.addGroup = function(){
 // purpose: remove selected groupID from the map
 UI.groups.remove = function(groupID){
 
+	console.log("remove" + groupID)
   settings.groups = _.filter(settings.groups, function(group){
     return group.groupID != groupID;
   });
@@ -704,11 +720,85 @@ UI.groups.remove = function(groupID){
 
 }
 
+//get group info
+UI.groups.getInfo = function(groupID){
+	
+	console.log("getinfo:" + groupID);
+	var alertmsg = "";
+  _.each(settings.groups, function(group){
+		
+	if(group.groupID == groupID){
+		alertmsg += "GroupName: " + group.groupName + "\n";
+		alertmsg += "GroupId: " + group.groupID + "\n";
+		alertmsg += "PLayers: " + group.players;
+	}
+	
+  })
+  
+  alert(alertmsg);
+	
+}
+
+/* 
+name: createPLayer
+author: Asarsa
+created: Feb 23, 2016
+purpose: create list of checkboxes in order to filter players to be added to new group
+*/
+UI.groups.createPlayers = function(){
+
+  var opts = Visualizer.getContext();
+
+    // Get players from API
+    $.get(Visualizer.API_url + "players", opts, function(data){
+        
+        var players = data;
+        
+		// Clear Players list
+		$("#players-in-group").html("");
+        
+        // Render players from database to 
+        // table on left menu
+        _.each(players, function(playerID){
+			//generate checkbox and add it
+			var html = UI.groups.generateCheckbox(playerID);
+			$("#players-in-group").append(html);
+		
+		})
+
+    })
+
+  return true;
+}
+
+// Create a new checkbox
+UI.groups.generateCheckbox = function(PlayerID){
+
+  var a = '<div class="checkbox"><label>';
+  var b = '<input type="checkbox" value="' + PlayerID + '"/>Player ' + PlayerID;
+  var c = '</label></div>';
+
+  return a + b + c
+}
+
+// Return list of selected players
+UI.groups.getSelectedPlayers = function(){
+    
+    // List of actions
+  var players = [];
+
+  // Enabled check boxes
+  $('#players-in-group input:checkbox:checked').each(function(index, checkbox){
+    players.push(checkbox["value"]);
+  })
+  return players;
+}
+
 
 /* 
 name: getListOfAvailableGroupIDs
 author: Asarsa
-created: Feb 16, 2015
+created: Feb 16, 2016
 purpose: for the currently selected actions, get a list of groupIDs
 argument: callback is some call
 */
@@ -721,12 +811,10 @@ UI.getListOfAvailableGroupIDs = function(callback){
         // table on left menu
         _.each(settings.groups, function(group){
 				
- 
         // Create table row with group data
 		var tr = '<tr><td><b>' + group.groupName + '</b></td>' +
-			     '<td onclick="UI.groups.remove(' + group.groupID + ')">' +
-			     '<i class="fa fa-trash"></i>'+
-			     '</td></tr>';
+			     '<td><i class="fa fa-trash-o" onclick="UI.groups.remove('+ group.groupID +')"></i>'+
+				 '<i class="fa fa-info-circle" onclick="UI.groups.getInfo('+ group.groupID +')"></i></td></tr>';
 
           $('#available-groups').append(tr);
         })
@@ -734,7 +822,6 @@ UI.getListOfAvailableGroupIDs = function(callback){
         if (callback) callback();
 }
 
-//Asarsa
 
 
 
@@ -1278,6 +1365,7 @@ UI.filters.changePlayer = function(ID){
 				_.each(player.checkedActions,function(actn){
 				$("input:checkbox[value="+actn+"]").prop('checked', true);
 				});
+				$("input:checkbox[value=visibility]").prop('checked', player.visibility);
 			}
 		})
 	}
@@ -1290,6 +1378,7 @@ UI.filters.changePlayer = function(ID){
 				_.each(group.checkedActions,function(actn){
 				$("input:checkbox[value="+actn+"]").prop('checked', true);
 				});
+				$("input:checkbox[value=visibility]").prop('checked', group.visibility);
 			}
 		})
 	}
@@ -1327,6 +1416,48 @@ UI.filters.changeCheckbox = function(){
 		
 	Visualizer.refresh();
 }
+
+/*
+name: updateVisibility
+author: Asarsa
+created: Feb 15,2016
+purpose: update the visibility for all groups and players
+*/
+UI.filters.updateVisibility = function(){
+	
+	var ID = $("#active-players-list").val();
+	var checked = $("#visibility").prop('checked');
+	
+	if(ID.toString().charAt(0) != 'g'){
+		_.each(settings.groups, function(group){
+			var g_ind = settings.groups.indexOf(group);
+			settings.groups[g_ind].visibility = false;
+		})
+		_.each(settings.players, function(player){
+			if(player.playerID == ID){
+				var p_ind = settings.players.indexOf(player);
+				settings.players[p_ind].visibility = checked;
+			}
+		})
+	}
+		
+	if(ID.toString().charAt(0) == 'g'){
+		_.each(settings.players, function(player){
+			var p_ind = settings.players.indexOf(player);
+			settings.players[p_ind].visibility = false;
+		})
+		_.each(settings.groups, function(group){
+			var g_ind = settings.groups.indexOf(group);
+			if(group.groupID == ID)
+				settings.groups[g_ind].visibility = checked;
+			else
+				settings.groups[g_ind].visibility = false;
+		})
+	}
+		
+	Visualizer.refresh();
+}
+
 
 /************************************
          Helpers

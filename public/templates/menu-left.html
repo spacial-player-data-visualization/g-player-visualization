@@ -50,7 +50,7 @@ Alex Johnson @alexjohnson505
   </div>
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title"><i class="fa fa-table"></i> Select Data </label>
+      <h3 class="panel-title"><i class="fa fa-user"></i> Players </label>
     </div>
     <div class="panel-body" style="margin-bottom: 20px;">
 
@@ -94,16 +94,28 @@ Alex Johnson @alexjohnson505
     
 	<div class="panel-body" style="margin-bottom: 20px;">
 
-		<div class="group-name">
-			<p>Group Name: <input type="text" name="groupName" value="group101" id="groupName"></p>
-		</div>
-		<div class="create-group">
-			<p>	
-				<button class="btn btn-default btn-sm" onclick="UI.groups.addGroup()">Create Group</button>
-			</p>
-		</div>
 		<div class="group-add-remove">
-			<table id="available-groups" class="table table-condensed table-hover"></table>
+		<!-- Add Groups / Select Players -->
+			<div class="select-players">
+				<p>Select Players to create a group:</p>
+				<div id="players-in-group"></div>
+			</div>
+        
+			<div class="group-name">
+				<p>Group Name: <input type="text" value="group 101" id="groupName"></p>
+			</div>
+			
+			<div class="create-group">
+				<p>	
+					<button class="btn btn-default btn-sm" onclick="UI.groups.addGroup()">Create Group</button>
+				</p>
+			</div>
+			
+			<div class ="table-group">
+				<table id="available-groups" class="table table-condensed table-hover"></table>
+			</div>
+		</div>
+		
 		</div>
 	  
 	</div>
