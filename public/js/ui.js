@@ -678,6 +678,7 @@ UI.groups.addGroup = function(){
 		// Add to list
 		settings.groups.push({ groupID : "g" + groupID, players : listOfPlayers, groupName : name, checkedActions : [], visibility:false});
 		
+/*		todo
 		// Add players in group to map
 		_.each(listOfPlayers,function(p){
 			console.log("player:" + p);
@@ -688,6 +689,7 @@ UI.groups.addGroup = function(){
 				UI.getListOfAvailablePlayerIDs();	
 			}
 		})
+*/
 		
 		//update text field with id for next group
 		$('#groupName').val("group " + ++groupID);
@@ -704,11 +706,10 @@ UI.groups.addGroup = function(){
 
 
 // purpose: remove selected groupID from the map
-UI.groups.remove = function(groupID){
+UI.groups.removeGroup = function(gID){
 
-	console.log("remove" + groupID)
   settings.groups = _.filter(settings.groups, function(group){
-    return group.groupID != groupID;
+    return group.groupID != gID;
   });
 
   // Remove all data
@@ -717,17 +718,15 @@ UI.groups.remove = function(groupID){
   // Re-plot map
   UI.players.refreshMap();
   UI.getListOfAvailableGroupIDs();
-
 }
 
 //get group info
-UI.groups.getInfo = function(groupID){
+UI.groups.getInfo = function(gID){
 	
-	console.log("getinfo:" + groupID);
-	var alertmsg = "";
+  var alertmsg = "";
   _.each(settings.groups, function(group){
 		
-	if(group.groupID == groupID){
+	if(group.groupID == gID){
 		alertmsg += "GroupName: " + group.groupName + "\n";
 		alertmsg += "GroupId: " + group.groupID + "\n";
 		alertmsg += "PLayers: " + group.players;
@@ -813,8 +812,8 @@ UI.getListOfAvailableGroupIDs = function(callback){
 				
         // Create table row with group data
 		var tr = '<tr><td><b>' + group.groupName + '</b></td>' +
-			     '<td><i class="fa fa-trash-o" onclick="UI.groups.remove('+ group.groupID +')"></i>'+
-				 '<i class="fa fa-info-circle" onclick="UI.groups.getInfo('+ group.groupID +')"></i></td></tr>';
+			     '<td><i class="fa fa-trash-o" onclick="UI.groups.removeGroup('+"'"+ group.groupID +"'"+')"></i>'+
+				 '<i class="fa fa-info-circle" onclick="UI.groups.getInfo('+"'"+ group.groupID +"'"+')"></i></td></tr>';
 
           $('#available-groups').append(tr);
         })
