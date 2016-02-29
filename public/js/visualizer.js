@@ -167,6 +167,75 @@ Visualizer.update = function(){
   UI.loading(false, "Success. " + unfilteredData.length + " points loaded.");
 }//Asarsa
 
+/*
+author: Asarsa
+created: Feb 29, 2016
+purpose: Prepare dataset / name to be sentt to Heatmap.add function
+*/
+Visualizer.genHeatMap = function(){
+
+  console.log("starting generation of data for heatmap");
+  var hmDataset = {
+    actions: [],
+    positions: [],
+  };
+  
+  // Unfiltered data
+  var unfilteredData = settings.data.positions.concat(settings.data.actions);
+
+  // Group data by PlayerID
+  var players = _.groupBy(unfilteredData, 'playerID');
+
+  // Store current index
+  var count = 0;
+  
+  // check if group is visible (indivisual player visibility is deselected)
+  var groupvisible = false;
+  _.each(settings.groups, function(group){
+	  if(group.visibility){
+		console.log("group visible. looking at players in group...");
+		groupvisible = true;
+		// Iterate through players
+		_.each(players, function(player, playerID){
+			var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+			
+			// Render each player onto the map
+			if(group.players.indexOf(playerID) != -1){
+				var newDataset = Visualizer.activeData(filterPositions(player), group.checkedActions);
+				hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
+				hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
+			}
+		});
+	  }
+  });
+  
+  if(groupvisible == false){
+	  console.log("no group visible. looking at players...");
+	  // Iterate through players
+	  _.each(players, function(player, playerID){
+		  var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+
+		  // Render visible player onto the map
+		  if(thisPlayer.visibility){
+			var newDataset  = Visualizer.activeData(filterPositions(player), thisPlayer.checkedActions);
+			hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
+			hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
+		  }
+	  });
+  }
+  
+  //console.log(hmDataset.actions.length + "\n\n" + hmDataset.positions.length);
+  
+  var hmName = ""; 		// ?? what should the name of heatmap be?
+  
+  console.log("heatmap data generation complete");
+  Heatmap.add(hmDataset,hmName);
+  
+}
+
+
+
+
  /********************************
            HEATMAPS
    ********************************/
