@@ -24,6 +24,7 @@ argument: data is the current active dataset
 */
 Heatmap.add = function(data, heatmap_name){
 
+console.log("arrived");
   var hmap = {};
 
   // credit: http://www.patrick-wied.at/static/heatmapjs/
