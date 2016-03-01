@@ -71,6 +71,10 @@ Authors:
 
    <!-- Popup Menu -->
    <div id="popup-menu"></div>
+   
+    <!-- Timeline  -->
+   <div id="timeline"></div>
+   
  </div>
 
  <!-- External Javascript Dependencies -->
@@ -144,7 +148,13 @@ Authors:
           callback(null, 'right');
 
         });
-      }, 
+      },
+      function(callback){
+        $("#timeline").load('templates/timeline.html', function(result){
+          callback(null, 'right');
+
+        });
+      }, 	  
       function(callback){
 
         // Load options from API

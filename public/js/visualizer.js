@@ -45,6 +45,9 @@ var settings = {
     time: [/*array of UNIX timestamps*/]
   }
    },
+   
+  //player tracks
+  tracks : [], 
 
   // enable player paths
   paths : true,
@@ -399,7 +402,7 @@ Visualizer.loadData = function(){
     // =====================================================
     
     // Playback options
-   if (data.length != 0) { 
+/*    if (data.length != 0) { 
      var playbackOptions = {
        
 
@@ -408,12 +411,14 @@ Visualizer.loadData = function(){
 
               var control = new L.Playback.Control(playback);
              control.addTo(map);
-        } 
+        }  */
 		
 	//Adding D3 brush layer 
     //=====================================================
 	//=====================================================
-
+    // Playback options
+ /*    settings.tracks = settings.tracks.filter(Boolean);
+	
 	    var myLayer = L.geoJson().addTo(map);
 
 		myLayer.addData(settings.geoJsonLayer);
@@ -427,12 +432,12 @@ Visualizer.loadData = function(){
 			return 6;
 		}
 	
-/*
+
 author: Tariq Anwar
 created: Feb 22, 2016
 purpose: Adding D3 brush component.
 argument: the formatted data 
-*/		
+		
 	function setBrush(data) {
     var container = d3.select('#brush'),
        width =800,    
@@ -523,7 +528,7 @@ argument: the formatted data
     brush.event(d3.select("#brush").transition().delay(10))
   }
 
-}
+} */
 	
 	//========================================================
 	//========================================================
@@ -619,6 +624,11 @@ Visualizer.createGeoJsonLayer = function() {
     settings.geoJsonLayer.features.push(geoJson);
    // console.log("DDDDDD"+settings.geoJsonLay.geometry.coordinates);
   });
+  
+  //Pushing GeoJasonLay to array tracks
+    if(settings.geoJsonLay.properties.time.length != 0){
+    settings.tracks.push(settings.geoJsonLay);
+  }
 }
 
 // Returns a representation of the current state of the
@@ -648,6 +658,9 @@ Visualizer.getContext = function(callback){
     
     // List of filtered actions
     actions : settings.actions,
+	
+	//data
+    data : settings.tracks
 
   }
 

@@ -1,0 +1,164 @@
+<!--
+timeline.html
+G-Player Data Visualization
+
+- A template file for the right legend menu
+
+Created: Feb 28, 2015
+Authors:
+Tariq Anwar
+-->
+
+
+
+  <div class="navbar navbar-default navbar-fixed-bottom">
+  <div class = "container"> 
+  <input id="changePanel" value="Playback" type="button"> 
+  <select id="active-players-list" onchange="UI.filters.changePlayer(this.value)">
+		<option value="">Select One</option>
+  </select>  
+  </div>
+  </div>  
+  
+  <script>
+  $("#changePanel").click(function() {
+    //var data = "foobar";
+    //$("#panel").hide().html(data).fadeIn('fast');
+
+   //  if (visualizer.data.length != 0) {
+	//Visualizer.update();
+	var vis = Visualizer.getContext();
+	console.log("Tariq:"+ typeof(vis.data));
+     var playbackOptions = {
+       
+
+    };
+	if(vis.data.length != 0){
+          var playback = new L.Playback(map, vis.data,null, playbackOptions);  
+              var control = new L.Playback.Control(playback);
+             control.addTo(map);
+			 }
+	////////////////////////////////////////////////////////
+
+
+	    var myLayer = L.geoJson().addTo(map);
+
+		myLayer.addData(settings.geoJsonLayer);
+		setBrush(settings.geoJsonLayer);
+		
+		function pointColor(feature) {
+			return feature.properties.start> 5 ? '#f55' : '#a00';
+		}
+
+		function pointRadius(feature) {
+			return 6;
+		}
+	
+/*
+author: Tariq Anwar
+created: Feb 22, 2016
+purpose: Adding D3 brush component.
+argument: the formatted data 
+*/		
+	function setBrush(data) {
+    var container = d3.select('#brush'),
+       width =800,    
+       height = 100;
+       margin = {top: 0, right: 50, bottom: 10, left: 400};
+     
+    var timeExtent = d3.extent(data.features, function(d) {
+        return new Date(d.properties.start);
+    });
+
+    var svg = container.append('svg')
+        .attr("class", "grid-background")
+        .attr('width', width + margin.left + margin.right)
+        .attr('height', height + margin.top + margin.bottom);
+
+    var context = svg.append('g')
+        .attr('class', 'context')
+        .attr('transform', 'translate(' +
+            margin.left + ',' +
+            margin.top + ')');
+
+
+    var x = d3.time.scale()
+        .range([0, width])
+        .domain(timeExtent);
+
+    var brush = d3.svg.brush()
+        .x(x)
+        .on('brushend', brushend);     
+     
+	context.selectAll('circle.quake')
+		   .data(data.features)
+		   .enter()
+		   .append('circle')
+		   .attr('transform', function(d) {
+				return 'translate(' + [x(new Date(d.properties.start)), height/2] + ')';
+			    })
+		   .attr('r', pointRadius)
+		   .attr('opacity', 0.5)
+		   .attr('stroke', '#fff')
+		   .attr('stroke-width',0.5)
+		   .attr('fill', pointColor);
+
+
+	context.append('g')
+			.attr('class', 'x brush')
+			.call(brush)
+			.selectAll('rect')
+			.attr('y', -6)
+			.attr('height', height);    
+
+
+        function brushend() {
+        var filter;
+            // If the user has selected no brush area, share everything.
+        if (brush.empty()) {
+            filter = function() { return true; }
+        } else {
+            // Otherwise, restrict features to only things in the brush extent.
+            filter = function(feature) {
+             // console.log("strart"+feature.properties.start);
+             // console.log("zero"+brush.extent()[0] +"one"+brush.extent()[1]);
+                return feature.properties.start > +brush.extent()[0] &&
+                    feature.properties.start < (+brush.extent()[1]);
+            };
+        }
+        var filtered = data.features.filter(filter);
+            myLayer.clearLayers()
+            .addData(filtered);
+        }
+
+
+            function drawBrush() {
+    // our year will this.innerText
+    //console.log(this.innerText)
+
+    // define our brush extent to be begin and end of the year
+    brush.extent(timeExtent)
+    // brush.extent([[250, 80], [600, 80]]);
+
+    // now draw the brush to match our extent
+    // use transition to slow it down so we can see what is happening
+    // remove transition so just d3.select(".brush") to just draw
+    brush(d3.select("#brush").transition());
+
+    // now fire the brushstart, brushmove, and brushend events
+    // remove transition so just d3.select(".brush") to just draw
+    brush.event(d3.select("#brush").transition().delay(10))
+  }
+
+}
+
+
+
+///////////////////////////////////////////////////////	
+			 
+			 
+   //     } 
+  });
+  
+  
+  </script>
