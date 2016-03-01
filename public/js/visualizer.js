@@ -47,7 +47,7 @@ var settings = {
    },
    
   //player tracks
-  tracks : [], 
+  tracks : [],
 
   // enable player paths
   paths : true,
@@ -72,9 +72,6 @@ var settings = {
 
   // Current players
   players : [],
-
-  // Currently selected actions
-  actions : [],
 
   // Current heatmaps
   heatmaps : [],
@@ -139,7 +136,7 @@ Visualizer.update = function(){
   var groupvisible = false;
   _.each(settings.groups, function(group){
 	  if(group.visibility){
-		console.log("group visible. looking at players in group...");
+		//console.log("group visible. looking at players in group...");
 		groupvisible = true;
 		// Iterate through players
 		_.each(players, function(player, playerID){
@@ -153,7 +150,7 @@ Visualizer.update = function(){
   });
   
   if(groupvisible == false){
-	  console.log("no group visible. looking at players...");
+	  //console.log("no group visible. looking at players...");
 	  // Iterate through players
 	  _.each(players, function(player, playerID){
 		  var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
@@ -196,7 +193,7 @@ Visualizer.genHeatMap = function(){
   var groupvisible = false;
   _.each(settings.groups, function(group){
 	  if(group.visibility){
-		console.log("group visible. looking at players in group...");
+		//console.log("group visible. looking at players in group...");
 		groupvisible = true;
 		// Iterate through players
 		_.each(players, function(player, playerID){
@@ -213,7 +210,7 @@ Visualizer.genHeatMap = function(){
   });
   
   if(groupvisible == false){
-	  console.log("no group visible. looking at players...");
+	  //console.log("no group visible. looking at players...");
 	  // Iterate through players
 	  _.each(players, function(player, playerID){
 		  var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
@@ -413,7 +410,6 @@ Visualizer.addMarker = function(lat, long, title){
 Visualizer.loadData = function(){
 
   UI.loading(true, "Loading Data....");
-
   var opts = Visualizer.getContext();
 
   // Hit API
@@ -424,14 +420,10 @@ Visualizer.loadData = function(){
       return containsRequiredKeys(p);
     });
 
-   // console.log("Data to be changed:"+data);
     // Convert data points into GeoJSON
     data = _.map(data, function(p){
       return Visualizer.formatData(p);
     });
-
-    console.log("Formatted Data: ");
-    console.log(data);
 
     // Save data for future reference
     if (data.length == 0) {
@@ -603,9 +595,10 @@ argument: the formatted data
 	//========================================================
 		
     // Update our map with new data.
+	
     Visualizer.update();
   })
-};
+}
 
 /*
 author: Alex Gimmi
@@ -694,10 +687,10 @@ Visualizer.createGeoJsonLayer = function() {
    // console.log("DDDDDD"+settings.geoJsonLay.geometry.coordinates);
   });
   
-  //Pushing GeoJasonLay to array tracks
+/*  //Pushing GeoJasonLay to array tracks
     if(settings.geoJsonLay.properties.time.length != 0){
     settings.tracks.push(settings.geoJsonLay);
-  }
+  }*/
 }
 
 // Returns a representation of the current state of the
@@ -724,13 +717,9 @@ Visualizer.getContext = function(callback){
 
     // Currently active heatmap
     activeHeatmap : settings.activeHeatmap,
-    
-    // List of filtered actions
-    actions : settings.actions,
-	
-	//data
-    data : settings.tracks
 
+	// Currently added groups
+	Groups : settings.groups 
   }
 
   console.log("\nCurrent State of the Map:");

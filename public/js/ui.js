@@ -296,6 +296,8 @@ purpose: Manage the players being represented on the visualizer
 arguments: playerID is the selected player 
 */
 UI.players = {};
+var colors = ["#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf", "#e0f3f8", "#abd9e9", "#74add1", "#4575b4"];
+var clr_indx = 0;
 
 // purpose: plots selected playerID onto map from left menu
 UI.players.addPlayer = function(playerID){
@@ -315,10 +317,6 @@ UI.players.addPlayer = function(playerID){
   if (existing) {
     return;
   }; //Asarsa
-  
-
-  // array of colors for color selection for each player 
-  var colors = ["#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf", "#e0f3f8", "#abd9e9", "#74add1", "#4575b4"];
 
   // dialog for selection of color for selected player
   var color_radio_buttons = _.reduce(colors, function(memo, color){ 
@@ -369,7 +367,8 @@ UI.players.addPlayer = function(playerID){
           var color =  $('.color-select input[type=radio]:checked').val();
           if (!color) { color : "#000" };
 
-          UI.players.add(playerID, color);
+		  settings.players.push({ playerID : playerID, color : color , checkedActions : settings.listOfActions, visibility : true });
+		  UI.players.refreshMap();
 		  UI.getListOfAvailablePlayerIDs();
         }
       }
@@ -379,10 +378,18 @@ UI.players.addPlayer = function(playerID){
 
 }
 
-// Add multiple players at once. 
-UI.players.addPlayers = function(){
 
-  // Confirm that user wants to load a large data set
+// Add multiple players at once. 
+UI.players.addPlayers = function(playerIDs){
+
+//add each player from the list of players
+
+}
+
+// Add all players at once. 
+UI.players.addAll = function(PlayerIDs){
+
+   // Confirm that user wants to load a large data set
   if (!confirm('Warning! Loading all players in the current list may load a considerable amount of data. This request could take time to process, and may cause your map to become slow or unresponsive. If you haven\'t already, we recommend selecting a lower "fidelity" from the left menu in order to reduce the amount of positions per second being returned. Are you sure you want to continue?')) return;
 
   UI.getListOfAvailablePlayerIDs(function(playerIDs){
@@ -392,11 +399,11 @@ UI.players.addPlayers = function(){
     _.each(playerIDs, function(playerID){
 		
 		// Prevent Duplicates
-		var existing = _.findWhere(settings.players, { 'playerID' : playerID })
+		var existing = _.findWhere(settings.players, { playerID : playerID })
 
 		if (!existing) {
 			// Add to list
-			settings.players.push({ playerID : playerID, color : colors[clr_indx++], checkedActions : settings.listOfActions, visibility : true});
+			settings.players.push({ playerID : playerID, color : colors[clr_indx++] , checkedActions : settings.listOfActions, visibility : true });
 			if(clr_indx == colors.length)
 				clr_indx = 0;
 		};
@@ -409,19 +416,36 @@ UI.players.addPlayers = function(){
   UI.getListOfAvailablePlayerIDs();
 } // Asarsa
 
-// Add a new player ID to the map.
-UI.players.add = function(playerID, color){
-
-    // Add to list
-    settings.players.push({ playerID : playerID, color : color , checkedActions : settings.listOfActions, visibility : true });
-    
-    // Update map
-    UI.players.refreshMap();
-}
-
 // purpose: remove selected playerID from the map
 UI.players.remove = function(playerID){
 
+  var present = false;
+  //check for presence in groups
+  _.each(settings.groups, function(group){
+		var players = group.players;
+		// Iterate through players
+		_.each(players, function(player){
+			if(playerID == player)
+				present = true;
+		});
+  });
+  
+  if(present)
+	if (!confirm("The Player is present in one or more groups. Removing player from map will result in removal of player from all groups")) return;  
+
+  //remove player from groups
+  _.each(settings.groups, function(group){
+	group.players = _.filter(group.players, function(player){
+      return player != playerID;
+    });
+  });
+  
+  //if group empty, remove group
+  settings.groups = _.filter(settings.groups, function(group){
+    return group.players.length > 0;
+  });
+
+  //remove player from settings
   settings.players = _.filter(settings.players, function(player){
     return player.playerID != playerID;
   });
@@ -432,6 +456,7 @@ UI.players.remove = function(playerID){
   // Re-plot map
   UI.players.refreshMap();
   UI.getListOfAvailablePlayerIDs();
+  UI.getListOfAvailableGroupIDs();
 
 }
 
@@ -471,16 +496,20 @@ purpose: helper function that refreshes map on a change
 UI.players.refreshMap = function(){
   $("#active-players").html("");
   $("#active-players-list").html('<option value="">Select One</option>');
+  $("#playback-players-list").html('<option value="">Select One</option>');
   $('#filters input:checkbox').removeAttr('checked');
 
   _.each(settings.players, function(player){
 
 	$("#active-players-list").append('<option value="' + player.playerID + '" style="background-color:' + 
 		player.color + '">' + player.playerID + '</option>');
+	$("#playback-players-list").append('<option value="' + player.playerID + '" style="background-color:' + 
+		player.color + '">' + player.playerID + '</option>');
   })
   
   _.each(settings.groups, function(group){
 	$("#active-players-list").append('<option value="' + group.groupID + '" style="background-color:#fff">' + group.groupName + '</option>');
+	$("#playback-players-list").append('<option value="' + group.groupID + '" style="background-color:#fff">' + group.groupName + '</option>');
   })
 
   Visualizer.loadData();
@@ -675,21 +704,21 @@ UI.groups.addGroup = function(){
 			
 	}else{
 
-		// Add to list
-		settings.groups.push({ groupID : "g" + groupID, players : listOfPlayers, groupName : name, checkedActions : [], visibility:false});
-		
-/*		todo
+	    //check players are on map
+	    var PIDs = [];
 		// Add players in group to map
 		_.each(listOfPlayers,function(p){
-			console.log("player:" + p);
-			var existing = _.findWhere(settings.players, { 'playerID' : parseInt(p) })
-			console.log(existing);
-			if(existing == undefined){
-				UI.players.add(p,"#ffffff");
-				UI.getListOfAvailablePlayerIDs();	
-			}
+			if(!_.findWhere(settings.players, { 'playerID' : parseInt(p) }))
+				PIDs.push(p);
 		})
-*/
+		
+		//if players not on map, add
+		if(PIDs.length > 0){
+			alert("Please add the following players to map for the group to work correctly :" + PIDs);
+		}
+
+		// Add to list
+		settings.groups.push({ groupID : "g" + groupID, players : listOfPlayers, groupName : name, checkedActions : [], visibility:false});
 		
 		//update text field with id for next group
 		$('#groupName').val("group " + ++groupID);
