@@ -317,9 +317,16 @@ UI.players.addPlayer = function(playerID){
     return;
   }; //Asarsa
 
+  var i = 0;
   // dialog for selection of color for selected player
-  var color_radio_buttons = _.reduce(colors, function(memo, color){ 
-    return memo + '<label class="radio"><input type="radio" name="group1" value="' + color + '" checked><i class="fa fa-square" style="color: ' + color + '"></i></label>';
+  var color_radio_buttons = _.reduce(colors, function(memo, color){
+		if(i++ == clr_indx)
+			var ret = memo + '<label class="radio"><input type="radio" name="group1" value="' + 
+		              color + '" checked><i class="fa fa-square" style="color: ' + color + '"></i></label>';
+		else
+			var ret = memo + '<label class="radio"><input type="radio" name="group1" value="' +
+					  color + '"><i class="fa fa-square" style="color: ' + color + '"></i></label>'
+    return ret;
   }, "");
 
   var message = '<div class="color-select">' + color_radio_buttons + '</div>';
@@ -369,6 +376,8 @@ UI.players.addPlayer = function(playerID){
 		  settings.players.push({ playerID : playerID, color : color , checkedActions : settings.listOfActions, visibility : true });
 		  UI.players.refreshMap();
 		  UI.getListOfAvailablePlayerIDs();
+		  if(++clr_indx == colors.length)
+				clr_indx = 0;
         }
       }
     }
