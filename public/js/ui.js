@@ -305,7 +305,6 @@ UI.players.addPlayer = function(playerID){
   // Prevent Duplicates
   var existing = _.findWhere(settings.players, { playerID : playerID })
 
-
  /*
   if (existing) {
 	  onclick="UI.players.remove(' + player.playerID + ')"
@@ -690,6 +689,7 @@ arguments: groupID is the selected player
 */
 UI.groups = {};
 var groupID = 101;
+var box;
 
 // purpose: plots selected groupID onto map from left menu
 UI.groups.addGroup = function(){
@@ -749,21 +749,75 @@ UI.groups.removeGroup = function(gID){
   UI.getListOfAvailableGroupIDs();
 }
 
+//remove a player from a group
+UI.groups.removePlayer = function(gID,pID){
+	
+  var empty = false;
+  _.each(settings.groups, function(group){	
+	if(group.groupID == gID){
+	  group.players = _.filter(group.players, function(player){
+		return player != pID;
+	  });
+	  if(group.players.length == 0)
+		empty = true;
+	}
+  });
+  
+  box.modal('hide');
+  if(empty)
+	UI.groups.removeGroup(gID);
+  else
+	UI.groups.getInfo(gID);
+	
+}
+
+
 //get group info
 UI.groups.getInfo = function(gID){
 	
-  var alertmsg = "";
-  _.each(settings.groups, function(group){
-		
-	if(group.groupID == gID){
-		alertmsg += "GroupName: " + group.groupName + "\n";
-		alertmsg += "GroupId: " + group.groupID + "\n";
-		alertmsg += "PLayers: " + group.players;
-	}
-	
-  })
+  var message = "<div><table>";
   
-  alert(alertmsg);
+  _.each(settings.groups, function(group){	
+	if(group.groupID == gID){
+		message += "<tr><td>GroupName: " + group.groupName + "</td></tr>";
+		message += "<tr><td>GroupId: " + group.groupID + "</td></tr>";
+		message += "<tr><td>Players:</td></tr>";
+		_.each(group.players, function(player){
+			var functioncall = "UI.groups.removePlayer("+ "'" + gID + "','" + player + "')";
+			message += "<tr><td>" + player + '</td><td><button class="btn btn-danger btn-xs" onclick="'+ functioncall +'" >x</button></td></tr>';
+		});
+	}
+  });
+  
+  message += "</table></div>"
+  
+  box = bootbox.dialog({
+    message: message,
+    title: "Group Info",
+    
+    // Options available to the user
+    buttons: {
+      
+      // Hide the modal
+      success: {
+        label: 'Ok',
+        className: "btn-default",
+        callback: function(){
+			UI.players.refreshMap();
+			Visualizer.refresh();
+			}
+      },
+
+      /*// Add player to the map
+      main: {
+        label: "Apply Changes",
+        className: "btn-primary",
+        callback: function() {
+          //alert("making changes to group");
+        }
+      }*/
+    }
+  });
 	
 }
 
