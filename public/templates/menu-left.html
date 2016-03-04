@@ -93,7 +93,9 @@ Alex Johnson @alexjohnson505
 		<a data-toggle="collapse" href="#collapseGroups">
 		  <i class="fa fa-users"></i> 
 		  Groups
-		  <i class="fa fa-info-circle" onclick="alert('Create a group of players that are currently added to map and name it using the textbox')">  </i>  
+		  <i class="fa fa-info-circle" onclick="alert('Create a group of players that are currently added to map" +
+											   " and name it using the textbox Or add players to a group that" +
+											   "already exists using name of group in textbox')">  </i>  
 		</a>
 	  </h3>
     </div>
@@ -103,7 +105,7 @@ Alex Johnson @alexjohnson505
 		<div class="group-add-remove">
 		<!-- Add Groups / Select Players -->
 			<div class="select-players">
-				<p>Select Players to create a group:</p>
+				<p>Select Players to add-to a group:</p>
 				<div id="players-in-group"></div>
 			</div>
         
@@ -113,7 +115,7 @@ Alex Johnson @alexjohnson505
 			
 			<div class="create-group">
 				<p>	
-					<button class="btn btn-default btn-sm" onclick="UI.groups.addGroup()">Create Group</button>
+					<button class="btn btn-default btn-sm" onclick="UI.groups.addGroup()">Add to Group</button>
 				</p>
 			</div>
 			

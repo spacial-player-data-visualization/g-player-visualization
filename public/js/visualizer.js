@@ -180,12 +180,17 @@ Visualizer.genHeatMap = function(){
   // Store current index
   var count = 0;
   
+  //store group info into name
+  var hmName = "";
+  
   // check if group is visible (indivisual player visibility is deselected)
   var groupvisible = false;
   _.each(settings.groups, function(group){
 	  if(group.visibility){
 		//console.log("group visible. looking at players in group...");
 		groupvisible = true;
+		hmName += "group: " + group.groupID + "\n\n";
+		
 		// Iterate through players
 		_.each(players, function(player, playerID){
 			var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
@@ -195,8 +200,12 @@ Visualizer.genHeatMap = function(){
 				var newDataset = Visualizer.activeData(filterPositions(player), group.checkedActions);
 				hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
 				hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
+				
+				hmName += "Player:" + playerID + "\n";
 			}
 		});
+		
+		hmName += "\nActions:" + group.checkedActions + "\n";
 	  }
   });
   
@@ -211,13 +220,13 @@ Visualizer.genHeatMap = function(){
 			var newDataset  = Visualizer.activeData(filterPositions(player), thisPlayer.checkedActions);
 			hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
 			hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
+			
+			hmName += "Player:" + playerID + "\nActions:" + thisPlayer.checkedActions + "\n\n";
 		  }
 	  });
   }
   
   //console.log(hmDataset.actions.length + "\n\n" + hmDataset.positions.length);
-  
-  var hmName = ""; 		// ?? what should the name of heatmap be?
   
   console.log("heatmap data generation complete");
   Heatmap.add(hmDataset,hmName);
@@ -731,8 +740,6 @@ Visualizer.getContext = function(callback){
     // Currently active heatmap
     activeHeatmap : settings.activeHeatmap,
 
-	// Currently added groups
-	Groups : settings.groups 
   }
 
   console.log("\nCurrent State of the Map:");

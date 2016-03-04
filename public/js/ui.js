@@ -702,7 +702,7 @@ var box;
 
 // purpose: plots selected groupID onto map from left menu
 UI.groups.addGroup = function(){
-
+	
 	var listOfPlayers = UI.groups.getSelectedPlayers();
 	var name = $('#groupName').val();
 	
@@ -726,11 +726,32 @@ UI.groups.addGroup = function(){
 			alert("Please add the following players to map for the group to work correctly :" + PIDs);
 		}
 
-		// Add to list
-		settings.groups.push({ groupID : "g" + groupID, players : listOfPlayers, groupName : name, checkedActions : [], visibility:false});
+		var create = true;
+		//check for gID , if group exists
+		_.each(settings.groups,function(g){
+			if(g.groupName == name){
+				create = false;
+				//add players to this group
+				_.each(listOfPlayers,function(p){
+					if(!_.contains(g.players,p))
+						g.players.push(p);
+				})
+			}
+		})
 		
-		//update text field with id for next group
-		$('#groupName').val("group " + ++groupID);
+		console.log(create);
+		
+		if(create){
+			// Add to list
+			settings.groups.push({ groupID : "g" + groupID, players : listOfPlayers, groupName : name, checkedActions : [], visibility:false});
+		
+			//update text field with id for next group
+			$('#groupName').val("group " + ++groupID);
+		}
+		else{		
+			// update groupname textbox to previous group name (i.e. next available name)
+			$('#groupName').val("group " + groupID);
+		}
 		
 		//Clear selected players
 		$('#players-in-group input:checkbox').removeAttr('checked');
@@ -740,8 +761,9 @@ UI.groups.addGroup = function(){
 		UI.getListOfAvailableGroupIDs();
 	
 	}
+	
+	
 }
-
 
 // purpose: remove selected groupID from the map
 UI.groups.removeGroup = function(gID){
@@ -972,7 +994,7 @@ argument: heatmap_id is the id of the currently selected heatmap
 UI.heatmaps.generateRadio = function(heatmap_id, heatmap_name) {
   var a = '<div class="radio col-md-10" style="margin-top: 10px"><label id="heatmap' + heatmap_id + 'Label" for="heatmap' + heatmap_id + 'Radio">';
   var b = '<input type="radio" name="heatmap-opts" id="heatmap' + heatmap_id + 'Radio" value="' + heatmap_id + '" checked onclick="UI.heatmaps.select(' + heatmap_id + ')">';
-  var c = heatmap_name + '</label></div>';
+  var c = heatmap_name + '</label><i class="fa fa-info-circle" onclick="Heatmap.showInfo('+ heatmap_id +')"></i></div>';
 
   return a + b + c;
 }

@@ -24,8 +24,12 @@ argument: data is the current active dataset
 */
 Heatmap.add = function(data, heatmap_name){
 
-console.log("arrived");
   var hmap = {};
+  
+  // store info(in heatmap_name) into hmap.info
+  hmap.info = heatmap_name;
+  
+  heatmap_name = "HeatMap " + id;
 
   // credit: http://www.patrick-wied.at/static/heatmapjs/
   hmap.heatmapLayer = new HeatmapOverlay({
@@ -143,6 +147,22 @@ Heatmap.remove = function(heatmap_id) {
 
   console.log("Heatmap at index " + index + " with id " + heatmap_id + " removed from the Heatmaps tab and from memory.");
 }
+
+/* 
+author: Asarsa
+created: March 04, 2016
+purpose: fetches info for heatmap
+argument: heatmap_id is the id of the currently selected heatmap
+*/
+Heatmap.showInfo = function(heatmap_id) {
+	console.log("showing info...");
+  if (_.contains(settings.heatmapIds, heatmap_id)) {
+    var index = Heatmap.getIndexFromId(heatmap_id);
+	console.log(settings.heatmaps[index].info);
+    alert(settings.heatmaps[index].info);
+  }
+}
+
 
 Heatmap.getIndexFromId = function(heatmap_id) {
   return _.indexOf(settings.heatmapIds, parseInt(heatmap_id));
