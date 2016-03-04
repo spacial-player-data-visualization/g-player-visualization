@@ -34,18 +34,9 @@ var settings = {
     features: [],
   },
  
- //GeoJason Feature format  Layer for Playback Timeline
-   geoJsonLay :{
-    type: "Feature",
-    geometry: {
-    type: "MultiPoint",
-    coordinates: [/*array of [lng,lat] coordinates*/]
-  },
-  properties: {
-    time: [/*array of UNIX timestamps*/]
-  }
-   },
-   
+
+  //json layer for brush
+  brushLayer : [], 
   //player tracks
   tracks : [],
 
@@ -437,6 +428,7 @@ Visualizer.loadData = function(){
 
     // Create the GeoJson layer for the Leaflet.timeline
     Visualizer.createGeoJsonLayer();
+  //  settings.tracks = settings.tracks.filter(Boolean);
 
     // TODO: TIMELINE WIP
     /*
@@ -595,8 +587,8 @@ argument: the formatted data
 	//========================================================
 		
     // Update our map with new data.
-	
     Visualizer.update();
+
   })
 }
 
@@ -677,20 +669,41 @@ created September 8, 2015
 purpose: Create a Feature Collection of all GeoJson data
 */
 Visualizer.createGeoJsonLayer = function() {
+   var  geoJsonLay = {
+    type: "Feature",
+    geometry: {
+    type: "MultiPoint",
+    coordinates: [/*array of [lng,lat] coordinates*/]
+  },
+  properties: {
+    time: [/*array of UNIX timestamps*/]
+  }
+   } ;
+
+   var   geoJsonD3Lay = {
+    type: "FeatureCollection",
+    features: [],
+  };
   _.each(settings.data.actions.concat(settings.data.positions), function(json){
     //console.log("DDDDDD"+JSON.stringify(json, null, 4));
-    settings.geoJsonLay.geometry.coordinates.push(json['coord']);
-    settings.geoJsonLay.properties.time.push(json['start']);
+     //GeoJason Feature format  Layer for Playback Timeline
+
+    geoJsonLay.geometry.coordinates.push(json['coord']);
+    geoJsonLay.properties.time.push(json['start']);
+
     var geoJson = Visualizer.convertJsonToGeoJson(json);
     
     settings.geoJsonLayer.features.push(geoJson);
+    geoJsonD3Lay.features.push(geoJson);
    // console.log("DDDDDD"+settings.geoJsonLay.geometry.coordinates);
   });
   
-/*  //Pushing GeoJasonLay to array tracks
-    if(settings.geoJsonLay.properties.time.length != 0){
-    settings.tracks.push(settings.geoJsonLay);
-  }*/
+   //Pushing GeoJasonLay to array tracks
+   // if(settings.geoJsonLay.properties.time.length != 0){
+    settings.tracks.push(geoJsonLay);
+    settings.brushLayer.push(geoJsonD3Lay);
+
+   // }
 }
 
 // Returns a representation of the current state of the
@@ -726,6 +739,19 @@ Visualizer.getContext = function(callback){
   console.log(obj);
 
   return obj;
+}
+
+//@Tariq:
+//Timeline data
+Visualizer.getTimelineData = function (callback){
+ // var obj ={
+ //  tdata : settings.tracks
+ //  }
+      for(i=0;i<settings.brushLayer.length;i++){
+        console.log("Tar");
+    console.log(JSON.stringify(settings.brushLayer[i].features.length, null, 4));
+ }
+  return settings.tracks;
 }
 
 // Update the map's view port, as to

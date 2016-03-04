@@ -21,30 +21,66 @@ Tariq Anwar
   </div>  
   
   <script>
-  $("#changePanel").click(function() {
+   var control;
+   var  playback;
+   var myLayer;
+   var featuregroup;
+    $("#changePanel").click(function() {
+      // $('#XXX leaflet-control').empty();
+       $(".lp").remove();
+    });
+  $("#playback-players-list").change(function() {
+    var index = $("select[id='playback-players-list'] option:selected").index();
+   // console.log("IndexXXXXXXX"+index);
     //var data = "foobar";
     //$("#panel").hide().html(data).fadeIn('fast');
 
    //  if (visualizer.data.length != 0) {
 	//Visualizer.update();
-	var vis = Visualizer.getContext();
-	console.log("Tariq:"+ typeof(vis.data));
-     var playbackOptions = {
-       
-
-    };
-	if(vis.data.length != 0){
-          var playback = new L.Playback(map, vis.data,null, playbackOptions);  
-              var control = new L.Playback.Control(playback);
-             control.addTo(map);
-			 }
+   $(".lp").remove();
+	var vis = Visualizer.getTimelineData();
+  var playbackOptions = {};
+    
+     var c = parseInt(index);
+      //if(control != undefined){
+        console.log("length"+vis.length);
+        console.log("Indexxx:" +c);
+       // console.log("SIZE"+vis.tdata[index].length);
+      //  console.log(JSON.stringify(vis[c], null, 4));
+       // $('#lp').remove();
+       // $(".lp").remove();
+       // control.removeFrom(map);
+       // playback = null;
+     // }
+       playback = new L.Playback(map, vis[c],null, playbackOptions);
+       control = new L.Playback.Control(playback);
+       control.addTo(map);
 	////////////////////////////////////////////////////////
 
+       if(myLayer != undefined){
+        // console.log("removeeeeeeee");
+         //  map.removeLayer(myLayer);
+        // d3.selectAll(".brush").remove();
+         //  myLayer.clearLayers();
+        // $(".brush").remove();
+        // $(".lay").remove();
+        // $("#circle").remove();
+       // map.removeLayer(settings.brushLayer[c]);
+      myLayer.clearLayers();
+      map.removeLayer(myLayer);
+      $("#lay").remove();
+      $("#brush").empty();
+       }
+       
+       //$("div.x brush").remove();
+      // $(".brush").remove();
+      // d3.selectAll(".brush").remove();
+      
 
-	    var myLayer = L.geoJson().addTo(map);
 
-		myLayer.addData(settings.geoJsonLayer);
-		setBrush(settings.geoJsonLayer);
+	     myLayer = L.geoJson().addTo(map);
+		   myLayer.addData(settings.brushLayer[c]);
+		   setBrush(settings.brushLayer[c]);
 		
 		function pointColor(feature) {
 			return feature.properties.start> 5 ? '#f55' : '#a00';
@@ -61,12 +97,15 @@ purpose: Adding D3 brush component.
 argument: the formatted data 
 */		
 	function setBrush(data) {
+   // console.log(data.features.properties.start[1]);
+    var t=[];
     var container = d3.select('#brush'),
-       width =800,    
+       width =750,    
        height = 100;
-       margin = {top: 0, right: 50, bottom: 10, left: 400};
+       margin = {top: 50, right: 50, bottom: 100, left: 640};
      
     var timeExtent = d3.extent(data.features, function(d) {
+        t.push(new Date(d.properties.start));
         return new Date(d.properties.start);
     });
 
@@ -83,18 +122,21 @@ argument: the formatted data
 
 
     var x = d3.time.scale()
-        .range([0, width])
-        .domain(timeExtent);
+        .range([0, width]),
+        .domain(timeExtent);  
 
     var brush = d3.svg.brush()
         .x(x)
+        .extent([t[0],t[0]])
         .on('brushend', brushend);     
      
 	context.selectAll('circle.quake')
 		   .data(data.features)
 		   .enter()
 		   .append('circle')
+       .attr('id','circle')
 		   .attr('transform', function(d) {
+
 				return 'translate(' + [x(new Date(d.properties.start)), height/2] + ')';
 			    })
 		   .attr('r', pointRadius)
@@ -106,7 +148,9 @@ argument: the formatted data
 
 	context.append('g')
 			.attr('class', 'x brush')
+      .attr('id','lay')
 			.call(brush)
+      .call(brush.event)
 			.selectAll('rect')
 			.attr('y', -6)
 			.attr('height', height);    
@@ -114,27 +158,27 @@ argument: the formatted data
 
         function brushend() {
         var filter;
-            // If the user has selected no brush area, share everything.
         if (brush.empty()) {
-            filter = function() { return true; }
+          console.log("IF condition");
+            filter = function() { return true; 
+             }
         } else {
+            console.log("ELSE condition");
             // Otherwise, restrict features to only things in the brush extent.
             filter = function(feature) {
-             // console.log("strart"+feature.properties.start);
-             // console.log("zero"+brush.extent()[0] +"one"+brush.extent()[1]);
+              //console.log("strart"+feature.properties.start);
+              //console.log("zero"+brush.extent()[0] +"one"+brush.extent()[1]);
                 return feature.properties.start > +brush.extent()[0] &&
                     feature.properties.start < (+brush.extent()[1]);
             };
         }
         var filtered = data.features.filter(filter);
-            myLayer.clearLayers()
+             myLayer.clearLayers()
             .addData(filtered);
         }
 
 
             function drawBrush() {
-    // our year will this.innerText
-    //console.log(this.innerText)
 
     // define our brush extent to be begin and end of the year
     brush.extent(timeExtent)
