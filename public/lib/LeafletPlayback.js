@@ -725,13 +725,13 @@ L.Playback.TracksLayer = L.Class.extend({
     
         this.layer = new L.GeoJSON(null, layer_options);
 
-        var overlayControl = {
+/*         var overlayControl = {
             'GPS Tracks' : this.layer
         };
 
         L.control.layers(null, overlayControl, {
             collapsed : false
-        }).addTo(map);
+        }).addTo(map); */
     },
 
     // clear all geoJSON layers

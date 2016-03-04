@@ -13,9 +13,8 @@ Tariq Anwar
 
   <div class="navbar navbar-default navbar-fixed-bottom">
   <div class = "container"> 
-  <input id="changePanel" value="Playback" type="button"></input> 
   <select id="playback-players-list" >
-		<option value="">Select One</option>
+		<option value="">Select Player</option>
   </select>
   </div>
   </div>  
@@ -25,10 +24,6 @@ Tariq Anwar
    var  playback;
    var myLayer;
    var featuregroup;
-    $("#changePanel").click(function() {
-      // $('#XXX leaflet-control').empty();
-       $(".lp").remove();
-    });
   $("#playback-players-list").change(function() {
     var index = $("select[id='playback-players-list'] option:selected").index();
    // console.log("IndexXXXXXXX"+index);
