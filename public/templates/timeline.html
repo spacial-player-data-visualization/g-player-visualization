@@ -70,7 +70,7 @@ argument: the formatted data
     var container = d3.select('#brush'),
        width =750,    
        height = 100;
-       margin = {top: 50, right: 50, bottom:300, left: 640};
+       margin = {top: 50, right: 50, bottom:100, left: 640};
      
     var timeExtent = d3.extent(data.features, function(d) {
         t.push(new Date(d.properties.start));  //just top two entries are required , could be removed;
