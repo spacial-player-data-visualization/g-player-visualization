@@ -1,5 +1,4 @@
 .ui-brush {
-  background:#f8f8f8;
   position:absolute;
   bottom:0;right:0;left:0;
   height:100px;
@@ -9,3 +8,14 @@
   fill-opacity:0.125;
   shape-rendering:crispEdges;
   }
+
+.axis text {
+  font: 11px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #100;
+  shape-rendering: crispEdges;
+}

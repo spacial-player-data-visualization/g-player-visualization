@@ -435,167 +435,7 @@ Visualizer.loadData = function(){
       settings.data = filterPositions(data);
     }
 
-    // Create the GeoJson layer for the Leaflet.timeline
     Visualizer.createGeoJsonLayer();
-  //  settings.tracks = settings.tracks.filter(Boolean);
-
-    // TODO: TIMELINE WIP
-    /*
-    var timeline = L.timeline(data, {
-          style: function(data){
-            return {
-              stroke: false,
-              color: 'black',
-              fillOpacity: 0.5
-            }
-          },
-          formatDate: function(date){
-            return moment(date).format("YYYY-MM-DD");
-          }
-        });
-    timeline.setPosition('topleft');
-    timeline.addTo(map);
-    console.log("adding timeline to map");
-    */
-    // TODO: END WIP
-
-    // =====================================================
-    // =============== Playback ============================
-    // =====================================================
-    
-    // Playback options
-/*    if (data.length != 0) { 
-     var playbackOptions = {
-       
-
-    };
-          var playback = new L.Playback(map, settings.geoJsonLay,null, playbackOptions);  
-
-              var control = new L.Playback.Control(playback);
-             control.addTo(map);
-        }  */
-		
-	//Adding D3 brush layer 
-    //=====================================================
-	//=====================================================
-    // Playback options
- /*    settings.tracks = settings.tracks.filter(Boolean);
-	
-	    var myLayer = L.geoJson().addTo(map);
-
-		myLayer.addData(settings.geoJsonLayer);
-		setBrush(settings.geoJsonLayer);
-		
-		function pointColor(feature) {
-			return feature.properties.start> 5 ? '#f55' : '#a00';
-		}
-
-		function pointRadius(feature) {
-			return 6;
-		}
-	
-
-author: Tariq Anwar
-created: Feb 22, 2016
-purpose: Adding D3 brush component.
-argument: the formatted data 
-		
-	function setBrush(data) {
-    var container = d3.select('#brush'),
-       width =800,    
-       height = 100;
-       margin = {top: 0, right: 40, bottom: 50, left: 400};
-     
-    var timeExtent = d3.extent(data.features, function(d) {
-        return new Date(d.properties.start);
-    });
-
-    var svg = container.append('svg')
-        .attr("class", "grid-background")
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom);
-
-    var context = svg.append('g')
-        .attr('class', 'context')
-        .attr('transform', 'translate(' +
-            margin.left + ',' +
-            margin.top + ')');
-
-
-    var x = d3.time.scale()
-        .range([0, width])
-        .domain(timeExtent);
-
-    var brush = d3.svg.brush()
-        .x(x)
-        .on('brushend', brushend);     
-     
-	context.selectAll('circle.quake')
-		   .data(data.features)
-		   .enter()
-		   .append('circle')
-		   .attr('transform', function(d) {
-				return 'translate(' + [x(new Date(d.properties.start)), height/2] + ')';
-			    })
-		   .attr('r', pointRadius)
-		   .attr('opacity', 0.5)
-		   .attr('stroke', '#fff')
-		   .attr('stroke-width',0.5)
-		   .attr('fill', pointColor);
-
-
-	context.append('g')
-			.attr('class', 'x brush')
-			.call(brush)
-			.selectAll('rect')
-			.attr('y', -6)
-			.attr('height', height);    
-
-
-        function brushend() {
-        var filter;
-            // If the user has selected no brush area, share everything.
-        if (brush.empty()) {
-            filter = function() { return true; }
-        } else {
-            // Otherwise, restrict features to only things in the brush extent.
-            filter = function(feature) {
-             // console.log("strart"+feature.properties.start);
-             // console.log("zero"+brush.extent()[0] +"one"+brush.extent()[1]);
-                return feature.properties.start > +brush.extent()[0] &&
-                    feature.properties.start < (+brush.extent()[1]);
-            };
-        }
-        var filtered = data.features.filter(filter);
-            myLayer.clearLayers()
-            .addData(filtered);
-        }
-
-
-            function drawBrush() {
-    // our year will this.innerText
-    //console.log(this.innerText)
-
-    // define our brush extent to be begin and end of the year
-    brush.extent(timeExtent)
-    // brush.extent([[250, 80], [600, 80]]);
-
-    // now draw the brush to match our extent
-    // use transition to slow it down so we can see what is happening
-    // remove transition so just d3.select(".brush") to just draw
-    brush(d3.select("#brush").transition());
-
-    // now fire the brushstart, brushmove, and brushend events
-    // remove transition so just d3.select(".brush") to just draw
-    brush.event(d3.select("#brush").transition().delay(10))
-  }
-
-} */
-	
-	//========================================================
-	//========================================================
-		
-    // Update our map with new data.
     Visualizer.update();
 
   })
@@ -678,7 +518,9 @@ created September 8, 2015
 purpose: Create a Feature Collection of all GeoJson data
 */
 Visualizer.createGeoJsonLayer = function() {
-   var  geoJsonLay = {
+
+//object for creating Timeline playback 
+   var  geoJsonLay = {   
     type: "Feature",
     geometry: {
     type: "MultiPoint",
@@ -689,14 +531,14 @@ Visualizer.createGeoJsonLayer = function() {
   }
    } ;
 
+//object for creating D3 brush slider window
    var   geoJsonD3Lay = {
     type: "FeatureCollection",
     features: [],
   };
-  _.each(settings.data.actions.concat(settings.data.positions), function(json){
-    //console.log("DDDDDD"+JSON.stringify(json, null, 4));
-     //GeoJason Feature format  Layer for Playback Timeline
 
+  _.each(settings.data.actions.concat(settings.data.positions), function(json){
+     //GeoJason Feature format  Layer for Playback Timeline
     geoJsonLay.geometry.coordinates.push(json['coord']);
     geoJsonLay.properties.time.push(json['start']);
 
@@ -704,15 +546,11 @@ Visualizer.createGeoJsonLayer = function() {
     
     settings.geoJsonLayer.features.push(geoJson);
     geoJsonD3Lay.features.push(geoJson);
-   // console.log("DDDDDD"+settings.geoJsonLay.geometry.coordinates);
   });
   
    //Pushing GeoJasonLay to array tracks
-   // if(settings.geoJsonLay.properties.time.length != 0){
     settings.tracks.push(geoJsonLay);
     settings.brushLayer.push(geoJsonD3Lay);
-
-   // }
 }
 
 // Returns a representation of the current state of the
@@ -748,16 +586,10 @@ Visualizer.getContext = function(callback){
   return obj;
 }
 
-//@Tariq:
-//Timeline data
+/*@ author: Tariq:
+    Purpose: Timeline and Slider window data feeder
+    Date : March 1 2016*/
 Visualizer.getTimelineData = function (callback){
- // var obj ={
- //  tdata : settings.tracks
- //  }
-      for(i=0;i<settings.brushLayer.length;i++){
-        console.log("Tar");
-    console.log(JSON.stringify(settings.brushLayer[i].features.length, null, 4));
- }
   return settings.tracks;
 }
 
