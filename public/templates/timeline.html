@@ -25,15 +25,45 @@ Tariq Anwar
    var myLayer;
    var featuregroup;
 
+    // Colors for AwesomeMarkers
+    var _colorIdx = 0,
+        _colors = [
+          'orange',
+          'green',
+          'blue',
+          'purple',
+          'darkred',
+          'cadetblue',
+          'red',
+          'darkgreen',
+          'darkblue',
+          'darkpurple'
+        ];
+        
+    function _assignColor() {
+        return _colors[_colorIdx++%10];
+    }
+
   $("#playback-players-list").change(function() {
       var index = $("select[id='playback-players-list'] option:selected").index();  //get index of selected player
       $(".lp").remove();
-	    var vis = Visualizer.getTimelineData();  //getting players data 
-      var playbackOptions = {};
+	    //var vis = Visualizer.getTimelineData();  //getting players data 
+      var playbackOptions = {
+          marker: function(){
+            return {
+                icon: L.AwesomeMarkers.icon({
+                    prefix: 'fa',
+                    icon: 'bullseye', 
+                    markerColor: _assignColor()
+                }) 
+            };
+        } 
+      };
     
-      var c = parseInt(index);   
-
-       playback = new L.Playback(map, vis[c],null, playbackOptions); //playback of selected player
+         var c = parseInt(index);   
+        //settings.tracks.splice(0,1);
+        console.log(settings.tracks.length);
+       playback = new L.Playback(map,settings.tracks,null, playbackOptions); //playback of selected player
        control = new L.Playback.Control(playback);
        control.addTo(map);
 

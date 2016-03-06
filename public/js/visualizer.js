@@ -549,7 +549,9 @@ Visualizer.createGeoJsonLayer = function() {
   });
   
    //Pushing GeoJasonLay to array tracks
+    if(geoJsonLay.properties.time.length != 0){
     settings.tracks.push(geoJsonLay);
+    }
     settings.brushLayer.push(geoJsonD3Lay);
 }
 
