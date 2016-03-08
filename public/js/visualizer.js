@@ -33,17 +33,11 @@ var settings = {
     type: "FeatureCollection",
     features: [],
   },
- 
-
-  //json layer for brush
-  brushLayer : [], 
-  //player tracks
-  tracks : [],
 
   // enable player paths
   paths : true,
 
-  // Default Game
+  // Current Game
   game : null,
 
   // Current Map
@@ -230,7 +224,6 @@ Visualizer.genHeatMap = function(){
   
   console.log("heatmap data generation complete");
   Heatmap.add(hmDataset,hmName);
-  
 }
 
 
@@ -273,7 +266,7 @@ Visualizer.draw = function(entries, color, index, checkedActions){
     entries = sortBy(entries, "timestamp");
 
     // Get the active set of data
-    var data = Visualizer.activeData(filterPositions(entries),checkedActions);
+
 
     /********************************
              POSITIONS
@@ -347,7 +340,7 @@ Visualizer.draw = function(entries, color, index, checkedActions){
 // Given a dataset, seperate the data into positions
 // and actions. In addition, remove any data type
 // that the user has disables from the UI
-Visualizer.activeData = function(dataset,checkedActions){
+
 
     // Seperate data to positions and actions
     var data = {
@@ -462,8 +455,7 @@ Visualizer.formatData = function(data){
   data['longitude'] = data.posX / scale;
   data['latitude']  = data.posY / scale;
 
-//data['longitude'] = data.posX ;
- // data['latitude']  = data.posY;//
+
   // Assigns this data point a start/end based on the data's timestamp in seconds
   // Note: for a game that has events with a start/end time a condition can be added here
   // year, month, day, hours, minutes, seconds, milliseconds
@@ -474,20 +466,6 @@ Visualizer.formatData = function(data){
   // Not sure what to do to have the time display exactly as we want it to.
   data['start'] = data.timestamp*1000;//data.timestamp;//moment({seconds: data.timestamp}).unix();
   data['end'] = data.timestamp;//moment({seconds: data.timestamp}).unix();
-
-  // TODO: geometry for positions should be a LineString, not a Point
-  //if(data.action) {
-    data['geometry'] = {
-      type: 'Point',
-      coordinates: [data.longitude, data.latitude],
-    };
-  /*} else { 
-    data['geometry'] = {
-      type: 'LineString',
-      // TODO: WIP Obviously need to find a way to have lines drawn properly.
-      coordinates: [[data.longitude, data.latitude], [data.longitude, data.latitude]],
-    }
-  }*/
 
   //TODO: FORMAT ALL OF THE DATA TYPES NEEDED FOR LEAFLET.TIMELINE
   
@@ -643,11 +621,9 @@ function convertJSONtoHTML(JSON){
 
 // Does the provided object contain the required keys?
 function containsRequiredKeys(obj){
-  
-  // Required keys
   var keys = ["playerID", "area", "posX", "posY", "timestamp"];
 
-  var acc = true;
+  var acc = keys.length > 0;
 
   _.each(keys, function(key){
     var containsKey = (obj && obj[key]) ? true : false;

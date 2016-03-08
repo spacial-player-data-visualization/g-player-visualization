@@ -12,6 +12,9 @@ Alex Jacks @alexjacks92
 
 */
 
+var Uploader = { CSV: {}, SSIEGE: {}, };
+var selectedGame = "";
+
 /* 
 name: loader
 author: Alex Jacks
@@ -41,7 +44,7 @@ function loader(){
 $(document).ready(function(){
 
   // Watch the file upload. Parse when file selected.
-  $("#csv-file").change(Uploader.parseFile);
+  $("#up-file").change(Uploader.parseFile);
 
 })
 
@@ -51,9 +54,6 @@ $('#gameSelect').on('change', function(){
   settings.game = selected;
   localStorage.setItem("selectedGame", settings.game);
 });
-
-var Uploader = {};
-var selectedGame = "";
 
 /* 
 name: parseFile
@@ -68,39 +68,56 @@ Uploader.parseFile = function(event) {
   UI.loading(true, "Parsing File....");
 
   var file = event.target.files[0];
+  var ext = file.name.split('.').pop();
+  var url = URL.createObjectURL(file);
 
-  Papa.parse(file, {
+  if (ext == "json") {
+    $.getJSON(url, function(data){
+      // TODO: ONLY DO THIS IF THE GAME IS SSIEGE / DIFFERENT FOR EACH GAME
+      // Pluck all Event data points from the EntityRecords
+      // Do a shallow flatten so all data points are in a 1-dimensional list
+      // Note: the shallow flatten is for the edge case where there are nested arrays
+      data = _.flatten(_.pluck(data.EntityRecords, "Events"), true);
+      setLocalJSON(data);
+      UI.alert(data.length + " results loaded.");
+      console.log("The following data was taken from the uploaded .json:");
+      console.log(data);
+      Uploader.SSIEGE.testUpload();
+    });
 
-    header: false,
-    dynamicTyping: true,
+    UI.loading(false);
+  } else if (ext == "csv") {
+    Papa.parse(file, {
 
-    // Parser Callback
-    complete: function(results) {
+      header: false,
+      dynamicTyping: true,
 
-      // error checking. Display errors to user.
-      if (results.errors.length != 0) {
-        Uploader.parserErrors(results.errors);
-      }
+      // Parser Callback
+      complete: function(results) {
 
-      UI.alert(results.data.length + " results loaded. ");
-        
-      // @TODO: Test Errors, provide user feedback
-      // var errors = results.errors;
+        // error checking. Display errors to user.
+        if (results.errors.length != 0) {
+          Uploader.parserErrors(results.errors);
+        }
 
-      // Remove invalid keys from first column
-      var data = sanitizeEntries(results.data, 0);
+        UI.alert(results.data.length + " results loaded.");
+          
+        // TODO: Test Errors, provide user feedback
+        // var errors = results.errors;
 
-      // Backup uploaded data to Local Storage
-      localStorage.setItem("upload", JSON.stringify(data));
+        // Remove invalid keys from first column
+        var data = Uploader.CSV.sanitizeEntries(results.data);
 
-      // Preview data to DOM
-      Uploader.populateTables(data);
+        // Backup uploaded data to Local Storage
+        setLocalJSON(data);
 
-      UI.loading(false);
-    },
-
-
-  });
+        UI.loading(false);
+      },
+    });
+  } else {
+    UI.error("Warning, the file you selected has no extension");
+    UI.loading(false);
+  }
 }
 
 
@@ -160,13 +177,6 @@ Uploader.sortByColumn = function(data, column){
   return data.sort(function(a,b) { 
     var toReturn = a[column].toString().localeCompare(b[column].toString());
     return toReturn;
-  });
-};
-
-// Remove entries that only contain an empty string
-Uploader.removeEmptyLines = function(data){
-  return _.filter(data, function(dat){
-    return dat.length > 1;
   });
 };
 
@@ -302,6 +312,41 @@ Uploader.populateTable = function(bucket, eventName){
 
 var bin_count = 0;
 
+/*
+TODO: THIS IS A TEST UPLOAD FUNCTION. NEEDS A TON OF WORK
+*/
+Uploader.SSIEGE.testUpload = function() {
+
+  UI.loading(true, "Uploading Data.....");
+  UI.alert("Sending to database.....");
+
+  // Get the JSON we plucked from the data file
+  var entries = getLocalJSON();
+
+  // TODO: in order to remove invalid entries, we must first create a set of required
+  // TODO: keys for the game SSIEGE. We also have to check the node.js models and make
+  // TODO: one that matches the fields for SSIEGE (playerID, area, posX, posY, timestamp)
+  // Remove invalid entries
+  // entries = Uploader.removeInvalidEntries(entries);
+
+  if (!confirm("Upload " + entries.length + " entries to the database?")) {
+      UI.loading(false, "Upload cancelled.");
+      return;
+  }
+
+  // Split data into multiple, smaller bins
+  var bins = split(entries, entries.length / 200);
+
+  UI.loading(true, "Uploaded " + entries.length + " entries");
+
+  bin_count = bins.length;
+
+  // Upload bins
+  Uploader.upload(bins, function(){
+    UI.loading(false, "Upload complete!");
+  });
+}
+
 /* 
 name: bulkUpload
 author: Alex Jacks
@@ -315,7 +360,7 @@ Uploader.bulkUpload = function(){
   UI.alert("Sending to database....");
 
   // Get data from last upload
-  entries = lastUpload();
+  entries = getLocalJSON();
 
    // Convert data into JSON object.
   // All data should now be represented
@@ -368,7 +413,7 @@ Uploader.bulkUpload = function(){
 
     // Upload bins
     Uploader.upload(bins, function(){
-      UI.loading(false, "Upload COMPLETE");
+      UI.loading(false, "Upload complete!");
     });
   });
 }
@@ -539,6 +584,17 @@ Uploader.removeInvalidEntries = function(data){
        Helper Functions
  ******************************/
 
+// Retrieve data from localStorage
+// Returns the last JSON that the user converted.
+function getLocalJSON() {
+  return JSON.parse(localStorage.getItem("upload"));
+}
+
+// Sets the localStorage "upload" to the string contents of the given JSON
+function setLocalJSON(data) {
+  localStorage.setItem("upload", JSON.stringify(data));
+}
+
 // Find the entry with the most entries.
 // This will determine the amount of
 // rows to generate in the preview table.
@@ -567,12 +623,6 @@ function split(array, n) {
   return bins;
 }
 
-// Retrieve data from localStorage
-// Returns the last JSON that the user converted.
-function lastUpload(){
-  return JSON.parse(localStorage.getItem("upload"));
-}
-
 // get the unique entries from the first field of the json objects
 // Provide a column id to look at.
 function getUniqueKeys(data, column) {
@@ -587,21 +637,18 @@ function getUniqueKeys(data, column) {
   return toReturn;
 }
 
-// remove linebreaks and new lines from the data
-// Provide a multidimensional array, and a column
-function sanitizeEntries(data, column) {
+// Remove empty lines, new lines, line breaks, etc
+Uploader.CSV.sanitizeEntries = function(data) {
+  // Remove lines that contain 1 or fewer entries
+  data = _.filter(data, function(row){ return row.length > 1; });
 
-  // Delete new lines
-  data = Uploader.removeEmptyLines(data);
-  
+  // Remove line breaks, new lines, etc
   for (var index in data) {
-    if (typeof data[index][column] == 'string' || 
-      data[index][column] instanceof String) {
-      data[index][column] = data[index][column].replace(/(?:\r\n|\r|\n)/g, '');
+    if (typeof data[index][0] == 'string' || data[index][0] instanceof String) {
+        data[index][0] = data[index][0].replace(/(?:\r\n|\r|\n)/g, '');
+    }
   }
-}
-
-return data;
+  return data;
 }
 
 // toggle hidden or visible for the parent div
@@ -697,12 +744,15 @@ var assignKeys = function(values, columns){
   var acc = {};
 
   // Check data. Make sure we have enough keys for our data.
+  // TODO: comment this out for now, lots of problems with VPAL data
+  /*
   if (columns.length != values.length){
     console.error("Warning: Mismatch in key mapping. Amount of keys and values differ." + columns.length + " Columns, " + values.length + " Values");
     console.log(columns);
     console.log(values);
     console.log("\n");
   }
+  */
 
   _.each(columns, function(value, key){
     // Ensure data exists. If not, make it null for DB.
