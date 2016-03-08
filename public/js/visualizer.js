@@ -77,8 +77,15 @@ var settings = {
   listOfActions : [],
   
   // Current groups
-  groups : []
+  groups : [],
+  
+  // color options
+  colors : ["#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf", "#e0f3f8", "#abd9e9", "#74add1", "#4575b4"],
 
+  window : {
+    start : 0,
+    end : 10000
+  }
 
 };
 
@@ -105,6 +112,7 @@ Visualizer.API_url = (window.location.href.indexOf("herokuapp.com") > -1) ? "htt
 
 // Re-plot the map with updated settings
 Visualizer.refresh = function(){
+  console.log("START"+settings.window.start  +" END "+settings.window.end);
   Visualizer.clear();
   Visualizer.update();
 };
@@ -126,30 +134,30 @@ Visualizer.update = function(){
   // check if group is visible (indivisual player visibility is deselected)
   var groupvisible = false;
   _.each(settings.groups, function(group){
-	  if(group.visibility){
-		//console.log("group visible. looking at players in group...");
-		groupvisible = true;
-		// Iterate through players
-		_.each(players, function(player, playerID){
-			var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
-			
-			// Render each player onto the map
-			if(group.players.indexOf(playerID) != -1)
-			Visualizer.draw(player, thisPlayer.color, count++, group.checkedActions);
-		});
-	  }
+    if(group.visibility){
+    //console.log("group visible. looking at players in group...");
+    groupvisible = true;
+    // Iterate through players
+    _.each(players, function(player, playerID){
+      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+      
+      // Render each player onto the map
+      if(group.players.indexOf(playerID) != -1)
+      Visualizer.draw(player, thisPlayer.color, count++, group.checkedActions);
+    });
+    }
   });
   
   if(groupvisible == false){
-	  //console.log("no group visible. looking at players...");
-	  // Iterate through players
-	  _.each(players, function(player, playerID){
-		  var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+    //console.log("no group visible. looking at players...");
+    // Iterate through players
+    _.each(players, function(player, playerID){
+      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
 
-		  // Render visible player onto the map
-		  if(thisPlayer.visibility)
-		  Visualizer.draw(player, thisPlayer.color, count++, thisPlayer.checkedActions);
-	  });
+      // Render visible player onto the map
+      if(thisPlayer.visibility)
+      Visualizer.draw(player, thisPlayer.color, count++, thisPlayer.checkedActions);
+    });
   }
   
   Visualizer.updateHeatmap();
@@ -186,44 +194,44 @@ Visualizer.genHeatMap = function(){
   // check if group is visible (indivisual player visibility is deselected)
   var groupvisible = false;
   _.each(settings.groups, function(group){
-	  if(group.visibility){
-		//console.log("group visible. looking at players in group...");
-		groupvisible = true;
-		hmName += "group: " + group.groupID + "\n\n";
-		
-		// Iterate through players
-		_.each(players, function(player, playerID){
-			var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
-			
-			// Render each player onto the map
-			if(group.players.indexOf(playerID) != -1){
-				var newDataset = Visualizer.activeData(filterPositions(player), group.checkedActions);
-				hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
-				hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
-				
-				hmName += "Player:" + playerID + "\n";
-			}
-		});
-		
-		hmName += "\nActions:" + group.checkedActions + "\n";
-	  }
+    if(group.visibility){
+    //console.log("group visible. looking at players in group...");
+    groupvisible = true;
+    hmName += "group: " + group.groupID + "\n\n";
+    
+    // Iterate through players
+    _.each(players, function(player, playerID){
+      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+      
+      // Render each player onto the map
+      if(group.players.indexOf(playerID) != -1){
+        var newDataset = Visualizer.activeData(filterPositions(player), group.checkedActions);
+        hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
+        hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
+        
+        hmName += "Player:" + playerID + "\n";
+      }
+    });
+    
+    hmName += "\nActions:" + group.checkedActions + "\n";
+    }
   });
   
   if(groupvisible == false){
-	  //console.log("no group visible. looking at players...");
-	  // Iterate through players
-	  _.each(players, function(player, playerID){
-		  var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+    //console.log("no group visible. looking at players...");
+    // Iterate through players
+    _.each(players, function(player, playerID){
+      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
 
-		  // Render visible player onto the map
-		  if(thisPlayer.visibility){
-			var newDataset  = Visualizer.activeData(filterPositions(player), thisPlayer.checkedActions);
-			hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
-			hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
-			
-			hmName += "Player:" + playerID + "\nActions:" + thisPlayer.checkedActions + "\n\n";
-		  }
-	  });
+      // Render visible player onto the map
+      if(thisPlayer.visibility){
+      var newDataset  = Visualizer.activeData(filterPositions(player), thisPlayer.checkedActions);
+      hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
+      hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
+      
+      hmName += "Player:" + playerID + "\nActions:" + thisPlayer.checkedActions + "\n\n";
+      }
+    });
   }
   
   //console.log(hmDataset.actions.length + "\n\n" + hmDataset.positions.length);
