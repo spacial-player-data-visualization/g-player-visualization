@@ -33,15 +33,6 @@ var settings = {
     type: "FeatureCollection",
     features: [],
   },
-<<<<<<< HEAD
-=======
- 
-
-  //json layer for brush
-  brushLayer : [], 
-  //player tracks
-  tracks : [],
->>>>>>> master
 
   // enable player paths
   paths : true,
@@ -180,10 +171,6 @@ Visualizer.genHeatMap = function(){
   // Group data by PlayerID
   var players = _.groupBy(unfilteredData, 'playerID');
 
-<<<<<<< HEAD
-  // Loading complete
-  UI.loading(false, "Success. " + unfilteredData.length + " points loaded.");
-=======
   // Store current index
   var count = 0;
   
@@ -237,8 +224,6 @@ Visualizer.genHeatMap = function(){
   
   console.log("heatmap data generation complete");
   Heatmap.add(hmDataset,hmName);
-  
->>>>>>> master
 }
 
 
@@ -281,11 +266,7 @@ Visualizer.draw = function(entries, color, index, checkedActions){
     entries = sortBy(entries, "timestamp");
 
     // Get the active set of data
-<<<<<<< HEAD
-    var data = Visualizer.activeData(filterPositions(entries));
-=======
-    var data = Visualizer.activeData(filterPositions(entries),checkedActions);
->>>>>>> master
+
 
     /********************************
              POSITIONS
@@ -359,12 +340,7 @@ Visualizer.draw = function(entries, color, index, checkedActions){
 // Given a dataset, seperate the data into positions
 // and actions. In addition, remove any data type
 // that the user has disables from the UI
-<<<<<<< HEAD
-Visualizer.activeData = function(dataset){
-    //dataset = dataset.positions.concat(dataset.actions);
-=======
-Visualizer.activeData = function(dataset,checkedActions){
->>>>>>> master
+
 
     // Seperate data to positions and actions
     var data = {
@@ -442,12 +418,6 @@ Visualizer.loadData = function(){
       return Visualizer.formatData(p);
     });
 
-<<<<<<< HEAD
-    console.log("Formatted Data: ");
-    console.log(data);
-
-=======
->>>>>>> master
     // Save data for future reference
     if (data.length == 0) {
       settings.data = {
@@ -457,31 +427,6 @@ Visualizer.loadData = function(){
     } else {
       settings.data = filterPositions(data);
     }
-<<<<<<< HEAD
-
-    // Create the GeoJson layer for the Leaflet.timeline
-    Visualizer.createGeoJsonLayer();
-
-    // TODO: TIMELINE WIP
-    // TODO: Buttons don't work. Multiple timelines added. Formatted time is wrong.
-    // TODO: Format is in Milliseconds for now because I stored just the timestamp instead of formatting it
-    var timeline = L.timeline(settings.geoJsonLayer, {
-          style: function(data){
-            return {
-              stroke: false,
-              color: '#000000',
-              fillOpacity: 0.5
-            }
-          },
-          formatDate: function(date){
-            return moment(date).format("SSS");
-          },
-          enablePlayback: true,
-          enableKeyboardControls: true,
-        });
-    timeline.addTo(map);
-=======
->>>>>>> master
 
     Visualizer.createGeoJsonLayer();
     Visualizer.update();
@@ -510,54 +455,17 @@ Visualizer.formatData = function(data){
   data['longitude'] = data.posX / scale;
   data['latitude']  = data.posY / scale;
 
-<<<<<<< HEAD
-=======
-//data['longitude'] = data.posX ;
- // data['latitude']  = data.posY;//
->>>>>>> master
+
   // Assigns this data point a start/end based on the data's timestamp in seconds
   // Note: for a game that has events with a start/end time a condition can be added here
   // year, month, day, hours, minutes, seconds, milliseconds
 
-<<<<<<< HEAD
-
-  // TODO: using data.timestamp allows us to just use the raw time for now...
-  // Not sure what to do to have the time display exactly as we want it to.
-  data['start'] = data.timestamp;//moment({seconds: data.timestamp}).unix();
-  data['end'] = data.timestamp;//moment({seconds: data.timestamp}).unix();
-
-  // TODO: geometry for positions should be a LineString, not a Point
-  if(data.action) {
-=======
   //data format for New Timeline Feature 
    data['coord'] = [(data.longitude), (data.latitude)];
   // TODO: using data.timestamp allows us to just use the raw time for now...
   // Not sure what to do to have the time display exactly as we want it to.
   data['start'] = data.timestamp*1000;//data.timestamp;//moment({seconds: data.timestamp}).unix();
   data['end'] = data.timestamp;//moment({seconds: data.timestamp}).unix();
-
-  // TODO: geometry for positions should be a LineString, not a Point
-  //if(data.action) {
->>>>>>> master
-    data['geometry'] = {
-      type: 'Point',
-      coordinates: [data.longitude, data.latitude],
-    };
-<<<<<<< HEAD
-  } else { 
-=======
-  /*} else { 
->>>>>>> master
-    data['geometry'] = {
-      type: 'LineString',
-      // TODO: WIP Obviously need to find a way to have lines drawn properly.
-      coordinates: [[data.longitude, data.latitude], [data.longitude, data.latitude]],
-    }
-<<<<<<< HEAD
-  }
-=======
-  }*/
->>>>>>> master
 
   //TODO: FORMAT ALL OF THE DATA TYPES NEEDED FOR LEAFLET.TIMELINE
   
@@ -588,12 +496,6 @@ created September 8, 2015
 purpose: Create a Feature Collection of all GeoJson data
 */
 Visualizer.createGeoJsonLayer = function() {
-<<<<<<< HEAD
-  _.each(settings.data.actions.concat(settings.data.positions), function(json){
-    var geoJson = Visualizer.convertJsonToGeoJson(json);
-    settings.geoJsonLayer.features.push(geoJson);
-  });
-=======
 
 //object for creating Timeline playback 
    var  geoJsonLay = {   
@@ -629,7 +531,6 @@ Visualizer.createGeoJsonLayer = function() {
     settings.tracks.push(geoJsonLay);
     }
     settings.brushLayer.push(geoJsonD3Lay);
->>>>>>> master
 }
 
 // Returns a representation of the current state of the
@@ -720,17 +621,7 @@ function convertJSONtoHTML(JSON){
 
 // Does the provided object contain the required keys?
 function containsRequiredKeys(obj){
-  
-  // Get required keys for the selected game
-  // TODO: this is WIP, need to abstract the required keys per game
-  // TODO: right now it's hard coded, need to find a way to have users upload this
-  var keys = {};
-  if (settings.game == "Fallout New Vegas") {
-    keys = ["playerID", "area", "posX", "posY", "timestamp"];
-  } else {
-    alert("No required keys found for the game " + settings.game);
-    return;
-  }
+  var keys = ["playerID", "area", "posX", "posY", "timestamp"];
 
   var acc = keys.length > 0;
 
