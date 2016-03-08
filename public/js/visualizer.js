@@ -80,7 +80,12 @@ var settings = {
   groups : [],
   
   // color options
-  colors : ["#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf", "#e0f3f8", "#abd9e9", "#74add1", "#4575b4"]
+  colors : ["#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf", "#e0f3f8", "#abd9e9", "#74add1", "#4575b4"],
+
+  window : {
+    start : 0,
+    end : 10000
+  }
 
 };
 
@@ -107,6 +112,7 @@ Visualizer.API_url = (window.location.href.indexOf("herokuapp.com") > -1) ? "htt
 
 // Re-plot the map with updated settings
 Visualizer.refresh = function(){
+  console.log("START"+settings.window.start  +" END "+settings.window.end);
   Visualizer.clear();
   Visualizer.update();
 };
