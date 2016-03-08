@@ -112,7 +112,6 @@ Visualizer.API_url = (window.location.href.indexOf("herokuapp.com") > -1) ? "htt
 
 // Re-plot the map with updated settings
 Visualizer.refresh = function(){
-  console.log("START"+settings.window.start  +" END "+settings.window.end);
   Visualizer.clear();
   Visualizer.update();
 };

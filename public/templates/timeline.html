@@ -86,7 +86,7 @@ Tariq Anwar
        setBrush(settings.brushLayer[c]);
     
     function pointColor(feature) {
-      return feature.properties.start> 5 ? '#f55' : '#a00';
+      return feature.properties.end> 5 ? '#f55' : '#a00';
     }
 
     function pointRadius(feature) {
@@ -105,11 +105,11 @@ argument: the formatted data
     var container = d3.select('#brush'),
        width =750,    
        height = 100;
-       margin = {top: 50, right: 50, bottom:100, left: 640};
+       margin = {top: 50, right: 50, bottom:100, left: 530};
      
     var timeExtent = d3.extent(data.features, function(d) {
-        t.push(new Date(d.properties.start));  //just top two entries are required , could be removed;
-        return new Date(d.properties.start);
+        t.push(new Date(d.properties.end));  //just top two entries are required , could be removed;
+        return new Date(d.properties.end);
     });
 
     var svg = container.append('svg')
@@ -146,7 +146,7 @@ argument: the formatted data
        .attr('id','circle')
        .attr('transform', function(d) {
          // red circles for the data points
-        return 'translate(' + [x(new Date(d.properties.start)), height/2] + ')';
+        return 'translate(' + [x(new Date(d.properties.end)), height/2] + ')';
           })
        .attr('r', pointRadius)
        .attr('opacity', 0.5)
@@ -172,25 +172,30 @@ argument: the formatted data
         function brushend() {
         var filter;
         if (brush.empty()) {
-            filter = function() { return true; 
+            filter = function() { return false; 
              }
         } else {
             // Otherwise, restrict features to only things in the brush extent.
             filter = function(feature) {
-               console.log("strart"+feature.properties.start);
-              console.log(+brush.extent()[0].getMilliseconds());
+             //  console.log("strart"+feature.properties.end);
+             // console.log(+brush.extent()[0].getMilliseconds());
+             // console.log(+brush.extent()[1].getMilliseconds());
 
-                return feature.properties.start > +brush.extent()[0] &&
-                    feature.properties.start < (+brush.extent()[1]);
+                return feature.properties.end > +brush.extent()[0] &&
+                    feature.properties.end < (+brush.extent()[1]);
             };
         }
         var filtered = data.features.filter(filter);
-             myLayer.clearLayers()
-            .addData(filtered);
+            myLayer.clearLayers();
+           //.addData(filtered);  //use when you want to filter the  position data on map
 
-            //  settings.window.start = feature.properties.start.getMilliseconds();
-            //  settings.window.end =  (feature.properties.start + 200).getMilliseconds();
-            //  Visualizer.refresh();     
+          //  console.log(filtered);
+           var extent = brush.extent(); //returns [xMin, xMax]
+           var rangeExtent = [x( extent[0] ), x( extent[1] ) ]; //convert
+           var rangeWidth  = rangeExtent[1] - rangeExtent[0];
+              settings.window.start = rangeExtent[0];
+              settings.window.end =  rangeExtent[1];
+              Visualizer.refresh();     
         }
 
 // WIP : currently does not perform any task, was trying to move window slider automatically 
