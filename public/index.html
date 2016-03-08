@@ -104,7 +104,7 @@ Authors:
  <script src="lib/moment.js"></script>
  <script src="lib/LeafletPlayback.js"></script>
  <!--<script src="lib/LeafletPlayback.min.js"></script> -->
- <script src="lib/Control.js"></script> 
+ <script src="lib/Control.js"></script>
 
  <!-- App Functionality -->
  <script src="js/visualizer.js"></script>
@@ -211,7 +211,7 @@ Authors:
       // Status of checkbox
       var selected = $(this).find("option:selected").val();
       
-      settings.data = null;
+      settings.data = { positions : null, actions : null };
       
       // Remove previous data
       Visualizer.clear();
