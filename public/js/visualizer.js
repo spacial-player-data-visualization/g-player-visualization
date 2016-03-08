@@ -77,8 +77,10 @@ var settings = {
   listOfActions : [],
   
   // Current groups
-  groups : []
-
+  groups : [],
+  
+  // color options
+  colors : ["#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf", "#e0f3f8", "#abd9e9", "#74add1", "#4575b4"]
 
 };
 

@@ -296,7 +296,7 @@ purpose: Manage the players being represented on the visualizer
 arguments: playerID is the selected player 
 */
 UI.players = {};
-var colors = ["#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf", "#e0f3f8", "#abd9e9", "#74add1", "#4575b4"];
+var colors = settings.colors;
 var clr_indx = 0;
 
 // purpose: plots selected playerID onto map from left menu
@@ -401,7 +401,7 @@ UI.players.addAll = function(PlayerIDs){
   if (!confirm('Warning! Loading all players in the current list may load a considerable amount of data. This request could take time to process, and may cause your map to become slow or unresponsive. If you haven\'t already, we recommend selecting a lower "fidelity" from the left menu in order to reduce the amount of positions per second being returned. Are you sure you want to continue?')) return;
 
   UI.getListOfAvailablePlayerIDs(function(playerIDs){
-	var colors = ["#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf", "#e0f3f8", "#abd9e9", "#74add1", "#4575b4"];
+	var colors = settings.colors;
 	var clr_indx = 0;
 	
     _.each(playerIDs, function(playerID){
