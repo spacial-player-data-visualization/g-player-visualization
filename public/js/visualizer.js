@@ -33,11 +33,17 @@ var settings = {
     type: "FeatureCollection",
     features: [],
   },
+ 
+
+  //json layer for brush
+  brushLayer : [], 
+  //player tracks
+  tracks : [],
 
   // enable player paths
   paths : true,
 
-  // Current Game
+  // Default Game
   game : null,
 
   // Current Map
@@ -120,30 +126,30 @@ Visualizer.update = function(){
   // check if group is visible (indivisual player visibility is deselected)
   var groupvisible = false;
   _.each(settings.groups, function(group){
-	  if(group.visibility){
-		//console.log("group visible. looking at players in group...");
-		groupvisible = true;
-		// Iterate through players
-		_.each(players, function(player, playerID){
-			var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
-			
-			// Render each player onto the map
-			if(group.players.indexOf(playerID) != -1)
-			Visualizer.draw(player, thisPlayer.color, count++, group.checkedActions);
-		});
-	  }
+    if(group.visibility){
+    //console.log("group visible. looking at players in group...");
+    groupvisible = true;
+    // Iterate through players
+    _.each(players, function(player, playerID){
+      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+      
+      // Render each player onto the map
+      if(group.players.indexOf(playerID) != -1)
+      Visualizer.draw(player, thisPlayer.color, count++, group.checkedActions);
+    });
+    }
   });
   
   if(groupvisible == false){
-	  //console.log("no group visible. looking at players...");
-	  // Iterate through players
-	  _.each(players, function(player, playerID){
-		  var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+    //console.log("no group visible. looking at players...");
+    // Iterate through players
+    _.each(players, function(player, playerID){
+      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
 
-		  // Render visible player onto the map
-		  if(thisPlayer.visibility)
-		  Visualizer.draw(player, thisPlayer.color, count++, thisPlayer.checkedActions);
-	  });
+      // Render visible player onto the map
+      if(thisPlayer.visibility)
+      Visualizer.draw(player, thisPlayer.color, count++, thisPlayer.checkedActions);
+    });
   }
   
   Visualizer.updateHeatmap();
@@ -180,50 +186,51 @@ Visualizer.genHeatMap = function(){
   // check if group is visible (indivisual player visibility is deselected)
   var groupvisible = false;
   _.each(settings.groups, function(group){
-	  if(group.visibility){
-		//console.log("group visible. looking at players in group...");
-		groupvisible = true;
-		hmName += "group: " + group.groupID + "\n\n";
-		
-		// Iterate through players
-		_.each(players, function(player, playerID){
-			var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
-			
-			// Render each player onto the map
-			if(group.players.indexOf(playerID) != -1){
-				var newDataset = Visualizer.activeData(filterPositions(player), group.checkedActions);
-				hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
-				hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
-				
-				hmName += "Player:" + playerID + "\n";
-			}
-		});
-		
-		hmName += "\nActions:" + group.checkedActions + "\n";
-	  }
+    if(group.visibility){
+    //console.log("group visible. looking at players in group...");
+    groupvisible = true;
+    hmName += "group: " + group.groupID + "\n\n";
+    
+    // Iterate through players
+    _.each(players, function(player, playerID){
+      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+      
+      // Render each player onto the map
+      if(group.players.indexOf(playerID) != -1){
+        var newDataset = Visualizer.activeData(filterPositions(player), group.checkedActions);
+        hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
+        hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
+        
+        hmName += "Player:" + playerID + "\n";
+      }
+    });
+    
+    hmName += "\nActions:" + group.checkedActions + "\n";
+    }
   });
   
   if(groupvisible == false){
-	  //console.log("no group visible. looking at players...");
-	  // Iterate through players
-	  _.each(players, function(player, playerID){
-		  var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+    //console.log("no group visible. looking at players...");
+    // Iterate through players
+    _.each(players, function(player, playerID){
+      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
 
-		  // Render visible player onto the map
-		  if(thisPlayer.visibility){
-			var newDataset  = Visualizer.activeData(filterPositions(player), thisPlayer.checkedActions);
-			hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
-			hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
-			
-			hmName += "Player:" + playerID + "\nActions:" + thisPlayer.checkedActions + "\n\n";
-		  }
-	  });
+      // Render visible player onto the map
+      if(thisPlayer.visibility){
+      var newDataset  = Visualizer.activeData(filterPositions(player), thisPlayer.checkedActions);
+      hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
+      hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
+      
+      hmName += "Player:" + playerID + "\nActions:" + thisPlayer.checkedActions + "\n\n";
+      }
+    });
   }
   
   //console.log(hmDataset.actions.length + "\n\n" + hmDataset.positions.length);
   
   console.log("heatmap data generation complete");
   Heatmap.add(hmDataset,hmName);
+  
 }
 
 
@@ -266,7 +273,7 @@ Visualizer.draw = function(entries, color, index, checkedActions){
     entries = sortBy(entries, "timestamp");
 
     // Get the active set of data
-
+    var data = Visualizer.activeData(filterPositions(entries),checkedActions);
 
     /********************************
              POSITIONS
@@ -340,7 +347,7 @@ Visualizer.draw = function(entries, color, index, checkedActions){
 // Given a dataset, seperate the data into positions
 // and actions. In addition, remove any data type
 // that the user has disables from the UI
-
+Visualizer.activeData = function(dataset,checkedActions){
 
     // Seperate data to positions and actions
     var data = {
@@ -455,7 +462,8 @@ Visualizer.formatData = function(data){
   data['longitude'] = data.posX / scale;
   data['latitude']  = data.posY / scale;
 
-
+//data['longitude'] = data.posX ;
+ // data['latitude']  = data.posY;//
   // Assigns this data point a start/end based on the data's timestamp in seconds
   // Note: for a game that has events with a start/end time a condition can be added here
   // year, month, day, hours, minutes, seconds, milliseconds
@@ -466,6 +474,20 @@ Visualizer.formatData = function(data){
   // Not sure what to do to have the time display exactly as we want it to.
   data['start'] = data.timestamp*1000;//data.timestamp;//moment({seconds: data.timestamp}).unix();
   data['end'] = data.timestamp;//moment({seconds: data.timestamp}).unix();
+
+  // TODO: geometry for positions should be a LineString, not a Point
+  //if(data.action) {
+    data['geometry'] = {
+      type: 'Point',
+      coordinates: [data.longitude, data.latitude],
+    };
+  /*} else { 
+    data['geometry'] = {
+      type: 'LineString',
+      // TODO: WIP Obviously need to find a way to have lines drawn properly.
+      coordinates: [[data.longitude, data.latitude], [data.longitude, data.latitude]],
+    }
+  }*/
 
   //TODO: FORMAT ALL OF THE DATA TYPES NEEDED FOR LEAFLET.TIMELINE
   
@@ -621,9 +643,11 @@ function convertJSONtoHTML(JSON){
 
 // Does the provided object contain the required keys?
 function containsRequiredKeys(obj){
+  
+  // Required keys
   var keys = ["playerID", "area", "posX", "posY", "timestamp"];
 
-  var acc = keys.length > 0;
+  var acc = true;
 
   _.each(keys, function(key){
     var containsKey = (obj && obj[key]) ? true : false;
