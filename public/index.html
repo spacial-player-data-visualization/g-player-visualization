@@ -29,15 +29,23 @@ Authors:
   <title>G-Player Data Visualization | Visualize Data</title>
 
   <!-- External Style Sheets -->
-  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+ 
   <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+   <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" type="text/css" /> 
+  <link href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css" /> 
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://jdewit.github.io/bootstrap-timepicker/css/bootstrap-timepicker.min.css"  type="text/css" />
   <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/css/messenger.css" />
   <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/css/messenger-theme-air.css" />
   <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/css/select2.min.css" />
+   <link href="http://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.0/leaflet.awesome-markers.css" rel="stylesheet" type="text/css" />
+  
 
   <!-- Local Style Sheets -->
+    <link href="css/Control.css" rel="stylesheet" />
   <link href="css/style.css" rel="stylesheet" />
+  <link href="css/brush.css" rel="stylesheet" />
 
   <!-- Favicon -->
   <link rel="shortcut icon" href="/favicon.png" type="image/png">
@@ -45,6 +53,7 @@ Authors:
 
 </head>
 <body>
+  <div id='brush' class='ui-brush'></div>
   
   <!-- Loading Indicator -->
   <div id="loading"><i class="fa fa-cog fa-spin"></i></div>
@@ -63,18 +72,29 @@ Authors:
 
    <!-- Popup Menu -->
    <div id="popup-menu"></div>
+   
+    <!-- Timeline  -->
+   <div id="timeline"></div>
+   
  </div>
 
  <!-- External Javascript Dependencies -->
  <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+ <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
  <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
- <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
  <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+  <!-- <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script> -->
+   <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>  
  <script src="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/js/messenger.min.js"></script>
  <script src="http://cdnjs.cloudflare.com/ajax/libs/messenger/1.4.0/js/messenger-theme-future.js"></script>
  <script src="http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/js/select2.min.js"></script>
  <script src="http://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.3.0/bootbox.min.js"></script>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/async/0.9.0/async.js"></script>
+ <script src="http://jdewit.github.io/bootstrap-timepicker/js/bootstrap-timepicker.js"></script> 
+ <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.6/d3.min.js' charset="utf-8"></script>
+ <script src="http://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.0/leaflet.awesome-markers.js"></script>
+ 
+
  
  <!-- Libraries Hosted Locally --> 
  <script src="lib/heatmap.min.js"></script>
@@ -82,6 +102,12 @@ Authors:
  <script src="lib/leaflet.label.js"></script>
  <script src="lib/leaflet.timeline.js"></script>
  <script src="lib/moment.js"></script>
+<<<<<<< HEAD
+=======
+ <script src="lib/LeafletPlayback.js"></script>
+ <!--<script src="lib/LeafletPlayback.min.js"></script> -->
+ <script src="lib/Control.js"></script> 
+>>>>>>> master
 
  <!-- App Functionality -->
  <script src="js/visualizer.js"></script>
@@ -127,7 +153,13 @@ Authors:
           callback(null, 'right');
 
         });
-      }, 
+      },
+      function(callback){
+        $("#timeline").load('templates/timeline.html', function(result){
+          callback(null, 'right');
+
+        });
+      }, 	  
       function(callback){
 
         // Load options from API

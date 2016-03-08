@@ -19,9 +19,11 @@ Alex Johnson @alexjohnson505
   </div>
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title"><i class="fa fa-leanpub"></i> Select Map</h3>
+      <h3 class="panel-title">
+	  <a data-toggle="collapse" href="#collapseSelectMap"><i class="fa fa-map"></i> Select Map</a>
+	  </h3>
     </div>
-    <div class="panel-body">
+    <div id="collapseSelectMap" class="panel-body panel-collapse collapse">
       <form class="form">
 
         <label>Select Game</label>
@@ -50,9 +52,11 @@ Alex Johnson @alexjohnson505
   </div>
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title"><i class="fa fa-table"></i> Select Data </label>
+      <h3 class="panel-title">
+	  <a data-toggle="collapse" href="#collapsePlayers"><i class="fa fa-user"></i> Players </a>
+	  </h3>
     </div>
-    <div class="panel-body" style="margin-bottom: 20px;">
+    <div id="collapsePlayers" class="panel-body panel-collapse collapse" style="margin-bottom: 20px;">
 
       <div class="filter-by-action">
     
@@ -63,18 +67,67 @@ Alex Johnson @alexjohnson505
         </select>
 
       </div>
-      <div>
+	  
+	  <div class="checkbox">
+		<label>
+			<input onclick="UI.getListOfAvailablePlayerIDs()" type="checkbox" id="show_added">
+			Show added players only
+		</label>
+	  </div>
+      <div class="player-add-remove">
 
         <!-- Select Players -->
         <table id="available-players" class="table table-condensed table-hover"></table>
-    
           
         <div class="" style="padding: 5px 17px;">  
-          <button class="btn btn-default" onclick="Visualizer.clear()">Clear</button>
-          <button class="btn btn-primary" onclick="UI.players.addPlayers()">Load All</button>
+          <button class="btn btn-default" onclick="UI.players.removePlayers()">Clear All</button>
+          <button class="btn btn-primary" onclick="UI.players.addAll()" >Add All</button>
         </div>
       </div>
     </div>
   </div>
+  <div class="panel panel-default">
+    
+	<div class="panel-heading">
+      <h3 class="panel-title">
+		<a data-toggle="collapse" href="#collapseGroups">
+		  <i class="fa fa-users"></i> 
+		  Groups
+		  <i class="fa fa-info-circle" onclick="alert('Create a group of players that are currently added to map" +
+											   " and name it using the textbox Or add players to a group that" +
+											   "already exists using name of group in textbox')">  </i>  
+		</a>
+	  </h3>
+    </div>
+    
+	<div  id="collapseGroups" class="panel-body panel-collapse collapse" style="margin-bottom: 20px;">
+
+		<div class="group-add-remove">
+		<!-- Add Groups / Select Players -->
+			<div class="select-players">
+				<p>Select Players to add-to a group:</p>
+				<div id="players-in-group"></div>
+			</div>
+        
+			<div class="group-name">
+				<p>Group Name: <input type="text" value="group 101" id="groupName"></p>
+			</div>
+			
+			<div class="create-group">
+				<p>	
+					<button class="btn btn-default btn-sm" onclick="UI.groups.addGroup()">Add to Group</button>
+				</p>
+			</div>
+			
+			<div class ="groups-add-remove">
+				<table id="available-groups" class="table table-condensed table-hover"></table>
+			</div>
+		</div>
+		
+		</div>
+	  
+	</div>
+	
+   </div>
 </ul>
 

@@ -54,7 +54,7 @@ body {
     right: 15px;
     width: 200px;
     height: 100%;
-    overflow: scroll;
+    overflow: inherit;
 }
 
 /* Map key*/
@@ -80,7 +80,7 @@ ul.messenger-theme-air .messenger-message {
 
 #sidebar-wrapper {
     /*Bootstrap Override*/
-    width: 200px !important;
+    width: 220px !important;
 }
 
 .toggle-side-options {
