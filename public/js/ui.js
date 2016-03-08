@@ -57,7 +57,7 @@ UI.setGame = function(gamename){
     var game_maps = _.where(options.maps, { game : settings.game });
     
     // Clear data
-    settings.data = null;
+    settings.data = { positions: null, actions: null };
     
     // Remove previous data
     Visualizer.clear();
@@ -89,6 +89,7 @@ UI.setGame = function(gamename){
     // Change available actions
     UI.getActions();
     UI.getListOfAvailablePlayerIDs();
+	UI.groups.createPlayers();
     UI.filters.create();
 }
 
@@ -295,6 +296,8 @@ purpose: Manage the players being represented on the visualizer
 arguments: playerID is the selected player 
 */
 UI.players = {};
+var colors = ["#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf", "#e0f3f8", "#abd9e9", "#74add1", "#4575b4"];
+var clr_indx = 0;
 
 // purpose: plots selected playerID onto map from left menu
 UI.players.addPlayer = function(playerID){
@@ -302,17 +305,28 @@ UI.players.addPlayer = function(playerID){
   // Prevent Duplicates
   var existing = _.findWhere(settings.players, { playerID : playerID })
 
+ /*
   if (existing) {
+	  onclick="UI.players.remove(' + player.playerID + ')"
     alert("Player " + playerID + " Already Selected");
     return;
   };
+ */  
+ 
+  if (existing) {
+    return;
+  }; //Asarsa
 
-  // array of colors for color selection for each player 
-  var colors = ["#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf", "#e0f3f8", "#abd9e9", "#74add1", "#4575b4"];
-
+  var i = 0;
   // dialog for selection of color for selected player
-  var color_radio_buttons = _.reduce(colors, function(memo, color){ 
-    return memo + '<label class="radio"><input type="radio" name="group1" value="' + color + '" checked><i class="fa fa-square" style="color: ' + color + '"></i></label>';
+  var color_radio_buttons = _.reduce(colors, function(memo, color){
+		if(i++ == clr_indx)
+			var ret = memo + '<label class="radio"><input type="radio" name="group1" value="' + 
+		              color + '" checked><i class="fa fa-square" style="color: ' + color + '"></i></label>';
+		else
+			var ret = memo + '<label class="radio"><input type="radio" name="group1" value="' +
+					  color + '"><i class="fa fa-square" style="color: ' + color + '"></i></label>'
+    return ret;
   }, "");
 
   var message = '<div class="color-select">' + color_radio_buttons + '</div>';
@@ -359,44 +373,87 @@ UI.players.addPlayer = function(playerID){
           var color =  $('.color-select input[type=radio]:checked').val();
           if (!color) { color : "#000" };
 
-          UI.players.add(playerID, color);
+		  settings.players.push({ playerID : playerID, color : color , checkedActions : settings.listOfActions, visibility : true });
+		  UI.players.refreshMap();
+		  UI.getListOfAvailablePlayerIDs();
+		  if(++clr_indx == colors.length)
+				clr_indx = 0;
         }
       }
     }
   });
+  
+
 }
 
-// Add multiple players at once. 
-UI.players.addPlayers = function(){
 
-  // Confirm that user wants to load a large data set
+// Add multiple players at once. 
+UI.players.addPlayers = function(playerIDs){
+
+//add each player from the list of players
+
+}
+
+// Add all players at once. 
+UI.players.addAll = function(PlayerIDs){
+
+   // Confirm that user wants to load a large data set
   if (!confirm('Warning! Loading all players in the current list may load a considerable amount of data. This request could take time to process, and may cause your map to become slow or unresponsive. If you haven\'t already, we recommend selecting a lower "fidelity" from the left menu in order to reduce the amount of positions per second being returned. Are you sure you want to continue?')) return;
 
   UI.getListOfAvailablePlayerIDs(function(playerIDs){
-
+	var colors = ["#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf", "#e0f3f8", "#abd9e9", "#74add1", "#4575b4"];
+	var clr_indx = 0;
+	
     _.each(playerIDs, function(playerID){
+		
+		// Prevent Duplicates
+		var existing = _.findWhere(settings.players, { playerID : playerID })
 
-        // Add to list
-        settings.players.push({ playerID : playerID, color : "#000"});
+		if (!existing) {
+			// Add to list
+			settings.players.push({ playerID : playerID, color : colors[clr_indx++] , checkedActions : settings.listOfActions, visibility : true });
+			if(clr_indx == colors.length)
+				clr_indx = 0;
+		};
+		
     })
-
-    UI.players.refreshMap();
+	
+	UI.players.refreshMap();
+		
   })
-}
-
-// Add a new player ID to the map.
-UI.players.add = function(playerID, color){
-
-    // Add to list
-    settings.players.push({ playerID : playerID, color : color });
-    
-    // Update map
-    UI.players.refreshMap();    
-}
+  UI.getListOfAvailablePlayerIDs();
+} // Asarsa
 
 // purpose: remove selected playerID from the map
 UI.players.remove = function(playerID){
 
+  var present = false;
+  //check for presence in groups
+  _.each(settings.groups, function(group){
+		var players = group.players;
+		// Iterate through players
+		_.each(players, function(player){
+			if(playerID == player)
+				present = true;
+		});
+  });
+  
+  if(present)
+	if (!confirm("The Player is present in one or more groups. Removing player from map will result in removal of player from all groups")) return;  
+
+  //remove player from groups
+  _.each(settings.groups, function(group){
+	group.players = _.filter(group.players, function(player){
+      return player != playerID;
+    });
+  });
+  
+  //if group empty, remove group
+  settings.groups = _.filter(settings.groups, function(group){
+    return group.players.length > 0;
+  });
+
+  //remove player from settings
   settings.players = _.filter(settings.players, function(player){
     return player.playerID != playerID;
   });
@@ -406,7 +463,23 @@ UI.players.remove = function(playerID){
 
   // Re-plot map
   UI.players.refreshMap();
+  UI.getListOfAvailablePlayerIDs();
+  UI.getListOfAvailableGroupIDs();
 
+}
+
+//Asarsa
+// remove multiple players at once. 
+UI.players.removePlayers = function(){
+
+  settings.players = null;
+  
+  // Remove all data
+  Visualizer.clear();
+
+  // Re-plot map
+  UI.players.refreshMap();
+  UI.getListOfAvailablePlayerIDs();
 }
 
 // Return list of player IDs
@@ -430,14 +503,21 @@ purpose: helper function that refreshes map on a change
 */
 UI.players.refreshMap = function(){
   $("#active-players").html("");
+  $("#active-players-list").html('<option value="">Select One</option>');
+  $("#playback-players-list").html('<option value="">Select One</option>');
+  $('#filters input:checkbox').removeAttr('checked');
 
   _.each(settings.players, function(player){
 
-    var a = '<i class="fa fa-square" style="color: ' + player.color + '"></i>';
-    var b = '<i class="fa fa-trash-o" onclick="UI.players.remove(' + player.playerID + ')"></i>';
-    var c = player.playerID;
-
-    $("#active-players").append("<p>" + a + b + c + "</p>");
+	$("#active-players-list").append('<option value="' + player.playerID + '" style="background-color:' + 
+		player.color + '">' + player.playerID + '</option>');
+	$("#playback-players-list").append('<option value="' + player.playerID + '" style="background-color:' + 
+		player.color + '">' + player.playerID + '</option>');
+  })
+  
+  _.each(settings.groups, function(group){
+	$("#active-players-list").append('<option value="' + group.groupID + '" style="background-color:#fff">' + group.groupName + '</option>');
+	$("#playback-players-list").append('<option value="' + group.groupID + '" style="background-color:#fff">' + group.groupName + '</option>');
   })
 
   Visualizer.loadData();
@@ -461,18 +541,31 @@ UI.getListOfAvailablePlayerIDs = function(callback){
         
         // Clear previous player list
         $('#available-players').html("");
+		var show_added = document.getElementById("show_added").checked;
 
         // Render players from database to 
         // table on left menu
-        _.each(players, function(p){
+        _.each(players, function(playerID,color){
+			
+		// check if players exists
+		var added = _.findWhere(settings.players, { playerID : playerID })
+		
+ 
+        // Create table row with player data
+		if (added) {
+			var tr = '<tr onclick="UI.players.remove(' + playerID + ')">' +
+					 '<td>Player <b>' + playerID + '</b></td>' +
+                     '<td id="td '+ playerID +'"><i class="fa fa-trash-o"></i></td>' +
+					 '</tr>';
+		}
+		if (!added && !show_added){
+			var tr = '<tr onclick="UI.players.addPlayer(' + playerID + ')">' +
+					 '<td>Player <b>' + playerID + '</b></td>' +
+					 '<td id="td '+ playerID +'"><i class="fa fa-plus"></i></td>' +
+					 '</tr>';
+		}
 
-          // Create table row with player data
-          var tr = '<tr><td onclick="UI.players.addPlayer(' + p + ')">' + 
-                   "Player <b>" + p + '</b></td>' +
-                  '<td onclick="UI.players.addPlayer(' + p + ')">' +
-                   '<i class="fa fa-sign-in"></i></td></tr>';
-
-          $('#available-players').append(tr);
+        $('#available-players').append(tr);
         })
 
         if (callback) callback(data);
@@ -593,6 +686,260 @@ UI.loadOptions = function(next){
 }
 
 /************************************
+          Groups
+************************************/
+
+/* 
+name: addGroup
+author: Asarsa
+created: Feb 16, 2016
+purpose: Manage the groups being represented on the visualizer
+arguments: groupID is the selected player 
+*/
+UI.groups = {};
+var groupID = 101;
+var box;
+
+// purpose: plots selected groupID onto map from left menu
+UI.groups.addGroup = function(){
+	
+	var listOfPlayers = UI.groups.getSelectedPlayers();
+	var name = $('#groupName').val();
+	
+	//check if no players added to map
+	if(listOfPlayers.length == 0){
+			
+		alert("No players added to map! Please add players to the map before you create a group.");
+			
+	}else{
+
+	    //check players are on map
+	    var PIDs = [];
+		// Add players in group to map
+		_.each(listOfPlayers,function(p){
+			if(!_.findWhere(settings.players, { 'playerID' : parseInt(p) }))
+				PIDs.push(p);
+		})
+		
+		//if players not on map, add
+		if(PIDs.length > 0){
+			alert("Please add the following players to map for the group to work correctly :" + PIDs);
+		}
+
+		var create = true;
+		//check for gID , if group exists
+		_.each(settings.groups,function(g){
+			if(g.groupName == name){
+				create = false;
+				//add players to this group
+				_.each(listOfPlayers,function(p){
+					if(!_.contains(g.players,p))
+						g.players.push(p);
+				})
+			}
+		})
+		
+		console.log(create);
+		
+		if(create){
+			// Add to list
+			settings.groups.push({ groupID : "g" + groupID, players : listOfPlayers, groupName : name, checkedActions : [], visibility:false});
+		
+			//update text field with id for next group
+			$('#groupName').val("group " + ++groupID);
+		}
+		else{		
+			// update groupname textbox to previous group name (i.e. next available name)
+			$('#groupName').val("group " + groupID);
+		}
+		
+		//Clear selected players
+		$('#players-in-group input:checkbox').removeAttr('checked');
+		
+		// Update map
+		UI.players.refreshMap();
+		UI.getListOfAvailableGroupIDs();
+	
+	}
+	
+	
+}
+
+// purpose: remove selected groupID from the map
+UI.groups.removeGroup = function(gID){
+
+  settings.groups = _.filter(settings.groups, function(group){
+    return group.groupID != gID;
+  });
+
+  // Remove all data
+  Visualizer.clear();
+
+  // Re-plot map
+  UI.players.refreshMap();
+  UI.getListOfAvailableGroupIDs();
+}
+
+//remove a player from a group
+UI.groups.removePlayer = function(gID,pID){
+	
+  var empty = false;
+  _.each(settings.groups, function(group){	
+	if(group.groupID == gID){
+	  group.players = _.filter(group.players, function(player){
+		return player != pID;
+	  });
+	  if(group.players.length == 0)
+		empty = true;
+	}
+  });
+  
+  box.modal('hide');
+  if(empty)
+	UI.groups.removeGroup(gID);
+  else
+	UI.groups.getInfo(gID);
+	
+}
+
+
+//get group info
+UI.groups.getInfo = function(gID){
+	
+  var message = "<div><table>";
+  
+  _.each(settings.groups, function(group){	
+	if(group.groupID == gID){
+		message += "<tr><td>GroupName: " + group.groupName + "</td></tr>";
+		message += "<tr><td>GroupId: " + group.groupID + "</td></tr>";
+		message += "<tr><td>Players:</td></tr>";
+		_.each(group.players, function(player){
+			var functioncall = "UI.groups.removePlayer("+ "'" + gID + "','" + player + "')";
+			message += "<tr><td>" + player + '</td><td><button class="btn btn-danger btn-xs" onclick="'+ functioncall +'" >x</button></td></tr>';
+		});
+	}
+  });
+  
+  message += "</table></div>"
+  
+  box = bootbox.dialog({
+    message: message,
+    title: "Group Info",
+    
+    // Options available to the user
+    buttons: {
+      
+      // Hide the modal
+      success: {
+        label: 'Ok',
+        className: "btn-default",
+        callback: function(){
+			UI.players.refreshMap();
+			Visualizer.refresh();
+			}
+      },
+
+      /*// Add player to the map
+      main: {
+        label: "Apply Changes",
+        className: "btn-primary",
+        callback: function() {
+          //alert("making changes to group");
+        }
+      }*/
+    }
+  });
+	
+}
+
+/* 
+name: createPLayer
+author: Asarsa
+created: Feb 23, 2016
+purpose: create list of checkboxes in order to filter players to be added to new group
+*/
+UI.groups.createPlayers = function(){
+
+  var opts = Visualizer.getContext();
+
+    // Get players from API
+    $.get(Visualizer.API_url + "players", opts, function(data){
+        
+        var players = data;
+        
+		// Clear Players list
+		$("#players-in-group").html("");
+        
+        // Render players from database to 
+        // table on left menu
+        _.each(players, function(playerID){
+			//generate checkbox and add it
+			var html = UI.groups.generateCheckbox(playerID);
+			$("#players-in-group").append(html);
+		
+		})
+
+    })
+
+  return true;
+}
+
+// Create a new checkbox
+UI.groups.generateCheckbox = function(PlayerID){
+
+  var a = '<div class="checkbox"><label>';
+  var b = '<input type="checkbox" value="' + PlayerID + '"/>Player ' + PlayerID;
+  var c = '</label></div>';
+
+  return a + b + c
+}
+
+// Return list of selected players
+UI.groups.getSelectedPlayers = function(){
+    
+    // List of actions
+  var players = [];
+
+  // Enabled check boxes
+  $('#players-in-group input:checkbox:checked').each(function(index, checkbox){
+    players.push(checkbox["value"]);
+  })
+  return players;
+}
+
+
+/* 
+name: getListOfAvailableGroupIDs
+author: Asarsa
+created: Feb 16, 2016
+purpose: for the currently selected actions, get a list of groupIDs
+argument: callback is some call
+*/
+UI.getListOfAvailableGroupIDs = function(callback){
+        
+        // Clear previous player list
+        $('#available-groups').html("");
+
+        // Render players from database to 
+        // table on left menu
+        _.each(settings.groups, function(group){
+				
+        // Create table row with group data
+		var tr = '<tr><td><b>' + group.groupName + '</b></td>' +
+			     '<td><i class="fa fa-trash-o" onclick="UI.groups.removeGroup('+"'"+ group.groupID +"'"+')"></i>'+
+				 '<i class="fa fa-info-circle" onclick="UI.groups.getInfo('+"'"+ group.groupID +"'"+')"></i></td></tr>';
+
+          $('#available-groups').append(tr);
+        })
+
+        if (callback) callback();
+}
+
+
+
+
+
+/************************************
       Setup UI / Side Options
 ************************************/
 
@@ -647,7 +994,7 @@ argument: heatmap_id is the id of the currently selected heatmap
 UI.heatmaps.generateRadio = function(heatmap_id, heatmap_name) {
   var a = '<div class="radio col-md-10" style="margin-top: 10px"><label id="heatmap' + heatmap_id + 'Label" for="heatmap' + heatmap_id + 'Radio">';
   var b = '<input type="radio" name="heatmap-opts" id="heatmap' + heatmap_id + 'Radio" value="' + heatmap_id + '" checked onclick="UI.heatmaps.select(' + heatmap_id + ')">';
-  var c = heatmap_name + '</label></div>';
+  var c = heatmap_name + '</label><i class="fa fa-info-circle" onclick="Heatmap.showInfo('+ heatmap_id +')"></i></div>';
 
   return a + b + c;
 }
@@ -1047,6 +1394,7 @@ UI.filters.create = function(){
 
       var html = UI.filters.generateCheckbox(mapping);
       $("#filters").append(html);
+	  settings.listOfActions.push(mapping.type);
 
   })
 
@@ -1057,7 +1405,7 @@ UI.filters.create = function(){
 UI.filters.generateCheckbox = function(mapping){
 
   var a = '<div class="checkbox"><label>';
-  var b = '<input type="checkbox" id="toggle_paths" value="' + mapping.type + '" checked>' + mapping.type;
+  var b = '<input onclick="UI.filters.changeCheckbox()" type="checkbox" value="' + mapping.type + '"/>' + mapping.type;
   var c = '</label></div>';
 
   return a + b + c
@@ -1068,9 +1416,7 @@ UI.filters.generateCheckbox = function(mapping){
 // mappings. This function collects, and returns
 // an array of ALL actions that are allowed.
 
-UI.filters.actions = function(){
-
-  var categories = UI.filters.categories();
+UI.filters.actions = function(categories){
 
   // Find key mappings for current set of categories
   var enabledKeyMappings = _.filter(options.mappings, function(mapping){
@@ -1110,7 +1456,121 @@ UI.filters.toggleAll = function(checked){
     $('#filters input:checkbox').removeAttr('checked');
   }
   
+  UI.filters.changeCheckbox();
 }
+
+/*
+name: changePlayer
+author: Asarsa
+created: Feb 15,2016
+purpose: update checkboxes for player selected from drop-down select list
+And refresh map
+*/
+UI.filters.changePlayer = function(ID){
+	
+	$('#filters input:checkbox').removeAttr('checked');
+	
+	// PlayerID recieved
+	if(ID != "" && ID.toString().charAt(0) != 'g'){
+		//update checkboxes
+		_.each(settings.players, function(player){
+			if(player.playerID == ID){
+				_.each(player.checkedActions,function(actn){
+				$("input:checkbox[value="+actn+"]").prop('checked', true);
+				});
+				$("input:checkbox[value=visibility]").prop('checked', player.visibility);
+			}
+		})
+	}
+	
+	//GroupID recieved
+	if(ID != "" && ID.toString().charAt(0) == 'g'){
+		//group selected -> update checkboxes
+		_.each(settings.groups, function(group){
+			if(group.groupID == ID){
+				_.each(group.checkedActions,function(actn){
+				$("input:checkbox[value="+actn+"]").prop('checked', true);
+				});
+				$("input:checkbox[value=visibility]").prop('checked', group.visibility);
+			}
+		})
+	}
+	
+	Visualizer.refresh();
+}
+
+/*
+name: changeCheckbox
+author: Asarsa
+created: Feb 15,2016
+purpose: update checkboxes upon click on one of them
+And refresh map
+*/
+UI.filters.changeCheckbox = function(){
+	
+	var ID = $("#active-players-list").val();
+	
+	if(ID.toString().charAt(0) != 'g')
+		_.each(settings.players, function(player){
+			if(player.playerID == ID){
+				var p_ind = settings.players.indexOf(player);
+				settings.players[p_ind].checkedActions = UI.filters.categories();
+			}
+		})
+	
+	
+	if(ID.toString().charAt(0) == 'g')
+		_.each(settings.groups, function(group){
+			if(group.groupID == ID){
+				var g_ind = settings.groups.indexOf(group);
+				settings.groups[g_ind].checkedActions = UI.filters.categories();
+			}
+		})
+		
+	Visualizer.refresh();
+}
+
+/*
+name: updateVisibility
+author: Asarsa
+created: Feb 15,2016
+purpose: update the visibility for all groups and players
+*/
+UI.filters.updateVisibility = function(){
+	
+	var ID = $("#active-players-list").val();
+	var checked = $("#visibility").prop('checked');
+	
+	if(ID.toString().charAt(0) != 'g'){
+		_.each(settings.groups, function(group){
+			var g_ind = settings.groups.indexOf(group);
+			settings.groups[g_ind].visibility = false;
+		})
+		_.each(settings.players, function(player){
+			if(player.playerID == ID){
+				var p_ind = settings.players.indexOf(player);
+				settings.players[p_ind].visibility = checked;
+			}
+		})
+	}
+		
+	if(ID.toString().charAt(0) == 'g'){
+		_.each(settings.players, function(player){
+			var p_ind = settings.players.indexOf(player);
+			settings.players[p_ind].visibility = false;
+		})
+		_.each(settings.groups, function(group){
+			var g_ind = settings.groups.indexOf(group);
+			if(group.groupID == ID)
+				settings.groups[g_ind].visibility = checked;
+			else
+				settings.groups[g_ind].visibility = false;
+		})
+	}
+		
+	Visualizer.refresh();
+}
+
 
 /************************************
          Helpers

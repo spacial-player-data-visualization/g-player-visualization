@@ -23,7 +23,22 @@ Alex Gimmi @ibroadband
 var settings = {
 
   // Save data
-  data : null,
+  data : {
+    actions: [],
+    positions: [],
+  },
+
+  // Save data as GeoJSON
+  geoJsonLayer : {
+    type: "FeatureCollection",
+    features: [],
+  },
+ 
+
+  //json layer for brush
+  brushLayer : [], 
+  //player tracks
+  tracks : [],
 
   // enable player paths
   paths : true,
@@ -49,9 +64,6 @@ var settings = {
   // Current players
   players : [],
 
-  // Currently selected actions
-  actions : [],
-
   // Current heatmaps
   heatmaps : [],
 
@@ -60,6 +72,13 @@ var settings = {
 
   // Save heatmaps' data
   heatmapData : [],
+
+  // All available types of actions (filters)
+  listOfActions : [],
+  
+  // Current groups
+  groups : []
+
 
 };
 
@@ -95,26 +114,127 @@ Visualizer.refresh = function(){
 // Draw lines on the map
 Visualizer.update = function(){
 
+  // Unfiltered data
+  var unfilteredData = settings.data.positions.concat(settings.data.actions);
+
   // Group data by PlayerID
-  var players = _.groupBy(settings.data, 'playerID');
+  var players = _.groupBy(unfilteredData, 'playerID');
 
   // Store current index
   var count = 0;
-
-  // Iterate through players
-  _.each(players, function(player, playerID){
-
-      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
-
-      // Render each player onto the map
-      Visualizer.draw(player, thisPlayer.color, count++);
+  
+  // check if group is visible (indivisual player visibility is deselected)
+  var groupvisible = false;
+  _.each(settings.groups, function(group){
+	  if(group.visibility){
+		//console.log("group visible. looking at players in group...");
+		groupvisible = true;
+		// Iterate through players
+		_.each(players, function(player, playerID){
+			var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+			
+			// Render each player onto the map
+			if(group.players.indexOf(playerID) != -1)
+			Visualizer.draw(player, thisPlayer.color, count++, group.checkedActions);
+		});
+	  }
   });
+  
+  if(groupvisible == false){
+	  //console.log("no group visible. looking at players...");
+	  // Iterate through players
+	  _.each(players, function(player, playerID){
+		  var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
 
-   Visualizer.updateHeatmap();
+		  // Render visible player onto the map
+		  if(thisPlayer.visibility)
+		  Visualizer.draw(player, thisPlayer.color, count++, thisPlayer.checkedActions);
+	  });
+  }
+  
+  Visualizer.updateHeatmap();
 
   // Loading complete
-  UI.loading(false, "Success. " + settings.data.length + " points loaded.");
+  UI.loading(false, "Success. " + unfilteredData.length + " points loaded.");
+}//Asarsa
+
+/*
+author: Asarsa
+created: Feb 29, 2016
+purpose: Prepare dataset / name to be sentt to Heatmap.add function
+*/
+Visualizer.genHeatMap = function(){
+
+  console.log("starting generation of data for heatmap");
+  var hmDataset = {
+    actions: [],
+    positions: [],
+  };
+  
+  // Unfiltered data
+  var unfilteredData = settings.data.positions.concat(settings.data.actions);
+
+  // Group data by PlayerID
+  var players = _.groupBy(unfilteredData, 'playerID');
+
+  // Store current index
+  var count = 0;
+  
+  //store group info into name
+  var hmName = "";
+  
+  // check if group is visible (indivisual player visibility is deselected)
+  var groupvisible = false;
+  _.each(settings.groups, function(group){
+	  if(group.visibility){
+		//console.log("group visible. looking at players in group...");
+		groupvisible = true;
+		hmName += "group: " + group.groupID + "\n\n";
+		
+		// Iterate through players
+		_.each(players, function(player, playerID){
+			var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+			
+			// Render each player onto the map
+			if(group.players.indexOf(playerID) != -1){
+				var newDataset = Visualizer.activeData(filterPositions(player), group.checkedActions);
+				hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
+				hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
+				
+				hmName += "Player:" + playerID + "\n";
+			}
+		});
+		
+		hmName += "\nActions:" + group.checkedActions + "\n";
+	  }
+  });
+  
+  if(groupvisible == false){
+	  //console.log("no group visible. looking at players...");
+	  // Iterate through players
+	  _.each(players, function(player, playerID){
+		  var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+
+		  // Render visible player onto the map
+		  if(thisPlayer.visibility){
+			var newDataset  = Visualizer.activeData(filterPositions(player), thisPlayer.checkedActions);
+			hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
+			hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
+			
+			hmName += "Player:" + playerID + "\nActions:" + thisPlayer.checkedActions + "\n\n";
+		  }
+	  });
+  }
+  
+  //console.log(hmDataset.actions.length + "\n\n" + hmDataset.positions.length);
+  
+  console.log("heatmap data generation complete");
+  Heatmap.add(hmDataset,hmName);
+  
 }
+
+
+
 
  /********************************
            HEATMAPS
@@ -145,21 +265,22 @@ as lines, while actions are clickable points.
 argument: entries are individual entries in data
 color is the associated color for that playerID
 index is some index of the dataset
+checkedActions is list of action boxes checked for user
 */
-Visualizer.draw = function(entries, color, index){
+Visualizer.draw = function(entries, color, index, checkedActions){
 
     // Ensure chronological order
     entries = sortBy(entries, "timestamp");
 
     // Get the active set of data
-    var data = Visualizer.activeData(entries);
+    var data = Visualizer.activeData(filterPositions(entries),checkedActions);
 
     /********************************
              POSITIONS
      ********************************/
 
     // Should we show position data?
-    if (shouldWePlotPositionData()) {
+    if (shouldWePlotPositionData(checkedActions)) {
 
       // Create list of latLng ojects
       var positions = _.map(data.positions, function(point){
@@ -226,7 +347,7 @@ Visualizer.draw = function(entries, color, index){
 // Given a dataset, seperate the data into positions
 // and actions. In addition, remove any data type
 // that the user has disables from the UI
-Visualizer.activeData = function(dataset){
+Visualizer.activeData = function(dataset,checkedActions){
 
     // Seperate data to positions and actions
     var data = {
@@ -235,31 +356,24 @@ Visualizer.activeData = function(dataset){
     };
 
     // Get the currently selected list of actions
-    var enabledActions = UI.filters.actions();
+    var enabledActions = UI.filters.actions(checkedActions);
 
     // Does the user want to see position data?
     // This returns false if a.) a game has available
     // action data, and b.) the user has selected to
     // only show actions and events on the map
 
-    if (shouldWePlotPositionData()) {
+    if (shouldWePlotPositionData(checkedActions)) {
 
       // get list of positions
-      data.positions = _.filter(dataset, function(d){
-
-        // Do we not have an action key?
-        return !d.action;
-      });
+      data.positions = dataset.positions;
     }
 
     // Get list of actions
-    data.actions = _.filter(dataset, function(d){
-
-      // Do we have an action key?
-      var exists = (d.action) ? true : false;
+    data.actions = _.filter(dataset.actions, function(d){
 
       // Is the action enabled in the side nav?
-      return exists && (_.contains(enabledActions, d.action))
+      return (_.contains(enabledActions, d.action))
     });
 
     return data;
@@ -296,7 +410,6 @@ Visualizer.addMarker = function(lat, long, title){
 Visualizer.loadData = function(){
 
   UI.loading(true, "Loading Data....");
-
   var opts = Visualizer.getContext();
 
   // Hit API
@@ -307,38 +420,26 @@ Visualizer.loadData = function(){
       return containsRequiredKeys(p);
     });
 
-    // Convert data points into plottable data
+    // Convert data points into GeoJSON
     data = _.map(data, function(p){
       return Visualizer.formatData(p);
     });
 
-    // TODO: TIMELINE WIP
-    /*
-    var timeline = L.timeline(data, {
-          style: function(data){
-            return {
-              stroke: false,
-              color: 'black',
-              fillOpacity: 0.5
-            }
-          },
-          formatDate: function(date){
-            return moment(date).format("YYYY-MM-DD");
-          }
-        });
-    timeline.setPosition('topleft');
-    timeline.addTo(map);
-    console.log("adding timeline to map");
-    */
-    // TODO: END WIP
-
     // Save data for future reference
-    settings.data = data;
+    if (data.length == 0) {
+      settings.data = {
+        positions : [],
+        actions : [],
+      };
+    } else {
+      settings.data = filterPositions(data);
+    }
 
-    // Update our map with new data.
+    Visualizer.createGeoJsonLayer();
     Visualizer.update();
+
   })
-};
+}
 
 /*
 author: Alex Gimmi
@@ -358,8 +459,35 @@ Visualizer.formatData = function(data){
   // Maps the (x,y) position to a coordinate
   // on the earth. Makes plotting MUCH easier
 
-  data['latitude']  = data.posY / scale;
   data['longitude'] = data.posX / scale;
+  data['latitude']  = data.posY / scale;
+
+//data['longitude'] = data.posX ;
+ // data['latitude']  = data.posY;//
+  // Assigns this data point a start/end based on the data's timestamp in seconds
+  // Note: for a game that has events with a start/end time a condition can be added here
+  // year, month, day, hours, minutes, seconds, milliseconds
+
+  //data format for New Timeline Feature 
+   data['coord'] = [(data.longitude), (data.latitude)];
+  // TODO: using data.timestamp allows us to just use the raw time for now...
+  // Not sure what to do to have the time display exactly as we want it to.
+  data['start'] = data.timestamp*1000;//data.timestamp;//moment({seconds: data.timestamp}).unix();
+  data['end'] = data.timestamp;//moment({seconds: data.timestamp}).unix();
+
+  // TODO: geometry for positions should be a LineString, not a Point
+  //if(data.action) {
+    data['geometry'] = {
+      type: 'Point',
+      coordinates: [data.longitude, data.latitude],
+    };
+  /*} else { 
+    data['geometry'] = {
+      type: 'LineString',
+      // TODO: WIP Obviously need to find a way to have lines drawn properly.
+      coordinates: [[data.longitude, data.latitude], [data.longitude, data.latitude]],
+    }
+  }*/
 
   //TODO: FORMAT ALL OF THE DATA TYPES NEEDED FOR LEAFLET.TIMELINE
   
@@ -368,18 +496,63 @@ Visualizer.formatData = function(data){
 
 /*
 author: Alex Gimmi
-created: August 10, 2015
-purpose: Unformat previously formatted data to it's raw types
-argument: the formatted data to unformat
+created: September 8, 2015
+purpose: Create a GeoJson version of some formatted data
+argument: the formatted data to GeoJson-ify
 */
-Visualizer.unformatData = function(latLong){
+Visualizer.convertJsonToGeoJson = function(json) {
+  var geoJson = {type : 'Feature', 
+    properties: {longitude: json['longitude'],
+                 latitude: json['latitude'],
+                 start: json['start'],
+                 end: json['end']},
+    geometry: json['geometry'],
+  };
 
-  var scale = Visualizer.scaleFactor;
+  return geoJson;
+}
 
-  return {
-    posX : latLong['longitude'] * scale,
-    posY : latLong['latitude'] * scale,
+/*
+author: Alex Gimmi
+created September 8, 2015
+purpose: Create a Feature Collection of all GeoJson data
+*/
+Visualizer.createGeoJsonLayer = function() {
+
+//object for creating Timeline playback 
+   var  geoJsonLay = {   
+    type: "Feature",
+    geometry: {
+    type: "MultiPoint",
+    coordinates: [/*array of [lng,lat] coordinates*/]
+  },
+  properties: {
+    time: [/*array of UNIX timestamps*/]
   }
+   } ;
+
+//object for creating D3 brush slider window
+   var   geoJsonD3Lay = {
+    type: "FeatureCollection",
+    features: [],
+  };
+
+  _.each(settings.data.actions.concat(settings.data.positions), function(json){
+     //GeoJason Feature format  Layer for Playback Timeline
+    geoJsonLay.geometry.coordinates.push(json['coord']);
+    geoJsonLay.properties.time.push(json['start']);
+
+    var geoJson = Visualizer.convertJsonToGeoJson(json);
+    
+    settings.geoJsonLayer.features.push(geoJson);
+    geoJsonD3Lay.features.push(geoJson);
+  });
+  
+   //Pushing GeoJasonLay to array tracks
+    if(geoJsonLay.properties.time.length != 0){
+    settings.tracks.push(geoJsonLay);
+    }
+    settings.brushLayer.push(geoJsonD3Lay);
 }
 
 // Returns a representation of the current state of the
@@ -406,9 +579,6 @@ Visualizer.getContext = function(callback){
 
     // Currently active heatmap
     activeHeatmap : settings.activeHeatmap,
-    
-    // List of filtered actions
-    actions : settings.actions,
 
   }
 
@@ -416,6 +586,13 @@ Visualizer.getContext = function(callback){
   console.log(obj);
 
   return obj;
+}
+
+/*@ author: Tariq:
+    Purpose: Timeline and Slider window data feeder
+    Date : March 1 2016*/
+Visualizer.getTimelineData = function (callback){
+  return settings.tracks;
 }
 
 // Update the map's view port, as to
@@ -512,7 +689,7 @@ function toLatLng (point){
 };
 
 // Should we plot position data?
-function shouldWePlotPositionData (){
+function shouldWePlotPositionData (checkedActions){
 
     var gameMappings = _.where(options.mappings, {game : settings.game});
 
@@ -521,11 +698,35 @@ function shouldWePlotPositionData (){
       return true;
     
     // Is the [position] check box selected?
-    } else if (_.contains(UI.filters.categories(), 'position')){
+    } else if (_.contains(checkedActions, 'position')){
       return true
     
     // Otherwise, don't show positions
     } else {
       return false
     };
+}
+
+// Filters out the positions of a raw data array
+function filterPositions (dataset){
+  // Seperate data to positions and actions
+    var data = {
+      positions : [],
+      actions : [],
+    };
+
+    data.positions = _.filter(dataset, function(d){
+
+      // Do we not have an action key?
+      return !d.action;
+    });
+
+    // Get list of actions
+    data.actions = _.filter(dataset, function(d){
+
+      // Do we have an action key?
+      return d.action;
+    });
+
+    return data;
 }
