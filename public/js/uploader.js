@@ -74,10 +74,7 @@ Uploader.parseFile = function(event) {
   if (ext == "json") {
     $.getJSON(url, function(data){
       // TODO: ONLY DO THIS IF THE GAME IS SSIEGE / DIFFERENT FOR EACH GAME
-      // Pluck all Event data points from the EntityRecords
-      // Do a shallow flatten so all data points are in a 1-dimensional list
-      // Note: the shallow flatten is for the edge case where there are nested arrays
-      data = _.flatten(_.pluck(data.EntityRecords, "Events"), true);
+      data = data.EntityRecords;
       setLocalJSON(data);
       UI.alert(data.length + " results loaded.");
       console.log("The following data was taken from the uploaded .json:");
