@@ -188,13 +188,11 @@ argument: the formatted data
         var filtered = data.features.filter(filter);
             myLayer.clearLayers();
            //.addData(filtered);  //use when you want to filter the  position data on map
-
-          //  console.log(filtered);
            var extent = brush.extent(); //returns [xMin, xMax]
-           var rangeExtent = [x( extent[0] ), x( extent[1] ) ]; //convert
-           var rangeWidth  = rangeExtent[1] - rangeExtent[0];
-              settings.window.start = rangeExtent[0];
-              settings.window.end =  rangeExtent[1];
+          // var rangeExtent = [x( extent[0] ), x( extent[1] ) ]; //convert
+          // var rangeWidth  = rangeExtent[1] - rangeExtent[0];
+              settings.window.start = brush.extent()[0].getMilliseconds()//rangeExtent[0];
+              settings.window.end =  brush.extent()[1].getMilliseconds() //rangeExtent[1];
               Visualizer.refresh();     
         }
 
