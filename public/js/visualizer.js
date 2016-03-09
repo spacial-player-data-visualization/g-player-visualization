@@ -84,7 +84,7 @@ var settings = {
 
   window : {
     start : 0,
-    end : 10000
+    end : 100
   }
 
 };
@@ -165,6 +165,29 @@ Visualizer.update = function(){
   UI.loading(false, "Success. " + unfilteredData.length + " points loaded.");
 }//Asarsa
 
+
+
+ /********************************
+           HEATMAPS
+   ********************************/
+
+/* 
+author: Alex Gimmi
+created: June 15, 2015
+purpose: redraws the currently selected heatmap on the map
+*/
+Visualizer.updateHeatmap = function(){
+  // Display the active Heatmap
+   if(settings.heatmaps.length > 0) {
+     var hmaps = new L.FeatureGroup();
+     var index = Heatmap.getIndexFromId(settings.activeHeatmap);
+     hmaps.addLayer(settings.heatmaps[index].heatmapLayer);
+     addFeatureGroup(hmaps);
+     console.log("Heatmap at index " + index + " with id " + settings.activeHeatmap + " being displayed.");
+   }
+}
+
+
 /*
 author: Asarsa
 created: Feb 29, 2016
@@ -180,9 +203,12 @@ Visualizer.genHeatMap = function(){
   
   // Unfiltered data
   var unfilteredData = settings.data.positions.concat(settings.data.actions);
+  
+  // Ensure chronological order & points to be within time frame
+  var filteredData = filterUsingWindow(sortBy(unfilteredData, "timestamp"),"timestamp");
 
   // Group data by PlayerID
-  var players = _.groupBy(unfilteredData, 'playerID');
+  var players = _.groupBy(filteredData, 'playerID');
 
   // Store current index
   var count = 0;
@@ -242,27 +268,6 @@ Visualizer.genHeatMap = function(){
 
 
 
-
- /********************************
-           HEATMAPS
-   ********************************/
-
-/* 
-author: Alex Gimmi
-created: June 15, 2015
-purpose: redraws the currently selected heatmap on the map
-*/
-Visualizer.updateHeatmap = function(){
-  // Display the active Heatmap
-   if(settings.heatmaps.length > 0) {
-     var hmaps = new L.FeatureGroup();
-     var index = Heatmap.getIndexFromId(settings.activeHeatmap);
-     hmaps.addLayer(settings.heatmaps[index].heatmapLayer);
-     addFeatureGroup(hmaps);
-     console.log("Heatmap at index " + index + " with id " + settings.activeHeatmap + " being displayed.");
-   }
-}
-
 /* 
 name: draw
 author: Alex Johnson
@@ -277,7 +282,7 @@ checkedActions is list of action boxes checked for user
 Visualizer.draw = function(entries, color, index, checkedActions){
 
     // Ensure chronological order
-    entries = sortBy(entries, "timestamp");
+    entries = filterUsingWindow(sortBy(entries, "timestamp"),"timestamp");
 
     // Get the active set of data
     var data = Visualizer.activeData(filterPositions(entries),checkedActions);
@@ -623,6 +628,13 @@ function sortBy (list, key){
         return l[key];
       })
 }
+
+// filter provided list by key 
+function filterUsingWindow (list, key){
+  return _.filter(list, function(l){
+        return l[key] > settings.window.start && l[key] < settings.window.end;
+      })
+}//Asarsa
 
 // Convert the provided JSON object into an
 // HTML representation
