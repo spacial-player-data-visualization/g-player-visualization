@@ -214,7 +214,7 @@ Visualizer.genHeatMap = function(){
   var count = 0;
   
   //store group info into name
-  var hmName = "";
+  var hmName = "Time Frame\n  Start : " + settings.window.start + "\n  End : " + settings.window.end + "\n\n";
   
   // check if group is visible (indivisual player visibility is deselected)
   var groupvisible = false;
