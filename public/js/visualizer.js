@@ -641,6 +641,7 @@ Visualizer.createGeoJsonLayer = function() {
   });
 
    var x = Visualizer.getBrushData();
+   console.log("BEFORE FILTER"+x.positions.toString());
     _.each(x.actions.concat(x.positions), function(json){
      //GeoJason Feature format  Layer for Playback Timeline
 
@@ -658,6 +659,25 @@ Visualizer.createGeoJsonLayer = function() {
    // console.log(JSON.stringify(settings.brushLayer[1],null,4));
 }
 
+
+Visualizer.getData = function(index){
+     var   geoJsonD3Lay = {
+      type: "FeatureCollection",
+      features: [],
+    };
+
+     var x = Visualizer.getBrushData();
+     console.log("AFTER FILTER"+x.positions.toString());
+    _.each(x.actions.concat(x.positions), function(json){
+    var geoJson = Visualizer.convertJsonToGeoJson(json);
+     geoJsonD3Lay.features.push(geoJson);
+  });
+  
+   //Pushing GeoJasonLay to array tracks
+ 
+    settings.brushLayer[index]= geoJsonD3Lay;
+   // console.log(JSON.stringify(settings.brushLayer[1],null,4));
+}
 // Returns a representation of the current state of the
 // map. This object provided context for what data
 // the API should return in order to be mapped.

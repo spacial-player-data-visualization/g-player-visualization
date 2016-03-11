@@ -92,6 +92,7 @@ Tariq Anwar
             map.removeLayer(myLayer);
             $("#lay").remove();
             $("#brush").empty();
+            Visualizer.getData(c);
        }
        myLayer = L.geoJson().addTo(map);
        myLayer.addData(settings.brushLayer[c]);
