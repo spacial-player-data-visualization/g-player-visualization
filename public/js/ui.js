@@ -519,8 +519,10 @@ UI.players.refreshMap = function(){
 	$("#active-players-list").append('<option value="' + group.groupID + '" style="background-color:#fff">' + group.groupName + '</option>');
 	$("#playback-players-list").append('<option value="' + group.groupID + '" style="background-color:#fff">' + group.groupName + '</option>');
   })
-
+ 
+  // 
   Visualizer.loadData();
+
 }
 
 /* 
@@ -1495,7 +1497,7 @@ UI.filters.changePlayer = function(ID){
 			}
 		})
 	}
-	
+	updateBrush();
 	Visualizer.refresh();
 }
 
@@ -1526,8 +1528,9 @@ UI.filters.changeCheckbox = function(){
 				settings.groups[g_ind].checkedActions = UI.filters.categories();
 			}
 		})
-		
+	
 	Visualizer.refresh();
+  updateBrush();  
 }
 
 /*
@@ -1567,7 +1570,7 @@ UI.filters.updateVisibility = function(){
 				settings.groups[g_ind].visibility = false;
 		})
 	}
-		
+	updateBrush();	
 	Visualizer.refresh();
 }
 

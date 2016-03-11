@@ -158,7 +158,8 @@ Visualizer.update = function(){
       Visualizer.draw(player, thisPlayer.color, count++, thisPlayer.checkedActions);
     });
   }
-  
+  //if(settings.players.length >0 )
+  //updateBrush();
   Visualizer.updateHeatmap();
 
   // Loading complete
@@ -266,6 +267,85 @@ Visualizer.genHeatMap = function(){
   
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+Visualizer.getBrushData = function(){
+
+  console.log("starting generation of data for heatmap");
+  var hmDataset = {
+    actions: [],
+    positions: [],
+  };
+  
+  // Unfiltered data
+  var filteredData = settings.data.positions.concat(settings.data.actions);
+  
+  // Ensure chronological order & points to be within time frame
+  // var filteredData = filterUsingWindow(sortBy(unfilteredData, "timestamp"),"timestamp");
+
+  // Group data by PlayerID
+  var players = _.groupBy(filteredData, 'playerID');
+
+  // Store current index
+  var count = 0;
+  
+  //store group info into name
+  //var hmName = "Time Frame\n  Start : " + settings.window.start + "\n  End : " + settings.window.end + "\n\n";
+  
+  // check if group is visible (indivisual player visibility is deselected)
+  var groupvisible = false;
+  _.each(settings.groups, function(group){
+    if(group.visibility){
+    //console.log("group visible. looking at players in group...");
+    groupvisible = true;
+  //  hmName += "group: " + group.groupID + "\n\n";
+    
+    // Iterate through players
+    _.each(players, function(player, playerID){
+      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+      
+      // Render each player onto the map
+      if(group.players.indexOf(playerID) != -1){
+        var newDataset = Visualizer.activeData(filterPositions(player), group.checkedActions);
+        hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
+        hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
+        
+    //    hmName += "Player:" + playerID + "\n";
+      }
+    });
+    
+    //hmName += "\nActions:" + group.checkedActions + "\n";
+    }
+  });
+  
+  if(groupvisible == false){
+    //console.log("no group visible. looking at players...");
+    // Iterate through players
+    _.each(players, function(player, playerID){
+      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+
+      // Render visible player onto the map
+      if(thisPlayer.visibility){
+      var newDataset  = Visualizer.activeData(filterPositions(player), thisPlayer.checkedActions);
+      hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
+      hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
+      
+      //hmName += "Player:" + playerID + "\nActions:" + thisPlayer.checkedActions + "\n\n";
+      }
+    });
+  }
+  
+  //console.log(hmDataset.actions.length + "\n\n" + hmDataset.positions.length);
+  
+  //console.log("heatmap data generation complete");
+  //Heatmap.add(hmDataset,hmName);
+  return hmDataset;
+}
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 /* 
@@ -557,14 +637,25 @@ Visualizer.createGeoJsonLayer = function() {
     var geoJson = Visualizer.convertJsonToGeoJson(json);
     
     settings.geoJsonLayer.features.push(geoJson);
-    geoJsonD3Lay.features.push(geoJson);
+    //geoJsonD3Lay.features.push(geoJson);
+  });
+
+   var x = Visualizer.getBrushData();
+    _.each(x.actions.concat(x.positions), function(json){
+     //GeoJason Feature format  Layer for Playback Timeline
+
+    var geoJson = Visualizer.convertJsonToGeoJson(json);
+
+     geoJsonD3Lay.features.push(geoJson);
   });
   
    //Pushing GeoJasonLay to array tracks
     if(geoJsonLay.properties.time.length != 0){
     settings.tracks.push(geoJsonLay);
     }
+
     settings.brushLayer.push(geoJsonD3Lay);
+   // console.log(JSON.stringify(settings.brushLayer[1],null,4));
 }
 
 // Returns a representation of the current state of the

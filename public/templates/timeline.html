@@ -11,19 +11,21 @@ Tariq Anwar
 
 
 
-  <div class="navbar navbar-default navbar-fixed-bottom">
+  <!--<div class="navbar navbar-default navbar-fixed-bottom">
   <div class = "container"> 
   <select id="playback-players-list" >
     <option value="">Select Player</option>
   </select>
   </div>
-  </div>  
+  </div>  -->
   
   <script>
    var control;
    var playback;
    var myLayer;
    var featuregroup;
+   var l;
+
 
     // Colors for AwesomeMarkers
     var _colorIdx = 0,
@@ -44,12 +46,15 @@ Tariq Anwar
         return _colors[_colorIdx++%10];
     }
 
-  $("#playback-players-list").change(function() {
-     var player_id =  $("select[id='playback-players-list']").val();
+  //$("#active-players-list").change(function() {
+    function updateBrush(){
+
+     var player_id =  $("select[id='active-players-list']").val();
      var  col_index = _.findWhere(settings.players, { 'playerID' : parseInt(player_id) });
      //console.log("Index"+col_index +"CCC"+col_index.color);
 
-      var index = $("select[id='playback-players-list'] option:selected").index();  //get index of selected player
+      var index = $("select[id='active-players-list'] option:selected").index();  //get index of selected player
+
       $(".lp").remove();
       //var vis = Visualizer.getTimelineData();  //getting players data 
       var playbackOptions = {
@@ -65,14 +70,22 @@ Tariq Anwar
         } 
       };
     
-         var c = parseInt(index);   
+          var c = parseInt(index);
         //settings.tracks.splice(0,1);
-        console.log(settings.tracks.length);
+        // console.log(settings.tracks.length);
        playback = new L.Playback(map,settings.tracks,null, playbackOptions); //playback of selected player
        control = new L.Playback.Control(playback);
        control.addTo(map);
 
   ////////////////////////             BRUSH                /////////////////////////
+     var p;
+
+        l = $(".navbar").position();
+        p = Math.floor(l.left);
+    $( window ).resize(function() {
+        l = $(".navbar").position();
+        p = Math.floor(l.left);
+      });
 
        if(myLayer != undefined){    //remove previous data and layers if present
             myLayer.clearLayers();
@@ -80,7 +93,6 @@ Tariq Anwar
             $("#lay").remove();
             $("#brush").empty();
        }
-       
        myLayer = L.geoJson().addTo(map);
        myLayer.addData(settings.brushLayer[c]);
        setBrush(settings.brushLayer[c]);
@@ -99,19 +111,23 @@ created: Feb 22, 2016
 purpose: Adding D3 brush component.
 argument: the formatted data 
 */    
+
+
   function setBrush(data) {
    // console.log(data.features.properties.start[1]);
     var t=[];
     var container = d3.select('#brush'),
        width =750,    
        height = 100;
-       margin = {top: 50, right: 50, bottom:100, left: 530};
+       margin = {top: 80, right: 50, bottom:100, left:p};
      
     var timeExtent = d3.extent(data.features, function(d) {
-        t.push(new Date(d.properties.end));  //just top two entries are required , could be removed;
-        return new Date(d.properties.end);
-    });
+        //t.push(new Date(d.properties.end));  //just top two entries are required , could be removed;
 
+        t.push(d.properties.end);
+        return (d.properties.end);
+    });
+    // console.log(t.toString());
     var svg = container.append('svg')
         .attr("class", "grid-background")
         .attr('width', width + margin.left + margin.right)
@@ -124,7 +140,7 @@ argument: the formatted data
             margin.top + ')');
        
  
-    var x = d3.time.scale()
+    var x = d3.scale.linear()
         .range([0, width])
         .domain(timeExtent); 
 
@@ -146,7 +162,7 @@ argument: the formatted data
        .attr('id','circle')
        .attr('transform', function(d) {
          // red circles for the data points
-        return 'translate(' + [x(new Date(d.properties.end)), height/2] + ')';
+        return 'translate(' + [x(d.properties.end), height/2] + ')';
           })
        .attr('r', pointRadius)
        .attr('opacity', 0.5)
@@ -191,8 +207,8 @@ argument: the formatted data
            var extent = brush.extent(); //returns [xMin, xMax]
           // var rangeExtent = [x( extent[0] ), x( extent[1] ) ]; //convert
           // var rangeWidth  = rangeExtent[1] - rangeExtent[0];
-              settings.window.start = brush.extent()[0].getMilliseconds()//rangeExtent[0];
-              settings.window.end =  brush.extent()[1].getMilliseconds() //rangeExtent[1];
+              settings.window.start = brush.extent()[0];//rangeExtent[0];
+              settings.window.end =  brush.extent()[1]; //rangeExtent[1];
               Visualizer.refresh();     
         }
 
@@ -219,7 +235,7 @@ argument: the formatted data
        
        
    //     } 
-  });
+  }
   
   
   </script>
