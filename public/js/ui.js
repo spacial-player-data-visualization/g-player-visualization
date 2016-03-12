@@ -502,28 +502,22 @@ created: March 29, 2015
 purpose: helper function that refreshes map on a change
 */
 UI.players.refreshMap = function(){
-  $("#active-players").html("");
-  $("#active-players-list").html('<option value="">Select One</option>');
-  $("#playback-players-list").html('<option value="">Select One</option>');
   $('#filters input:checkbox').removeAttr('checked');
+  $("#active-players").html("");
+  $("#active-players-list").html('<option value="" style="background-color:#fff">Select One</option>');
 
   _.each(settings.players, function(player){
-
 	$("#active-players-list").append('<option value="' + player.playerID + '" style="background-color:' + 
-		player.color + '">' + player.playerID + '</option>');
-	$("#playback-players-list").append('<option value="' + player.playerID + '" style="background-color:' + 
-		player.color + '">' + player.playerID + '</option>');
+	player.color + '">' + player.playerID + '</option>');
   })
   
   _.each(settings.groups, function(group){
-	$("#active-players-list").append('<option value="' + group.groupID + '" style="background-color:#fff">' + group.groupName + '</option>');
-	$("#playback-players-list").append('<option value="' + group.groupID + '" style="background-color:#fff">' + group.groupName + '</option>');
+	$("#active-players-list").append('<option value="' + group.groupID + '" style="background-color:#fff">' + 
+	group.groupName + '</option>');
   })
  
-  // 
   Visualizer.loadData();
-
-}
+}//Asarsa
 
 /* 
 name: getListOfAvailablePlayerIDs
@@ -1468,7 +1462,18 @@ created: Feb 15,2016
 purpose: update checkboxes for player selected from drop-down select list
 And refresh map
 */
-UI.filters.changePlayer = function(ID){
+UI.filters.changePlayer = function(){
+	
+	var ID = $("#active-players-list").val();
+	var bkgrndclr = "#ffffff";
+	
+	_.each(settings.players, function(player){
+		if(player.playerID == parseInt(ID)){
+			bkgrndclr = player.color;
+		}
+	})
+	
+	$("#active-players-list").css("background-color",bkgrndclr);
 	
 	$('#filters input:checkbox').removeAttr('checked');
 	
