@@ -158,8 +158,7 @@ Visualizer.update = function(){
       Visualizer.draw(player, thisPlayer.color, count++, thisPlayer.checkedActions);
     });
   }
-  //if(settings.players.length >0 )
-  //updateBrush();
+
   Visualizer.updateHeatmap();
 
   // Loading complete

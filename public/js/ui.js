@@ -1502,7 +1502,6 @@ UI.filters.changePlayer = function(){
 			}
 		})
 	}
-	updateBrush();
 	Visualizer.refresh();
 }
 
@@ -1535,7 +1534,6 @@ UI.filters.changeCheckbox = function(){
 		})
 	
 	Visualizer.refresh();
-  updateBrush();  
 }
 
 /*
@@ -1575,7 +1573,6 @@ UI.filters.updateVisibility = function(){
 				settings.groups[g_ind].visibility = false;
 		})
 	}
-	updateBrush();	
 	Visualizer.refresh();
 }
 
