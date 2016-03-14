@@ -34,9 +34,9 @@ var settings = {
     features: [],
   },
  
-
   //json layer for brush
-  brushLayer : [], 
+  brushLayer : null,
+  
   //player tracks
   tracks : [],
 
@@ -209,9 +209,6 @@ Visualizer.genHeatMap = function(){
 
   // Group data by PlayerID
   var players = _.groupBy(filteredData, 'playerID');
-
-  // Store current index
-  var count = 0;
   
   //store group info into name
   var hmName = "Time Frame\n  Start : " + settings.window.start + "\n  End : " + settings.window.end + "\n\n";
@@ -220,46 +217,38 @@ Visualizer.genHeatMap = function(){
   var groupvisible = false;
   _.each(settings.groups, function(group){
     if(group.visibility){
-    //console.log("group visible. looking at players in group...");
     groupvisible = true;
     hmName += "group: " + group.groupID + "\n\n";
-    
+
     // Iterate through players
     _.each(players, function(player, playerID){
       var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
-      
+ 
       // Render each player onto the map
       if(group.players.indexOf(playerID) != -1){
         var newDataset = Visualizer.activeData(filterPositions(player), group.checkedActions);
         hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
         hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
-        
         hmName += "Player:" + playerID + "\n";
       }
     });
-    
     hmName += "\nActions:" + group.checkedActions + "\n";
     }
   });
   
   if(groupvisible == false){
-    //console.log("no group visible. looking at players...");
     // Iterate through players
     _.each(players, function(player, playerID){
       var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
-
       // Render visible player onto the map
       if(thisPlayer.visibility){
-      var newDataset  = Visualizer.activeData(filterPositions(player), thisPlayer.checkedActions);
-      hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
-      hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
-      
-      hmName += "Player:" + playerID + "\nActions:" + thisPlayer.checkedActions + "\n\n";
+        var newDataset  = Visualizer.activeData(filterPositions(player), thisPlayer.checkedActions);
+        hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
+        hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
+        hmName += "Player:" + playerID + "\nActions:" + thisPlayer.checkedActions + "\n\n";
       }
     });
   }
-  
-  //console.log(hmDataset.actions.length + "\n\n" + hmDataset.positions.length);
   
   console.log("heatmap data generation complete");
   Heatmap.add(hmDataset,hmName);
@@ -271,75 +260,51 @@ Visualizer.genHeatMap = function(){
 
 Visualizer.getBrushData = function(){
 
-  console.log("starting generation of data for heatmap");
-  var hmDataset = {
+  var brushDataset = {
     actions: [],
     positions: [],
   };
   
-  // Unfiltered data
-  var filteredData = settings.data.positions.concat(settings.data.actions);
-  
-  // Ensure chronological order & points to be within time frame
-  // var filteredData = filterUsingWindow(sortBy(unfilteredData, "timestamp"),"timestamp");
-
+  // filtered data
+  var filteredData = sortBy(settings.data.positions.concat(settings.data.actions), "timestamp");
+ 
   // Group data by PlayerID
   var players = _.groupBy(filteredData, 'playerID');
-
-  // Store current index
-  var count = 0;
-  
-  //store group info into name
-  //var hmName = "Time Frame\n  Start : " + settings.window.start + "\n  End : " + settings.window.end + "\n\n";
   
   // check if group is visible (indivisual player visibility is deselected)
   var groupvisible = false;
+  
   _.each(settings.groups, function(group){
     if(group.visibility){
-    //console.log("group visible. looking at players in group...");
-    groupvisible = true;
-  //  hmName += "group: " + group.groupID + "\n\n";
-    
-    // Iterate through players
-    _.each(players, function(player, playerID){
-      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
-      
-      // Render each player onto the map
-      if(group.players.indexOf(playerID) != -1){
-        var newDataset = Visualizer.activeData(filterPositions(player), group.checkedActions);
-        hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
-        hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
-        
-    //    hmName += "Player:" + playerID + "\n";
-      }
-    });
-    
-    //hmName += "\nActions:" + group.checkedActions + "\n";
+	  groupvisible = true;
+	  // Iterate through players
+	  _.each(players, function(player, playerID){
+	    var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+	    // Render each player onto the map
+	    if(group.players.indexOf(playerID) != -1){
+	      var newDataset = Visualizer.activeData(filterPositions(player), group.checkedActions);
+	      brushDataset.actions = brushDataset.actions.concat(newDataset.actions);
+	      brushDataset.positions = brushDataset.positions.concat(newDataset.positions);
+	    }
+	  });
     }
   });
   
   if(groupvisible == false){
-    //console.log("no group visible. looking at players...");
-    // Iterate through players
-    _.each(players, function(player, playerID){
-      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+	// Iterate through players
+	_.each(players, function(player, playerID){
+	  var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
 
-      // Render visible player onto the map
-      if(thisPlayer.visibility){
-      var newDataset  = Visualizer.activeData(filterPositions(player), thisPlayer.checkedActions);
-      hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
-      hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
-      
-      //hmName += "Player:" + playerID + "\nActions:" + thisPlayer.checkedActions + "\n\n";
-      }
-    });
+	  // Render visible player onto the map
+	  if(thisPlayer.visibility){
+	    var newDataset  = Visualizer.activeData(filterPositions(player), thisPlayer.checkedActions);
+	    brushDataset.actions = brushDataset.actions.concat(newDataset.actions);
+	    brushDataset.positions = brushDataset.positions.concat(newDataset.positions);
+	  }
+	});
   }
-  
-  //console.log(hmDataset.actions.length + "\n\n" + hmDataset.positions.length);
-  
-  //console.log("heatmap data generation complete");
-  //Heatmap.add(hmDataset,hmName);
-  return hmDataset;
+
+  return brushDataset;
 }
 
 
@@ -610,73 +575,52 @@ purpose: Create a Feature Collection of all GeoJson data
 */
 Visualizer.createGeoJsonLayer = function() {
 
-//object for creating Timeline playback 
-   var  geoJsonLay = {   
+  //object for creating Timeline playback 
+  var  geoJsonLay = {   
     type: "Feature",
     geometry: {
-    type: "MultiPoint",
-    coordinates: [/*array of [lng,lat] coordinates*/]
-  },
-  properties: {
-    time: [/*array of UNIX timestamps*/]
-  }
-   } ;
-
-//object for creating D3 brush slider window
-   var   geoJsonD3Lay = {
-    type: "FeatureCollection",
-    features: [],
+      type: "MultiPoint",
+      coordinates: [] /*array of [lng,lat] coordinates*/
+    },
+    properties: {
+      time: [] /*array of UNIX timestamps*/
+    }
   };
 
   _.each(settings.data.actions.concat(settings.data.positions), function(json){
-     //GeoJason Feature format  Layer for Playback Timeline
+    //GeoJason Feature format  Layer for Playback Timeline
     geoJsonLay.geometry.coordinates.push(json['coord']);
     geoJsonLay.properties.time.push(json['start']);
 
-    var geoJson = Visualizer.convertJsonToGeoJson(json);
-    
+    var geoJson = Visualizer.convertJsonToGeoJson(json); 
     settings.geoJsonLayer.features.push(geoJson);
-    //geoJsonD3Lay.features.push(geoJson);
-  });
-
-   var x = Visualizer.getBrushData();
-   console.log("BEFORE FILTER"+x.positions.toString());
-    _.each(x.actions.concat(x.positions), function(json){
-     //GeoJason Feature format  Layer for Playback Timeline
-
-    var geoJson = Visualizer.convertJsonToGeoJson(json);
-
-     geoJsonD3Lay.features.push(geoJson);
   });
   
-   //Pushing GeoJasonLay to array tracks
-    if(geoJsonLay.properties.time.length != 0){
+  //Pushing GeoJasonLay to array tracks
+  if(geoJsonLay.properties.time.length != 0){
     settings.tracks.push(geoJsonLay);
-    }
-
-    settings.brushLayer.push(geoJsonD3Lay);
-   // console.log(JSON.stringify(settings.brushLayer[1],null,4));
+  }
 }
 
 
-Visualizer.getData = function(index){
-     var   geoJsonD3Lay = {
+Visualizer.getData = function(){
+    
+	var   geoJsonD3Lay = {
       type: "FeatureCollection",
       features: [],
     };
 
-     var x = Visualizer.getBrushData();
-     console.log("AFTER FILTER"+x.positions.toString());
+    var x = Visualizer.getBrushData();
+	
     _.each(x.actions.concat(x.positions), function(json){
     var geoJson = Visualizer.convertJsonToGeoJson(json);
      geoJsonD3Lay.features.push(geoJson);
-  });
-  
-   //Pushing GeoJasonLay to array tracks
- 
-    settings.brushLayer[index]= geoJsonD3Lay;
-   // console.log(JSON.stringify(settings.brushLayer[1],null,4));
+    });
+    
+	settings.brushLayer = geoJsonD3Lay;
 }
+
+
 // Returns a representation of the current state of the
 // map. This object provided context for what data
 // the API should return in order to be mapped.

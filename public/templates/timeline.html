@@ -8,16 +8,6 @@ Created: Feb 28, 2015
 Authors:
 Tariq Anwar
 -->
-
-
-
-  <!--<div class="navbar navbar-default navbar-fixed-bottom">
-  <div class = "container"> 
-  <select id="playback-players-list" >
-    <option value="">Select Player</option>
-  </select>
-  </div>
-  </div>  -->
   
   <script>
    var control;
@@ -46,17 +36,16 @@ Tariq Anwar
         return _colors[_colorIdx++%10];
     }
 
-  //$("#active-players-list").change(function() {
+    //$("#active-players-list").change(function() {
     function updateBrush(){
 
-     var player_id =  $("select[id='active-players-list']").val();
-     var  col_index = _.findWhere(settings.players, { 'playerID' : parseInt(player_id) });
+     //var player_id =  $("select[id='active-players-list']").val();
+     //var  col_index = _.findWhere(settings.players, { 'playerID' : parseInt(player_id) });
      //console.log("Index"+col_index +"CCC"+col_index.color);
-
-      var index = $("select[id='active-players-list'] option:selected").index();  //get index of selected player
-
-      $(".lp").remove();
-      //var vis = Visualizer.getTimelineData();  //getting players data 
+     //var vis = Visualizer.getTimelineData();  //getting players data 
+     
+	 $(".lp").remove();
+      
       var playbackOptions = {
           marker: function(){
             return {
@@ -70,7 +59,7 @@ Tariq Anwar
         } 
       };
     
-          var c = parseInt(index);
+        //var c = parseInt($("select[id='active-players-list'] option:selected").index()); //get index of selected player
         //settings.tracks.splice(0,1);
         // console.log(settings.tracks.length);
        playback = new L.Playback(map,settings.tracks,null, playbackOptions); //playback of selected player
@@ -92,11 +81,11 @@ Tariq Anwar
             map.removeLayer(myLayer);
             $("#lay").remove();
             $("#brush").empty();
-            Visualizer.getData(c);
        }
+	   Visualizer.getData();
        myLayer = L.geoJson().addTo(map);
-       myLayer.addData(settings.brushLayer[c]);
-       setBrush(settings.brushLayer[c]);
+       myLayer.addData(settings.brushLayer);
+       setBrush(settings.brushLayer);
     
     function pointColor(feature) {
       return feature.properties.end> 5 ? '#f55' : '#a00';
@@ -234,9 +223,7 @@ argument: the formatted data
 
 /////////////////////////////////////////////////////// 
        
-       
-   //     } 
-  }
+}
   
   
   </script>
