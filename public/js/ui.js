@@ -376,6 +376,8 @@ UI.players.addPlayer = function(playerID){
 		  settings.players.push({ playerID : playerID, color : color , checkedActions : settings.listOfActions, visibility : true });
 		  UI.players.refreshMap();
 		  UI.getListOfAvailablePlayerIDs();
+		  $('#active-players-list').val(playerID);
+		  UI.filters.changePlayer();
 		  if(++clr_indx == colors.length)
 				clr_indx = 0;
         }
@@ -396,10 +398,10 @@ UI.players.addPlayers = function(playerIDs){
 
 // Add all players at once. 
 UI.players.addAll = function(PlayerIDs){
-
-   // Confirm that user wants to load a large data set
+  
+  // Confirm that user wants to load a large data set
   if (!confirm('Warning! Loading all players in the current list may load a considerable amount of data. This request could take time to process, and may cause your map to become slow or unresponsive. If you haven\'t already, we recommend selecting a lower "fidelity" from the left menu in order to reduce the amount of positions per second being returned. Are you sure you want to continue?')) return;
-
+  
   UI.getListOfAvailablePlayerIDs(function(playerIDs){
 	var colors = settings.colors;
 	var clr_indx = 0;
@@ -419,9 +421,11 @@ UI.players.addAll = function(PlayerIDs){
     })
 	
 	UI.players.refreshMap();
-		
-  })
+
+  });
+  
   UI.getListOfAvailablePlayerIDs();
+  
 } // Asarsa
 
 // purpose: remove selected playerID from the map
@@ -466,6 +470,7 @@ UI.players.remove = function(playerID){
   UI.getListOfAvailablePlayerIDs();
   UI.getListOfAvailableGroupIDs();
 
+
 }
 
 //Asarsa
@@ -504,7 +509,8 @@ purpose: helper function that refreshes map on a change
 UI.players.refreshMap = function(){
   $('#filters input:checkbox').removeAttr('checked');
   $("#active-players").html("");
-  $("#active-players-list").html('<option value="" style="background-color:#fff">Select One</option>');
+  $("#active-players-list").html("");
+  //$("#active-players-list").html('<option value="" style="background-color:#fff">Select One</option>');
 
   _.each(settings.players, function(player){
 	$("#active-players-list").append('<option value="' + player.playerID + '" style="background-color:' + 
