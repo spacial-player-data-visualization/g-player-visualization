@@ -70,7 +70,6 @@ L.Playback.Control = L.Control.extend({
 '</div>',
 */
 
-/*
 '<footer class="lp"> ' +
 '  <div class="transport"> ' +
 '    <div class="navbar"> ' +
@@ -99,47 +98,6 @@ L.Playback.Control = L.Control.extend({
 '      </div> ' +
 '    </div> ' +
 '  </div> ' +
-'</div>' +
-'</footer>' ,
-*/
-
-'<footer class="lp"> ' +
-'<div class="panel panel-default"> ' +
-'  <!-- Default panel contents -->' +
-'  <div class="panel-heading">Playback Timeline </div>' +
-'  <!-- Table -->' +
-'		<table class="table"> ' +
-'       <tr> ' +
-'		<table class="table"> ' +
-'       <tr> ' +
-'		<td width="10%">' +
-'            <a id="play-pause" href="#"><i id="play-pause-icon" class="fa fa-play fa-lg"></i></a> ' +
-'		</td>' +
-'		<td width="20%">' +
-'            <span id="cursor-date"></span><br/> ' +
-'            <span id="cursor-time"></span> ' +
-'		</td>' +
-'		<td width="60%">' +
-'			<div id="time-slider"></div>' +
-'		</td>' +
-'		<td width="10%">' +
-'			<a id="speed-btn" data-toggle="dropdown" href="#"><i class="fa fa-dashboard fa-lg"></i> <span id="speed-icon-val" class="speed">1</span>x</a> ' +
-'           <div align="right" class="speed-menu dropdown-menu" role="menu" aria-labelledby="speed-btn"> ' +
-'              <input id="speed-input" class="speed" type="text" value="1" /> ' +
-'              <div id="speed-slider"></div> ' +
-'            </div> ' +
-'		</td>' +
-'		</tr>' +
-'		</table>' +
-'		</tr>' +
-'       <tr> ' +
-'       <td> ' +
-'       <div id="d3brush-holder">' +
-'       The brush will appear here' +
-'       </div> ' +
-'       </td> ' +
-'       </tr> ' +
-'       </table> ' +
 '</div>' +
 '</footer>' ,
 

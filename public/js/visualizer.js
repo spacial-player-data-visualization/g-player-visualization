@@ -84,7 +84,7 @@ var settings = {
 
   window : {
     start : 0,
-    end : 1000
+    end : 100
   }
 
 };
