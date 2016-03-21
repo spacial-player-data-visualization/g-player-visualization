@@ -86,7 +86,7 @@ L.Playback.Control = L.Control.extend({
 '		</td>' +
 '		<td width="10%">' +
 '			<i class="fa fa-dashboard fa-lg"></i>' +
-'           <input id="speed-input" class="speed" type="text" value="1" style="width: 40px;" />x' +
+'           <input id="speed-input" class="speed" type="text" value="1" style="width: 30px;" /> x' +
 '		</td>' +
 '		</tr>' +
 

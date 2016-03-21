@@ -81,6 +81,9 @@ var settings = {
   
   // color options
   colors : ["#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf", "#e0f3f8", "#abd9e9", "#74add1", "#4575b4"],
+  
+  // index for color of next player
+  clr_indx : 0,
 
   window : {
     start : 0,

@@ -297,7 +297,7 @@ arguments: playerID is the selected player
 */
 UI.players = {};
 var colors = settings.colors;
-var clr_indx = 0;
+var lastPlayer = 0;
 
 // purpose: plots selected playerID onto map from left menu
 UI.players.addPlayer = function(playerID){
@@ -320,7 +320,7 @@ UI.players.addPlayer = function(playerID){
   var i = 0;
   // dialog for selection of color for selected player
   var color_radio_buttons = _.reduce(colors, function(memo, color){
-		if(i++ == clr_indx)
+		if(i++ == settings.clr_indx)
 			var ret = memo + '<label class="radio"><input type="radio" name="group1" value="' + 
 		              color + '" checked><i class="fa fa-square" style="color: ' + color + '"></i></label>';
 		else
@@ -378,8 +378,8 @@ UI.players.addPlayer = function(playerID){
 		  UI.getListOfAvailablePlayerIDs();
 		  $('#active-players-list').val(playerID);
 		  UI.filters.changePlayer();
-		  if(++clr_indx == colors.length)
-				clr_indx = 0;
+		  if(++settings.clr_indx == colors.length)
+				settings.clr_indx = 0;
         }
       }
     }
@@ -404,7 +404,6 @@ UI.players.addAll = function(PlayerIDs){
   
   UI.getListOfAvailablePlayerIDs(function(playerIDs){
 	var colors = settings.colors;
-	var clr_indx = 0;
 	
     _.each(playerIDs, function(playerID){
 		
@@ -413,15 +412,17 @@ UI.players.addAll = function(PlayerIDs){
 
 		if (!existing) {
 			// Add to list
-			settings.players.push({ playerID : playerID, color : colors[clr_indx++] , checkedActions : settings.listOfActions, visibility : true });
-			if(clr_indx == colors.length)
-				clr_indx = 0;
+			settings.players.push({ playerID : playerID, color : colors[settings.clr_indx++] , checkedActions : settings.listOfActions, visibility : true });
+			lastPlayer = playerID;
+			if(settings.clr_indx == colors.length)
+				settings.clr_indx = 0;
 		};
 		
     })
 	
 	UI.players.refreshMap();
-
+	$('#active-players-list').val(lastPlayer);
+	UI.filters.changePlayer();
   });
   
   UI.getListOfAvailablePlayerIDs();
@@ -746,7 +747,8 @@ UI.groups.addGroup = function(){
 		if(create){
 			// Add to list
 			settings.groups.push({ groupID : "g" + groupID, players : listOfPlayers, groupName : name, checkedActions : [], visibility:false});
-		
+			lastPlayer = "g" + groupID;
+			
 			//update text field with id for next group
 			$('#groupName').val("group " + ++groupID);
 		}
@@ -760,6 +762,10 @@ UI.groups.addGroup = function(){
 		
 		// Update map
 		UI.players.refreshMap();
+		if(create){
+			$('#active-players-list').val(lastPlayer);
+			UI.filters.changePlayer();
+		}
 		UI.getListOfAvailableGroupIDs();
 	
 	}
