@@ -105,14 +105,13 @@ argument: the formatted data
   function setBrush(data) {
    // console.log(data.features.properties.start[1]);
     var t=[];
-    var container = d3.select('#brush'),
-       width =750,    
-       height = 100;
-       margin = {top: 80, right: 50, bottom:100, left:300};
+    var container = d3.select('#d3brush-holder'),
+       width =$("#d3brush-holder").width(),    
+       height = 50;
+       margin = {top: 0, right: 0, bottom:30, left:0};
      
     var timeExtent = d3.extent(data.features, function(d) {
         //t.push(new Date(d.properties.end));  //just top two entries are required , could be removed;
-
         t.push(d.properties.end);
         return (d.properties.end);
     });
