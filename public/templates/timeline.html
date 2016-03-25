@@ -43,9 +43,12 @@ Tariq Anwar
      //var  col_index = _.findWhere(settings.players, { 'playerID' : parseInt(player_id) });
      //console.log("Index"+col_index +"CCC"+col_index.color);
      //var vis = Visualizer.getTimelineData();  //getting players data 
-     
-	 $(".lp").remove();
-      
+     if(control != undefined){ 
+       $(".awesome-marker").remove();  
+	     $(".lp").remove();
+       playback.stop();
+     }
+   
       var playbackOptions = {
           marker: function(){
             return {

@@ -417,7 +417,7 @@ UI.players.addAll = function(PlayerIDs){
 			if(settings.clr_indx == colors.length)
 				settings.clr_indx = 0;
 		};
-		
+		Visualizer.loadData();
     })
 	
 	UI.players.refreshMap();
