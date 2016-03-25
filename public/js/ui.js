@@ -385,7 +385,7 @@ UI.players.addPlayer = function(playerID){
     }
   });
   
-
+  updateBrush();
 }
 
 
@@ -426,7 +426,7 @@ UI.players.addAll = function(PlayerIDs){
   });
   
   UI.getListOfAvailablePlayerIDs();
-  
+  updateBrush();
 } // Asarsa
 
 // purpose: remove selected playerID from the map

@@ -81,26 +81,38 @@ L.Playback.Control = L.Control.extend({
 '		<td width="10%">' +
 '            <a id="play-pause" href="#"><i id="play-pause-icon" class="fa fa-play fa-lg"></i></a> ' +
 '		</td>' +
-'		<td width="80%">' +
+'		<td width="75%">' +
 '			<div id="time-slider"></div>' +
 '		</td>' +
-'		<td width="10%">' +
-'			<i class="fa fa-dashboard fa-lg"></i>' +
-'           <input id="speed-input" class="speed" type="text" value="1" style="width: 30px;" /> x' +
+'		<td width="15%">' +
+'            <span id="cursor-time"></span> ms ' +
 '		</td>' +
 '		</tr>' +
-
 '       <tr> ' +
 '		<td>' +
-'            <span id="cursor-date"></span><br/> ' +
-'            <span id="cursor-time"></span> ' +
+'		<div class="btn btn-default btn-sm" onclick="updateBrush()" ">Update -></div>' +
 '		</td>' +
-'       <td> ' +
+'		<td>' +
 '       <div id="d3brush-holder">' +
 '       </div> ' +
 '       </td> ' +
 '		<td>' +
-'       <div id="speed-slider"></div> ' +
+
+'		<table style="height: 100px;"> ' +
+'       <tr> ' +
+'		<td width="70%">' +
+'       	<div style="height: 100px;"> ' +
+'			<i class="fa fa-dashboard fa-lg"></i> Speed' +
+'			<br/><br/>' +
+'			<input id="speed-input" class="speed" type="text" value="1" style="width: 30px;" /> x' +
+'			</div> ' +
+'		</td>' +
+'		<td width="30%">' +
+'       <div id="speed-slider" style="height: 100px;"></div> ' +
+'		</td>' +
+'       </tr> ' +
+'       </table> ' +
+
 '		</td>' +
 '       </tr> ' +
 '       </table> ' +
@@ -140,7 +152,7 @@ L.Playback.Control = L.Control.extend({
 
     var startTime = playback.getStartTime();
     $('#cursor-date').html(L.Playback.Util.DateStr(startTime));
-    $('#cursor-time').html(L.Playback.Util.TimeStr(startTime));
+    $('#cursor-time').html(startTime);
 
     $('#time-slider').slider({
       min: playback.getStartTime(),
@@ -228,7 +240,7 @@ L.Playback.Control = L.Control.extend({
 
   _clockCallback: function(ms) {
     $('#cursor-date').html(L.Playback.Util.DateStr(ms));
-    $('#cursor-time').html(L.Playback.Util.TimeStr(ms));
+    $('#cursor-time').html(ms);
     $('#time-slider').slider('value', ms);
   },
 
