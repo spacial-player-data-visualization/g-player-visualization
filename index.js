@@ -24,7 +24,7 @@ app.use(bodyParser.json({limit: '50mb'}));
 
 // Determine database URL from current environment.
 // MondoDB will direct at Heroku or Localhost depending
-var mongoUrl = process.env.MONGOLAB_URI || 'mongodb://localhost/test';
+var mongoUrl = process.env.MONGOLAB_URI || 'mongodb://admin:admin@nb4800.neu.edu:12857/gplayer';
 
 // Initialize database connection
 var mongoose = require('mongoose');
