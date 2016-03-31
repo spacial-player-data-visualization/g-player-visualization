@@ -74,12 +74,12 @@ Uploader.parseFile = function(event) {
   if (ext == "json") {
     $.getJSON(url, function(data){
       // TODO: ONLY DO THIS IF THE GAME IS SSIEGE / DIFFERENT FOR EACH GAME
-      data = data.EntityRecords;
-      setLocalJSON(data);
+      data = data.Events;
+      // setLocalJSON(data);
       UI.alert(data.length + " results loaded.");
       console.log("The following data was taken from the uploaded .json:");
       console.log(data);
-      Uploader.SSIEGE.testUpload();
+      Uploader.SSIEGE.testUpload(data);
     });
 
     UI.loading(false);
@@ -312,13 +312,14 @@ var bin_count = 0;
 /*
 TODO: THIS IS A TEST UPLOAD FUNCTION. NEEDS A TON OF WORK
 */
-Uploader.SSIEGE.testUpload = function() {
+Uploader.SSIEGE.testUpload = function(data) {
 
   UI.loading(true, "Uploading Data.....");
   UI.alert("Sending to database.....");
 
   // Get the JSON we plucked from the data file
-  var entries = getLocalJSON();
+  // var entries = getLocalJSON();
+  var entries = data;
 
   // TODO: in order to remove invalid entries, we must first create a set of required
   // TODO: keys for the game SSIEGE. We also have to check the node.js models and make
@@ -333,6 +334,8 @@ Uploader.SSIEGE.testUpload = function() {
 
   // Split data into multiple, smaller bins
   var bins = split(entries, entries.length / 200);
+  console.log("bins")
+  console.log(bins)
 
   UI.loading(true, "Uploaded " + entries.length + " entries");
 
@@ -433,7 +436,7 @@ Uploader.upload = function(bins, callback) {
 
   current = bins[0];
 
-  UI.alert("Uploading " + (bin_count - bins.length) + " of " + bin_count, "count");
+  UI.alert("Uploading " + (bin_count - bins.length + 1) + " of " + bin_count, "count");
 
   // Save data into JSON object.
   // Format JSON into string

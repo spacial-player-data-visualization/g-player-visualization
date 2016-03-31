@@ -480,7 +480,7 @@ Visualizer.formatData = function(data){
    data['coord'] = [(data.longitude), (data.latitude)];
   // TODO: using data.timestamp allows us to just use the raw time for now...
   // Not sure what to do to have the time display exactly as we want it to.
-  data['start'] = data.timestamp*1000;//data.timestamp;//moment({seconds: data.timestamp}).unix();
+  data['start'] = data.timestamp;//*1000 (to milli) //data.timestamp;//moment({seconds: data.timestamp}).unix();
   data['end'] = data.timestamp;//moment({seconds: data.timestamp}).unix();
 
   // TODO: geometry for positions should be a LineString, not a Point
