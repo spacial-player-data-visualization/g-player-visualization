@@ -85,7 +85,16 @@ L.Playback.Control = L.Control.extend({
 '			<div id="time-slider"></div>' +
 '		</td>' +
 '		<td width="15%">' +
-'            <span id="cursor-time"></span> ms ' +
+'		<table width="100%"> ' +
+'       <tr> ' +
+'		<td width="60%">' +
+'            <span id="cursor-time"></span>' +
+'		</td>' +
+'		<td width="40%">' +
+'		sec' +
+'		</td>' +
+'		</tr>' +
+'		</table>' +
 '		</td>' +
 '		</tr>' +
 '       <tr> ' +
@@ -152,7 +161,7 @@ L.Playback.Control = L.Control.extend({
 
     var startTime = playback.getStartTime();
     $('#cursor-date').html(L.Playback.Util.DateStr(startTime));
-    $('#cursor-time').html(startTime);
+    $('#cursor-time').html(startTime/1000);
 
     $('#time-slider').slider({
       min: playback.getStartTime(),
@@ -160,8 +169,9 @@ L.Playback.Control = L.Control.extend({
       step: playback.getTickLen(),
       value: playback.getTime(),
       slide: function( event, ui ) {
+		  var s = ui.value / 1000;
         playback.setCursor(ui.value);
-        $('#cursor-time').val(ui.value.toString());
+        $('#cursor-time').val(s.toString());
         $('#cursor-time-txt').html(new Date(ui.value).toString());
       }
     });
@@ -239,8 +249,9 @@ L.Playback.Control = L.Control.extend({
   },
 
   _clockCallback: function(ms) {
+	  var s = ms / 1000;
     $('#cursor-date').html(L.Playback.Util.DateStr(ms));
-    $('#cursor-time').html(ms);
+    $('#cursor-time').html(s);
     $('#time-slider').slider('value', ms);
   },
 
