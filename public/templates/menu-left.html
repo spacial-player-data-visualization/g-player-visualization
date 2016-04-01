@@ -74,15 +74,13 @@ Alex Johnson @alexjohnson505
 			Show added players only
 		</label>
 	  </div>
-      <div class="player-add-remove">
-
+      <div class="player-add-remove" style="height:300px; overflow:auto;" >
         <!-- Select Players -->
         <table id="available-players" class="table table-condensed table-hover"></table>
-          
-        <div class="" style="padding: 5px 17px;">  
+      </div>
+	  <div class="" style="padding: 5px 17px;">  
           <button class="btn btn-default" onclick="UI.players.removePlayers()">Clear All</button>
           <button class="btn btn-primary" onclick="UI.players.addAll()" >Add All</button>
-        </div>
       </div>
     </div>
   </div>
@@ -103,7 +101,7 @@ Alex Johnson @alexjohnson505
 		<!-- Add Groups / Select Players -->
 			<div class="select-players">
 				<p>Select Players to add-to a group:</p>
-				<div id="players-in-group"></div>
+				<div id="players-in-group" style="height:300px; overflow:auto;"></div>
 			</div>
         
 			<div class="group-name">
