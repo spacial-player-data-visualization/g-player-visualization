@@ -374,7 +374,8 @@ UI.players.addPlayer = function(playerID){
           if (!color) { color : "#000" };
 
 		  settings.players.push({ playerID : playerID, color : color , checkedActions : settings.listOfActions, visibility : true });
-		  UI.players.refreshMap();
+		  settings.selectedColors.push(color);
+      UI.players.refreshMap();
 		  UI.getListOfAvailablePlayerIDs();
 		  $('#active-players-list').val(playerID);
 		  UI.filters.changePlayer();
@@ -398,7 +399,6 @@ UI.players.addPlayers = function(playerIDs){
 
 // Add all players at once. 
 UI.players.addAll = function(PlayerIDs){
-  
   // Confirm that user wants to load a large data set
   if (!confirm('Warning! Loading all players in the current list may load a considerable amount of data. This request could take time to process, and may cause your map to become slow or unresponsive. If you haven\'t already, we recommend selecting a lower "fidelity" from the left menu in order to reduce the amount of positions per second being returned. Are you sure you want to continue?')) return;
   
@@ -412,18 +412,22 @@ UI.players.addAll = function(PlayerIDs){
 
 		if (!existing) {
 			// Add to list
+      settings.selectedColors.push(colors[settings.clr_indx]);
 			settings.players.push({ playerID : playerID, color : colors[settings.clr_indx++] , checkedActions : settings.listOfActions, visibility : true });
 			lastPlayer = playerID;
+      
 			if(settings.clr_indx == colors.length)
 				settings.clr_indx = 0;
-		};
-		Visualizer.loadData();
+		
+		  UI.players.refreshMap();
+      $('#active-players-list').val(lastPlayer);
+      UI.filters.changePlayer();
+      }; 
+
+      });
     })
 	
-	UI.players.refreshMap();
-	$('#active-players-list').val(lastPlayer);
-	UI.filters.changePlayer();
-  });
+
   
   UI.getListOfAvailablePlayerIDs();
   updateBrush();

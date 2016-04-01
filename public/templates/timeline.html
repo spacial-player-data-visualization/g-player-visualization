@@ -17,24 +17,7 @@ Tariq Anwar
    var l;
 
 
-    // Colors for AwesomeMarkers
-    var _colorIdx = 0,
-        _colors = [
-          'orange',
-          'green',
-          'blue',
-          'purple',
-          'darkred',
-          'cadetblue',
-          'red',
-          'darkgreen',
-          'darkblue',
-          'darkpurple'
-        ];
-        
-    function _assignColor() {
-        return _colors[_colorIdx++%10];
-    }
+
 
     //$("#active-players-list").change(function() {
     function updateBrush(){
@@ -43,21 +26,29 @@ Tariq Anwar
      //var  col_index = _.findWhere(settings.players, { 'playerID' : parseInt(player_id) });
      //console.log("Index"+col_index +"CCC"+col_index.color);
      //var vis = Visualizer.getTimelineData();  //getting players data 
+         // Colors for AwesomeMarkers
+    var _colorIdx = 0,
+        _colors=settings.selectedColors;
+        
+    function _assignColor() {
+        return _colors[_colorIdx++%settings.selectedColors.length];
+    }
      if(control != undefined){ 
        $(".awesome-marker").remove();  
 	     $(".lp").remove();
        playback.stop();
      }
-   
+      
+     // var color='blue';
       var playbackOptions = {
           marker: function(){
+            console.log(_colors);
             return {
+
                 icon: L.AwesomeMarkers.icon({
                     prefix: 'fa',
                     icon: 'bullseye', 
-                    //markerColor: _assignColor()
-                    markerColor: 'blue'
-
+                    markerColor: _assignColor()
                 }) 
             };
         } 
@@ -65,7 +56,7 @@ Tariq Anwar
     
         //var c = parseInt($("select[id='active-players-list'] option:selected").index()); //get index of selected player
         //settings.tracks.splice(0,1);
-        // console.log(settings.tracks.length);
+       // console.log(settings.tracks.length);
        playback = new L.Playback(map,settings.tracks,null, playbackOptions); //playback of selected player
        control = new L.Playback.Control(playback);
        control.addTo(map);
