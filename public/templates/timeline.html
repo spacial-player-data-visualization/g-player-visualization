@@ -147,7 +147,7 @@ argument: the formatted data
 
     var brush = d3.svg.brush()
         .x(x)
-        .extent([t[0],t[5]])  // setting the initial window size
+        .extent([settings.window.start,settings.window.end])  // setting the initial window size
         .on('brush', brushend);  
 
 
