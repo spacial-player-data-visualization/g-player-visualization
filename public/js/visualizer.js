@@ -96,6 +96,7 @@ var settings = {
           ],
 
   selectedColors : [],
+  selectedPlayers: [],
   
   // index for color of next player
   clr_indx : 0,
@@ -551,10 +552,12 @@ Visualizer.formatData = function(data){
 
   // TODO: geometry for positions should be a LineString, not a Point
   //if(data.action) {
-    data['geometry'] = {
+  data['geometry'] = {
       type: 'Point',
       coordinates: [data.longitude, data.latitude],
     };
+
+  data['player'] = data.playerID;
   /*} else { 
     data['geometry'] = {
       type: 'LineString',
@@ -601,6 +604,7 @@ Visualizer.createGeoJsonLayer = function() {
       coordinates: [] /*array of [lng,lat] coordinates*/
     },
     properties: {
+      player: null,
       time: [] /*array of UNIX timestamps*/
     }
   };
@@ -609,6 +613,7 @@ Visualizer.createGeoJsonLayer = function() {
     //GeoJason Feature format  Layer for Playback Timeline
     geoJsonLay.geometry.coordinates.push(json['coord']);
     geoJsonLay.properties.time.push(json['start']);
+    geoJsonLay.properties.player = json['player'];
 
     var geoJson = Visualizer.convertJsonToGeoJson(json); 
     settings.geoJsonLayer.features.push(geoJson);
