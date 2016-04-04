@@ -374,7 +374,6 @@ UI.players.addPlayer = function(playerID){
           if (!color) { color : "#000" };
 
 		  settings.players.push({ playerID : playerID, color : color , checkedActions : settings.listOfActions, visibility : true });
-		  settings.selectedColors.push(color);
       UI.players.refreshMap();
 		  UI.getListOfAvailablePlayerIDs();
 		  $('#active-players-list').val(playerID);
@@ -412,7 +411,6 @@ UI.players.addAll = function(PlayerIDs){
 
 		if (!existing) {
 			// Add to list
-      settings.selectedColors.push(colors[settings.clr_indx]);
 			settings.players.push({ playerID : playerID, color : colors[settings.clr_indx++] , checkedActions : settings.listOfActions, visibility : true });
 			lastPlayer = playerID;
       

@@ -27,6 +27,23 @@ Tariq Anwar
      //console.log("Index"+col_index +"CCC"+col_index.color);
      //var vis = Visualizer.getTimelineData();  //getting players data 
          // Colors for AwesomeMarkers
+
+    settings.selectedColors=[];
+    settings.selectedPlayers=[];
+    _.each(settings.players, function(player){
+     if(player.visibility == true){
+       settings.selectedColors.push(player.color);
+      
+      _.each(settings.tracks, function(track){
+      if(track.properties.player == player.playerID)
+          settings.selectedPlayers.push(track); 
+      });
+
+    }
+    });
+
+
+
     var _colorIdx = 0,
         _colors=settings.selectedColors;
         
@@ -54,10 +71,7 @@ Tariq Anwar
         } 
       };
     
-        //var c = parseInt($("select[id='active-players-list'] option:selected").index()); //get index of selected player
-        //settings.tracks.splice(0,1);
-       // console.log(settings.tracks.length);
-       playback = new L.Playback(map,settings.tracks,null, playbackOptions); //playback of selected player
+       playback = new L.Playback(map,settings.selectedPlayers,null, playbackOptions); //playback of selected player
        control = new L.Playback.Control(playback);
        control.addTo(map);
 
