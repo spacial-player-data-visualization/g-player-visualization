@@ -14,7 +14,7 @@ Created: March 29, 2015
 */
 
 var Heatmap = {};
-var id = -1;
+var id = 100;
 
 /* 
 author: Alex Johnson, Alex Gimmi
@@ -120,18 +120,15 @@ Heatmap.remove = function(heatmap_id) {
   var show = 0;
   if (settings.heatmaps.length == 1) {
     show = -1;
+	Heatmap.hide(index);
   } else if (index < settings.heatmaps.length - 1) {
-    show = index + 1;
+    show = index ;
   } else {
     show = index - 1;
   }
-
-  if (show >= 0) {
-    $('#heatmap' + show + 'Radio').click();
-  } else {
-    Heatmap.hide(index);
-  }
-
+  
+  //console.log("hm" + index + "  " + show);
+  
   // Remove the div from the Heatmaps tab
   var id = '#heatmap' + heatmap_id + 'Div';
   var div = $(id);
@@ -146,6 +143,13 @@ Heatmap.remove = function(heatmap_id) {
   UI.boolops.remove(heatmap_id);
 
   console.log("Heatmap at index " + index + " with id " + heatmap_id + " removed from the Heatmaps tab and from memory.");
+
+  //update the selected radio button
+  if (show >= 0) {
+    $('#heatmap' + settings.heatmapIds[show] + 'Radio').click();
+  }
+
+  Visualizer.refresh();
 }
 
 /* 
@@ -170,5 +174,5 @@ Heatmap.getIndexFromId = function(heatmap_id) {
 
 // Generates ids for heatmaps starting from 0
 Heatmap.nextId = function() {
-  return id++;
+  return ++id;
 }

@@ -489,7 +489,7 @@ Visualizer.loadData = function(){
 
   // Hit API
   $.get(Visualizer.API_url + "entries", opts, function(data){
-
+console.log("1");
     // Validate data. Ignore non-spacial data
     data = _.filter(data, function(p){
       return containsRequiredKeys(p);
@@ -664,10 +664,10 @@ Visualizer.getContext = function(callback){
     playerIDs : UI.players.listIDs(),
 
     // List of current heatmaps
-    heatmaps : settings.heatmaps,
+    //heatmaps : settings.heatmaps,
 
     // Currently active heatmap
-    activeHeatmap : settings.activeHeatmap,
+    //activeHeatmap : settings.activeHeatmap,
 
   }
 
