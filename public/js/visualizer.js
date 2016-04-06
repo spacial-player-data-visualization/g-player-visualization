@@ -34,9 +34,9 @@ var settings = {
     features: [],
   },
  
-
   //json layer for brush
-  brushLayer : [], 
+  brushLayer : null,
+  
   //player tracks
   tracks : [],
 
@@ -80,11 +80,30 @@ var settings = {
   groups : [],
   
   // color options
-  colors : ["#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf", "#e0f3f8", "#abd9e9", "#74add1", "#4575b4"],
+  //colors : ["#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf", "#e0f3f8", "#abd9e9", "#74add1", "#4575b4"],
+
+  colors : [
+          'orange',
+          'green',
+          'blue',
+          'purple',
+          'darkred',
+          'cadetblue',
+          'red',
+          'darkorange',
+          'darkblue',
+          'darkpurple'
+          ],
+
+  selectedColors : [],
+  selectedPlayers: [],
+  
+  // index for color of next player
+  clr_indx : 0,
 
   window : {
     start : 0,
-    end : 10000
+    end : 100
   }
 
 };
@@ -112,7 +131,6 @@ Visualizer.API_url = (window.location.href.indexOf("herokuapp.com") > -1) ? "htt
 
 // Re-plot the map with updated settings
 Visualizer.refresh = function(){
-  console.log("START"+settings.window.start  +" END "+settings.window.end);
   Visualizer.clear();
   Visualizer.update();
 };
@@ -159,88 +177,12 @@ Visualizer.update = function(){
       Visualizer.draw(player, thisPlayer.color, count++, thisPlayer.checkedActions);
     });
   }
-  
+
   Visualizer.updateHeatmap();
 
   // Loading complete
   UI.loading(false, "Success. " + unfilteredData.length + " points loaded.");
 }//Asarsa
-
-/*
-author: Asarsa
-created: Feb 29, 2016
-purpose: Prepare dataset / name to be sentt to Heatmap.add function
-*/
-Visualizer.genHeatMap = function(){
-
-  console.log("starting generation of data for heatmap");
-  var hmDataset = {
-    actions: [],
-    positions: [],
-  };
-  
-  // Unfiltered data
-  var unfilteredData = settings.data.positions.concat(settings.data.actions);
-
-  // Group data by PlayerID
-  var players = _.groupBy(unfilteredData, 'playerID');
-
-  // Store current index
-  var count = 0;
-  
-  //store group info into name
-  var hmName = "";
-  
-  // check if group is visible (indivisual player visibility is deselected)
-  var groupvisible = false;
-  _.each(settings.groups, function(group){
-    if(group.visibility){
-    //console.log("group visible. looking at players in group...");
-    groupvisible = true;
-    hmName += "group: " + group.groupID + "\n\n";
-    
-    // Iterate through players
-    _.each(players, function(player, playerID){
-      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
-      
-      // Render each player onto the map
-      if(group.players.indexOf(playerID) != -1){
-        var newDataset = Visualizer.activeData(filterPositions(player), group.checkedActions);
-        hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
-        hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
-        
-        hmName += "Player:" + playerID + "\n";
-      }
-    });
-    
-    hmName += "\nActions:" + group.checkedActions + "\n";
-    }
-  });
-  
-  if(groupvisible == false){
-    //console.log("no group visible. looking at players...");
-    // Iterate through players
-    _.each(players, function(player, playerID){
-      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
-
-      // Render visible player onto the map
-      if(thisPlayer.visibility){
-      var newDataset  = Visualizer.activeData(filterPositions(player), thisPlayer.checkedActions);
-      hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
-      hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
-      
-      hmName += "Player:" + playerID + "\nActions:" + thisPlayer.checkedActions + "\n\n";
-      }
-    });
-  }
-  
-  //console.log(hmDataset.actions.length + "\n\n" + hmDataset.positions.length);
-  
-  console.log("heatmap data generation complete");
-  Heatmap.add(hmDataset,hmName);
-  
-}
-
 
 
 
@@ -264,6 +206,131 @@ Visualizer.updateHeatmap = function(){
    }
 }
 
+
+/*
+author: Asarsa
+created: Feb 29, 2016
+purpose: Prepare dataset / name to be sentt to Heatmap.add function
+*/
+Visualizer.genHeatMap = function(){
+
+  console.log("starting generation of data for heatmap");
+  var hmDataset = {
+    actions: [],
+    positions: [],
+  };
+  
+  // Unfiltered data
+  var unfilteredData = settings.data.positions.concat(settings.data.actions);
+  
+  // Ensure chronological order & points to be within time frame
+  var filteredData = filterUsingWindow(sortBy(unfilteredData, "timestamp"),"timestamp");
+
+  // Group data by PlayerID
+  var players = _.groupBy(filteredData, 'playerID');
+  
+  //store group info into name
+  var hmName = "Time Frame\n  Start : " + settings.window.start + "\n  End : " + settings.window.end + "\n\n";
+  
+  // check if group is visible (indivisual player visibility is deselected)
+  var groupvisible = false;
+  _.each(settings.groups, function(group){
+    if(group.visibility){
+    groupvisible = true;
+    hmName += "group: " + group.groupID + "\n\n";
+
+    // Iterate through players
+    _.each(players, function(player, playerID){
+      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+ 
+      // Render each player onto the map
+      if(group.players.indexOf(playerID) != -1){
+        var newDataset = Visualizer.activeData(filterPositions(player), group.checkedActions);
+        hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
+        hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
+        hmName += "Player:" + playerID + "\n";
+      }
+    });
+    hmName += "\nActions:" + group.checkedActions + "\n";
+    }
+  });
+  
+  if(groupvisible == false){
+    // Iterate through players
+    _.each(players, function(player, playerID){
+      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+      // Render visible player onto the map
+      if(thisPlayer.visibility){
+        var newDataset  = Visualizer.activeData(filterPositions(player), thisPlayer.checkedActions);
+        hmDataset.actions = hmDataset.actions.concat(newDataset.actions);
+        hmDataset.positions = hmDataset.positions.concat(newDataset.positions);
+        hmName += "Player:" + playerID + "\nActions:" + thisPlayer.checkedActions + "\n\n";
+      }
+    });
+  }
+  
+  console.log("heatmap data generation complete");
+  Heatmap.add(hmDataset,hmName);
+  
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+Visualizer.getBrushData = function(){
+
+  var brushDataset = {
+    actions: [],
+    positions: [],
+  };
+  
+  // filtered data
+  var filteredData = sortBy(settings.data.positions.concat(settings.data.actions), "timestamp");
+ 
+  // Group data by PlayerID
+  var players = _.groupBy(filteredData, 'playerID');
+  
+  // check if group is visible (indivisual player visibility is deselected)
+  var groupvisible = false;
+  
+  _.each(settings.groups, function(group){
+    if(group.visibility){
+	  groupvisible = true;
+	  // Iterate through players
+	  _.each(players, function(player, playerID){
+	    var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+	    // Render each player onto the map
+	    if(group.players.indexOf(playerID) != -1){
+	      var newDataset = Visualizer.activeData(filterPositions(player), group.checkedActions);
+	      brushDataset.actions = brushDataset.actions.concat(newDataset.actions);
+	      brushDataset.positions = brushDataset.positions.concat(newDataset.positions);
+	    }
+	  });
+    }
+  });
+  
+  if(groupvisible == false){
+	// Iterate through players
+	_.each(players, function(player, playerID){
+	  var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+
+	  // Render visible player onto the map
+	  if(thisPlayer.visibility){
+	    var newDataset  = Visualizer.activeData(filterPositions(player), thisPlayer.checkedActions);
+	    brushDataset.actions = brushDataset.actions.concat(newDataset.actions);
+	    brushDataset.positions = brushDataset.positions.concat(newDataset.positions);
+	  }
+	});
+  }
+
+  return brushDataset;
+}
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 /* 
 name: draw
 author: Alex Johnson
@@ -278,7 +345,7 @@ checkedActions is list of action boxes checked for user
 Visualizer.draw = function(entries, color, index, checkedActions){
 
     // Ensure chronological order
-    entries = sortBy(entries, "timestamp");
+    entries = filterUsingWindow(sortBy(entries, "timestamp"),"timestamp");
 
     // Get the active set of data
     var data = Visualizer.activeData(filterPositions(entries),checkedActions);
@@ -422,7 +489,7 @@ Visualizer.loadData = function(){
 
   // Hit API
   $.get(Visualizer.API_url + "entries", opts, function(data){
-
+console.log("1");
     // Validate data. Ignore non-spacial data
     data = _.filter(data, function(p){
       return containsRequiredKeys(p);
@@ -485,10 +552,12 @@ Visualizer.formatData = function(data){
 
   // TODO: geometry for positions should be a LineString, not a Point
   //if(data.action) {
-    data['geometry'] = {
+  data['geometry'] = {
       type: 'Point',
       coordinates: [data.longitude, data.latitude],
     };
+
+  data['player'] = data.playerID;
   /*} else { 
     data['geometry'] = {
       type: 'LineString',
@@ -527,41 +596,53 @@ purpose: Create a Feature Collection of all GeoJson data
 */
 Visualizer.createGeoJsonLayer = function() {
 
-//object for creating Timeline playback 
-   var  geoJsonLay = {   
+  //object for creating Timeline playback 
+  var  geoJsonLay = {   
     type: "Feature",
     geometry: {
-    type: "MultiPoint",
-    coordinates: [/*array of [lng,lat] coordinates*/]
-  },
-  properties: {
-    time: [/*array of UNIX timestamps*/]
-  }
-   } ;
-
-//object for creating D3 brush slider window
-   var   geoJsonD3Lay = {
-    type: "FeatureCollection",
-    features: [],
+      type: "MultiPoint",
+      coordinates: [] /*array of [lng,lat] coordinates*/
+    },
+    properties: {
+      player: null,
+      time: [] /*array of UNIX timestamps*/
+    }
   };
 
   _.each(settings.data.actions.concat(settings.data.positions), function(json){
-     //GeoJason Feature format  Layer for Playback Timeline
+    //GeoJason Feature format  Layer for Playback Timeline
     geoJsonLay.geometry.coordinates.push(json['coord']);
     geoJsonLay.properties.time.push(json['start']);
+    geoJsonLay.properties.player = json['player'];
 
-    var geoJson = Visualizer.convertJsonToGeoJson(json);
-    
+    var geoJson = Visualizer.convertJsonToGeoJson(json); 
     settings.geoJsonLayer.features.push(geoJson);
-    geoJsonD3Lay.features.push(geoJson);
   });
   
-   //Pushing GeoJasonLay to array tracks
-    if(geoJsonLay.properties.time.length != 0){
+  //Pushing GeoJasonLay to array tracks
+  if(geoJsonLay.properties.time.length != 0){
     settings.tracks.push(geoJsonLay);
-    }
-    settings.brushLayer.push(geoJsonD3Lay);
+  }
 }
+
+
+Visualizer.getData = function(){
+    
+	var   geoJsonD3Lay = {
+      type: "FeatureCollection",
+      features: [],
+    };
+
+    var x = Visualizer.getBrushData();
+	
+    _.each(x.actions.concat(x.positions), function(json){
+    var geoJson = Visualizer.convertJsonToGeoJson(json);
+     geoJsonD3Lay.features.push(geoJson);
+    });
+    
+	settings.brushLayer = geoJsonD3Lay;
+}
+
 
 // Returns a representation of the current state of the
 // map. This object provided context for what data
@@ -583,10 +664,10 @@ Visualizer.getContext = function(callback){
     playerIDs : UI.players.listIDs(),
 
     // List of current heatmaps
-    heatmaps : settings.heatmaps,
+    //heatmaps : settings.heatmaps,
 
     // Currently active heatmap
-    activeHeatmap : settings.activeHeatmap,
+    //activeHeatmap : settings.activeHeatmap,
 
   }
 
@@ -624,6 +705,13 @@ function sortBy (list, key){
         return l[key];
       })
 }
+
+// filter provided list by key 
+function filterUsingWindow (list, key){
+  return _.filter(list, function(l){
+        return l[key] > settings.window.start && l[key] < settings.window.end;
+      })
+}//Asarsa
 
 // Convert the provided JSON object into an
 // HTML representation

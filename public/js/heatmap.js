@@ -14,7 +14,7 @@ Created: March 29, 2015
 */
 
 var Heatmap = {};
-var id = 0;
+var id = 100;
 
 /* 
 author: Alex Johnson, Alex Gimmi
@@ -29,7 +29,7 @@ Heatmap.add = function(data, heatmap_name){
   // store info(in heatmap_name) into hmap.info
   hmap.info = heatmap_name;
   
-  heatmap_name = "HeatMap " + id;
+  heatmap_name = "HeatMap " + Heatmap.nextId();
 
   // credit: http://www.patrick-wied.at/static/heatmapjs/
   hmap.heatmapLayer = new HeatmapOverlay({
@@ -45,13 +45,13 @@ Heatmap.add = function(data, heatmap_name){
   Heatmap.hide(settings.activeHeatmap);
 
   // Make the newest heatmap active
-  settings.activeHeatmap = Heatmap.nextId();
+  settings.activeHeatmap = id;
 
   // Add new instance of heatmap to settings object
   settings.heatmaps.push(hmap);
 
   // Add newest id to settings object
-  settings.heatmapIds.push(settings.activeHeatmap);
+  settings.heatmapIds.push(id);
 
   // Index of the newest heatmap
   var index = settings.heatmaps.length - 1;
@@ -89,8 +89,8 @@ Heatmap.add = function(data, heatmap_name){
   var radio_btn = UI.heatmaps.generateRadio(settings.activeHeatmap, heatmap_name);
   var hmap_div = '<div id="heatmap' + settings.activeHeatmap + 'Div">' + bool_btn + radio_btn + '</div>';
   $('#available-heatmaps').append(hmap_div);
-  console.log("New heatmap added at index " + index + " with id " + settings.activeHeatmap);
-}
+  console.log("New heatmap added at index " + index + " with id " + id);
+}//asarsa
 
 /* 
 author: Alex Gimmi
@@ -120,18 +120,15 @@ Heatmap.remove = function(heatmap_id) {
   var show = 0;
   if (settings.heatmaps.length == 1) {
     show = -1;
+	Heatmap.hide(index);
   } else if (index < settings.heatmaps.length - 1) {
-    show = index + 1;
+    show = index ;
   } else {
     show = index - 1;
   }
-
-  if (show >= 0) {
-    $('#heatmap' + show + 'Radio').click();
-  } else {
-    Heatmap.hide(index);
-  }
-
+  
+  //console.log("hm" + index + "  " + show);
+  
   // Remove the div from the Heatmaps tab
   var id = '#heatmap' + heatmap_id + 'Div';
   var div = $(id);
@@ -146,6 +143,13 @@ Heatmap.remove = function(heatmap_id) {
   UI.boolops.remove(heatmap_id);
 
   console.log("Heatmap at index " + index + " with id " + heatmap_id + " removed from the Heatmaps tab and from memory.");
+
+  //update the selected radio button
+  if (show >= 0) {
+    $('#heatmap' + settings.heatmapIds[show] + 'Radio').click();
+  }
+
+  Visualizer.refresh();
 }
 
 /* 
@@ -170,5 +174,5 @@ Heatmap.getIndexFromId = function(heatmap_id) {
 
 // Generates ids for heatmaps starting from 0
 Heatmap.nextId = function() {
-  return id++;
+  return ++id;
 }

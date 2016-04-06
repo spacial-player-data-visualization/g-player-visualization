@@ -74,15 +74,13 @@ Alex Johnson @alexjohnson505
 			Show added players only
 		</label>
 	  </div>
-      <div class="player-add-remove">
-
+      <div class="player-add-remove" style="height:300px; overflow:auto;" >
         <!-- Select Players -->
         <table id="available-players" class="table table-condensed table-hover"></table>
-          
-        <div class="" style="padding: 5px 17px;">  
+      </div>
+	  <div class="" style="padding: 5px 17px;">  
           <button class="btn btn-default" onclick="UI.players.removePlayers()">Clear All</button>
           <button class="btn btn-primary" onclick="UI.players.addAll()" >Add All</button>
-        </div>
       </div>
     </div>
   </div>
@@ -103,7 +101,7 @@ Alex Johnson @alexjohnson505
 		<!-- Add Groups / Select Players -->
 			<div class="select-players">
 				<p>Select Players to add-to a group:</p>
-				<div id="players-in-group"></div>
+				<div id="players-in-group" style="height:300px; overflow:auto;"></div>
 			</div>
         
 			<div class="group-name">
@@ -122,6 +120,56 @@ Alex Johnson @alexjohnson505
 		</div>
 		
 		</div>
+	  
+	</div>
+	
+	<div class="panel panel-default">
+    
+	<div class="panel-heading">
+      <h3 class="panel-title">
+		<a data-toggle="collapse" href="#collapseSession">
+		  <i class="fa fa-lock"></i> 
+		  Save / Load Session
+		  </a>
+	  </h3>
+    </div>
+    
+	<div  id="collapseSession" class="panel-body panel-collapse collapse" style="margin-bottom: 20px;">
+
+    	<p>Save the current status of Gplayer session or load an earlier session.</p>
+		
+		<table class="table">
+		<tr>
+		<td>
+		<p> Save </p>
+		</td>
+		<td>
+		</td>
+		</tr>
+		<tr>
+		<td>
+		<input type="text" id="session_filename" value="" />
+		<button class="btn btn-default" onclick="Session.save()">Save to file</button>
+		</td>
+		</tr>
+		<tr>
+		<td>
+		Load
+		</td>
+		<td>
+		</td>
+		</tr>
+		<tr>
+		<td>
+		<select id="session_list" >
+			<option value="empty" >No Sessions available</option>
+		</select>
+		<button class="btn btn-default" onclick="Session.load()">Load</button>
+		</td>
+		</tr>
+		</table>
+		
+	</div>
 	  
 	</div>
 	

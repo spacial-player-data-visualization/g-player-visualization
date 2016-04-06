@@ -299,6 +299,11 @@ ul.messenger-theme-air .messenger-message {
     text-decoration: line-through;
 }
 
+.left-panel {
+	height: 100%;
+	overflow: auto;
+}
+
 .tools a {
     color: black;
 }

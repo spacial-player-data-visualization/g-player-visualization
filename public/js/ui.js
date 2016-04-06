@@ -297,7 +297,7 @@ arguments: playerID is the selected player
 */
 UI.players = {};
 var colors = settings.colors;
-var clr_indx = 0;
+var lastPlayer = 0;
 
 // purpose: plots selected playerID onto map from left menu
 UI.players.addPlayer = function(playerID){
@@ -320,7 +320,7 @@ UI.players.addPlayer = function(playerID){
   var i = 0;
   // dialog for selection of color for selected player
   var color_radio_buttons = _.reduce(colors, function(memo, color){
-		if(i++ == clr_indx)
+		if(i++ == settings.clr_indx)
 			var ret = memo + '<label class="radio"><input type="radio" name="group1" value="' + 
 		              color + '" checked><i class="fa fa-square" style="color: ' + color + '"></i></label>';
 		else
@@ -374,16 +374,18 @@ UI.players.addPlayer = function(playerID){
           if (!color) { color : "#000" };
 
 		  settings.players.push({ playerID : playerID, color : color , checkedActions : settings.listOfActions, visibility : true });
-		  UI.players.refreshMap();
+      UI.players.refreshMap();
 		  UI.getListOfAvailablePlayerIDs();
-		  if(++clr_indx == colors.length)
-				clr_indx = 0;
+		  $('#active-players-list').val(playerID);
+		  UI.filters.changePlayer();
+		  if(++settings.clr_indx == colors.length)
+				settings.clr_indx = 0;
         }
       }
     }
   });
   
-
+  updateBrush();
 }
 
 
@@ -396,13 +398,11 @@ UI.players.addPlayers = function(playerIDs){
 
 // Add all players at once. 
 UI.players.addAll = function(PlayerIDs){
-
-   // Confirm that user wants to load a large data set
+  // Confirm that user wants to load a large data set
   if (!confirm('Warning! Loading all players in the current list may load a considerable amount of data. This request could take time to process, and may cause your map to become slow or unresponsive. If you haven\'t already, we recommend selecting a lower "fidelity" from the left menu in order to reduce the amount of positions per second being returned. Are you sure you want to continue?')) return;
-
+  
   UI.getListOfAvailablePlayerIDs(function(playerIDs){
 	var colors = settings.colors;
-	var clr_indx = 0;
 	
     _.each(playerIDs, function(playerID){
 		
@@ -411,17 +411,24 @@ UI.players.addAll = function(PlayerIDs){
 
 		if (!existing) {
 			// Add to list
-			settings.players.push({ playerID : playerID, color : colors[clr_indx++] , checkedActions : settings.listOfActions, visibility : true });
-			if(clr_indx == colors.length)
-				clr_indx = 0;
-		};
+			settings.players.push({ playerID : playerID, color : colors[settings.clr_indx++] , checkedActions : settings.listOfActions, visibility : true });
+			lastPlayer = playerID;
+      
+			if(settings.clr_indx == colors.length)
+				settings.clr_indx = 0;
 		
+		  UI.players.refreshMap();
+      $('#active-players-list').val(lastPlayer);
+      UI.filters.changePlayer();
+      }; 
+
+      });
     })
 	
-	UI.players.refreshMap();
-		
-  })
+
+  
   UI.getListOfAvailablePlayerIDs();
+  updateBrush();
 } // Asarsa
 
 // purpose: remove selected playerID from the map
@@ -466,6 +473,7 @@ UI.players.remove = function(playerID){
   UI.getListOfAvailablePlayerIDs();
   UI.getListOfAvailableGroupIDs();
 
+
 }
 
 //Asarsa
@@ -502,26 +510,23 @@ created: March 29, 2015
 purpose: helper function that refreshes map on a change
 */
 UI.players.refreshMap = function(){
-  $("#active-players").html("");
-  $("#active-players-list").html('<option value="">Select One</option>');
-  $("#playback-players-list").html('<option value="">Select One</option>');
   $('#filters input:checkbox').removeAttr('checked');
+  $("#active-players").html("");
+  $("#active-players-list").html("");
+  //$("#active-players-list").html('<option value="" style="background-color:#fff">Select One</option>');
 
   _.each(settings.players, function(player){
-
 	$("#active-players-list").append('<option value="' + player.playerID + '" style="background-color:' + 
-		player.color + '">' + player.playerID + '</option>');
-	$("#playback-players-list").append('<option value="' + player.playerID + '" style="background-color:' + 
-		player.color + '">' + player.playerID + '</option>');
+	player.color + '">' + player.playerID + '</option>');
   })
   
   _.each(settings.groups, function(group){
-	$("#active-players-list").append('<option value="' + group.groupID + '" style="background-color:#fff">' + group.groupName + '</option>');
-	$("#playback-players-list").append('<option value="' + group.groupID + '" style="background-color:#fff">' + group.groupName + '</option>');
+	$("#active-players-list").append('<option value="' + group.groupID + '" style="background-color:#fff">' + 
+	group.groupName + '</option>');
   })
-
+ 
   Visualizer.loadData();
-}
+}//Asarsa
 
 /* 
 name: getListOfAvailablePlayerIDs
@@ -744,7 +749,8 @@ UI.groups.addGroup = function(){
 		if(create){
 			// Add to list
 			settings.groups.push({ groupID : "g" + groupID, players : listOfPlayers, groupName : name, checkedActions : [], visibility:false});
-		
+			lastPlayer = "g" + groupID;
+			
 			//update text field with id for next group
 			$('#groupName').val("group " + ++groupID);
 		}
@@ -758,6 +764,10 @@ UI.groups.addGroup = function(){
 		
 		// Update map
 		UI.players.refreshMap();
+		if(create){
+			$('#active-players-list').val(lastPlayer);
+			UI.filters.changePlayer();
+		}
 		UI.getListOfAvailableGroupIDs();
 	
 	}
@@ -1466,7 +1476,18 @@ created: Feb 15,2016
 purpose: update checkboxes for player selected from drop-down select list
 And refresh map
 */
-UI.filters.changePlayer = function(ID){
+UI.filters.changePlayer = function(){
+	
+	var ID = $("#active-players-list").val();
+	var bkgrndclr = "#ffffff";
+	
+	_.each(settings.players, function(player){
+		if(player.playerID == parseInt(ID)){
+			bkgrndclr = player.color;
+		}
+	})
+	
+	$("#active-players-list").css("background-color",bkgrndclr);
 	
 	$('#filters input:checkbox').removeAttr('checked');
 	
@@ -1495,7 +1516,6 @@ UI.filters.changePlayer = function(ID){
 			}
 		})
 	}
-	
 	Visualizer.refresh();
 }
 
@@ -1526,7 +1546,7 @@ UI.filters.changeCheckbox = function(){
 				settings.groups[g_ind].checkedActions = UI.filters.categories();
 			}
 		})
-		
+	
 	Visualizer.refresh();
 }
 
@@ -1567,7 +1587,6 @@ UI.filters.updateVisibility = function(){
 				settings.groups[g_ind].visibility = false;
 		})
 	}
-		
 	Visualizer.refresh();
 }
 

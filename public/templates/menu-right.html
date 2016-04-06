@@ -12,6 +12,8 @@ Alex Gimmi @ibroadband
 
 -->
 
+<div class="left-panel">
+
 <div class="panel panel-default tools">
   <div class="panel-heading" role="tab">
     <h4 class="panel-title">
@@ -27,7 +29,7 @@ Alex Gimmi @ibroadband
       <a class="unselectable clickable" onclick="UI.scaleMap(1)"><i class="fa fa-expand"></i></a>
       <a class="unselectable clickable" onclick="UI.scaleMap(-1)"><i class="fa fa-compress"></i></a>
       <div id="save-map" style="display: none;">
-        <div class="btn btn-primary" onclick="UI.saveMap();">Save Map</div>
+        <div class="btn btn-primary" onclick="UI.saveMap()">Save Map</div>
         <p style="color: #EC5151;">Alert: Your changes to the map are not currently saved.</p>
       </div>
    </div>
@@ -55,15 +57,16 @@ Alex Gimmi @ibroadband
       <a data-toggle="collapse" href="#collapseFilter"><i class="fa fa-toggle-on"></i> Filter Data</a>
     </h4>
   </div>
-  <div id="collapseFilter" class="panel-body panel-collapse collapse">
+  <div id="collapseFilter" class="panel-body panel-collapse">
       <!--<div class="btn btn-primary" onclick="Visualizer.refresh();" style="margin-bottom: 10px; width: 100%;">Update</div> -->
 	  <div> Entity : 
-		<select id="active-players-list" onchange="UI.filters.changePlayer(this.value)">
-			<option value="">Select One</option>
+		<select id="active-players-list" onchange="UI.filters.changePlayer()">
+			<option value="" style="background-color:#ffffff" >Add Players</option>
 		</select>
 	  </div>
+	  <br/>
 	  <div> <p> <i class="fa fa-eye"></i>Visibility: 
-				<input type="checkbox" id="visibility" onclick="UI.filters.updateVisibility()" value="visibility"/>;
+				<input type="checkbox" id="visibility" onclick="UI.filters.updateVisibility()" value="visibility"/>
 			</p>
 	  </div>
 	  <div> Actions: </div>

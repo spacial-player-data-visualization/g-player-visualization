@@ -2,7 +2,8 @@ L.Playback = L.Playback || {};
 
 L.Playback.Control = L.Control.extend({
 
-  _html: 
+  _html:
+/*
 '<footer class="lp">' +
 '  <div class="transport">' +
 '    <div class="navbar">' +
@@ -67,6 +68,66 @@ L.Playback.Control = L.Control.extend({
 '    <button id="load-tracks-save" class="btn btn-primary">Load</button>' +
 '  </div>' +
 '</div>',
+*/
+
+
+'<footer class="lp"> ' +
+'<div class="panel panel-default"> ' +
+'  <!-- Default panel contents -->' +
+'  <div class="panel-heading">Playback Timeline </div>' +
+'  <!-- Table -->' +
+'		<table class="table"> ' +
+'       <tr> ' +
+'		<td width="10%">' +
+'            <a id="play-pause" href="#"><i id="play-pause-icon" class="fa fa-play fa-lg"></i></a> ' +
+'		</td>' +
+'		<td width="75%">' +
+'			<div id="time-slider"></div>' +
+'		</td>' +
+'		<td width="15%">' +
+'		<table width="100%"> ' +
+'       <tr> ' +
+'		<td width="60%">' +
+'            <span id="cursor-time"></span>' +
+'		</td>' +
+'		<td width="40%">' +
+'		sec' +
+'		</td>' +
+'		</tr>' +
+'		</table>' +
+'		</td>' +
+'		</tr>' +
+'       <tr> ' +
+'		<td>' +
+'		<div class="btn btn-default btn-sm" onclick="updateBrush()" ">Update -></div>' +
+'		</td>' +
+'		<td>' +
+'       <div id="d3brush-holder">' +
+'       </div> ' +
+'       </td> ' +
+'		<td>' +
+
+'		<table style="height: 100px;"> ' +
+'       <tr> ' +
+'		<td width="70%">' +
+'       	<div style="height: 100px;"> ' +
+'			<i class="fa fa-dashboard fa-lg"></i> Speed' +
+'			<br/><br/>' +
+'			<input id="speed-input" class="speed" type="text" value="1" style="width: 30px;" /> x' +
+'			</div> ' +
+'		</td>' +
+'		<td width="30%">' +
+'       <div id="speed-slider" style="height: 100px;"></div> ' +
+'		</td>' +
+'       </tr> ' +
+'       </table> ' +
+
+'		</td>' +
+'       </tr> ' +
+'       </table> ' +
+'</div>' +
+'</footer>' ,
+
 
   initialize: function(playback) {
     this.playback = playback;
@@ -100,7 +161,7 @@ L.Playback.Control = L.Control.extend({
 
     var startTime = playback.getStartTime();
     $('#cursor-date').html(L.Playback.Util.DateStr(startTime));
-    $('#cursor-time').html(L.Playback.Util.TimeStr(startTime));
+    $('#cursor-time').html(startTime/1000);
 
     $('#time-slider').slider({
       min: playback.getStartTime(),
@@ -108,8 +169,9 @@ L.Playback.Control = L.Control.extend({
       step: playback.getTickLen(),
       value: playback.getTime(),
       slide: function( event, ui ) {
+		  var s = ui.value / 1000;
         playback.setCursor(ui.value);
-        $('#cursor-time').val(ui.value.toString());
+        $('#cursor-time').val(s.toString());
         $('#cursor-time-txt').html(new Date(ui.value).toString());
       }
     });
@@ -187,8 +249,9 @@ L.Playback.Control = L.Control.extend({
   },
 
   _clockCallback: function(ms) {
+	  var s = ms / 1000;
     $('#cursor-date').html(L.Playback.Util.DateStr(ms));
-    $('#cursor-time').html(L.Playback.Util.TimeStr(ms));
+    $('#cursor-time').html(s);
     $('#time-slider').slider('value', ms);
   },
 

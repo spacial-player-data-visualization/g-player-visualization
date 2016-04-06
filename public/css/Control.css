@@ -7,16 +7,21 @@
 }
 
 footer.lp {
-  position: absolute;	
-  right: 0;
-  left: 0;
-  bottom: 10px;
+  position : absolute;
+  width: 60%;
+  left:0;
+  right:0;
+  bottom: 0px;
+  margin: 0 auto; 
 }
 
+/*
 .lp .transport {
   margin: 0 auto;
   width:768px;
 }
+
+*/
 
 .lp .navbar {
   margin-bottom: 0;
@@ -28,20 +33,23 @@ footer.lp {
 }
 
 .lp #play-pause {
-  width: 18px;
+  margin: auto;
+  padding: 20px;
 }
 
 .lp #speed-btn {
   width: 58px;
 }
 
+/*
 .lp .ui-slider {
   margin: 13px;
 }
 
 .lp #time-slider {
-  width:420px;
+ // width:420px;
 }
+*/
 
 .lp #calendar {
   margin: 5px;
@@ -61,6 +69,7 @@ footer.lp {
 }
 
 .lp #speed-slider {
+  height: 50px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -129,7 +138,10 @@ footer.lp {
           box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
+
+
 /*Bootstrap interfering with leaflet*/
+
 input {
   vertical-align: baseline;
 }
@@ -137,6 +149,8 @@ input {
 label {
   font-weight: bold;
 }
+
+
 
 /*bootstrap mod*/
 .navbar .nav { margin: 0; }
@@ -157,3 +171,5 @@ label {
   border-top: 6px solid #ffffff;
   border-bottom: 0;
 }
+
+
