@@ -27,10 +27,29 @@ Session.save = function(){
 
   var filename = $('#session_filename').val();
   
+  /*_.each(settings,function(variable){
+		console.log(JSON.stringify(variable));
+	}
+	);
+  */
+  
   if(filename.length > 0){
 
-    var json = JSON.stringify(settings);
-	window.open("data:application/octet-stream;charset=utf-16le;base64," + json);
+	var tempsettings = settings;
+	delete tempsettings.overlay;
+	
+	console.log("printing overlay:" + tempsettings.overlay);
+	
+    var textToSave = JSON.stringify(tempsettings);
+	//console.log(textToSave);
+
+	var hiddenElement = document.createElement('a');
+
+	hiddenElement.href = 'data:application/octet-stream,' + encodeURI(textToSave);
+	hiddenElement.target = '_blank';
+	hiddenElement.download = filename + '.json';
+	hiddenElement.click();
+	
   }
   else{
 	alert("Enter a name for session!");  
@@ -48,6 +67,7 @@ purpose: load previously saved state of Gplayer
 argument: name for session
 */
 Session.load = function(){
+	
 	
 	
 
