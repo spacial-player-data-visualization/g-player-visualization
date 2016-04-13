@@ -141,7 +141,7 @@ Alex Johnson @alexjohnson505
 		<table class="table">
 		<tr>
 		<td>
-		<p> Save </p>
+		Save
 		</td>
 		<td>
 		</td>
@@ -161,11 +161,7 @@ Alex Johnson @alexjohnson505
 		</tr>
 		<tr>
 		<td>
-		<select id="session_list" >
-			<option value="empty" >No Sessions available</option>
-		</select>
-		<!--<input class="btn btn-lg btn-primary" type="file" id="up-file" name="files" style="width: 100%;"/>-->
-		<button class="btn btn-default" onclick="Session.load()">Load</button>
+		<input type="file" id="fileinput" style="width: 100%;" onchange="Session.load()" />
 		</td>
 		</tr>
 		</table>

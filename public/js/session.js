@@ -35,28 +35,41 @@ Session.save = function(){
   
   if(filename.length > 0){
 
-	var tempsettings = settings;
-	delete tempsettings.overlay;
+    var i = 0;
+    
+	//overlay & heatmaps are cyclic
+	settings.overlay = [];
+	settings.heatmaps = [];
+	settings.heatmapIds = [];
+    settings.heatmapData = [];
+    settings.activeHeatmap = 0;
 	
-	console.log("printing overlay:" + tempsettings.overlay);
+	// check for cyclic objects
+	_.each(settings,function(variable){
+		console.log("variable " + i++);
+		JSON.stringify(variable);
+	}
+	);
 	
-    var textToSave = JSON.stringify(tempsettings);
-	//console.log(textToSave);
+	//convert settings object to json string
+	console.log("Stringify in process....");
+    var textToSave = JSON.stringify(settings);
+	console.log("stringify complete.");
 
+	// create a hidden download button and click it to download json
 	var hiddenElement = document.createElement('a');
-
 	hiddenElement.href = 'data:application/octet-stream,' + encodeURI(textToSave);
 	hiddenElement.target = '_blank';
 	hiddenElement.download = filename + '.json';
 	hiddenElement.click();
 	
+	console.log("saving complete.");
   }
   else{
 	alert("Enter a name for session!");  
   }
 
 }
-
 
 
 /* 
@@ -68,7 +81,29 @@ argument: name for session
 */
 Session.load = function(){
 	
-	
-	
+	//Retrieve the first (and only!) File from the FileList object
+    var f = $('#fileinput').get(0).files[0]; 
 
+	//console.log(f);
+	
+    if (f) {
+      var r = new FileReader();
+      r.onload = function(e) { 
+	      var contents = e.target.result;
+		  
+		  // set settings to object from file
+		  settings = JSON.parse(contents);
+		  
+		  // enable all UI elements to update from new data in settings
+		  UI.getListOfAvailablePlayerIDs();
+		  UI.getListOfAvailableGroupIDs();
+		  UI.players.refreshMap();
+		  UI.filters.changePlayer();
+		  Visualizer.refresh();
+		  updateBrush();
+      }
+      r.readAsText(f);
+    } else { 
+      alert("Failed to load file");
+    }
 }
