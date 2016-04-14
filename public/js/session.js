@@ -95,12 +95,16 @@ Session.load = function(){
 		  settings = JSON.parse(contents);
 		  
 		  // enable all UI elements to update from new data in settings
-		  UI.getListOfAvailablePlayerIDs();
-		  UI.getListOfAvailableGroupIDs();
-		  UI.players.refreshMap();
-		  UI.filters.changePlayer();
-		  Visualizer.refresh();
-		  updateBrush();
+		  UI.getListOfAvailablePlayerIDs(); //players on left
+		  UI.getListOfAvailableGroupIDs(); //groups on left
+		  UI.players.refreshMap(); // players & groups in filter data
+		  UI.filters.changePlayer(); //update selected player and actions
+		  Visualizer.refresh(); //umap
+		  updateBrush(); //brush
+		  // todo : heatmap
+		  // todo : boolean operations
+		  
+		$('#fileinput').val("");  
       }
       r.readAsText(f);
     } else { 

@@ -695,7 +695,7 @@ UI.loadOptions = function(next){
 ************************************/
 
 /* 
-name: addGroup
+name: Group
 author: Asarsa
 created: Feb 16, 2016
 purpose: Manage the groups being represented on the visualizer
@@ -711,7 +711,49 @@ UI.groups.addGroup = function(){
 	var listOfPlayers = UI.groups.getSelectedPlayers();
 	var name = $('#groupName').val();
 	
-	//check if no players added to map
+	UI.groups.addGroupHelper(listOfPlayers,name);	
+}
+
+
+// purpose: import json file with list of players and groupname
+UI.groups.importGroup = function(){
+	
+	var listOfPlayers = [];
+	var name = "";
+	
+	//Retrieve the first (and only!) File from the FileList object
+    var f = $('#groupimport').get(0).files[0]; 
+	
+    if (f) {
+      var r = new FileReader();
+      r.onload = function(e) { 
+	      var contents = JSON.parse(e.target.result);
+		  
+		  // set listofplayers and name to object from file
+		  _.each(contents.playerIDs,function(pID){
+					listOfPlayers.push(pID);
+				})
+		  name = contents.groupName;
+		  
+		  // alert user with what has been read
+		  var msg = "Info from the json file:\n\n";
+		  msg += "List of Players in Group: " + listOfPlayers + "\nGroupName : " + name;
+		  var r = confirm(msg);
+		  if (r == true) {
+			UI.groups.addGroupHelper(listOfPlayers,name);
+		  } 
+		  $('#groupimport').val("");
+      }
+      r.readAsText(f);
+    } else { 
+      alert("Failed to load file");
+    }
+	
+}
+
+UI.groups.addGroupHelper = function(listOfPlayers,name){
+
+//check if no players added to map
 	if(listOfPlayers.length == 0){
 			
 		alert("No players added to map! Please add players to the map before you create a group.");
@@ -771,9 +813,9 @@ UI.groups.addGroup = function(){
 		UI.getListOfAvailableGroupIDs();
 	
 	}
-	
-	
 }
+
+
 
 // purpose: remove selected groupID from the map
 UI.groups.removeGroup = function(gID){
