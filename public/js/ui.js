@@ -702,7 +702,6 @@ purpose: Manage the groups being represented on the visualizer
 arguments: groupID is the selected player 
 */
 UI.groups = {};
-var groupID = 101;
 var box;
 
 // purpose: plots selected groupID onto map from left menu
@@ -790,15 +789,15 @@ UI.groups.addGroupHelper = function(listOfPlayers,name){
 		
 		if(create){
 			// Add to list
-			settings.groups.push({ groupID : "g" + groupID, players : listOfPlayers, groupName : name, checkedActions : [], visibility:false});
-			lastPlayer = "g" + groupID;
+			settings.groups.push({ groupID : "g" + settings.groupID, players : listOfPlayers, groupName : name, checkedActions : [], visibility:false});
+			lastPlayer = "g" + settings.groupID;
 			
 			//update text field with id for next group
-			$('#groupName').val("group " + ++groupID);
+			$('#groupName').val("group " + ++settings.groupID);
 		}
 		else{		
 			// update groupname textbox to previous group name (i.e. next available name)
-			$('#groupName').val("group " + groupID);
+			$('#groupName').val("group " + settings.groupID);
 		}
 		
 		//Clear selected players
