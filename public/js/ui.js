@@ -728,20 +728,25 @@ UI.groups.importGroup = function(){
       r.onload = function(e) { 
 	      var contents = JSON.parse(e.target.result);
 		  
-		  // set listofplayers and name to object from file
-		  _.each(contents.playerIDs,function(pID){
-					listOfPlayers.push(pID);
-				})
-		  name = contents.groupName;
-		  
-		  // alert user with what has been read
-		  var msg = "Info from the json file:\n\n";
-		  msg += "List of Players in Group: " + listOfPlayers + "\nGroupName : " + name;
-		  var r = confirm(msg);
-		  if (r == true) {
-			UI.groups.addGroupHelper(listOfPlayers,name);
-		  } 
-		  $('#groupimport').val("");
+		  _.each(contents.groups,function(g){
+			  
+			listOfPlayers = [];
+			name="";
+			// set listofplayers and name to object from file
+			  _.each(g.playerIDs,function(pID){
+						listOfPlayers.push(pID);
+					})
+			  name = g.groupName;
+			  
+			  // alert user with what has been read
+			  var msg = "Info from the json file:\n\n";
+			  msg += "List of Players in Group: " + listOfPlayers + "\nGroupName : " + name;
+			  var r = confirm(msg);
+			  if (r == true) {
+				UI.groups.addGroupHelper(listOfPlayers,name);
+			  }     
+		  })
+	  $('#groupimport').val("");
       }
       r.readAsText(f);
     } else { 

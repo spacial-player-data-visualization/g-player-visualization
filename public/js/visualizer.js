@@ -492,7 +492,7 @@ Visualizer.loadData = function(){
 
   // Hit API
   $.get(Visualizer.API_url + "entries", opts, function(data){
-console.log("1");
+    console.log("http get request to mongodb");
     // Validate data. Ignore non-spacial data
     data = _.filter(data, function(p){
       return containsRequiredKeys(p);
@@ -515,9 +515,8 @@ console.log("1");
 
     Visualizer.createGeoJsonLayer();
     Visualizer.update();
-
   })
-}
+}//Asarsa
 
 /*
 author: Alex Gimmi
