@@ -162,11 +162,24 @@ Heatmap.showInfo = function(heatmap_id) {
 	console.log("showing info...");
   if (_.contains(settings.heatmapIds, heatmap_id)) {
     var index = Heatmap.getIndexFromId(heatmap_id);
-	console.log(settings.heatmaps[index].info);
+	//console.log(settings.heatmaps[index].info);
     alert(settings.heatmaps[index].info);
   }
 }
 
+Heatmap.download = function(heatmap_id) {
+  if (_.contains(settings.heatmapIds, heatmap_id)) {
+    var index = Heatmap.getIndexFromId(heatmap_id);
+    var info = settings.heatmaps[index].info;
+	var name = heatmap_id;
+	
+	var hiddenElement = document.createElement('a');
+	hiddenElement.href = 'data:application/octet-stream,' + encodeURI(info);
+	hiddenElement.target = '_blank';
+	hiddenElement.download = name + '.hmap';
+	hiddenElement.click();
+  }
+}//Asarsa
 
 Heatmap.getIndexFromId = function(heatmap_id) {
   return _.indexOf(settings.heatmapIds, parseInt(heatmap_id));
@@ -176,3 +189,4 @@ Heatmap.getIndexFromId = function(heatmap_id) {
 Heatmap.nextId = function() {
   return ++id;
 }
+

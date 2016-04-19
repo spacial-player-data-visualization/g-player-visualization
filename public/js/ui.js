@@ -1050,9 +1050,10 @@ argument: heatmap_id is the id of the currently selected heatmap
 UI.heatmaps.generateRadio = function(heatmap_id, heatmap_name) {
   var a = '<div class="radio col-md-10" style="margin-top: 10px"><label id="heatmap' + heatmap_id + 'Label" for="heatmap' + heatmap_id + 'Radio">';
   var b = '<input type="radio" name="heatmap-opts" id="heatmap' + heatmap_id + 'Radio" value="' + heatmap_id + '" checked onclick="UI.heatmaps.select(' + heatmap_id + ')">';
-  var c = heatmap_name + '</label><i class="fa fa-info-circle" onclick="Heatmap.showInfo('+ heatmap_id +')"></i></div>';
+  var c = heatmap_name + '</label><i class="fa fa-info-circle" onclick="Heatmap.showInfo('+ heatmap_id +')"></i>';
+  var d = '     ' + '<i class="fa fa-download" onclick="Heatmap.download('+ heatmap_id +')"></i></div>';
 
-  return a + b + c;
+  return a + b + c + d;
 }
 
 /* 
