@@ -15,7 +15,7 @@ Alex Jacks @alexjacks92
 var Uploader = { CSV: {}, SSIEGE: {}, };
 var selectedGame = "";
 
-/* 
+/*
 name: loader
 author: Alex Jacks
 created: March 23, 2015
@@ -25,7 +25,7 @@ modifications by: Alex Johnson
 
 function loader(){
   var selector = $("#gameSelect");
-  
+
   // add game options to dropdown
   for (var index in options.games) {
     var option = options.games[index];
@@ -55,7 +55,7 @@ $('#gameSelect').on('change', function(){
   localStorage.setItem("selectedGame", settings.game);
 });
 
-/* 
+/*
 name: parseFile
 author: Alex Jacks
 created: March 23, 2015
@@ -98,7 +98,7 @@ Uploader.parseFile = function(event) {
         }
 
         UI.alert(results.data.length + " results loaded.");
-          
+
         // TODO: Test Errors, provide user feedback
         // var errors = results.errors;
 
@@ -138,14 +138,14 @@ Uploader.parserErrors = function(errors) {
   alert(toDisplay);
 }
 
-/* 
+/*
 name: sortByEntryType
 author: Alex Jacks
 created: March 23, 2015
-purpose: Takes a list of entries. Sorts into JSON arrays ontaining the same 
+purpose: Takes a list of entries. Sorts into JSON arrays ontaining the same
          entry type. For example:, all "PlayerJumped" actions should be bulked
          together.
-argument: data is the active dataset 
+argument: data is the active dataset
 */
 Uploader.sortByEntryType = function(data){
 
@@ -171,30 +171,30 @@ Uploader.sortByEntryType = function(data){
 
 // Sort data by values in the provided column id
 Uploader.sortByColumn = function(data, column){
-  return data.sort(function(a,b) { 
+  return data.sort(function(a,b) {
     var toReturn = a[column].toString().localeCompare(b[column].toString());
     return toReturn;
   });
 };
 
-/* 
+/*
 name: populateTables
 author: Alex Johnson
 created: March 23, 2015
 purpose: populate multiple tables
-argument: data is the active dataset 
+argument: data is the active dataset
 contributions by: Alex Jacks
 */
 
 Uploader.populateTables = function(data){
   // Clear tables
   $(".tableContainer").html("");
-  
+
   // some games only have 1 data type, which doesn't
   // need to be "bucketed"
-  
+
   var element = document.getElementById("gameSelect");
-  
+
   selectedGame = element.value;
 
   if (numberOfGameMappings(selectedGame) > 1) {
@@ -216,18 +216,18 @@ Uploader.populateTables = function(data){
      // settings.game -> eventName
     Uploader.populateTable(data, data[0][0]);
   }
-  
+
 
 };
 
-/* 
+/*
 name: populateTable
 author: Alex Johnson
 created: March 23, 2015
 purpose: Render content into HTML table.
          Allow user to preview the uploaded .csv file.
-argument: bucket is the action subtable it falls to 
-          and type is key mapping type 
+argument: bucket is the action subtable it falls to
+          and type is key mapping type
 contributions by: Alex Jacks
 */
 Uploader.populateTable = function(bucket, eventName){
@@ -236,16 +236,16 @@ Uploader.populateTable = function(bucket, eventName){
 
   // Sample data for previewing
   dataset = bucket.slice(0, 10);
-  
+
   var keyMappingExists = getKeyMapping(settings.game, eventName) ? true : false;
 
   // Create status <span>.
-  var status = (keyMappingExists) ? 
+  var status = (keyMappingExists) ?
   '<span class="status key-mapping">Key Mapping Found</span>' :
   '<span class="status no-key-mapping">No Key Mapping Found</span>' ;
 
   var tableID = "preview" + eventName.toString().replace(/\s/g, '');
-  
+
   // Calculate number of columns
   var tableSize = maxEntrySize(dataset);
 
@@ -253,7 +253,7 @@ Uploader.populateTable = function(bucket, eventName){
 
   var tableStart = '<div class="panel-heading">' +
   '<button type="button" class="btn btn-default button"' +
-  'onclick="toggleHide(\'' + tableID + '\')">Toggle \"' + eventName + '\" Table</button>' + entryCount + " Entries"  + 
+  'onclick="toggleHide(\'' + tableID + '\')">Toggle \"' + eventName + '\" Table</button>' + entryCount + " Entries"  +
   status + '</div>';
 
   // Hide table if we have a key mapping
@@ -262,7 +262,7 @@ Uploader.populateTable = function(bucket, eventName){
   // Build the HTML table
   tableStart += "<table id=" + tableID + ' class="table table-striped" style="display: ' + display + ';">';
   var tableEnd = "<table/>";
-  
+
   if (keyMappingExists) {
     var columns = getKeyMapping(settings.game, eventName).columns;
     var tr = "<tr>";
@@ -284,14 +284,14 @@ Uploader.populateTable = function(bucket, eventName){
     while (tableSize > key) {
 
       var a = (typeof current[key] != 'undefined') ? current[key] : "-"
-      
+
       tr += "<td>" + a + "</td>";
 
       key++;
     }
 
     var tr = "<tr>" + tr + "</tr>";
-    
+
     tableStart = tableStart + tr;
   }
 
@@ -312,14 +312,14 @@ var bin_count = 0;
 /*
 TODO: THIS IS A TEST UPLOAD FUNCTION. NEEDS A TON OF WORK
 */
-Uploader.SSIEGE.testUpload = function(data) {
+Uploader.SSIEGE.testUpload = function() {
 
   UI.loading(true, "Uploading Data.....");
   UI.alert("Sending to database.....");
 
-  // Get the JSON we plucked from the data file
-  // var entries = getLocalJSON();
-  var entries = data;
+  entries = getLocalJSON();
+
+  console.log(entries)
 
   // TODO: in order to remove invalid entries, we must first create a set of required
   // TODO: keys for the game SSIEGE. We also have to check the node.js models and make
@@ -347,7 +347,7 @@ Uploader.SSIEGE.testUpload = function(data) {
   });
 }
 
-/* 
+/*
 name: bulkUpload
 author: Alex Jacks
 created: March 23, 2015
@@ -362,18 +362,20 @@ Uploader.bulkUpload = function(){
   // Get data from last upload
   entries = getLocalJSON();
 
+  console.log(entries)
+
    // Convert data into JSON object.
   // All data should now be represented
   // as a key/value pair
   var flag = numberOfGameMappings(settings.game);
   entries = Uploader.formatData(entries, flag);
-  
+
 
   // Populate missing fields. In the case of bad data,
   // we'll use previous entries to make the data
   // 'at least' plottable
   entries = Uploader.fillMissingData(entries);
-  
+
 
   var playerUploaded = false;
 
@@ -382,9 +384,9 @@ Uploader.bulkUpload = function(){
 
     playerUploaded = _.contains(players, entries[0].playerID);
     if (playerUploaded == true) {
-      if (!confirm('Warning: The database already contains entries for player ' 
-        + entries[0].playerID + ' for ' + settings.game + '. Are you sure you would' + 
-        ' like to proceed in uploading this dataset?' + 
+      if (!confirm('Warning: The database already contains entries for player '
+        + entries[0].playerID + ' for ' + settings.game + '. Are you sure you would' +
+        ' like to proceed in uploading this dataset?' +
         ' This may result in adding duplicate data to the database.')) {
         UI.loading(false, "Upload cancelled.");
       return;
@@ -398,7 +400,7 @@ Uploader.bulkUpload = function(){
     if (!confirm("Upload " + entries.length + " entries to the database?")) {
       UI.loading(false, "Upload cancelled.");
       return;
-    } 
+    }
 
     // When POSTing data to the API, we occasionally
     // encounter a size/entry limit. Just to be safe,
@@ -417,7 +419,7 @@ Uploader.bulkUpload = function(){
     });
   });
 }
-/* 
+/*
 name: upload
 author: Alex Jacks
 created: March 23, 2015
@@ -445,7 +447,7 @@ Uploader.upload = function(bins, callback) {
   };
 
   // POST to server
-  $.post(Visualizer.API_url + "entries", data, function(data, textStatus, jqXHR){ 
+  $.post(Visualizer.API_url + "entries", data, function(data, textStatus, jqXHR){
 
     // Log feedback
     console.log(textStatus + " " + data);
@@ -462,14 +464,14 @@ Uploader.upload = function(bins, callback) {
   });
 }
 
-/* 
+/*
 name: formatData
 author: Alex Jacks
 created: March 23, 2015
 purpose: Apply a key mapping.
          Converts arrays from .csv file input
          into the corresponding JSON objects
-argument: data is uploaded data and flag is whether or not multiple key 
+argument: data is uploaded data and flag is whether or not multiple key
           mappings need to be found.
 contributions by: Alex Johnson
 */
@@ -494,19 +496,19 @@ Uploader.formatData = function(data, flag){
       var keyMapping = getKeyMapping(settings.game, action);
 
       // If we have a key mapping, assign keys to the current data
-      if (keyMapping){ 
-        var entry = assignKeys(current, keyMapping.columns) 
-      };  
+      if (keyMapping){
+        var entry = assignKeys(current, keyMapping.columns)
+      };
 
       // Return data that was converted.
       if (entry) { acc.push(entry); }
 
     });
   } else {
-    
+
       var keyMapping = getKeyMapping(settings.game, data[0][0]);
       _.each(data, function(current) {
-        
+
         if (keyMapping) {
           var entry = assignKeys(current, keyMapping.columns)
         };
@@ -522,11 +524,11 @@ Uploader.formatData = function(data, flag){
     UI.alert("For invalid entries, make sure each entry has "
       + "X and Y position data, and a timestamp.")
   }
-  
+
   return acc;
 }
 
-/* 
+/*
 name: fillMissingData
 author: Alex Jacks
 created: March 23, 2015
@@ -536,7 +538,7 @@ argument: data is uploaded data
 */
 Uploader.fillMissingData = function(data) {
   var entries = [];
-  
+
   // Iterate through entries
   var playerID = '';
   if (data[0].playerID) {
@@ -553,7 +555,7 @@ Uploader.fillMissingData = function(data) {
     // If not, get it from the last user entry that does
     if (current.posX &&  current.posY && current.timestamp && current.area) {
 
-      // 
+      //
       data[i] = current;
 
     // Else, if data is missing:
@@ -565,7 +567,7 @@ Uploader.fillMissingData = function(data) {
         data[i].playerID = playerID;
       } else {
         current.playerID = playerID;
-        data[i] = fillEntry(data, current);  
+        data[i] = fillEntry(data, current);
       }
     }
   };
@@ -627,7 +629,7 @@ function split(array, n) {
 // Provide a column id to look at.
 function getUniqueKeys(data, column) {
   var toReturn = [];
-  
+
   for (var i in data) {
     toReturn.push(data[i][column]);
   }
@@ -661,21 +663,21 @@ function toggleHide(id) {
 //  - data: the data to look through
 //  - current: the index to start looking at
 function fillEntry(data, current) {
-  
-  // Find current data's location in array  
+
+  // Find current data's location in array
   var currentIndex = data.indexOf(current);
 
   // Find data to check against.
   var indexToCheck = currentIndex;
   var entryToCheck = data[indexToCheck];
 
-  // Find the LAST valid object that contains the required keys. 
+  // Find the LAST valid object that contains the required keys.
   while (entryToCheck && !containsRequiredKeys(entryToCheck) && indexToCheck > -1) {
 
     indexToCheck--;
     entryToCheck = data[indexToCheck];
   }
-  
+
   if (entryToCheck && containsRequiredKeys(entryToCheck)) {
 
     current["playerID"]  = entryToCheck["playerID"];
@@ -684,13 +686,13 @@ function fillEntry(data, current) {
     current["posY"]      = entryToCheck["posY"];
     current["timestamp"] = entryToCheck["timestamp"];
 
-    // Data is fixed. 
+    // Data is fixed.
     // Return fixed data
     return current;
 
   } else {
 
-    // If data is not fixed, 
+    // If data is not fixed,
     // don't return broken data;
     return null;
 
@@ -704,7 +706,7 @@ function numberOfGameMappings(gameSelected) {
   return gameMappings.length;
 }
 
-// Return the key mapping given the 
+// Return the key mapping given the
 // game name, and the event name
 // ex: getKeyMapping("Fallout New Vegas", "Attacked")
 var getKeyMapping = function(game, eventName){
@@ -722,7 +724,7 @@ var getKeyMapping = function(game, eventName){
   }
 
   var msg = "Unable to find key mapping for: " + eventName;
-  
+
   console.error(msg);
   UI.error(msg);
 
@@ -758,13 +760,13 @@ var assignKeys = function(values, columns){
     // Ensure data exists. If not, make it null for DB.
     if (!values[key]) {
       values[key] = null;
-    }; 
+    };
 
     // Create key/value pair
     acc[value] = values[key];
   });
 
   acc["game"] = settings.game;
-  
+
   return acc;
 }

@@ -9,7 +9,7 @@ Created: March 29, 2015
 Authors:
 Alex Johnson @alexjohnson505
 Alex Jacks @alexjacks92
-Alex Gimmi @ibroadband 
+Alex Gimmi @ibroadband
 
 */
 
@@ -18,7 +18,7 @@ Alex Gimmi @ibroadband
  *************************/
 
 // Used to represent the current state of the map,
-// and options that the user has selected. 
+// and options that the user has selected.
 
 var settings = {
 
@@ -33,10 +33,10 @@ var settings = {
     type: "FeatureCollection",
     features: [],
   },
- 
+
   //json layer for brush
   brushLayer : null,
-  
+
   //player tracks
   tracks : [],
 
@@ -75,10 +75,10 @@ var settings = {
 
   // All available types of actions (filters)
   listOfActions : [],
-  
+
   // Current groups
   groups : [],
-  
+
   // color options
   //colors : ["#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf", "#e0f3f8", "#abd9e9", "#74add1", "#4575b4"],
 
@@ -97,7 +97,7 @@ var settings = {
 
   selectedColors : [],
   selectedPlayers: [],
-  
+
   // index for color of next player
   clr_indx : 0,
 
@@ -118,8 +118,8 @@ var Visualizer = {};
          Global Variables
  ************************************/
 
-// Global scale factor. Helps to max points (ranging 
-// from -10,000 to 10,000) to their coordinate points 
+// Global scale factor. Helps to max points (ranging
+// from -10,000 to 10,000) to their coordinate points
 // on a geo projection.
 Visualizer.scaleFactor = 200;
 
@@ -148,7 +148,7 @@ Visualizer.update = function(){
 
   // Store current index
   var count = 0;
-  
+
   // check if group is visible (indivisual player visibility is deselected)
   var groupvisible = false;
   _.each(settings.groups, function(group){
@@ -158,14 +158,14 @@ Visualizer.update = function(){
     // Iterate through players
     _.each(players, function(player, playerID){
       var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
-      
+
       // Render each player onto the map
       if(group.players.indexOf(playerID) != -1)
       Visualizer.draw(player, thisPlayer.color, count++, group.checkedActions);
     });
     }
   });
-  
+
   if(groupvisible == false){
     //console.log("no group visible. looking at players...");
     // Iterate through players
@@ -190,7 +190,7 @@ Visualizer.update = function(){
            HEATMAPS
    ********************************/
 
-/* 
+/*
 author: Alex Gimmi
 created: June 15, 2015
 purpose: redraws the currently selected heatmap on the map
@@ -219,19 +219,19 @@ Visualizer.genHeatMap = function(){
     actions: [],
     positions: [],
   };
-  
+
   // Unfiltered data
   var unfilteredData = settings.data.positions.concat(settings.data.actions);
-  
+
   // Ensure chronological order & points to be within time frame
   var filteredData = filterUsingWindow(sortBy(unfilteredData, "timestamp"),"timestamp");
 
   // Group data by PlayerID
   var players = _.groupBy(filteredData, 'playerID');
-  
+
   //store group info into name
   var hmName = "Time Frame\n  Start : " + settings.window.start + "\n  End : " + settings.window.end + "\n\n";
-  
+
   // check if group is visible (indivisual player visibility is deselected)
   var groupvisible = false;
   _.each(settings.groups, function(group){
@@ -242,7 +242,7 @@ Visualizer.genHeatMap = function(){
     // Iterate through players
     _.each(players, function(player, playerID){
       var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
- 
+
       // Render each player onto the map
       if(group.players.indexOf(playerID) != -1){
         var newDataset = Visualizer.activeData(filterPositions(player), group.checkedActions);
@@ -254,7 +254,7 @@ Visualizer.genHeatMap = function(){
     hmName += "\nActions:" + group.checkedActions + "\n";
     }
   });
-  
+
   if(groupvisible == false){
     // Iterate through players
     _.each(players, function(player, playerID){
@@ -268,10 +268,10 @@ Visualizer.genHeatMap = function(){
       }
     });
   }
-  
+
   console.log("heatmap data generation complete");
   Heatmap.add(hmDataset,hmName);
-  
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -283,16 +283,16 @@ Visualizer.getBrushData = function(){
     actions: [],
     positions: [],
   };
-  
+
   // filtered data
   var filteredData = sortBy(settings.data.positions.concat(settings.data.actions), "timestamp");
- 
+
   // Group data by PlayerID
   var players = _.groupBy(filteredData, 'playerID');
-  
+
   // check if group is visible (indivisual player visibility is deselected)
   var groupvisible = false;
-  
+
   _.each(settings.groups, function(group){
     if(group.visibility){
 	  groupvisible = true;
@@ -308,7 +308,7 @@ Visualizer.getBrushData = function(){
 	  });
     }
   });
-  
+
   if(groupvisible == false){
 	// Iterate through players
 	_.each(players, function(player, playerID){
@@ -331,7 +331,7 @@ Visualizer.getBrushData = function(){
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-/* 
+/*
 name: draw
 author: Alex Johnson
 created: March 29, 2015
@@ -362,7 +362,7 @@ Visualizer.draw = function(entries, color, index, checkedActions){
 
         // Return formatted latLng point
         return toLatLng(point);
-      }); 
+      });
 
       // Create polyline
       var polyline = L.polyline(positions, {
@@ -371,13 +371,13 @@ Visualizer.draw = function(entries, color, index, checkedActions){
           weight: 2,
           opacity: 1,
       })
-      
-      // Add a new Leaflet.js feature group, containing 
+
+      // Add a new Leaflet.js feature group, containing
       // the layer of our player's polyline.
       var featureGroup = new L.FeatureGroup().addLayer(polyline);
-      
+
       addFeatureGroup(featureGroup);
-      
+
     }
 
     /********************************
@@ -456,15 +456,15 @@ Visualizer.activeData = function(dataset,checkedActions){
 
 // Clears the active data set. Resets map
 Visualizer.clear = function(){
-    
+
     // Clear active data sets
     _.each(Visualizer.layers, function(layer){
-        
+
         // Remove each active layer (heatmap layers can't be removed this way so try)
         try {
           map.removeLayer(layer);
         } catch (e) {
-          console.log("Problem with removing layer " + layer + "\nMore info: " + e.message); 
+          console.log("Problem with removing layer " + layer + "\nMore info: " + e.message);
         }
     })
 }
@@ -472,7 +472,7 @@ Visualizer.clear = function(){
 
 // Adds a marker at the provided location
 Visualizer.addMarker = function(lat, long, title){
-  
+
   // Optional Title
   var title = (title) ? title : "";
 
@@ -523,11 +523,11 @@ purpose: Format the data in a way that Leaflet and Leaflet.timeline can use
 argument: the unformatted data to format
 */
 Visualizer.formatData = function(data){
-  
-  // Global scale factor. Helps to max points (ranging 
-  // from -10,000 to 10,000) to their coordinate points 
+
+  // Global scale factor. Helps to max points (ranging
+  // from -10,000 to 10,000) to their coordinate points
   // on a geo projection.
-  
+
   var scale = Visualizer.scaleFactor;
 
   // Create a latitude & longitude field.
@@ -543,7 +543,7 @@ Visualizer.formatData = function(data){
   // Note: for a game that has events with a start/end time a condition can be added here
   // year, month, day, hours, minutes, seconds, milliseconds
 
-  //data format for New Timeline Feature 
+  //data format for New Timeline Feature
    data['coord'] = [(data.longitude), (data.latitude)];
   // TODO: using data.timestamp allows us to just use the raw time for now...
   // Not sure what to do to have the time display exactly as we want it to.
@@ -558,7 +558,7 @@ Visualizer.formatData = function(data){
     };
 
   data['player'] = data.playerID;
-  /*} else { 
+  /*} else {
     data['geometry'] = {
       type: 'LineString',
       // TODO: WIP Obviously need to find a way to have lines drawn properly.
@@ -567,7 +567,7 @@ Visualizer.formatData = function(data){
   }*/
 
   //TODO: FORMAT ALL OF THE DATA TYPES NEEDED FOR LEAFLET.TIMELINE
-  
+
   return data;
 }
 
@@ -578,7 +578,7 @@ purpose: Create a GeoJson version of some formatted data
 argument: the formatted data to GeoJson-ify
 */
 Visualizer.convertJsonToGeoJson = function(json) {
-  var geoJson = {type : 'Feature', 
+  var geoJson = {type : 'Feature',
     properties: {longitude: json['longitude'],
                  latitude: json['latitude'],
                  start: json['start'],
@@ -596,8 +596,8 @@ purpose: Create a Feature Collection of all GeoJson data
 */
 Visualizer.createGeoJsonLayer = function() {
 
-  //object for creating Timeline playback 
-  var  geoJsonLay = {   
+  //object for creating Timeline playback
+  var  geoJsonLay = {
     type: "Feature",
     geometry: {
       type: "MultiPoint",
@@ -615,10 +615,10 @@ Visualizer.createGeoJsonLayer = function() {
     geoJsonLay.properties.time.push(json['start']);
     geoJsonLay.properties.player = json['player'];
 
-    var geoJson = Visualizer.convertJsonToGeoJson(json); 
+    var geoJson = Visualizer.convertJsonToGeoJson(json);
     settings.geoJsonLayer.features.push(geoJson);
   });
-  
+
   //Pushing GeoJasonLay to array tracks
   if(geoJsonLay.properties.time.length != 0){
     settings.tracks.push(geoJsonLay);
@@ -627,19 +627,19 @@ Visualizer.createGeoJsonLayer = function() {
 
 
 Visualizer.getData = function(){
-    
+
 	var   geoJsonD3Lay = {
       type: "FeatureCollection",
       features: [],
     };
 
     var x = Visualizer.getBrushData();
-	
+
     _.each(x.actions.concat(x.positions), function(json){
     var geoJson = Visualizer.convertJsonToGeoJson(json);
      geoJsonD3Lay.features.push(geoJson);
     });
-    
+
 	settings.brushLayer = geoJsonD3Lay;
 }
 
@@ -650,7 +650,7 @@ Visualizer.getData = function(){
 Visualizer.getContext = function(callback){
 
   var obj = {
-    
+
     // Currently active game
     game : settings.game,
 
@@ -689,7 +689,7 @@ Visualizer.getTimelineData = function (callback){
 Visualizer.focus = function(){
 
     var sample = Visualizer.layers[0]
-    
+
     if (sample) map.fitBounds(sample.getBounds());
 }
 
@@ -706,7 +706,7 @@ function sortBy (list, key){
       })
 }
 
-// filter provided list by key 
+// filter provided list by key
 function filterUsingWindow (list, key){
   return _.filter(list, function(l){
         return l[key] > settings.window.start && l[key] < settings.window.end;
@@ -731,7 +731,7 @@ function convertJSONtoHTML(JSON){
 
       acc += "<p>" + key + " : <b>" + val + "</b></p>";
     }
-    
+
   })
 
   return acc;
@@ -739,7 +739,7 @@ function convertJSONtoHTML(JSON){
 
 // Does the provided object contain the required keys?
 function containsRequiredKeys(obj){
-  
+
   // Required keys
   var keys = ["playerID", "area", "posX", "posY", "timestamp"];
 
@@ -754,13 +754,13 @@ function containsRequiredKeys(obj){
 }
 
 // Adds the provided featureGroup to the map.
-// Feature groups are objects representing 
+// Feature groups are objects representing
 // "bulked", or otherwise grouped vector
 // objects as a single layer on the map.
 function addFeatureGroup (featureGroup){
-    
+
     // Save layer to settings.
-    // We must save a reference to each layer, 
+    // We must save a reference to each layer,
     // as it's the most effective way to iterate
     // through and remove layers.
 
@@ -792,11 +792,11 @@ function shouldWePlotPositionData (checkedActions){
     // Does the game have more then 1 data type?
     if (gameMappings.length < 2) {
       return true;
-    
+
     // Is the [position] check box selected?
     } else if (_.contains(checkedActions, 'position')){
       return true
-    
+
     // Otherwise, don't show positions
     } else {
       return false
