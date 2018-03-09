@@ -25,7 +25,7 @@ var EntrySchema = new Schema({
         required: true
     },
     playerID: {
-        type: Number,
+        type: String,
         required: true
     },
     timestamp: {

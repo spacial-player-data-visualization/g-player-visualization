@@ -362,14 +362,11 @@ Uploader.bulkUpload = function(){
   // Get data from last upload
   entries = getLocalJSON();
 
-  console.log(entries)
-
    // Convert data into JSON object.
   // All data should now be represented
   // as a key/value pair
   var flag = numberOfGameMappings(settings.game);
   entries = Uploader.formatData(entries, flag);
-
 
   // Populate missing fields. In the case of bad data,
   // we'll use previous entries to make the data
@@ -497,7 +494,7 @@ Uploader.formatData = function(data, flag){
 
       // If we have a key mapping, assign keys to the current data
       if (keyMapping){
-        var entry = assignKeys(current, keyMapping.columns)
+        var entry = assignKeys(current, keyMapping.columns, keyMapping.type !== 'position')
       };
 
       // Return data that was converted.
@@ -510,7 +507,7 @@ Uploader.formatData = function(data, flag){
       _.each(data, function(current) {
 
         if (keyMapping) {
-          var entry = assignKeys(current, keyMapping.columns)
+          var entry = assignKeys(current, keyMapping.columns, keyMapping.type !== 'position')
         };
 
         if (entry) { acc.push(entry); };
@@ -742,7 +739,7 @@ var getKeyMapping = function(game, eventName){
 // Results in:
 // { fruit : "Apple", color : "orange", shape : "pear" }
 
-var assignKeys = function(values, columns){
+var assignKeys = function(values, columns, isAction){
   var acc = {};
 
   // Check data. Make sure we have enough keys for our data.
@@ -756,14 +753,21 @@ var assignKeys = function(values, columns){
   }
   */
 
-  _.each(columns, function(value, key){
+  if (isAction) {
+    acc['action'] = values[0]
+  }
+
+  values = values.slice(1)
+
+  _.each(columns, function(colName, i){
+
     // Ensure data exists. If not, make it null for DB.
-    if (!values[key]) {
-      values[key] = null;
+    if (!values[i]) {
+      values[i] = null;
     };
 
     // Create key/value pair
-    acc[value] = values[key];
+    acc[colName] = values[i];
   });
 
   acc["game"] = settings.game;

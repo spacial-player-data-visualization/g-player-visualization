@@ -2,9 +2,9 @@
 /****************************************************
 
   G­Player: Visualization of Spatial­-temporal Play Data
- 
-  Created in association with Truong-Huy D. Nguyen, 
-    
+
+  Created in association with Truong-Huy D. Nguyen,
+
   MIT License. Code available at:
   github.com/spacial-player-data-visualization/g-player-visualization
 
@@ -26,6 +26,9 @@ app.use(bodyParser.json({limit: '50mb'}));
 // MondoDB will direct at Heroku or Localhost depending
 var mongoUrl = process.env.MONGOLAB_URI || 'mongodb://localhost/test';
 //var mongoUrl = process.env.MONGOLAB_URI || 'mongodb://admin:admin@nb4800.neu.edu:12857/gplayer';
+
+if (process.env.LOCAL_RUN_REMOTE_MONGO)
+  mongoUrl = 'mongodb://tyler:smellycup@ds041871.mlab.com:41871/heroku_app33725997'
 
 // Initialize database connection
 var mongoose = require('mongoose');
@@ -58,7 +61,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 /****************************
-       CONTROLLERS 
+       CONTROLLERS
  ****************************/
 
 // Require entries controller
@@ -67,7 +70,7 @@ var maps = require('./api/map');
 var keys = require('./api/key');
 
 /****************************
-         ROUTES 
+         ROUTES
  ****************************/
 
 // INDEX
@@ -159,4 +162,3 @@ app.delete('/api/keys/:id', function (req, res){
 app.listen(app.get('port'), function() {
   console.log("\nAPI Running at localhost:" + app.get('port'));
 });
-

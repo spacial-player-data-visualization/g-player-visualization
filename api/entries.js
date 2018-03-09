@@ -17,11 +17,11 @@ var _ = require('underscore');
 var Q = require('q');
 
 
-/* 
+/*
 name: saveEntry
 author: Alex Johnson
 created: March 18, 2015
-purpose: saves the data entry to the Mongo DB 
+purpose: saves the data entry to the Mongo DB
 argument: data is the active dataset
 */
 
@@ -35,7 +35,7 @@ var saveEntry = function(data) {
         posX: data.posX,
         posY: data.posY,
     }
-    
+
     // gets the rest of the key
     var restKeys = _.chain(data)
     .omit(['game', 'area', 'playerID', 'timestamp', 'posX', 'posY'])
@@ -46,7 +46,6 @@ var saveEntry = function(data) {
         tempObj[key] = data[key]
     });
 
-    console.log(tempObj);
 
     var entry = new EntryModel(tempObj);
 
@@ -61,7 +60,7 @@ var saveEntry = function(data) {
     return deferred.promise;
 }
 
-/* 
+/*
 author: Tommy Hu
 created: March 18, 2015
 purpose: handles CRUD operations
@@ -101,12 +100,11 @@ module.exports = {
         if (!game || !area) {
             return res.status(500).send('Missing parameters. Endpoint requires "game" and "area"');
         }
-        
 
         return EntryModel.find({game: game, area: area, playerID: {$in: playerIDs}}, function(err, entries) {
 
             console.log("\nGET entries for " + area + " of " + game + " | " + entries.length + " entries.")
-            
+
             if (err) {
 
                 console.log(err);
@@ -115,7 +113,7 @@ module.exports = {
 
                 if (!fidelity || fidelity < 2){
                     return res.send(entries);
-                
+
                 // If user specified a data fidelity
                 } else {
 
@@ -138,7 +136,7 @@ module.exports = {
 
                     } else {
 
-                        // if not a position value, 
+                        // if not a position value,
                         // return everything
                         return true;
                     }
@@ -196,7 +194,7 @@ module.exports = {
             return res.status(500).send('Missing parameter: "game"');
         }
 
-        if (!actions) { 
+        if (!actions) {
             return EntryModel.find({game: game}).distinct('playerID', function(err, result){
                 if (err) {
                     console.log(err);
@@ -212,7 +210,7 @@ module.exports = {
         });
 
         function createFindPromise(action) {
-            
+
             var deferred = Q.defer();
 
             EntryModel.find({game: game, action: action}).distinct('playerID', function(err, result){
