@@ -157,7 +157,7 @@ Visualizer.update = function(){
     groupvisible = true;
     // Iterate through players
     _.each(players, function(player, playerID){
-      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+      var thisPlayer = _.findWhere(settings.players, { 'playerID' : playerID });
 
       // Render each player onto the map
       if(group.players.indexOf(playerID) != -1)
@@ -170,7 +170,7 @@ Visualizer.update = function(){
     //console.log("no group visible. looking at players...");
     // Iterate through players
     _.each(players, function(player, playerID){
-      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+      var thisPlayer = _.findWhere(settings.players, { 'playerID' : playerID });
 
       // Render visible player onto the map
       if(thisPlayer.visibility)
@@ -241,7 +241,7 @@ Visualizer.genHeatMap = function(){
 
     // Iterate through players
     _.each(players, function(player, playerID){
-      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+      var thisPlayer = _.findWhere(settings.players, { 'playerID' : playerID });
 
       // Render each player onto the map
       if(group.players.indexOf(playerID) != -1){
@@ -258,7 +258,7 @@ Visualizer.genHeatMap = function(){
   if(groupvisible == false){
     // Iterate through players
     _.each(players, function(player, playerID){
-      var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+      var thisPlayer = _.findWhere(settings.players, { 'playerID' : playerID });
       // Render visible player onto the map
       if(thisPlayer.visibility){
         var newDataset  = Visualizer.activeData(filterPositions(player), thisPlayer.checkedActions);
@@ -298,7 +298,7 @@ Visualizer.getBrushData = function(){
 	  groupvisible = true;
 	  // Iterate through players
 	  _.each(players, function(player, playerID){
-	    var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+	    var thisPlayer = _.findWhere(settings.players, { 'playerID' : playerID });
 	    // Render each player onto the map
 	    if(group.players.indexOf(playerID) != -1){
 	      var newDataset = Visualizer.activeData(filterPositions(player), group.checkedActions);
@@ -312,7 +312,7 @@ Visualizer.getBrushData = function(){
   if(groupvisible == false){
 	// Iterate through players
 	_.each(players, function(player, playerID){
-	  var thisPlayer = _.findWhere(settings.players, { 'playerID' : parseInt(playerID) });
+	  var thisPlayer = _.findWhere(settings.players, { 'playerID' : playerID });
 
 	  // Render visible player onto the map
 	  if(thisPlayer.visibility){

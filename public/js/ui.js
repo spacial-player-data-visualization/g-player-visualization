@@ -7,14 +7,14 @@ G-Player Data Visualization
 - handles game and map selections
 - manipulates map (move and scale)
 - allows selection of players and colors for players
-- filtering of dataset by actions 
+- filtering of dataset by actions
 - status messages in lower right corner
 
 Authors:
 Alex Johnson @alexjohnson505
 Alex Gimmi @ibroadband
 
-Created: 
+Created:
 March 29, 2015
 */
 
@@ -25,7 +25,7 @@ March 29, 2015
 // Provide user feedback with the interface
 var UI = {};
 
-/* 
+/*
 name: setGame
 author: Alex Johnson
 created: March 29, 2015
@@ -34,7 +34,7 @@ argument: gamename is the game (ex: Fallout or Game Gaze)
 */
 UI.setGame = function(gamename){
 
-  
+
     // Save game name
     settings.game = gamename;
 
@@ -44,7 +44,7 @@ UI.setGame = function(gamename){
     // Populate Games Pulldown
     _.each(options.games, function(game) {
         var option  = $("<option />").val(game).text(game);
-        
+
         if (settings.game == game){
           option.attr('selected', 'selected')
         };
@@ -55,27 +55,27 @@ UI.setGame = function(gamename){
 
     // Available maps
     var game_maps = _.where(options.maps, { game : settings.game });
-    
+
     // Clear data
     settings.data = { positions: null, actions: null };
-    
+
     // Remove previous data
     Visualizer.clear();
 
     // Reset map
     if (game_maps && game_maps[0]){
 
-        UI.setMap(game_maps[0].name);  
+        UI.setMap(game_maps[0].name);
     } else {
-      
+
         UI.error("Unable to load Map Data");
     }
-    
+
     // Clear List
     $("#select-map").children().remove();
 
     // Update game options in pulldown
-    _.each(game_maps, function(map) { 
+    _.each(game_maps, function(map) {
 
         var option = $("<option />").val(map.name).text(map.name);
 
@@ -96,7 +96,7 @@ UI.setGame = function(gamename){
 /************************************
          Map Functions
 ************************************/
-/* 
+/*
 name: setMap
 author: Alex Johnson
 created: March 29, 2015
@@ -107,7 +107,7 @@ UI.setMap = function(mapname, callback){
 
   // Clear previous map
   if (settings.overlay){
-    map.removeLayer(settings.overlay);  
+    map.removeLayer(settings.overlay);
   }
 
   // Find chosen map data
@@ -133,8 +133,8 @@ UI.setMap = function(mapname, callback){
   })
 
   // Note: Lat/Long is represented as [Latitude (y), Longitude (x)].
-  // Take care when converting from cartesian points, to lat/long.        
-  var imageBounds = [[bottomLeft['latitude'], bottomLeft['longitude']], 
+  // Take care when converting from cartesian points, to lat/long.
+  var imageBounds = [[bottomLeft['latitude'], bottomLeft['longitude']],
                      [topRight['latitude'],   topRight['longitude']]];
 
   // Add image overlay to map
@@ -184,15 +184,15 @@ UI.saveMap = function(){
 
     function success(resp){
         if (!resp) UI.error("Error saving map")
-              
+
         $('#save-map').hide();
 
         alert("Map changes have been saved. Your changes will now " +
-              "persists when you reload or return to this website.");        
+              "persists when you reload or return to this website.");
     }
 }
 
-/* 
+/*
 name: moveMap
 author: Alex Johnson
 created: March 29, 2015
@@ -203,7 +203,7 @@ yoffset is the bottom to top offset of coordinates
 UI.moveMap = function(xOffset, yOffset){
 
   $('#save-map').show();
-  
+
   // Get map data from settings
   var m = _.findWhere(options.maps, { name : settings.map.name });
   var index = options.maps.indexOf(m);
@@ -219,7 +219,7 @@ UI.moveMap = function(xOffset, yOffset){
 
 }
 
-/* 
+/*
 name: scaleMap
 author: Alex Johnson
 created: March 29, 2015
@@ -237,7 +237,7 @@ UI.scaleMap = function(scale){
   // Adjust coordinates for map
   var width  = m.right - m.left;
   var height = m.top - m.bottom;
-  
+
   // Generate the scale multiplier
   var xScale = .01 * width  * scale;
   var yScale = .01 * height * scale;
@@ -245,7 +245,7 @@ UI.scaleMap = function(scale){
   // Adjust scaling for map
   options.maps[index].left = m.left   - xScale;
   options.maps[index].right = m.right + xScale;
-  
+
   options.maps[index].bottom = m.bottom - yScale;
   options.maps[index].top = m.top + yScale;
 
@@ -257,7 +257,7 @@ UI.scaleMap = function(scale){
          Actions
 ************************************/
 
-/* 
+/*
 name: getActions
 author: Alex Johnson
 created: March 29, 2015
@@ -265,7 +265,7 @@ purpose: grabs all available actions in dataset for use for filtering
 arguments: callback is some action call
 */
 UI.getActions = function(callback){
-    
+
     // Get current game/map
     var options = Visualizer.getContext();
 
@@ -288,12 +288,12 @@ UI.getActions = function(callback){
           Players
 ************************************/
 
-/* 
+/*
 name: addPlayer
 author: Alex Johnson
 created: March 29, 2015
 purpose: Manage the players being represented on the visualizer
-arguments: playerID is the selected player 
+arguments: playerID is the selected player
 */
 UI.players = {};
 var colors = settings.colors;
@@ -311,8 +311,8 @@ UI.players.addPlayer = function(playerID){
     alert("Player " + playerID + " Already Selected");
     return;
   };
- */  
- 
+ */
+
   if (existing) {
     return;
   }; //Asarsa
@@ -321,7 +321,7 @@ UI.players.addPlayer = function(playerID){
   // dialog for selection of color for selected player
   var color_radio_buttons = _.reduce(colors, function(memo, color){
 		if(i++ == settings.clr_indx)
-			var ret = memo + '<label class="radio"><input type="radio" name="group1" value="' + 
+			var ret = memo + '<label class="radio"><input type="radio" name="group1" value="' +
 		              color + '" checked><i class="fa fa-square" style="color: ' + color + '"></i></label>';
 		else
 			var ret = memo + '<label class="radio"><input type="radio" name="group1" value="' +
@@ -334,10 +334,10 @@ UI.players.addPlayer = function(playerID){
   bootbox.dialog({
     message: message,
     title: "Select Color for Player " + playerID,
-    
+
     // Options available to the user
     buttons: {
-      
+
       // Hide the modal
       success: {
         label: 'Cancel',
@@ -351,14 +351,14 @@ UI.players.addPlayer = function(playerID){
         className: "btn-default",
         callback: function() {
 
-            var msg = "You are about to load and preview" + 
-                "the raw data for player" + playerID + ". This " + 
+            var msg = "You are about to load and preview" +
+                "the raw data for player" + playerID + ". This " +
                 "will show the data for all actions and " +
                 "positions of the selected player. Would you " +
                 "like to limit the data to ignore positions, " +
                 "and only show action/event data points?";
 
-            // Load player data. 
+            // Load player data.
             // should we limit the data to actions?
             UI.showPlayerData(playerID, confirm(msg))
         }
@@ -369,7 +369,7 @@ UI.players.addPlayer = function(playerID){
         label: "Add Player",
         className: "btn-primary",
         callback: function() {
-          
+
           var color =  $('.color-select input[type=radio]:checked').val();
           if (!color) { color : "#000" };
 
@@ -384,28 +384,28 @@ UI.players.addPlayer = function(playerID){
       }
     }
   });
-  
+
   updateBrush();
 }
 
 
-// Add multiple players at once. 
+// Add multiple players at once.
 UI.players.addPlayers = function(playerIDs){
 
 //add each player from the list of players
 
 }
 
-// Add all players at once. 
+// Add all players at once.
 UI.players.addAll = function(PlayerIDs){
   // Confirm that user wants to load a large data set
   if (!confirm('Warning! Loading all players in the current list may load a considerable amount of data. This request could take time to process, and may cause your map to become slow or unresponsive. If you haven\'t already, we recommend selecting a lower "fidelity" from the left menu in order to reduce the amount of positions per second being returned. Are you sure you want to continue?')) return;
-  
+
   UI.getListOfAvailablePlayerIDs(function(playerIDs){
 	var colors = settings.colors;
-	
+
     _.each(playerIDs, function(playerID){
-		
+
 		// Prevent Duplicates
 		var existing = _.findWhere(settings.players, { playerID : playerID })
 
@@ -413,20 +413,20 @@ UI.players.addAll = function(PlayerIDs){
 			// Add to list
 			settings.players.push({ playerID : playerID, color : colors[settings.clr_indx++] , checkedActions : settings.listOfActions, visibility : true });
 			lastPlayer = playerID;
-      
+
 			if(settings.clr_indx == colors.length)
 				settings.clr_indx = 0;
-		
+
 		  UI.players.refreshMap();
       $('#active-players-list').val(lastPlayer);
       UI.filters.changePlayer();
-      }; 
+      };
 
       });
     })
-	
 
-  
+
+
   UI.getListOfAvailablePlayerIDs();
   updateBrush();
 } // Asarsa
@@ -444,9 +444,9 @@ UI.players.remove = function(playerID){
 				present = true;
 		});
   });
-  
+
   if(present)
-	if (!confirm("The Player is present in one or more groups. Removing player from map will result in removal of player from all groups")) return;  
+	if (!confirm("The Player is present in one or more groups. Removing player from map will result in removal of player from all groups")) return;
 
   //remove player from groups
   _.each(settings.groups, function(group){
@@ -454,7 +454,7 @@ UI.players.remove = function(playerID){
       return player != playerID;
     });
   });
-  
+
   //if group empty, remove group
   settings.groups = _.filter(settings.groups, function(group){
     return group.players.length > 0;
@@ -477,11 +477,11 @@ UI.players.remove = function(playerID){
 }
 
 //Asarsa
-// remove multiple players at once. 
+// remove multiple players at once.
 UI.players.removePlayers = function(){
 
   settings.players = null;
-  
+
   // Remove all data
   Visualizer.clear();
 
@@ -492,18 +492,18 @@ UI.players.removePlayers = function(){
 
 // Return list of player IDs
 UI.players.listIDs = function(){
-  
+
   // Create list of IDs
   var ids = _.pluck(settings.players, 'playerID');
-  
+
   // Handle empty case
-  if (!ids) { ids = []; } 
+  if (!ids) { ids = []; }
 
   // Return IDs
   return ids;
 };
 
-/* 
+/*
 name: refreshMap
 author: Alex Johnson
 created: March 29, 2015
@@ -516,19 +516,19 @@ UI.players.refreshMap = function(){
   //$("#active-players-list").html('<option value="" style="background-color:#fff">Select One</option>');
 
   _.each(settings.players, function(player){
-	$("#active-players-list").append('<option value="' + player.playerID + '" style="background-color:' + 
+	$("#active-players-list").append('<option value="' + player.playerID + '" style="background-color:' +
 	player.color + '">' + player.playerID + '</option>');
   })
-  
+
   _.each(settings.groups, function(group){
-	$("#active-players-list").append('<option value="' + group.groupID + '" style="background-color:#fff">' + 
+	$("#active-players-list").append('<option value="' + group.groupID + '" style="background-color:#fff">' +
 	group.groupName + '</option>');
   })
- 
+
   Visualizer.loadData();
 }//Asarsa
 
-/* 
+/*
 name: getListOfAvailablePlayerIDs
 author: Alex Johnson
 created: March 29, 2015
@@ -541,34 +541,34 @@ UI.getListOfAvailablePlayerIDs = function(callback){
 
     // Get actions from API
     $.get(Visualizer.API_url + "players", opts, function(data){
-        
+
         var players = data;
-        
+
         // Clear previous player list
         $('#available-players').html("");
 		var show_added = document.getElementById("show_added").checked;
 
-        // Render players from database to 
+        // Render players from database to
         // table on left menu
         _.each(players, function(playerID,color){
-			
-		// check if players exists
-		var added = _.findWhere(settings.players, { playerID : playerID })
-		
- 
-        // Create table row with player data
-		if (added) {
-			var tr = '<tr onclick="UI.players.remove(' + playerID + ')">' +
-					 '<td>Player <b>' + playerID + '</b></td>' +
-                     '<td id="td '+ playerID +'"><i class="fa fa-trash-o"></i></td>' +
-					 '</tr>';
-		}
-		if (!added && !show_added){
-			var tr = '<tr onclick="UI.players.addPlayer(' + playerID + ')">' +
-					 '<td>Player <b>' + playerID + '</b></td>' +
-					 '<td id="td '+ playerID +'"><i class="fa fa-plus"></i></td>' +
-					 '</tr>';
-		}
+
+      		// check if players exists
+      		var added = _.findWhere(settings.players, { playerID : playerID })
+
+
+              // Create table row with player data
+      		if (added) {
+      			var tr = '<tr onclick="UI.players.remove(\'' + playerID + '\')">' +
+      					 '<td>Player <b>' + playerID + '</b></td>' +
+                           '<td id="td '+ playerID +'"><i class="fa fa-trash-o"></i></td>' +
+      					 '</tr>';
+      		}
+      		if (!added && !show_added){
+      			var tr = '<tr onclick="UI.players.addPlayer(\'' + playerID + '\')">' +
+      					 '<td>Player <b>' + playerID + '</b></td>' +
+      					 '<td id="td '+ playerID +'"><i class="fa fa-plus"></i></td>' +
+      					 '</tr>';
+      		}
 
         $('#available-players').append(tr);
         })
@@ -578,7 +578,7 @@ UI.getListOfAvailablePlayerIDs = function(callback){
 
 }
 
-/* 
+/*
 name: showPlayerData
 author: Alex Johnson
 created: March 29, 2015
@@ -609,24 +609,24 @@ UI.showPlayerData = function(playerID, actionsOnly){
     }
 
     data = _.sortBy(data, 'timestamp');
-    
+
     var output = _.map(data, function(d){
       return convertJSONtoHTML(d);
     })
-    
-    output = _.reduce(output, function(memo, num){ 
-      return memo + num + "<hr>"; 
+
+    output = _.reduce(output, function(memo, num){
+      return memo + num + "<hr>";
     }, 0);
 
     UI.loading(false);
 
     var selectedData = (actionsOnly) ? "Actions" : "Data Points";
     UI.alert("Showing " + data.length + " " + selectedData);
-    
+
     // Show as massive string
     bootbox.alert(output);
 
-    
+
   });
 }
 
@@ -650,14 +650,14 @@ UI.loadOptions = function(next){
             opts.mappings = mappings;
             callback(null, 'keys');
           })
-                
+
 
         },
         two: function(callback){
 
           // Get list of Game Maps
           $.get(Visualizer.API_url + "maps", function(maps){
-            
+
             opts.maps = maps;
 
             // Generate list of games from the key mappings
@@ -694,12 +694,12 @@ UI.loadOptions = function(next){
           Groups
 ************************************/
 
-/* 
+/*
 name: addGroup
 author: Asarsa
 created: Feb 16, 2016
 purpose: Manage the groups being represented on the visualizer
-arguments: groupID is the selected player 
+arguments: groupID is the selected player
 */
 UI.groups = {};
 var groupID = 101;
@@ -707,15 +707,15 @@ var box;
 
 // purpose: plots selected groupID onto map from left menu
 UI.groups.addGroup = function(){
-	
+
 	var listOfPlayers = UI.groups.getSelectedPlayers();
 	var name = $('#groupName').val();
-	
+
 	//check if no players added to map
 	if(listOfPlayers.length == 0){
-			
+
 		alert("No players added to map! Please add players to the map before you create a group.");
-			
+
 	}else{
 
 	    //check players are on map
@@ -725,7 +725,7 @@ UI.groups.addGroup = function(){
 			if(!_.findWhere(settings.players, { 'playerID' : parseInt(p) }))
 				PIDs.push(p);
 		})
-		
+
 		//if players not on map, add
 		if(PIDs.length > 0){
 			alert("Please add the following players to map for the group to work correctly :" + PIDs);
@@ -743,25 +743,25 @@ UI.groups.addGroup = function(){
 				})
 			}
 		})
-		
+
 		console.log(create);
-		
+
 		if(create){
 			// Add to list
 			settings.groups.push({ groupID : "g" + groupID, players : listOfPlayers, groupName : name, checkedActions : [], visibility:false});
 			lastPlayer = "g" + groupID;
-			
+
 			//update text field with id for next group
 			$('#groupName').val("group " + ++groupID);
 		}
-		else{		
+		else{
 			// update groupname textbox to previous group name (i.e. next available name)
 			$('#groupName').val("group " + groupID);
 		}
-		
+
 		//Clear selected players
 		$('#players-in-group input:checkbox').removeAttr('checked');
-		
+
 		// Update map
 		UI.players.refreshMap();
 		if(create){
@@ -769,10 +769,10 @@ UI.groups.addGroup = function(){
 			UI.filters.changePlayer();
 		}
 		UI.getListOfAvailableGroupIDs();
-	
+
 	}
-	
-	
+
+
 }
 
 // purpose: remove selected groupID from the map
@@ -792,9 +792,9 @@ UI.groups.removeGroup = function(gID){
 
 //remove a player from a group
 UI.groups.removePlayer = function(gID,pID){
-	
+
   var empty = false;
-  _.each(settings.groups, function(group){	
+  _.each(settings.groups, function(group){
 	if(group.groupID == gID){
 	  group.players = _.filter(group.players, function(player){
 		return player != pID;
@@ -803,22 +803,22 @@ UI.groups.removePlayer = function(gID,pID){
 		empty = true;
 	}
   });
-  
+
   box.modal('hide');
   if(empty)
 	UI.groups.removeGroup(gID);
   else
 	UI.groups.getInfo(gID);
-	
+
 }
 
 
 //get group info
 UI.groups.getInfo = function(gID){
-	
+
   var message = "<div><table>";
-  
-  _.each(settings.groups, function(group){	
+
+  _.each(settings.groups, function(group){
 	if(group.groupID == gID){
 		message += "<tr><td>GroupName: " + group.groupName + "</td></tr>";
 		message += "<tr><td>GroupId: " + group.groupID + "</td></tr>";
@@ -829,16 +829,16 @@ UI.groups.getInfo = function(gID){
 		});
 	}
   });
-  
+
   message += "</table></div>"
-  
+
   box = bootbox.dialog({
     message: message,
     title: "Group Info",
-    
+
     // Options available to the user
     buttons: {
-      
+
       // Hide the modal
       success: {
         label: 'Ok',
@@ -859,10 +859,10 @@ UI.groups.getInfo = function(gID){
       }*/
     }
   });
-	
+
 }
 
-/* 
+/*
 name: createPLayer
 author: Asarsa
 created: Feb 23, 2016
@@ -874,19 +874,19 @@ UI.groups.createPlayers = function(){
 
     // Get players from API
     $.get(Visualizer.API_url + "players", opts, function(data){
-        
+
         var players = data;
-        
+
 		// Clear Players list
 		$("#players-in-group").html("");
-        
-        // Render players from database to 
+
+        // Render players from database to
         // table on left menu
         _.each(players, function(playerID){
 			//generate checkbox and add it
 			var html = UI.groups.generateCheckbox(playerID);
 			$("#players-in-group").append(html);
-		
+
 		})
 
     })
@@ -906,7 +906,7 @@ UI.groups.generateCheckbox = function(PlayerID){
 
 // Return list of selected players
 UI.groups.getSelectedPlayers = function(){
-    
+
     // List of actions
   var players = [];
 
@@ -918,7 +918,7 @@ UI.groups.getSelectedPlayers = function(){
 }
 
 
-/* 
+/*
 name: getListOfAvailableGroupIDs
 author: Asarsa
 created: Feb 16, 2016
@@ -926,14 +926,14 @@ purpose: for the currently selected actions, get a list of groupIDs
 argument: callback is some call
 */
 UI.getListOfAvailableGroupIDs = function(callback){
-        
+
         // Clear previous player list
         $('#available-groups').html("");
 
-        // Render players from database to 
+        // Render players from database to
         // table on left menu
         _.each(settings.groups, function(group){
-				
+
         // Create table row with group data
 		var tr = '<tr><td><b>' + group.groupName + '</b></td>' +
 			     '<td><i class="fa fa-trash-o" onclick="UI.groups.removeGroup('+"'"+ group.groupID +"'"+')"></i>'+
@@ -953,7 +953,7 @@ UI.getListOfAvailableGroupIDs = function(callback){
       Setup UI / Side Options
 ************************************/
 
-/* 
+/*
 name: addToggleAbleSideNavigation
 author: Alex Johnson
 created: March 29, 2015
@@ -962,12 +962,12 @@ purpose: initialize toggle-able side nav
 UI.addToggleAbleSideNavigation = function(){
 
     var SideOptionsToggle = L.Control.extend({
-      
+
       options: { position: 'topleft' },
 
       // Create a button for toggling left nav
       onAdd: function (map) {
-        
+
         // create the control container with a particular class name
         var button = L.DomUtil.create('div', 'toggle-side-options leaflet-control leaflet-bar');
         var icon   = L.DomUtil.create('i', 'fa fa-bars', button);
@@ -995,7 +995,7 @@ UI.addToggleAbleSideNavigation = function(){
 ************************************/
 UI.heatmaps = {}
 
-/* 
+/*
 author: Alex Gimmi
 created: June 15, 2015
 purpose: creates a new radio button in the heatmaps tab to determine which is visible
@@ -1009,7 +1009,7 @@ UI.heatmaps.generateRadio = function(heatmap_id, heatmap_name) {
   return a + b + c;
 }
 
-/* 
+/*
 author: Alex Gimmi
 created: June 15, 2015
 purpose: creates a new button for adding a heatmap to the Boolean operation tab
@@ -1019,11 +1019,11 @@ UI.heatmaps.generateBoolBtn = function(heatmap_id) {
   var a = '<div class="btn btn-primary btn-xs col-md-2" style="margin-top: 10px" onclick="UI.heatmaps.addBoolMap(' + heatmap_id + ');">';
   var b = '<span class="glyphicon glyphicon-share">'
   var c = '</span></div>';
-  
+
   return a + b + c;
 }
 
-/* 
+/*
 author: Alex Gimmi
 created: June 15, 2015
 purpose: hides the previous map and displays the newly selected map
@@ -1035,7 +1035,7 @@ UI.heatmaps.select = function(heatmap_id) {
   Visualizer.updateHeatmap();
 }
 
-/* 
+/*
 author: Alex Gimmi
 created: June 15, 2015
 purpose: adds the currently selected map to the Boolean operation tab
@@ -1112,7 +1112,7 @@ UI.boolops.moveDown = function(heatmap_id) {
   div.insertAfter(div.next());
 }
 
-/* 
+/*
 author: Alex Gimmi
 created: June 25, 2015
 purpose: Add a new heatmap which is the union of other selected heatmaps
@@ -1154,10 +1154,10 @@ UI.boolops.loadIntersect = function(checked) {
   bootbox.dialog({
     message: message,
     title: "Select Thresholds For Intersection",
-    
+
     // Options available to the user
     buttons: {
-      
+
       // Hide the modal
       success: {
         label: 'Cancel',
@@ -1188,7 +1188,7 @@ UI.boolops.loadIntersect = function(checked) {
   });
 }
 
-/* 
+/*
 author: Alex Gimmi
 created: June 25, 2015
 purpose: Add a new heatmap which is the intersection of other selected heatmaps
@@ -1228,7 +1228,7 @@ UI.boolops.intersect = function(checked, distThreshold, distThresholdMeters, tim
     })
   })
 
-  Heatmap.add(intersectData, UI.boolops.selectedHeatmapNames(" ∩ ") + 
+  Heatmap.add(intersectData, UI.boolops.selectedHeatmapNames(" ∩ ") +
     "\nDist (m): " + distThresholdMeters +
     "\nTime (s): " + timeThreshold +
     "\nBetween " + minTime + " and " + maxTime);
@@ -1258,10 +1258,10 @@ UI.boolops.loadSubtract = function(checked) {
   bootbox.dialog({
     message: message,
     title: "Select Threshold For Subtraction",
-    
+
     // Options available to the user
     buttons: {
-      
+
       // Hide the modal
       success: {
         label: 'Cancel',
@@ -1292,7 +1292,7 @@ UI.boolops.loadSubtract = function(checked) {
   });
 }
 
-/* 
+/*
 author: Alex Gimmi
 created: July 8, 2015
 purpose: Add a new heatmap which is the subtraction of all heatmaps from the first
@@ -1334,19 +1334,19 @@ UI.boolops.subtract = function(checked, distThreshold, distThresholdMeters, time
     })
   })
 
-  Heatmap.add(subtractData, UI.boolops.selectedHeatmapNames(" - ") + 
+  Heatmap.add(subtractData, UI.boolops.selectedHeatmapNames(" - ") +
     "\nDist (m): " + distThresholdMeters +
     "\nTime (s): " + timeThreshold +
     "\nBetween " + minTime + " and " + maxTime);
 }
 
-/* 
+/*
 author: Alex Gimmi
 created: June 25, 2015
 purpose: Returns a list of selected heatmap ids in the Boolean Operation tab
 */
 UI.boolops.selectedHeatmapIds = function() {
-    
+
   // List of actions
   var selectedIds = [];
 
@@ -1377,7 +1377,7 @@ UI.boolops.selectedHeatmapNames = function(delimiter) {
       selectedNames += delimiter + label.text();
     }
   })
-  return selectedNames; 
+  return selectedNames;
 }
 
 /************************************
@@ -1386,7 +1386,7 @@ UI.boolops.selectedHeatmapNames = function(delimiter) {
 
 UI.filters = {};
 
-/* 
+/*
 name: create
 author: Alex Johnson
 created: March 29, 2015
@@ -1422,7 +1422,7 @@ UI.filters.generateCheckbox = function(mapping){
 }
 
 // Return list of selected actions
-// NOTE: The checkboxes toggle CATEGORIES of key 
+// NOTE: The checkboxes toggle CATEGORIES of key
 // mappings. This function collects, and returns
 // an array of ALL actions that are allowed.
 
@@ -1434,8 +1434,8 @@ UI.filters.actions = function(categories){
   });
 
   // Build list of ALL actions
-  var actions = _.reduce(enabledKeyMappings, function(memo, mapping){ 
-    return memo.concat(mapping.actions); 
+  var actions = _.reduce(enabledKeyMappings, function(memo, mapping){
+    return memo.concat(mapping.actions);
   }, []);
 
   return actions;
@@ -1443,7 +1443,7 @@ UI.filters.actions = function(categories){
 
 // Return list of selected categories
 UI.filters.categories = function(){
-    
+
     // List of actions
   var categories = [];
 
@@ -1456,7 +1456,7 @@ UI.filters.categories = function(){
 
 // purpose: support UI element for Check All / None
 UI.filters.toggleAll = function(checked){
-  
+
   // Select All
   if (checked) {
     $('#filters input:checkbox').prop('checked', true);
@@ -1465,7 +1465,7 @@ UI.filters.toggleAll = function(checked){
   } else {
     $('#filters input:checkbox').removeAttr('checked');
   }
-  
+
   UI.filters.changeCheckbox();
 }
 
@@ -1477,20 +1477,20 @@ purpose: update checkboxes for player selected from drop-down select list
 And refresh map
 */
 UI.filters.changePlayer = function(){
-	
+
 	var ID = $("#active-players-list").val();
 	var bkgrndclr = "#ffffff";
-	
+
 	_.each(settings.players, function(player){
 		if(player.playerID == parseInt(ID)){
 			bkgrndclr = player.color;
 		}
 	})
-	
+
 	$("#active-players-list").css("background-color",bkgrndclr);
-	
+
 	$('#filters input:checkbox').removeAttr('checked');
-	
+
 	// PlayerID recieved
 	if(ID != "" && ID.toString().charAt(0) != 'g'){
 		//update checkboxes
@@ -1503,7 +1503,7 @@ UI.filters.changePlayer = function(){
 			}
 		})
 	}
-	
+
 	//GroupID recieved
 	if(ID != "" && ID.toString().charAt(0) == 'g'){
 		//group selected -> update checkboxes
@@ -1527,9 +1527,9 @@ purpose: update checkboxes upon click on one of them
 And refresh map
 */
 UI.filters.changeCheckbox = function(){
-	
+
 	var ID = $("#active-players-list").val();
-	
+
 	if(ID.toString().charAt(0) != 'g')
 		_.each(settings.players, function(player){
 			if(player.playerID == ID){
@@ -1537,8 +1537,8 @@ UI.filters.changeCheckbox = function(){
 				settings.players[p_ind].checkedActions = UI.filters.categories();
 			}
 		})
-	
-	
+
+
 	if(ID.toString().charAt(0) == 'g')
 		_.each(settings.groups, function(group){
 			if(group.groupID == ID){
@@ -1546,7 +1546,7 @@ UI.filters.changeCheckbox = function(){
 				settings.groups[g_ind].checkedActions = UI.filters.categories();
 			}
 		})
-	
+
 	Visualizer.refresh();
 }
 
@@ -1557,10 +1557,10 @@ created: Feb 15,2016
 purpose: update the visibility for all groups and players
 */
 UI.filters.updateVisibility = function(){
-	
+
 	var ID = $("#active-players-list").val();
 	var checked = $("#visibility").prop('checked');
-	
+
 	if(ID.toString().charAt(0) != 'g'){
 		_.each(settings.groups, function(group){
 			var g_ind = settings.groups.indexOf(group);
@@ -1573,7 +1573,7 @@ UI.filters.updateVisibility = function(){
 			}
 		})
 	}
-		
+
 	if(ID.toString().charAt(0) == 'g'){
 		_.each(settings.players, function(player){
 			var p_ind = settings.players.indexOf(player);
@@ -1626,11 +1626,11 @@ UI.loader = {};
 
 // purpose: show/hide a loading indicator
 UI.loading = function(boolean, msg){
-  
+
   // Show loading box
   if (boolean){
     $("#loading").addClass('active');
-    
+
     UI.loader = Messenger().post({
       type: "type-loading",
       message : (msg) ? msg : "Loading...",
@@ -1642,11 +1642,11 @@ UI.loading = function(boolean, msg){
 
   } else {
 
-    // Hide loading box. 
+    // Hide loading box.
     UI.loader.hide();
 
     $("#loading").removeClass('active');
-    
+
     // Add success message.
     return Messenger().post({
       type: "success",
